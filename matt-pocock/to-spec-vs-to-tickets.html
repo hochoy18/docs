@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>to-spec vs to-tickets · Skill 文档</title>
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #d8d4cc;
+      --accent: #2d5f8a;
+      --accent-soft: #e8f0f7;
+      --highlight: #c7501f;
+      --green: #15803d;
+      --green-soft: #dcfce7;
+      --amber: #d97706;
+      --amber-soft: #fef3c7;
+      --red: #b91c1c;
+      --red-soft: #fee2e2;
+      --code-bg: #f3f0ea;
+      --code-fg: #2b2b2b;
+      --topnav-bg: rgba(250, 250, 247, 0.85);
+      --sidebar-bg: #f3f0ea;
+      --mainflow-color: #2d5f8a;
+      --mainflow-soft: #e8f0f7;
+      --vocab-color: #6b21a8;
+      --vocab-soft: #f3e8ff;
+      --compare-color: #6b21a8;
+      --compare-soft: #f3e8ff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    .topnav { position: sticky; top: 0; z-index: 100;
+              background: var(--topnav-bg);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border-bottom: 1px solid var(--border); }
+    .topnav-inner { max-width: 1400px; margin: 0 auto;
+                    display: flex; align-items: center;
+                    height: 54px; padding: 0 28px; gap: 20px;
+                    position: relative; }
+    .brand { font-weight: 600; font-size: 14px; color: var(--fg);
+             text-decoration: none; letter-spacing: 0.005em; white-space: nowrap; }
+    .brand .dot { display: inline-block; width: 6px; height: 6px;
+                  background: var(--accent); border-radius: 50%;
+                  margin-right: 8px; vertical-align: middle; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px;
+                  font-size: 13px; color: var(--muted);
+                  flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+    .breadcrumb .sep { color: #c8c4bc; }
+    .breadcrumb .node { font-family: "SF Mono", "Menlo", monospace; font-size: 12.5px; }
+    .breadcrumb .current { color: var(--fg); font-weight: 500; }
+    .doc-trigger { display: flex; align-items: center; gap: 8px;
+                   padding: 6px 12px 6px 14px; background: #fff;
+                   border: 1px solid var(--border); border-radius: 6px;
+                   font: inherit; font-size: 13px; color: var(--fg);
+                   cursor: pointer; transition: all 0.15s; font-family: inherit;
+                   white-space: nowrap; }
+    .doc-trigger:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-trigger .count { background: var(--accent-soft); color: var(--accent);
+                          font-size: 11px; font-weight: 600;
+                          padding: 1px 7px; border-radius: 9px;
+                          font-family: "SF Mono", monospace; }
+    .doc-trigger .chev { width: 12px; height: 12px; transition: transform 0.18s; opacity: 0.6; }
+    .doc-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); opacity: 1; }
+    .doc-panel { position: absolute; top: calc(100% + 6px); right: 28px;
+                 background: #fff; border: 1px solid var(--border); border-radius: 8px;
+                 padding: 6px; max-height: 80vh; overflow-y: auto;
+                 box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+                 min-width: 380px; display: none; }
+    .doc-panel.open { display: block; }
+    .doc-group { padding: 6px 4px; }
+    .doc-group + .doc-group { border-top: 1px solid var(--border);
+                              margin-top: 4px; padding-top: 10px; }
+    .doc-group-title { font-size: 10.5px; text-transform: uppercase;
+                       letter-spacing: 0.08em; color: var(--muted);
+                       font-weight: 700; margin-bottom: 6px; padding: 0 8px; }
+    .doc-link { display: flex; align-items: center; justify-content: space-between;
+                padding: 6px 10px; color: var(--fg); text-decoration: none;
+                font-size: 13px; border-radius: 4px;
+                font-family: "SF Mono", "Menlo", monospace; }
+    .doc-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-link.active { background: var(--accent); color: white; font-weight: 600; }
+    .doc-link.planned { color: #a8a49c; }
+    .doc-link.planned:hover { background: #f3f0ea; color: var(--fg); }
+    .doc-link .tag-mini { font-family: -apple-system, sans-serif; font-size: 10px;
+                          padding: 1px 6px; border-radius: 3px; font-weight: 500;
+                          background: rgba(255,255,255,0.25); }
+    .doc-link.planned .tag-mini { background: var(--code-bg); color: var(--muted); }
+    .doc-link.active .tag-mini { background: rgba(255,255,255,0.22); color: white; }
+
+    .layout { display: grid; grid-template-columns: 240px 1fr; max-width: 1400px; margin: 0 auto; }
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border);
+               padding: 28px 18px 28px 28px; position: sticky; top: 54px;
+               align-self: start; max-height: calc(100vh - 54px); overflow-y: auto; }
+    .sidebar h3 { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+                  color: var(--muted); margin: 0 0 12px; font-weight: 700; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { margin: 0; }
+    .sidebar a { display: block; padding: 5px 10px; color: var(--fg);
+                 text-decoration: none; font-size: 13.5px; border-radius: 3px;
+                 border-left: 2px solid transparent; transition: all 0.1s; }
+    .sidebar a:hover { background: rgba(45, 95, 138, 0.08); color: var(--accent); }
+    .sidebar a.active { background: rgba(45, 95, 138, 0.13); color: var(--accent);
+                        font-weight: 600; border-left-color: var(--accent); }
+    .sidebar .meta { margin-top: 28px; padding-top: 18px;
+                     border-top: 1px solid var(--border);
+                     font-size: 12px; color: var(--muted); }
+    .sidebar .meta .row { margin-bottom: 10px; }
+    .sidebar .meta strong { display: block; font-size: 11px; color: var(--muted);
+                            font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.06em; margin-bottom: 4px; }
+    .sidebar .meta .val { color: var(--fg); font-weight: 500; }
+
+    .content { padding: 28px 48px 96px; min-width: 0; }
+    .content > header { border-bottom: 2px solid var(--fg); padding-bottom: 20px; margin-bottom: 36px; }
+    h1 { font-size: 30px; margin: 0 0 8px; font-weight: 600; letter-spacing: -0.01em; }
+    h2 { font-size: 22px; margin: 56px 0 16px; font-weight: 600;
+         border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { font-size: 16px; margin: 28px 0 10px; font-weight: 600; color: var(--accent); }
+    h4 { font-size: 14px; margin: 20px 0 8px; font-weight: 600; color: #2b2b2b; }
+    p, li { font-size: 15px; }
+    .lede { font-size: 17px; color: var(--muted); margin: 0; }
+    .tag { display: inline-block; font-size: 12px; padding: 2px 8px;
+           background: var(--compare-soft); color: var(--compare-color);
+           border-radius: 3px; margin-right: 6px; font-weight: 500; }
+    .tag-hl { background: #fff0e0; color: var(--highlight); }
+    .tag-green { background: var(--green-soft); color: var(--green); }
+    .tag-amber { background: var(--amber-soft); color: var(--amber); }
+    .tag-red { background: var(--red-soft); color: var(--red); }
+    .tag-accent { background: var(--accent-soft); color: var(--accent); }
+
+    code { background: var(--code-bg); color: var(--code-fg); padding: 1px 6px;
+           border-radius: 3px; font-family: "SF Mono", "Menlo", "Consolas", monospace;
+           font-size: 13.5px; }
+    pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px;
+          overflow-x: auto; font-size: 13px; line-height: 1.55; }
+    pre code { background: none; padding: 0; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 4px 0; }
+
+    .diagram { background: #fff; border: 1px solid var(--border);
+               border-radius: 6px; padding: 20px; margin: 24px 0; overflow-x: auto; }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram-caption { font-size: 13px; color: var(--muted);
+                       margin-top: 12px; text-align: center; font-style: italic; }
+
+    .callout { padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--accent);
+               margin: 16px 0; background: var(--accent-soft); }
+    .callout-warn { border-left-color: var(--highlight); background: #fce8e0; }
+    .callout-good { border-left-color: var(--green); background: var(--green-soft); }
+    .callout-amber { border-left-color: var(--amber); background: var(--amber-soft); }
+
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+    .compare > div { border-radius: 6px; padding: 14px; border: 1px solid var(--border); }
+    .compare .spec { background: var(--accent-soft); border-color: var(--accent); }
+    .compare .tick { background: var(--compare-soft); border-color: var(--compare-color); }
+    .compare .label { font: 700 11px sans-serif; text-transform: uppercase;
+                       letter-spacing: 0.08em; margin-bottom: 8px; }
+    .compare .spec .label { color: var(--accent); }
+    .compare .tick .label { color: var(--compare-color); }
+    .compare p { margin: 0 0 8px; font-size: 13.5px; }
+    .compare ul { font-size: 13.5px; margin: 6px 0; padding-left: 20px; }
+
+    footer { margin-top: 80px; padding-top: 16px; border-top: 1px solid var(--border);
+             font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; border-right: none;
+                 border-bottom: 1px solid var(--border); }
+      .content { padding: 24px 24px 64px; }
+      .breadcrumb { display: none; }
+      .doc-panel { right: 16px; min-width: 300px; }
+      .compare { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span>SDD / Matt Pocock Skills</a>
+
+    <div class="breadcrumb">
+      <span class="node">Comparisons</span>
+      <span class="sep">›</span>
+      <span class="node current">to-spec vs to-tickets</span>
+    </div>
+
+    <button class="doc-trigger" aria-expanded="false" aria-controls="doc-panel">
+      <span>All skill docs</span>
+      <span class="count">21</span>
+      <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 4.5 L6 7.5 L9 4.5"/>
+      </svg>
+    </button>
+
+    <div class="doc-panel" id="doc-panel" role="menu">
+
+      <div class="doc-group">
+        <div class="doc-group-title">Precondition · 2</div>
+        <a href="install-matt-pocock-skills.html" class="doc-link">install-matt-pocock-skills</a>
+        <a href="setup-matt-pocock-skills.html" class="doc-link">setup-matt-pocock-skills</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Grilling · 4</div>
+        <a href="grill-with-docs.html" class="doc-link">grill-with-docs</a>
+        <a href="grill-me.html" class="doc-link">grill-me</a>
+        <a href="grilling.html" class="doc-link">grilling</a>
+        <a href="domain-modeling.html" class="doc-link">domain-modeling</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Main flow · 7</div>
+        <a href="to-spec.html" class="doc-link">to-spec</a>
+        <a href="to-tickets.html" class="doc-link">to-tickets</a>
+        <a href="implement.html" class="doc-link planned">implement <span class="tag-mini">planned</span></a>
+        <a href="code-review.html" class="doc-link planned">code-review <span class="tag-mini">planned</span></a>
+        <a href="tdd.html" class="doc-link">tdd</a>
+        <a href="prototype.html" class="doc-link">prototype</a>
+        <a href="handoff.html" class="doc-link planned">handoff <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">On-ramps · 4</div>
+        <a href="triage.html" class="doc-link planned">triage <span class="tag-mini">planned</span></a>
+        <a href="diagnosing-bugs.html" class="doc-link planned">diagnosing-bugs <span class="tag-mini">planned</span></a>
+        <a href="wayfinder.html" class="doc-link planned">wayfinder <span class="tag-mini">planned</span></a>
+        <a href="research.html" class="doc-link planned">research <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Codebase · 2</div>
+        <a href="improve-codebase-architecture.html" class="doc-link">improve-codebase-architecture</a>
+        <a href="codebase-design.html" class="doc-link">codebase-design</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Comparisons · 1</div>
+        <a href="to-spec-vs-to-tickets.html" class="doc-link active">to-spec vs to-tickets <span class="tag-mini">you are here</span></a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <h3>本页目录</h3>
+    <ul>
+      <li><a href="#purpose">用途</a></li>
+      <li><a href="#position">在主流程的位置</a></li>
+      <li><a href="#one-liner">一句话对比</a></li>
+      <li><a href="#shape">形状对照</a></li>
+      <li><a href="#design">关键设计差异</a></li>
+      <li><a href="#example">worked 例：wishlist</a></li>
+      <li><a href="#spec-only">只有 spec 没有 tickets 会怎样</a></li>
+      <li><a href="#tickets-only">只有 tickets 没有 spec 会怎样</a></li>
+      <li><a href="#complement">合起来</a></li>
+      <li><a href="#decision">决策：何时用哪个</a></li>
+      <li><a href="#skill-source">两份 SKILL.md 全文对照</a></li>
+      <li><a href="#reference">参考</a></li>
+    </ul>
+    <div class="meta">
+      <div class="row">
+        <strong>状态</strong>
+        <span class="val">✓ 已发布</span>
+      </div>
+      <div class="row">
+        <strong>位置</strong>
+        <span class="val">docs/SDD/matt-pocock/</span>
+      </div>
+      <div class="row">
+        <strong>对应 skill</strong>
+        <span class="val">to-spec + to-tickets</span>
+      </div>
+      <div class="row">
+        <strong>归类</strong>
+        <span class="val">Comparisons · 1（新组）</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content">
+
+    <header>
+      <div><span class="tag">Comparisons</span><span class="tag tag-accent">spec → tickets</span><span class="tag tag-hl">parent → child</span><span class="tag">reference</span></div>
+      <h1>to-spec vs to-tickets</h1>
+      <p class="lede">两个都"生成 issue"——但生成的<strong>不是同一种</strong>：<code>/to-spec</code> 产出 1 张父 spec（决定<em>去哪</em>），<code>/to-tickets</code> 产出 N 张子 ticket（决定<em>先打哪一发</em>）。</p>
+    </header>
+
+    <section id="purpose">
+      <h2>用途</h2>
+
+      <p>主流程跳 <code>/grill-with-docs</code> → <code>/to-spec</code> → <code>/to-tickets</code> → <code>/implement</code>，前两步都生成 tracker 上的 issue。很多人在这里混——把 <code>/to-spec</code> 输出直接当 ticket，或把 <code>/to-tickets</code> 输出当 spec。</p>
+
+      <p>本页梳理<strong>同一条主流程上、两件不同的事</strong>。</p>
+
+      <div class="callout">
+        <strong>最低限度要背下来的一句话</strong>（贯穿整页）：
+        <blockquote>
+          spec 定义<strong>形状</strong>，tickets 定义<strong>顺序</strong>。spec 告诉你这是个 feature 该长成什么样子；tickets 告诉你从空白到那个样子，第一发 tracer bullet 打哪儿。
+        </blockquote>
+      </div>
+    </section>
+
+    <section id="position">
+      <h2>在主流程的位置</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 220" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="/to-spec 和 /to-tickets 在主流程的位置：spec 后于 grill，tickets 后于 spec">
+          <defs>
+            <marker id="c-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <style>
+              .cp-box { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .cp-active { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+              .cp-specout { fill: #fff7e6; stroke: var(--highlight); stroke-width: 2; }
+              .cp-tickout { fill: var(--compare-soft); stroke: var(--compare-color); stroke-width: 2; }
+              .cp-lbl { font: 700 12.5px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .cp-sub { font: 10px sans-serif; fill: var(--muted); text-anchor: middle; }
+              .cp-arrow { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">主流程上 4 个相邻节点 · 上面两个的产物形状</text>
+
+          <g transform="translate(40,60)">
+            <rect class="cp-box" x="0" y="0" width="160" height="60" rx="8"/>
+            <text x="80" y="22" class="cp-lbl">grill-with-docs</text>
+            <text x="80" y="42" class="cp-sub">interview → state</text>
+          </g>
+
+          <g transform="translate(220,60)">
+            <rect class="cp-active cp-box" x="0" y="0" width="160" height="60" rx="8"/>
+            <text x="80" y="22" class="cp-lbl">to-spec</text>
+            <text x="80" y="42" class="cp-sub">spec · 1 issue · 胖</text>
+          </g>
+
+          <g transform="translate(400,60)">
+            <rect class="cp-active cp-box" x="0" y="0" width="160" height="60" rx="8"/>
+            <text x="80" y="22" class="cp-lbl">to-tickets</text>
+            <text x="80" y="42" class="cp-sub">tickets · N issues · 瘦</text>
+          </g>
+
+          <g transform="translate(580,60)">
+            <rect class="cp-box" x="0" y="0" width="160" height="60" rx="8"/>
+            <text x="80" y="22" class="cp-lbl">implement</text>
+            <text x="80" y="42" class="cp-sub">(待生成)</text>
+          </g>
+
+          <path class="cp-arrow" d="M 200 90 L 220 90" marker-end="url(#c-ar)"/>
+          <path class="cp-arrow" d="M 380 90 L 400 90" marker-end="url(#c-ar)"/>
+          <path class="cp-arrow" d="M 560 90 L 580 90" marker-end="url(#c-ar)" stroke-dasharray="4 3"/>
+
+          <!-- outputs -->
+          <g transform="translate(220,150)">
+            <rect class="cp-specout" x="0" y="0" width="160" height="50" rx="6"/>
+            <text x="80" y="20" class="cp-lbl">spec issue</text>
+            <text x="80" y="38" class="cp-sub">parent · 北极星</text>
+          </g>
+          <path class="cp-arrow" d="M 300 120 L 300 150" marker-end="url(#c-ar)" stroke="#c7501f"/>
+
+          <g transform="translate(400,150)">
+            <rect class="cp-tickout" x="0" y="0" width="160" height="50" rx="6"/>
+            <text x="80" y="20" class="cp-lbl">N ticket issues</text>
+            <text x="80" y="38" class="cp-sub">children · blocker graph</text>
+          </g>
+          <path class="cp-arrow" d="M 480 120 L 480 150" marker-end="url(#c-ar)" stroke="#6b21a8"/>
+
+          <text x="460" y="225" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">
+            spec 把 todo 编译；tickets 把 spec 切开
+          </text>
+        </svg>
+        <div class="diagram-caption">图 1 · /to-spec 输出 1 张 spec issue（黄色）· /to-tickets 输出 N 张 ticket issue（紫色）</div>
+      </div>
+    </section>
+
+    <section id="one-liner">
+      <h2>一句话对比</h2>
+
+      <table>
+        <thead>
+          <tr><th>维度</th><th><code>/to-spec</code></th><th><code>/to-tickets</code></th></tr>
+        </thead>
+        <tbody>
+          <tr><td>输出数量</td><td><strong>1 张</strong> spec issue（胖）</td><td><strong>N 张</strong> ticket issue（瘦）</td></tr>
+          <tr><td>粒度</td><td>一个 feature / 一块工作</td><td>一个 tracer-bullet vertical slice</td></tr>
+          <tr><td>关心的问题</td><td>WHAT — 形状 / 边界 / 为什么</td><td>HOW · WHEN — 怎么拆 / 先后</td></tr>
+          <tr><td>关系</td><td><strong>父 issue</strong></td><td><strong>子 issue</strong>（<code>## Parent</code> 指回）</td></tr>
+          <tr><td>谁读</td><td>人 + agent 都读</td><td>agent frontier 抢</td></tr>
+          <tr><td>之后去哪</td><td>被 tickets 引用</td><td>被 implement 拿</td></tr>
+          <tr><td>时间尺度</td><td>一个 feature 周期</td><td>一张 ≈ 一次 /implement 会话</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="shape">
+      <h2>形状对照</h2>
+
+      <p>两份 SKILL.md 都内嵌了自己的模板——这是肉眼最快的判断依据。</p>
+
+      <div class="compare">
+        <div class="spec">
+          <div class="label">★ /to-spec 输出（1 张）</div>
+          <pre><code># Spec: &lt;feature name&gt;
+
+## Problem Statement
+   用户视角在面对的问题
+
+## Solution
+   用户视角的解决方案
+
+## User Stories         ← 长、编号、覆盖完整
+1. As a &lt;actor&gt;, I want &lt;feature&gt;, so that &lt;benefit&gt;
+2. ...
+30. ...
+
+## Implementation Decisions
+   list of:
+   - modules to build/modify
+   - interfaces of those modules
+   - architectural decisions
+   - schema / API contract / interactions
+   禁: file paths / code snippets (例
+       外: prototype 留下的决策片段)
+
+## Testing Decisions
+   - 好测试的哲学
+   - 哪几个 module 测
+   - 先例: codebase 里类似测试
+
+## Out of Scope         ← 此 spec 不做的
+
+## Further Notes</code></pre>
+        </div>
+        <div class="tick">
+          <div class="label">▣ /to-tickets 输出（N 张）</div>
+          <pre><code># &lt;NN&gt;: &lt;Ticket title&gt;
+
+**What to build:**
+   端到端用户行为（不是层叠实现清单）
+
+**Blocked by:**
+   this ticket 的前置 ticket 编号 /
+   标题，或 "None"
+
+**Status:** ready-for-agent
+
+- [ ] Acceptance criterion 1
+- [ ] Acceptance criterion 2
+
+（每张一文件，N 张 N 个文件 /
+   N 个 issue）</code></pre>
+        </div>
+      </div>
+
+      <p><strong>同点（同原则不同尺度）：</strong></p>
+      <ul>
+        <li>都用 domain glossary · 尊重 ADRs</li>
+        <li>都禁 file paths / 禁代码片段（"过期太快"）</li>
+        <li>都有 prototype 例外——prototype 留下的决策片段可以 inline，标注 "came from prototype"</li>
+        <li>都依赖 <a href="setup-matt-pocock-skills.html">/setup-matt-pocock-skills</a> 先配好 issue tracker</li>
+      </ul>
+    </section>
+
+    <section id="design">
+      <h2>关键设计差异</h2>
+
+      <table>
+        <thead>
+          <tr><th>维度</th><th><code>/to-spec</code></th><th><code>/to-tickets</code></th></tr>
+        </thead>
+        <tbody>
+          <tr><td>边界</td><td>决策型——写定 module / interface / schema</td><td>行为型——写"用户能做什么"</td></tr>
+          <tr><td>颗粒</td><td>一段抽象就够</td><td>一个具体 endpoint / UI 行为 / 迁移</td></tr>
+          <tr><td>file path / 代码</td><td>禁用，唯一例外 prototype 片段</td><td>禁用，同一原则</td></tr>
+          <tr><td>测试</td><td>"Testing Decisions" 一节哲学层面</td><td>每张 ticket acceptance → /implement → /tdd 跑</td></tr>
+          <tr><td>与 ADRs / glossary</td><td>直接对话</td><td>沿用 spec 的词汇</td></tr>
+          <tr><td>产出后谁是 consumer</td><td>人 + agent 都读</td><td>agent frontier</td></tr>
+          <tr><td>用户确认环节</td><td>无显式 quiz——synthesize 后直接 publish</td><td>§4 quiz 用户——granularity / blocking edges / merge-split</td></tr>
+          <tr><td>interview</td><td>SKILL.md 明文："Do NOT interview the user; just synthesize"</td><td>无独立 interview，但 quiz 颗粒度</td></tr>
+          <tr><td>model invocation</td><td><code>disable-model-invocation: true</code></td><td><code>disable-model-invocation: true</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="example">
+      <h2>worked 例：给 cart 加 wishlist（收藏夹）</h2>
+
+      <p>同上 spec / tickets 拆法的同一个 demo，对照看：</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 940 460" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="wishlist 例子：spec 是 1 张 parent，tickets 是 N 张 child">
+          <defs>
+            <marker id="ex-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6b21a8"/>
+            </marker>
+            <style>
+              .ex-parent { fill: #fff7e6; stroke: var(--highlight); stroke-width: 2.5; }
+              .ex-tick  { fill: var(--compare-soft); stroke: var(--compare-color); stroke-width: 1.5; }
+              .ex-block { fill: var(--red-soft); stroke: var(--red); stroke-width: 1.5; }
+              .ex-lbl   { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ex-sub   { font: 10px sans-serif; fill: var(--muted); text-anchor: middle; }
+              .ex-arrow { stroke: #6b21a8; stroke-width: 1.4; fill: none; }
+              .ex-lbl-l { font: 700 11px sans-serif; fill: #6b21a8; }
+              .ex-num   { font: 700 10px sans-serif; fill: white; text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">Spec → fan-out into 4 tickets</text>
+
+          <!-- parent -->
+          <g transform="translate(360,40)">
+            <rect class="ex-parent" x="0" y="0" width="220" height="80" rx="8"/>
+            <text x="110" y="20" class="ex-lbl">#parent · wishlist</text>
+            <text x="110" y="40" class="ex-sub">Problem · Solution · 30 user stories</text>
+            <text x="110" y="56" class="ex-sub">Impl decisions · Test decisions</text>
+            <text x="110" y="72" class="ex-sub" fill="var(--highlight)" font-weight="700">to-spec 输出</text>
+          </g>
+
+          <!-- 4 tickets -->
+          <g transform="translate(50,180)">
+            <rect class="ex-tick" x="0" y="0" width="200" height="56" rx="6"/>
+            <circle cx="20" cy="20" r="11" fill="white" stroke="var(--compare-color)" stroke-width="2"/>
+            <text x="20" y="24" class="ex-num" fill="var(--compare-color)">01</text>
+            <text x="120" y="22" class="ex-lbl">wishlist 表 + GET</text>
+            <text x="120" y="40" class="ex-sub">无 block · frontier</text>
+          </g>
+
+          <g transform="translate(280,180)">
+            <rect class="ex-tick" x="0" y="0" width="200" height="56" rx="6"/>
+            <circle cx="20" cy="20" r="11" fill="white" stroke="var(--compare-color)" stroke-width="2"/>
+            <text x="20" y="24" class="ex-num" fill="var(--compare-color)">02</text>
+            <text x="120" y="22" class="ex-lbl">add / remove items</text>
+            <text x="120" y="40" class="ex-sub">block: 01</text>
+          </g>
+
+          <g transform="translate(510,180)">
+            <rect class="ex-tick" x="0" y="0" width="200" height="56" rx="6"/>
+            <circle cx="20" cy="20" r="11" fill="white" stroke="var(--compare-color)" stroke-width="2"/>
+            <text x="20" y="24" class="ex-num" fill="var(--compare-color)">03</text>
+            <text x="120" y="22" class="ex-lbl">cart → wishlist 一键转</text>
+            <text x="120" y="40" class="ex-sub">block: 01, 02</text>
+          </g>
+
+          <g transform="translate(740,180)">
+            <rect class="ex-tick" x="0" y="0" width="170" height="56" rx="6"/>
+            <circle cx="20" cy="20" r="11" fill="white" stroke="var(--compare-color)" stroke-width="2"/>
+            <text x="20" y="24" class="ex-num" fill="var(--compare-color)">04</text>
+            <text x="100" y="22" class="ex-lbl">降价邮件</text>
+            <text x="100" y="40" class="ex-sub">block: 01, 03</text>
+          </g>
+
+          <!-- arrows from parent to tickets -->
+          <path class="ex-arrow" d="M 470 120 Q 470 145 150 180" marker-end="url(#ex-arr)"/>
+          <path class="ex-arrow" d="M 480 120 L 380 180" marker-end="url(#ex-arr)"/>
+          <path class="ex-arrow" d="M 480 120 L 610 180" marker-end="url(#ex-arr)"/>
+          <path class="ex-arrow" d="M 490 120 Q 490 145 820 180" marker-end="url(#ex-arr)"/>
+
+          <!-- blockers between tickets -->
+          <path class="ex-arrow" d="M 250 215 L 280 215" marker-end="url(#ex-arr)" stroke="var(--red)"/>
+          <path class="ex-arrow" d="M 480 215 Q 510 235 580 215" marker-end="url(#ex-arr)" stroke="var(--red)"/>
+          <path class="ex-arrow" d="M 710 215 L 740 215" marker-end="url(#ex-arr)" stroke="var(--red)"/>
+
+          <!-- frontier indicator -->
+          <g transform="translate(50,270)">
+            <rect class="ex-block" x="0" y="0" width="200" height="50" rx="6"/>
+            <text x="100" y="20" class="ex-lbl" fill="var(--red)">frontier · #01</text>
+            <text x="100" y="38" class="ex-sub" fill="var(--red)">无 block · 立即可开</text>
+          </g>
+
+          <g transform="translate(280,270)">
+            <rect fill="#f3f0ea" stroke="#c8c4bc" stroke-width="1" stroke-dasharray="4 3" x="0" y="0" width="640" height="50" rx="6"/>
+            <text x="320" y="20" class="ex-lbl" fill="#6b6b6b">02 / 03 / 04 — blocked</text>
+            <text x="320" y="38" class="ex-sub">agent 不会拿 · 等 01 完才能 frontier</text>
+          </g>
+
+          <text x="470" y="350" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">
+            4 张 ticket 都不含 file path · 都不含代码 · 都可单独 demo
+          </text>
+
+          <!-- bottom: ticket vs spec characteristics -->
+          <g transform="translate(50,370)">
+            <rect fill="#fff7e6" stroke="var(--highlight)" stroke-width="1.5" x="0" y="0" width="430" height="60" rx="6"/>
+            <text x="14" y="20" class="ex-lbl" fill="var(--highlight)" text-anchor="start">spec 这一张里写了什么</text>
+            <text x="14" y="38" class="ex-sub" text-anchor="start">wishlist table schema · 新的 wishlist endpoints · 不发邮件（划走）</text>
+            <text x="14" y="54" class="ex-sub" text-anchor="start">哪些 module 被改 · 用什么 schema · 测试哲学</text>
+          </g>
+
+          <g transform="translate(490,370)">
+            <rect fill="var(--compare-soft)" stroke="var(--compare-color)" stroke-width="1.5" x="0" y="0" width="430" height="60" rx="6"/>
+            <text x="14" y="20" class="ex-lbl" fill="var(--compare-color)" text-anchor="start">4 张 ticket 里写了什么</text>
+            <text x="14" y="38" class="ex-sub" text-anchor="start">01: 用户能 GET 到空 wishlist · 02: 用户能加 / 减 item ·</text>
+            <text x="14" y="54" class="ex-sub" text-anchor="start">03: 用户能把 cart 的 item 一键转存 · 04: 用户能收到降价邮件</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">图 2 · spec 是 1 张 parent，tickets 是 N 张 child。紫色的 children graph 是 agent 的工作清单</div>
+      </div>
+    </section>
+
+    <section id="spec-only">
+      <h2>只有 spec · 没有 tickets 会怎样</h2>
+
+      <p>你拿了一张很漂亮的 spec，agent 打开想开干：</p>
+
+      <div class="callout callout-warn">
+        <strong>agent 看到的问题</strong>：
+        <ol>
+          <li>spec 是"全部 user story + 全部 implementation decision"——agent 不知道第一发从哪开始</li>
+          <li>没有 blocking edges → 没有 frontier → 多 agent 并行干扰 → 改一块坏三块</li>
+          <li>spec 跨度通常 ≥ 一个 context window —— agent 一进 implement 就把上下文撑爆</li>
+        </ol>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 220" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="只有 spec 没有 tickets：spec 像一片云，没入口">
+          <defs>
+            <style>
+              .so-lost { fill: var(--red-soft); stroke: var(--red); stroke-width: 2; }
+              .so-spec { fill: #fff7e6; stroke: var(--highlight); stroke-width: 2; }
+              .so-q { fill: var(--amber-soft); stroke: var(--amber); stroke-width: 1.5; }
+              .so-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .so-sub { font: 10px sans-serif; fill: var(--muted); text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">无 frontier · 不知道从哪下手</text>
+
+          <g transform="translate(40,80)">
+            <rect class="so-spec" x="0" y="0" width="220" height="100" rx="8"/>
+            <text x="110" y="22" class="so-lbl">spec</text>
+            <text x="110" y="42" class="so-sub">全部 user story</text>
+            <text x="110" y="58" class="so-sub">全部 module / interface</text>
+            <text x="110" y="74" class="so-sub">全部 testing decision</text>
+            <text x="110" y="90" class="so-sub" fill="var(--highlight)" font-weight="700">完整但无入口</text>
+          </g>
+
+          <g transform="translate(360,60)">
+            <rect class="so-q" x="0" y="0" width="180" height="44" rx="6"/>
+            <text x="90" y="20" class="so-lbl">agent: 开哪？</text>
+            <text x="90" y="36" class="so-sub">谁先谁后？没有</text>
+          </g>
+
+          <g transform="translate(360,115)">
+            <rect class="so-q" x="0" y="0" width="180" height="44" rx="6"/>
+            <text x="90" y="20" class="so-lbl">agent: 并行？</text>
+            <text x="90" y="36" class="so-sub">会撞？没有 frontier</text>
+          </g>
+
+          <g transform="translate(640,80)">
+            <rect class="so-lost" x="0" y="0" width="200" height="100" rx="8"/>
+            <text x="100" y="22" class="so-lbl" fill="var(--red)">agent 卡住</text>
+            <text x="100" y="42" class="so-sub" fill="var(--red)">猜一个起点 → 撞墙</text>
+            <text x="100" y="62" class="so-sub" fill="var(--red)">改 schema → 别的不知情</text>
+            <text x="100" y="82" class="so-sub" fill="var(--red)">context 撑爆回到 0</text>
+          </g>
+
+          <path class="so-arrow" stroke="#6b6b6b" stroke-width="1.4" fill="none" d="M 260 130 L 360 84" marker-end="url(#c-ar)"/>
+          <path class="so-arrow" stroke="#6b6b6b" stroke-width="1.4" fill="none" d="M 540 90 L 640 100" marker-end="url(#c-ar)"/>
+        </svg>
+        <div class="diagram-caption">图 3 · spec 是全部，但没 ticket 就没 frontier、没顺序、没并行能力</div>
+      </div>
+    </section>
+
+    <section id="tickets-only">
+      <h2>只有 tickets · 没有 spec 会怎样</h2>
+
+      <p>你切了一组 ticket，但 spec 没写：</p>
+
+      <div class="callout callout-warn">
+        <strong>三两个月后回看的问题</strong>：
+        <ol>
+          <li>tickets 是 symptoms——"加 cart endpoint · 加 wishlist table" · 这些是局部解</li>
+          <li>没有 rationale：<em>为什么</em>用这个 schema、<em>为什么</em>这个 out of scope</li>
+          <li>新 agent 加入要 replay 全部 thread 才能明白设计意图——那就是 spec 应该记的事</li>
+          <li>tickets 解决 edges 但不解决 integrity：为什么这两张要分、不是同一张</li>
+        </ol>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 200" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="只有 tickets 没有 spec：没有 rationale，三月后回看不解">
+          <defs>
+            <style>
+              .tk-t { fill: var(--compare-soft); stroke: var(--compare-color); stroke-width: 1.5; }
+              .tk-warn { fill: var(--amber-soft); stroke: var(--amber); stroke-width: 1.5; }
+              .tk-lbl { font: 700 11px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .tk-sub { font: 10px sans-serif; fill: var(--muted); text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">三月后回看：你问 rationale，没人答</text>
+
+          <g transform="translate(50,80)">
+            <rect class="tk-t" x="0" y="0" width="140" height="50" rx="6"/>
+            <text x="70" y="22" class="tk-lbl">#01 建 wishlist 表</text>
+            <text x="70" y="40" class="tk-sub">局部解 · 无 "为什么"</text>
+          </g>
+          <g transform="translate(220,80)">
+            <rect class="tk-t" x="0" y="0" width="140" height="50" rx="6"/>
+            <text x="70" y="22" class="tk-lbl">#02 add / remove</text>
+            <text x="70" y="40" class="tk-sub">同上</text>
+          </g>
+          <g transform="translate(390,80)">
+            <rect class="tk-t" x="0" y="0" width="140" height="50" rx="6"/>
+            <text x="70" y="22" class="tk-lbl">#03 cart 转存</text>
+            <text x="70" y="40" class="tk-sub">同上</text>
+          </g>
+
+          <g transform="translate(580,40)">
+            <rect class="tk-warn" x="0" y="0" width="260" height="120" rx="8"/>
+            <text x="130" y="22" class="tk-lbl" fill="var(--amber)">没有 spec 记录</text>
+            <text x="130" y="42" class="tk-sub">为什么是这样设计</text>
+            <text x="130" y="58" class="tk-sub">为什么 out of scope</text>
+            <text x="130" y="74" class="tk-sub">为什么不用这个 schema</text>
+            <text x="130" y="90" class="tk-sub">为什么这两张要分</text>
+            <text x="130" y="108" class="tk-sub" font-weight="700" fill="var(--red)">新 agent 上手要 replay 全部 thread</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">图 4 · 没 spec，tickets 都是 "做什么" 不带 "为什么"</div>
+      </div>
+    </section>
+
+    <section id="complement">
+      <h2>合起来</h2>
+
+      <div class="callout">
+        <p style="margin: 0 0 8px;"><strong>spec 是北极星</strong>——定形状、定边界、定 rationale</p>
+        <p style="margin: 0;"><strong>tickets 是路径上的 marker</strong>——定顺序、定并行、定局部行为</p>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="spec 与 tickets 合起来的星图与路径">
+          <defs>
+            <style>
+              .co-star { fill: #fff7e6; stroke: var(--highlight); stroke-width: 2.5; }
+              .co-t { fill: var(--compare-soft); stroke: var(--compare-color); stroke-width: 1.5; }
+              .co-light { stroke: var(--highlight); stroke-width: 1; stroke-dasharray: 2 4; fill: none; }
+              .co-path { stroke: var(--compare-color); stroke-width: 2; fill: none; }
+              .co-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .co-sub { font: 10px sans-serif; fill: var(--muted); text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">北极星 + 路径 markers</text>
+
+          <!-- star -->
+          <g transform="translate(420,80)">
+            <circle r="32" fill="#fff7e6" stroke="var(--highlight)" stroke-width="2.5"/>
+            <text x="0" y="0" class="co-lbl" fill="var(--highlight)">★</text>
+            <text x="0" y="18" class="co-sub">spec</text>
+            <text x="0" y="32" class="co-sub" font-style="italic" fill="var(--highlight)">北极星</text>
+          </g>
+
+          <!-- light dashes radiating -->
+          <path class="co-light" d="M 420 112 L 200 200"/>
+          <path class="co-light" d="M 420 112 L 460 200"/>
+          <path class="co-light" d="M 420 112 L 720 200"/>
+
+          <!-- marker 01 -->
+          <g transform="translate(140,200)">
+            <rect class="co-t" x="0" y="0" width="130" height="44" rx="6"/>
+            <text x="65" y="20" class="co-lbl" fill="var(--compare-color)">marker #01</text>
+            <text x="65" y="36" class="co-sub">tracer bullet</text>
+          </g>
+          <path class="co-path" d="M 270 222 L 410 222" marker-end="url(#ex-arr)"/>
+
+          <g transform="translate(400,200)">
+            <rect class="co-t" x="0" y="0" width="130" height="44" rx="6"/>
+            <text x="65" y="20" class="co-lbl" fill="var(--compare-color)">marker #02</text>
+            <text x="65" y="36" class="co-sub">tracer bullet</text>
+          </g>
+          <path class="co-path" d="M 530 222 L 670 222" marker-end="url(#ex-arr)"/>
+
+          <g transform="translate(660,200)">
+            <rect class="co-t" x="0" y="0" width="130" height="44" rx="6"/>
+            <text x="65" y="20" class="co-lbl" fill="var(--compare-color)">marker #03</text>
+            <text x="65" y="36" class="co-sub">tracer bullet</text>
+          </g>
+
+          <!-- bottom note -->
+          <text x="460" y="265" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">
+            顺 tickets 这条路径走，每 marker 都 dialog / interrupt spec
+          </text>
+        </svg>
+        <div class="diagram-caption">图 5 · spec 在天 · tickets 在地 · agent 沿 markers 走，随时回头问 spec</div>
+      </div>
+    </section>
+
+    <section id="decision">
+      <h2>决策：何时用哪个</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 360" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="何时用 /to-spec vs /to-tickets 决策树">
+          <defs>
+            <marker id="dc-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <style>
+              .dc-q { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+              .dc-spec { fill: #fff7e6; stroke: var(--highlight); stroke-width: 2; }
+              .dc-tick { fill: var(--compare-soft); stroke: var(--compare-color); stroke-width: 2; }
+              .dc-both { fill: var(--green-soft); stroke: var(--green); stroke-width: 2; }
+              .dc-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .dc-sub { font: 10px sans-serif; fill: var(--muted); text-anchor: middle; }
+              .dc-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">决策树</text>
+
+          <!-- top q -->
+          <g transform="translate(280,60)">
+            <rect class="dc-q" x="0" y="0" width="360" height="50" rx="8"/>
+            <text x="180" y="22" class="dc-lbl">是 multi-session build 吗？</text>
+            <text x="180" y="38" class="dc-sub">multi-ticket / 多人 / 跨周</text>
+          </g>
+
+          <path class="dc-arrow" d="M 340 110 L 140 170" marker-end="url(#dc-ar)"/>
+          <text x="240" y="148" class="dc-sub" font-style="italic">否</text>
+
+          <path class="dc-arrow" d="M 580 110 L 780 170" marker-end="url(#dc-ar)"/>
+          <text x="680" y="148" class="dc-sub" font-style="italic">是</text>
+
+          <!-- left: no → /implement directly -->
+          <g transform="translate(60,170)">
+            <rect fill="#fff" stroke="#c8c4bc" stroke-width="1.5" x="0" y="0" width="200" height="70" rx="8"/>
+            <text x="100" y="22" class="dc-lbl">/implement</text>
+            <text x="100" y="42" class="dc-sub">在当前 context</text>
+            <text x="100" y="58" class="dc-sub">直接 build</text>
+          </g>
+
+          <!-- right: yes → q2 -->
+          <g transform="translate(680,170)">
+            <rect class="dc-q" x="0" y="0" width="200" height="50" rx="8"/>
+            <text x="100" y="22" class="dc-lbl">已经有 spec 吗？</text>
+            <text x="100" y="38" class="dc-sub">父 issue 已存在</text>
+          </g>
+
+          <path class="dc-arrow" d="M 700 220 L 580 270" marker-end="url(#dc-ar)"/>
+          <text x="640" y="252" class="dc-sub" font-style="italic">否</text>
+
+          <path class="dc-arrow" d="M 880 220 L 870 270" marker-end="url(#dc-ar)"/>
+          <text x="900" y="252" class="dc-sub" font-style="italic" fill="#b91c1c" font-weight="700">是</text>
+
+          <!-- no → to-spec -->
+          <g transform="translate(420,270)">
+            <rect class="dc-spec" x="0" y="0" width="200" height="60" rx="8"/>
+            <text x="100" y="22" class="dc-lbl" fill="var(--highlight)">/to-spec</text>
+            <text x="100" y="42" class="dc-sub">先出父 issue</text>
+            <text x="100" y="56" class="dc-sub">再用 /to-tickets 拆</text>
+          </g>
+
+          <!-- yes → /to-tickets -->
+          <g transform="translate(720,270)">
+            <rect class="dc-tick" x="0" y="0" width="200" height="60" rx="8"/>
+            <text x="100" y="22" class="dc-lbl" fill="var(--compare-color)">/to-tickets</text>
+            <text x="100" y="42" class="dc-sub">直接拆</text>
+            <text x="100" y="56" class="dc-sub">每张 ## Parent 引 spec</text>
+          </g>
+
+          <!-- -->
+          <path class="dc-arrow" d="M 520 330 L 720 330 L 720 330" marker-end="url(#dc-ar)"/>
+          <text x="620" y="345" class="dc-sub" font-style="italic">spec 完了 → 拆 ticket</text>
+
+          <text x="460" y="358" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">
+            主流程默认：to-spec 然后 to-tickets · 除非 spec 已经存在
+          </text>
+        </svg>
+        <div class="diagram-caption">图 6 · 决策树 — 先看 multi-session 吗？再看已有 spec 吗？</div>
+      </div>
+
+      <h3>走哪种节奏</h3>
+      <table>
+        <thead>
+          <tr><th>场景</th><th>走哪个</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>一次性 throwaway 实验（prototype）</td><td>都不走——看完就用</td></tr>
+          <tr><td>单文件改，单 PR，三天内 ship</td><td>/implement（不带 to-spec / to-tickets）</td></tr>
+          <tr><td>多周 multi-ticket，但已有 spec issue 在 tracker</td><td>只用 /to-tickets</td></tr>
+          <tr><td>多周 multi-ticket，从零开始</td><td>先 /to-spec，再 /to-tickets</td></tr>
+          <tr><td>大重构（wide refactor · blast radius 大）</td><td>/to-spec 写"expand → migrate batches → contract"，每阶段一张 ticket</td></tr>
+          <tr><td>已有 spec 但还没拆 ticket，agent 没动</td><td>/to-tickets，引用 spec 的 ## Parent</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="skill-source">
+      <h2>两份 SKILL.md 全文对照</h2>
+
+      <h3><a href="to-spec.html">to-spec/SKILL.md</a></h3>
+
+      <div class="skill-source">
+<pre><code>---
+name: to-spec
+description: "Turn the current conversation into a spec and publish it to the
+  project issue tracker: no interview, just synthesis of what you've already
+  discussed."
+disable-model-invocation: true
+---
+
+This skill takes the current conversation context and codebase understanding
+and produces a spec. Do NOT interview the user; just synthesize what you
+already know.
+
+The issue tracker and triage label vocabulary should have been provided to
+you. If not, tell the user to run `/setup-matt-pocock-skills`.
+
+## Process
+
+1. Explore the repo to understand the current state of the codebase, if you
+   haven't already. Use the project's domain glossary vocabulary throughout
+   the spec, and respect any ADRs in the area you're touching.
+
+2. Sketch out the seams at which you're going to test the feature. Existing
+   seams should be preferred to new ones. Use the highest seam possible. If
+   new seams are needed, propose them at the highest point you can. The fewer
+   seams across the codebase, the better - the ideal number is one.
+
+   Check with the user that these seams match their expectations.
+
+3. Write the spec using the template below, then publish it to the project
+   issue tracker. Apply the `ready-for-agent` triage label - no need for
+   additional triage.
+
+&lt;spec-template&gt;
+
+## Problem Statement
+
+The problem that the user is facing, from the user's perspective.
+
+## Solution
+
+The solution to the problem, from the user's perspective.
+
+## User Stories
+
+A LONG, numbered list of user stories. Each user story should be in the
+format of:
+
+1. As a &lt;actor&gt;, I want a &lt;feature&gt;, so that &lt;benefit&gt;
+
+&lt;user-story-example&gt;
+1. As a mobile bank customer, I want to see balance on my accounts, so
+   that I can make better informed decisions about my spending
+&lt;/user-story-example&gt;
+
+This list of user stories should be extremely extensive and cover all aspects
+of the feature.
+
+## Implementation Decisions
+
+A list of implementation decisions that were made. This can include:
+- The modules that will be built/modified
+- The interfaces of those modules that will be modified
+- Technical clarifications from the developer
+- Architectural decisions
+- Schema changes
+- API contracts
+- Specific interactions
+
+Do NOT include specific file paths or code snippets. They may end up being
+outdated very quickly.
+
+Exception: if a prototype produced a snippet that encodes a decision more
+precisely than prose can (state machine, reducer, schema, type shape),
+inline it within the relevant decision and note briefly that it came from a
+prototype. Trim to the decision-rich parts, not a working demo, just the
+important bits.
+
+## Testing Decisions
+
+A list of testing decisions that were made. Include:
+- A description of what makes a good test (only test external behavior,
+  not implementation details)
+- Which modules will be tested
+- Prior art for the tests (i.e. similar types of tests in the codebase)
+
+## Out of Scope
+
+A description of the things that are out of scope for this spec.
+
+## Further Notes
+
+Any further notes about the feature.
+
+&lt;/spec-template&gt;</code></pre>
+      </div>
+
+      <h3><a href="to-tickets.html">to-tickets/SKILL.md</a></h3>
+
+      <div class="skill-source">
+<pre><code>---
+name: to-tickets
+description: Break a plan, spec, or the current conversation into a set of
+  tracer-bullet tickets, each declaring its blocking edges, published to the
+  configured tracker (edges as text in one file per ticket locally, or
+  native blocking links on a real tracker).
+disable-model-invocation: true
+---
+
+# To Tickets
+
+Break a plan, spec, or conversation into a set of tickets: tracer-bullet
+vertical slices, each declaring the tickets that block it.
+
+The issue tracker and triage label vocabulary should have been provided to
+you. If not, tell the user to run `/setup-matt-pocock-skills`.
+
+## Process
+
+### 1. Gather context
+
+Work from whatever is already in the conversation context. If the user passes
+a reference (a spec path, an issue number or URL) as an argument, fetch it
+and read its full body and comments.
+
+### 2. Explore the codebase (optional)
+
+If you have not already explored the codebase, do so to understand the
+current state of the code. Ticket titles and descriptions should use the
+project's domain glossary vocabulary, and respect ADRs in the area you're
+touching.
+
+Look for opportunities to prefactor the code to make the implementation
+easier. "Make the change easy, then make the easy change."
+
+### 3. Draft vertical slices
+
+Break the work into tracer bullet tickets.
+
+&lt;vertical-slice-rules&gt;
+- Each slice cuts a narrow but COMPLETE path through every layer (schema,
+  API, UI, tests): vertical, NOT a horizontal slice of one layer
+- A completed slice is demoable or verifiable on its own
+- Each slice is sized to fit in a single fresh context window
+- Any prefactoring should be done first
+&lt;/vertical-slice-rules&gt;
+
+Give each ticket its blocking edges: the other tickets that must complete
+before it can start. A ticket with no blockers can start immediately.
+
+**Wide refactors are the exception to vertical slicing.** A wide refactor is
+one mechanical change (rename a column, retype a shared symbol) whose blast
+radius fans across the whole codebase, so a single edit breaks thousands of
+call sites at once and no vertical slice can land green. Don't force it
+into a tracer bullet; sequence it as expand-contract. First expand: add the
+new form beside the old so nothing breaks. Then migrate the call sites over
+in batches sized by blast radius (per package, per directory), each batch
+its own ticket blocked by the expand, keeping CI green batch to batch
+because the old form still exists. Finally contract: delete the old form
+once no caller remains, in a ticket blocked by every migrate batch.
+
+### 4. Quiz the user
+
+Present the proposed breakdown as a numbered list. For each ticket, show:
+- Title: short descriptive name
+- Blocked by: which other tickets (if any) must complete first
+- What it delivers: the end-to-end behaviour this ticket makes work
+
+Ask the user:
+- Does the granularity feel right? (too coarse / too fine)
+- Are the blocking edges correct: does each ticket only depend on tickets
+  that genuinely gate it?
+- Should any tickets be merged or split further?
+
+Iterate until the user approves the breakdown.
+
+### 5. Publish
+
+Publish the approved tickets. How depends on /setup-matt-pocock-skills;
+tickets are the same either way, only the shape of the blocking edges
+changes:
+- Local files: one file per ticket under .scratch/&lt;feature-slug&gt;/issues/
+- Real tracker: one issue per ticket, native blocking link or text edge
+
+Work the frontier: any ticket whose blockers are all done. For a linear
+chain that's top to bottom.
+
+&lt;local-ticket-template&gt;
+# &lt;NN&gt;: &lt;Ticket title&gt;
+
+**What to build:** the end-to-end behaviour this ticket makes work, from
+  the user's perspective, not a layer-by-layer implementation list.
+
+**Blocked by:** the numbers/titles of the tickets that gate this one,
+  or "None (can start immediately)".
+
+**Status:** ready-for-agent
+
+- [ ] Acceptance criterion 1
+- [ ] Acceptance criterion 2
+&lt;/local-ticket-template&gt;</code></pre>
+      </div>
+    </section>
+
+    <section id="reference">
+      <h2>参考</h2>
+      <ul>
+        <li>Spec 源：<code>~/.agents/skills/to-spec/SKILL.md</code>（75 行）</li>
+        <li>Tickets 源：<code>~/.agents/skills/to-tickets/SKILL.md</code>（106 行）</li>
+        <li>Spec 主页：<a href="to-spec.html">to-spec</a></li>
+        <li>Tickets 主页：<a href="to-tickets.html">to-tickets</a></li>
+        <li>下一步：<a href="implement.html">implement</a>（一张 ticket 一个 session）</li>
+        <li>前面：<a href="grill-with-docs.html">grill-with-docs</a>（state，spec 的输入）</li>
+        <li>配置：<a href="setup-matt-pocock-skills.html">setup</a>（issue tracker）</li>
+      </ul>
+    </section>
+
+    <footer>
+      Generated · spec 是 1 张 parent · tickets 是 N 张 child · spec 是北极星 · tickets 是 marker
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  (function () {
+    const trigger = document.querySelector('.doc-trigger');
+    const panel = document.getElementById('doc-panel');
+    if (!trigger || !panel) return;
+    function close() { panel.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+    function open() { panel.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.contains('open') ? close() : open();
+    });
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && !trigger.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => close()));
+  })();
+
+  (function () {
+    const links = document.querySelectorAll('.sidebar a[href^="#"]');
+    const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')))
+                              .filter(Boolean);
+    if (!sections.length) return;
+    const map = new Map();
+    links.forEach((a, i) => map.set(sections[i].id, a));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => obs.observe(s));
+  })();
+</script>
+
+</body>
+</html>
