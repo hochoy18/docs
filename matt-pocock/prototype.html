@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>prototype · Skill 文档</title>
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #d8d4cc;
+      --accent: #2d5f8a;
+      --accent-soft: #e8f0f7;
+      --highlight: #c7501f;
+      --code-bg: #f3f0ea;
+      --code-fg: #2b2b2b;
+      --topnav-bg: rgba(250, 250, 247, 0.85);
+      --topnav-muted: #8a8d96;
+      --sidebar-bg: #f3f0ea;
+      --success: #4a7d4a;
+      --logic-color: #2d5f8a;
+      --ui-color: #6b4d8a;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    /* ============ Top nav ============ */
+    .topnav { position: sticky; top: 0; z-index: 100;
+              background: var(--topnav-bg);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border-bottom: 1px solid var(--border); }
+    .topnav-inner { max-width: 1400px; margin: 0 auto;
+                    display: flex; align-items: center;
+                    height: 54px; padding: 0 28px; gap: 20px;
+                    position: relative; }
+    .brand { font-weight: 600; font-size: 14px; color: var(--fg);
+             text-decoration: none; letter-spacing: 0.005em; white-space: nowrap; }
+    .brand .dot { display: inline-block; width: 6px; height: 6px;
+                  background: var(--accent); border-radius: 50%;
+                  margin-right: 8px; vertical-align: middle; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px;
+                  font-size: 13px; color: var(--muted);
+                  flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+    .breadcrumb .sep { color: #c8c4bc; }
+    .breadcrumb .node { font-family: "SF Mono", "Menlo", monospace; font-size: 12.5px; }
+    .breadcrumb .current { color: var(--fg); font-weight: 500; }
+    .doc-trigger { display: flex; align-items: center; gap: 8px;
+                   padding: 6px 12px 6px 14px; background: #fff;
+                   border: 1px solid var(--border); border-radius: 6px;
+                   font: inherit; font-size: 13px; color: var(--fg);
+                   cursor: pointer; transition: all 0.15s; font-family: inherit;
+                   white-space: nowrap; }
+    .doc-trigger:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-trigger .count { background: var(--accent-soft); color: var(--accent);
+                          font-size: 11px; font-weight: 600;
+                          padding: 1px 7px; border-radius: 9px;
+                          font-family: "SF Mono", monospace; }
+    .doc-trigger .chev { width: 12px; height: 12px; transition: transform 0.18s; opacity: 0.6; }
+    .doc-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); opacity: 1; }
+    .doc-panel { position: absolute; top: calc(100% + 6px); right: 28px;
+                 background: #fff; border: 1px solid var(--border); border-radius: 8px;
+                 padding: 6px; max-height: 80vh; overflow-y: auto;
+                 box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+                 min-width: 380px; display: none; }
+    .doc-panel.open { display: block; }
+    .doc-group { padding: 6px 4px; }
+    .doc-group + .doc-group { border-top: 1px solid var(--border);
+                              margin-top: 4px; padding-top: 10px; }
+    .doc-group-title { font-size: 10.5px; text-transform: uppercase;
+                       letter-spacing: 0.08em; color: var(--muted);
+                       font-weight: 700; margin-bottom: 6px; padding: 0 8px; }
+    .doc-link { display: flex; align-items: center; justify-content: space-between;
+                padding: 6px 10px; color: var(--fg); text-decoration: none;
+                font-size: 13px; border-radius: 4px;
+                font-family: "SF Mono", "Menlo", monospace; }
+    .doc-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-link.active { background: var(--accent); color: white; font-weight: 600; }
+    .doc-link.planned { color: #a8a49c; }
+    .doc-link.planned:hover { background: #f3f0ea; color: var(--fg); }
+    .doc-link .tag-mini { font-family: -apple-system, sans-serif; font-size: 10px;
+                          padding: 1px 6px; border-radius: 3px; font-weight: 500;
+                          background: rgba(255,255,255,0.25); }
+    .doc-link.planned .tag-mini { background: var(--code-bg); color: var(--muted); }
+    .doc-link.active .tag-mini { background: rgba(255,255,255,0.22); color: white; }
+
+    /* ============ Layout ============ */
+    .layout { display: grid; grid-template-columns: 240px 1fr; max-width: 1400px; margin: 0 auto; }
+
+    /* ============ Sidebar ============ */
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border);
+               padding: 28px 18px 28px 28px; position: sticky; top: 54px;
+               align-self: start; max-height: calc(100vh - 54px); overflow-y: auto; }
+    .sidebar h3 { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+                  color: var(--muted); margin: 0 0 12px; font-weight: 700; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { margin: 0; }
+    .sidebar a { display: block; padding: 5px 10px; color: var(--fg);
+                 text-decoration: none; font-size: 13.5px; border-radius: 3px;
+                 border-left: 2px solid transparent; transition: all 0.1s; }
+    .sidebar a:hover { background: rgba(45, 95, 138, 0.08); color: var(--accent); }
+    .sidebar a.active { background: rgba(45, 95, 138, 0.13); color: var(--accent);
+                        font-weight: 600; border-left-color: var(--accent); }
+    .sidebar .meta { margin-top: 28px; padding-top: 18px;
+                     border-top: 1px solid var(--border);
+                     font-size: 12px; color: var(--muted); }
+    .sidebar .meta .row { margin-bottom: 10px; }
+    .sidebar .meta strong { display: block; font-size: 11px; color: var(--muted);
+                            font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.06em; margin-bottom: 4px; }
+    .sidebar .meta .val { color: var(--fg); font-weight: 500; }
+
+    /* ============ Content ============ */
+    .content { padding: 28px 48px 96px; min-width: 0; }
+    .content > header { border-bottom: 2px solid var(--fg); padding-bottom: 20px; margin-bottom: 36px; }
+    h1 { font-size: 30px; margin: 0 0 8px; font-weight: 600; letter-spacing: -0.01em; }
+    h2 { font-size: 22px; margin: 56px 0 16px; font-weight: 600;
+         border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { font-size: 16px; margin: 28px 0 10px; font-weight: 600; color: var(--accent); }
+    h4 { font-size: 14px; margin: 20px 0 8px; font-weight: 600; color: #2b2b2b; }
+    p, li { font-size: 15px; }
+    .lede { font-size: 17px; color: var(--muted); margin: 0; }
+    .tag { display: inline-block; font-size: 12px; padding: 2px 8px;
+           background: var(--accent-soft); color: var(--accent);
+           border-radius: 3px; margin-right: 6px; font-weight: 500; }
+    .tag-hl { background: #fff0e0; color: var(--highlight); }
+    .tag-logic { background: #e8f0f7; color: var(--logic-color); }
+    .tag-ui { background: #f0e8f7; color: var(--ui-color); }
+
+    code { background: var(--code-bg); color: var(--code-fg); padding: 1px 6px;
+           border-radius: 3px; font-family: "SF Mono", "Menlo", "Consolas", monospace;
+           font-size: 13.5px; }
+    pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px;
+          overflow-x: auto; font-size: 13px; line-height: 1.55; }
+    pre code { background: none; padding: 0; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 4px 0; }
+
+    .diagram { background: #fff; border: 1px solid var(--border);
+               border-radius: 6px; padding: 20px; margin: 24px 0; overflow-x: auto; }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram-caption { font-size: 13px; color: var(--muted);
+                       margin-top: 12px; text-align: center; font-style: italic; }
+
+    .skill-source { background: #fff; border: 1px solid var(--border);
+                    border-radius: 6px; padding: 20px 24px; margin: 24px 0;
+                    position: relative; }
+    .skill-source::before { content: "SKILL.md 全文"; position: absolute;
+                            top: -10px; left: 16px; background: #fff;
+                            padding: 0 8px; font-size: 11px;
+                            color: var(--muted); font-weight: 600;
+                            text-transform: uppercase; letter-spacing: 0.06em; }
+    .skill-source pre { margin: 0; max-height: 480px; }
+
+    .callout { padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--accent);
+               margin: 16px 0; background: var(--accent-soft); }
+    .callout-warn { border-left-color: var(--highlight); background: #fce8e0; }
+
+    footer { margin-top: 80px; padding-top: 16px; border-top: 1px solid var(--border);
+             font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; border-right: none;
+                 border-bottom: 1px solid var(--border); }
+      .content { padding: 24px 24px 64px; }
+      .breadcrumb { display: none; }
+      .doc-panel { right: 16px; min-width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============ Top Nav ============ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span>SDD / Matt Pocock Skills</a>
+
+    <div class="breadcrumb">
+      <span class="node">Standalone</span>
+      <span class="sep">›</span>
+      <span class="node current">prototype</span>
+    </div>
+
+    <button class="doc-trigger" aria-expanded="false" aria-controls="doc-panel">
+      <span>All skill docs</span>
+      <span class="count">19</span>
+      <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 4.5 L6 7.5 L9 4.5"/>
+      </svg>
+    </button>
+
+    <div class="doc-panel" id="doc-panel" role="menu">
+
+      <div class="doc-group">
+        <div class="doc-group-title">Precondition · 1</div>
+        <a href="setup-matt-pocock-skills.html" class="doc-link">setup-matt-pocock-skills</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Grilling · 4</div>
+        <a href="grill-with-docs.html" class="doc-link">grill-with-docs</a>
+        <a href="grill-me.html" class="doc-link">grill-me</a>
+        <a href="grilling.html" class="doc-link">grilling</a>
+        <a href="domain-modeling.html" class="doc-link">domain-modeling</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Main flow · 7</div>
+        <a href="to-spec.html" class="doc-link">to-spec</a>
+        <a href="to-tickets.html" class="doc-link">to-tickets</a>
+        <a href="implement.html" class="doc-link planned">implement <span class="tag-mini">planned</span></a>
+        <a href="code-review.html" class="doc-link planned">code-review <span class="tag-mini">planned</span></a>
+        <a href="tdd.html" class="doc-link">tdd</a>
+        <a href="prototype.html" class="doc-link active">prototype <span class="tag-mini">you are here</span></a>
+        <a href="handoff.html" class="doc-link planned">handoff <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">On-ramps · 4</div>
+        <a href="triage.html" class="doc-link planned">triage <span class="tag-mini">planned</span></a>
+        <a href="diagnosing-bugs.html" class="doc-link planned">diagnosing-bugs <span class="tag-mini">planned</span></a>
+        <a href="wayfinder.html" class="doc-link planned">wayfinder <span class="tag-mini">planned</span></a>
+        <a href="research.html" class="doc-link planned">research <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Codebase · 2</div>
+        <a href="improve-codebase-architecture.html" class="doc-link">improve-codebase-architecture</a>
+        <a href="codebase-design.html" class="doc-link">codebase-design</a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ============ Layout ============ -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>本页目录</h3>
+    <ul>
+      <li><a href="#purpose">用途</a></li>
+      <li><a href="#flow-position">主流程位置</a></li>
+      <li><a href="#branch">branch 选择</a></li>
+      <li><a href="#rules">通用规则（两边都遵守）</a></li>
+      <li><a href="#source">SKILL.md 全文</a></li>
+      <li><a href="#logic">LOGIC branch</a></li>
+      <li><a href="#ui">UI branch</a></li>
+      <li><a href="#capture">capture 流程</a></li>
+      <li><a href="#when">何时用 / 不用</a></li>
+      <li><a href="#reference">参考</a></li>
+    </ul>
+    <div class="meta">
+      <div class="row">
+        <strong>状态</strong>
+        <span class="val">✓ 已发布</span>
+      </div>
+      <div class="row">
+        <strong>位置</strong>
+        <span class="val">docs/SDD/matt-pocock/</span>
+      </div>
+      <div class="row">
+        <strong>对应 skill</strong>
+        <span class="val">~/.agents/skills/<br>prototype/</span>
+      </div>
+      <div class="row">
+        <strong>SKILL.md</strong>
+        <span class="val">27 行<br>+ LOGIC.md 68 行<br>+ UI.md 113 行</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <header>
+      <div><span class="tag">Standalone</span><span class="tag tag-logic">LOGIC</span><span class="tag tag-ui">UI</span><span class="tag tag-hl">throwaway</span></div>
+      <h1>prototype</h1>
+      <p class="lede"><strong>throwaway code that answers a question</strong>——两个完全不同的 branch（LOGIC / UI），选错就全白干。用完扔，但作为 primary source 留下来。</p>
+    </header>
+
+    <section id="purpose">
+      <h2>用途</h2>
+      <p>
+        设计问题在纸上答不出来？跑一段代码让答案显形。<code>prototype</code> 不是"先写代码再说"——它是 <strong>throwaway code that answers a question</strong>。问题决定形状（LOGIC 或 UI），形状决定产物，产物决定怎么用。
+      </p>
+
+      <p><strong>两个核心不变量</strong>：</p>
+      <ul>
+        <li><strong>throwaway from day one</strong>——不是"先用着回头再扔"，而是一开始就标好是 prototype</li>
+        <li><strong>作为 primary source 留下来</strong>——commit 到 throwaway branch，main 只留验证过的决策</li>
+      </ul>
+
+      <p style="background: var(--accent-soft); padding: 14px 18px; border-radius: 6px;
+                border-left: 3px solid var(--accent); margin-top: 20px;">
+        <strong>关键：</strong>prototype 不替代 spec。spec 是"做什么"，prototype 是验证某个具体决策的形状对不对。两者正交。
+      </p>
+    </section>
+
+    <section id="flow-position">
+      <h2>主流程位置</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 240" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="主流程图：prototype 作为 fork 出现在 grill-with-docs 之后 / to-spec 之前">
+          <defs>
+            <marker id="pr-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <marker id="pr-arr-mut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#c7501f"/>
+            </marker>
+            <style>
+              .pr-box { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .pr-box-hl { fill: #fff0e0; stroke: #c7501f; stroke-width: 2.5; }
+              .pr-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .pr-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .pr-arrow { stroke: #2d5f8a; stroke-width: 1.6; fill: none; }
+              .pr-arrow-mut { stroke: #c7501f; stroke-width: 1.4; fill: none;
+                              stroke-dasharray: 5 3; }
+              .pr-flow-tag { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle;
+                             font-style: italic; }
+              .pr-tag-hl { font: 700 11px sans-serif; fill: #c7501f; text-anchor: middle;
+                           text-transform: uppercase; letter-spacing: 0.1em; }
+            </style>
+          </defs>
+
+          <text x="460" y="22" font="700 14px sans-serif" fill="#2d5f8a"
+                text-anchor="middle">Main flow + prototype fork</text>
+
+          <!-- main flow row -->
+          <g transform="translate(30,80)">
+            <rect class="pr-box" x="0" y="0" width="140" height="60" rx="8"/>
+            <text x="70" y="22" class="pr-lbl">grill-with-docs</text>
+            <text x="70" y="42" class="pr-sub">→ CONTEXT.md / ADR</text>
+          </g>
+
+          <g transform="translate(200,80)">
+            <rect class="pr-box" x="0" y="0" width="140" height="60" rx="8"/>
+            <text x="70" y="22" class="pr-lbl">to-spec</text>
+            <text x="70" y="42" class="pr-sub">→ issue</text>
+          </g>
+
+          <g transform="translate(370,80)">
+            <rect class="pr-box" x="0" y="0" width="140" height="60" rx="8"/>
+            <text x="70" y="22" class="pr-lbl">to-tickets</text>
+            <text x="70" y="42" class="pr-sub">→ N tickets + DAG</text>
+          </g>
+
+          <g transform="translate(540,80)">
+            <rect class="pr-box" x="0" y="0" width="140" height="60" rx="8"/>
+            <text x="70" y="22" class="pr-lbl">implement</text>
+            <text x="70" y="42" class="pr-sub">→ TDD</text>
+          </g>
+
+          <g transform="translate(710,80)">
+            <rect class="pr-box" x="0" y="0" width="170" height="60" rx="8"/>
+            <text x="85" y="22" class="pr-lbl">ship</text>
+            <text x="85" y="42" class="pr-sub">merge → deploy</text>
+          </g>
+
+          <path class="pr-arrow" d="M 170 110 L 200 110" marker-end="url(#pr-arr)"/>
+          <path class="pr-arrow" d="M 340 110 L 370 110" marker-end="url(#pr-arr)"/>
+          <path class="pr-arrow" d="M 510 110 L 540 110" marker-end="url(#pr-arr)"/>
+          <path class="pr-arrow" d="M 680 110 L 710 110" marker-end="url(#pr-arr)"/>
+
+          <!-- prototype fork (highlighted) -->
+          <g transform="translate(285,170)">
+            <rect class="pr-box-hl" x="0" y="0" width="160" height="60" rx="8"/>
+            <text x="80" y="14" class="pr-tag-hl">FORK</text>
+            <text x="80" y="32" class="pr-lbl">prototype</text>
+            <text x="80" y="50" class="pr-sub">LOGIC · UI</text>
+          </g>
+
+          <!-- fork arrows -->
+          <path class="pr-arrow-mut" d="M 100 140 Q 280 175 285 200" marker-end="url(#pr-arr-mut)"/>
+          <text x="180" y="180" class="pr-flow-tag">"这能跑起来看看吗？"</text>
+
+          <path class="pr-arrow-mut" d="M 445 200 Q 580 175 580 140" marker-end="url(#pr-arr-mut)"/>
+          <text x="500" y="180" class="pr-flow-tag">验证后 → to-tickets 拿决策</text>
+
+          <!-- handoff label -->
+          <text x="365" y="170" class="pr-flow-tag" font-style="italic">↔ /handoff 来回 ↔</text>
+        </svg>
+        <div class="diagram-caption">图 1 · prototype 作为 fork——主流程上任何"想跑一下看看"的地方都能塞进去</div>
+      </div>
+
+      <p><strong>Fork 在哪儿出现？</strong>主流程任何一步都可能 detour 进 prototype。最常见的：</p>
+      <ul>
+        <li><code>grill-with-docs</code> 聊到某决策——"这状态机能在纸上推理吗？/ 这 UI 长什么样？"→ fork 到 prototype</li>
+        <li>反过来 prototype 验证完 → 用 <code>/handoff</code> 把"判定 + 关键片段"带回主流程，再继续 <code>to-spec</code> / <code>to-tickets</code></li>
+      </ul>
+    </section>
+
+    <section id="branch">
+      <h2>branch 选择（错了就全白干）</h2>
+
+      <p>SKILL.md 自己说"the two branches produce very different artifacts, so getting this wrong wastes the whole prototype"。先问对问题：</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="prototype branch 选择决策树">
+          <defs>
+            <style>
+              .q-box { fill: #fff8eb; stroke: #c7501f; stroke-width: 1.8; }
+              .ans-box { fill: #e8f0f7; stroke: #2d5f8a; stroke-width: 2; }
+              .ans-ui { fill: #f0e8f7; stroke: #6b4d8a; stroke-width: 2; }
+              .q-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ans-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ans-sub { font: 11px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .branch-line { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+              .branch-lbl { font: 11px sans-serif; fill: #6b6b6b;
+                            text-anchor: middle; font-style: italic; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">branch 选择决策树</text>
+
+          <!-- Question -->
+          <g transform="translate(280,55)">
+            <rect class="q-box" x="0" y="0" width="320" height="60" rx="8"/>
+            <text x="160" y="22" class="q-lbl">要回答什么问题？</text>
+            <text x="160" y="42" class="q-lbl" font-style="italic">（看用户 prompt / 上下文）</text>
+          </g>
+
+          <!-- Q1: logic -->
+          <g transform="translate(60,160)">
+            <rect class="ans-box" x="0" y="0" width="220" height="80" rx="8"/>
+            <text x="110" y="24" class="ans-lbl">"逻辑 / 状态</text>
+            <text x="110" y="42" class="ans-lbl">感觉对吗？"</text>
+            <text x="110" y="62" class="ans-sub" font-weight="700" fill="#2d5f8a">→ LOGIC branch</text>
+            <text x="110" y="76" class="ans-sub">→ LOGIC.md</text>
+          </g>
+
+          <!-- Q2: UI -->
+          <g transform="translate(310,160)">
+            <rect class="ans-box" x="0" y="0" width="220" height="80" rx="8"/>
+            <text x="110" y="24" class="ans-lbl">"API / 数据形状</text>
+            <text x="110" y="42" class="ans-lbl">该怎么定？"</text>
+            <text x="110" y="62" class="ans-sub" font-weight="700" fill="#2d5f8a">→ LOGIC branch</text>
+            <text x="110" y="76" class="ans-sub">→ LOGIC.md</text>
+          </g>
+
+          <!-- Q3: UI -->
+          <g transform="translate(580,160)">
+            <rect class="ans-ui" x="0" y="0" width="220" height="80" rx="8"/>
+            <text x="110" y="24" class="ans-lbl">"这应该</text>
+            <text x="110" y="42" class="ans-lbl">长什么样？"</text>
+            <text x="110" y="62" class="ans-sub" font-weight="700" fill="#6b4d8a">→ UI branch</text>
+            <text x="110" y="76" class="ans-sub">→ UI.md</text>
+          </g>
+
+          <!-- branches -->
+          <path class="branch-line" d="M 380 115 Q 200 145 170 160" marker-end="url(#pr-arr)"/>
+          <text x="240" y="138" class="branch-lbl">状态机 / 数据 / 边界</text>
+
+          <path class="branch-line" d="M 440 115 Q 450 145 420 160" marker-end="url(#pr-arr)"/>
+          <text x="475" y="138" class="branch-lbl">纯逻辑，无 UI 倾向</text>
+
+          <path class="branch-line" d="M 500 115 Q 670 145 690 160" marker-end="url(#pr-arr)"/>
+          <text x="650" y="138" class="branch-lbl">页面 / 组件 / 布局</text>
+
+          <!-- fallback note -->
+          <text x="440" y="262" class="ans-sub" font-style="italic">
+            真模糊 + 用户不在 → 按上下文猜（后端 → LOGIC；页面 → UI），并在 prototype 顶部声明假设
+          </text>
+        </svg>
+        <div class="diagram-caption">图 2 · 三种典型问题对应不同 branch</div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>问题</th>
+            <th>走</th>
+            <th>产物</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>"逻辑 / 状态感觉对吗？"</td>
+            <td><span class="tag tag-logic">LOGIC</span></td>
+            <td>单个 shareable HTML · 状态机 + 按钮 + 引导 walkthrough</td>
+          </tr>
+          <tr>
+            <td>"API 应该长什么样？"</td>
+            <td><span class="tag tag-logic">LOGIC</span></td>
+            <td>同上（纯逻辑 + 按钮驱动）</td>
+          </tr>
+          <tr>
+            <td>"这应该长什么样？"</td>
+            <td><span class="tag tag-ui">UI</span></td>
+            <td>同路由下 N 个变体 · <code>?variant=</code> 切换 + 浮动 switcher</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="rules">
+      <h2>通用规则（两边都遵守）</h2>
+
+      <ol>
+        <li><strong>throwaway from day one, clearly marked</strong>——放在要用的模块旁边（context 清楚），命名一眼看出是 prototype；UI 路由按项目已有约定，不造新顶层结构</li>
+        <li><strong>trivial to run</strong>——UI prototype 一条命令（<code>pnpm <name></code>）；logic demo 一个 HTML 双击开</li>
+        <li><strong>no persistence by default</strong>——state 在内存。"持久化"如果正是要验证的事，才上 scratch DB / 文件，命名带 "PROTOTYPE, wipe me"</li>
+        <li><strong>skip the polish</strong>——不写测试、不写错误处理（除非不写就跑不起来）、不抽象</li>
+        <li><strong>surface the state</strong>——LOGIC 每个 action 后打印完整状态；UI 每次切 variant 渲染</li>
+        <li><strong>capture as primary source</strong>——验证过的决策吸进真实代码；prototype 本身 commit 到 <strong>throwaway branch（不在 main）</strong>，implementation issue 上留指针</li>
+      </ol>
+
+      <div class="callout">
+        <strong>第 6 条最重要：</strong>prototype 不扔。扔了就没法验证当时为什么这么决定；新人来也看不到当时的推理。Throwaway branch 是 prototype 的归宿。
+      </div>
+    </section>
+
+    <section id="source">
+      <h2>SKILL.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code>---
+name: prototype
+description: Build a throwaway prototype to answer a design question. Use when
+  the user wants to sanity-check whether a state model or logic feels right,
+  or explore what a UI should look like.
+---
+
+# Prototype
+
+A prototype is **throwaway code that answers a question**. The question
+decides the shape.
+
+## Pick a branch
+
+- "Does this logic / state model feel right?" → LOGIC.md
+- "What should this look like?" → UI.md
+
+[两 branch 产物完全不同，选错就全白干。模糊时按上下文猜，顶部声明假设]
+
+## Rules that apply to both
+
+1. Throwaway from day one, clearly marked
+2. Trivial to run
+3. No persistence by default
+4. Skip the polish
+5. Surface the state
+6. Capture as primary source — throwaway branch, primary source</code></pre>
+      </div>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 8px;">
+        SKILL.md 仅 27 行，是 dispatcher。真正的内容在 <code>LOGIC.md</code>（68 行）+ <code>UI.md</code>（113 行）。
+      </p>
+    </section>
+
+    <section id="logic">
+      <h2>LOGIC branch</h2>
+
+      <p><span class="tag tag-logic">LOGIC</span> 单个 self-contained HTML 文件，让任何人通过点击按钮驱动一个状态模型。<strong>给非开发者也用得上</strong>——所以标签用人话而不是代码。</p>
+
+      <h3>五步流程</h3>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 200" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="LOGIC branch 五步流程图">
+          <defs>
+            <marker id="pr2-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <marker id="pr2-arr-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#c7501f"/>
+            </marker>
+            <style>
+              .pr2-step { fill: #fff; stroke: #2d5f8a; stroke-width: 2; }
+              .pr2-step-hi { fill: #e8f0f7; stroke: #2d5f8a; stroke-width: 2.5; }
+              .pr2-num { font: 700 20px sans-serif; fill: #2d5f8a; }
+              .pr2-lbl { font: 700 13px sans-serif; fill: #1a1a1a; }
+              .pr2-sub { font: 10px sans-serif; fill: #6b6b6b; }
+              .pr2-flow { stroke: #2d5f8a; stroke-width: 1.6; fill: none; }
+              .pr2-back { stroke: #c7501f; stroke-width: 1.4; fill: none;
+                          stroke-dasharray: 4 3; }
+              .pr2-flow-lbl { font: 10px sans-serif; fill: #6b6b6b;
+                              text-anchor: middle; font-style: italic; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">LOGIC branch · 五步</text>
+
+          <g transform="translate(30,60)">
+            <rect class="pr2-step" x="0" y="0" width="160" height="100" rx="8"/>
+            <text x="14" y="26" class="pr2-num">1</text>
+            <text x="50" y="26" class="pr2-lbl">写明问题</text>
+            <text x="14" y="48" class="pr2-sub">顶部一段话</text>
+            <text x="14" y="64" class="pr2-sub">"这是验证 X</text>
+            <text x="14" y="78" class="pr2-sub">  在 Y 边界下的行为"</text>
+          </g>
+
+          <g transform="translate(220,60)">
+            <rect class="pr2-step-hi" x="0" y="0" width="160" height="100" rx="8"/>
+            <text x="14" y="26" class="pr2-num">2</text>
+            <text x="50" y="26" class="pr2-lbl">纯模块</text>
+            <text x="14" y="48" class="pr2-sub">reducer / 状态机 /</text>
+            <text x="14" y="62" class="pr2-sub">pure functions</text>
+            <text x="14" y="82" class="pr2-sub" font-weight="700" fill="#2d5f8a">no DOM / no document</text>
+          </g>
+
+          <g transform="translate(410,60)">
+            <rect class="pr2-step" x="0" y="0" width="160" height="100" rx="8"/>
+            <text x="14" y="26" class="pr2-num">3</text>
+            <text x="50" y="26" class="pr2-lbl">搭 HTML</text>
+            <text x="14" y="48" class="pr2-sub">title + state 面板</text>
+            <text x="14" y="62" class="pr2-sub">+ free-play buttons</text>
+            <text x="14" y="76" class="pr2-sub">+ walkthrough tabs</text>
+          </g>
+
+          <g transform="translate(600,60)">
+            <rect class="pr2-step" x="0" y="0" width="160" height="100" rx="8"/>
+            <text x="14" y="26" class="pr2-num">4</text>
+            <text x="50" y="26" class="pr2-lbl">交付</text>
+            <text x="14" y="48" class="pr2-sub">发文件 / 当面打开</text>
+            <text x="14" y="64" class="pr2-sub">听"wait 不应该"</text>
+            <text x="14" y="78" class="pr2-sub">  /"huh 我以为是 X"</text>
+          </g>
+
+          <g transform="translate(780,60)">
+            <rect class="pr2-step-hi" x="0" y="0" width="80" height="100" rx="8"/>
+            <text x="14" y="26" class="pr2-num">5</text>
+            <text x="42" y="26" class="pr2-lbl">capture</text>
+            <text x="10" y="48" class="pr2-sub" text-anchor="middle">模块 lift</text>
+            <text x="10" y="62" class="pr2-sub" text-anchor="middle">进真代码</text>
+            <text x="10" y="80" class="pr2-sub" text-anchor="middle">壳 →</text>
+            <text x="10" y="92" class="pr2-sub" text-anchor="middle">throwaway br</text>
+          </g>
+
+          <path class="pr2-flow" d="M 190 110 L 220 110" marker-end="url(#pr2-arr)"/>
+          <path class="pr2-flow" d="M 380 110 L 410 110" marker-end="url(#pr2-arr)"/>
+          <path class="pr2-flow" d="M 570 110 L 600 110" marker-end="url(#pr2-arr)"/>
+          <path class="pr2-flow" d="M 760 110 L 780 110" marker-end="url(#pr2-arr)"/>
+
+          <!-- 5 → 4 (迭代：用户可能要求新 actions / 新 scenarios) -->
+          <path class="pr2-back" d="M 820 80 Q 700 40 660 60" marker-end="url(#pr2-arr-back)"/>
+          <text x="730" y="50" class="pr2-flow-lbl">新 actions/scenarios</text>
+        </svg>
+        <div class="diagram-caption">图 3 · LOGIC 五步 · 第 4→5 步有迭代回路（用户可能提新场景）</div>
+      </div>
+
+      <h3>纯模块的四种形状</h3>
+      <table>
+        <thead>
+          <tr><th>形状</th><th>适合</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>纯 reducer</strong> <code>(state, action) => state</code></td><td>actions 是离散事件，state 是单值</td></tr>
+          <tr><td><strong>状态机</strong>（显式 states + transitions）</td><td>"哪些 actions 现在合法"是问题的一部分</td></tr>
+          <tr><td><strong>一组 pure functions</strong></td><td>没有隐含 current state，只是变换</td></tr>
+          <tr><td><strong>类 / 模块</strong>（带方法表面）</td><td>逻辑真有持续的内部状态</td></tr>
+        </tbody>
+      </table>
+
+      <h3>HTML 布局解剖</h3>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="LOGIC HTML 文件布局解剖图">
+          <defs>
+            <style>
+              .la-sec { stroke-width: 1.5; }
+              .la-title { fill: #fafaf7; stroke: #c8c4bc; }
+              .la-state { fill: #e8f0f7; stroke: #2d5f8a; }
+              .la-buttons { fill: #fff0e0; stroke: #c7501f; }
+              .la-walkthrough { fill: #f0e8f7; stroke: #6b4d8a; }
+              .la-lbl { font: 700 13px sans-serif; fill: #1a1a1a; }
+              .la-sub { font: 11px sans-serif; fill: #6b6b6b; font-style: italic; }
+              .la-num { font: 700 16px sans-serif; fill: #1a1a1a; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">LOGIC HTML 布局（自顶向下）</text>
+
+          <g transform="translate(20,45)">
+            <rect class="la-sec la-title" x="0" y="0" width="840" height="40" rx="6"/>
+            <text x="14" y="24" class="la-num">1</text>
+            <text x="40" y="20" class="la-lbl">标题 + 一句话说明</text>
+            <text x="40" y="34" class="la-sub">对应步骤 1 的问题</text>
+          </g>
+
+          <g transform="translate(20,95)">
+            <rect class="la-sec la-state" x="0" y="0" width="840" height="55" rx="6"/>
+            <text x="14" y="22" class="la-num">2</text>
+            <text x="40" y="18" class="la-lbl">Current state 面板</text>
+            <text x="40" y="34" class="la-sub">每字段有标签 · 不是裸 JSON</text>
+            <text x="40" y="48" class="la-sub">每次 action 后重渲染，可视化刚才变了什么</text>
+          </g>
+
+          <g transform="translate(20,160)">
+            <rect class="la-sec la-buttons" x="0" y="0" width="840" height="60" rx="6"/>
+            <text x="14" y="22" class="la-num">3</text>
+            <text x="40" y="18" class="la-lbl">Free-play buttons</text>
+            <text x="40" y="34" class="la-sub">一个 action 一个按钮 · 随时可点 · 按任何顺序</text>
+            <text x="40" y="48" class="la-sub">领域语言标签，不是 reducer 名</text>
+          </g>
+
+          <g transform="translate(20,230)">
+            <rect class="la-sec la-walkthrough" x="0" y="0" width="840" height="90" rx="6"/>
+            <text x="14" y="22" class="la-num">4</text>
+            <text x="40" y="18" class="la-lbl">Guided walkthroughs（一个 scenario 一个 tab）</text>
+            <text x="40" y="34" class="la-sub">场景描述 + 顺序按钮（每步真按钮，点就执行）</text>
+            <text x="40" y="50" class="la-sub">进入时 reset 到已知初始状态 → 每次跑一样</text>
+            <text x="40" y="66" class="la-sub">挑 awkward case：happy path / 棘手边界 / 非法尝试</text>
+          </g>
+
+          <text x="440" y="330" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">
+            整个文件：plain HTML/CSS/JS · 无框架 · 无 bundler · 双击开
+          </text>
+        </svg>
+        <div class="diagram-caption">图 4 · HTML 自顶向下四级层次</div>
+      </div>
+
+      <h3>Anti-patterns</h3>
+      <ul>
+        <li><strong>写测试</strong>——需要测试的不是 prototype</li>
+        <li><strong>接真 DB</strong>——持久化如果是问题本身才接 scratch</li>
+        <li><strong>"以后支持 X" 想太远</strong>——prototype 只答一个问题</li>
+        <li><strong>逻辑和页面混</strong>——模块一旦引用 DOM/document 就不 liftable</li>
+        <li><strong>用框架 / bundler / server</strong>——毁掉"shareable"</li>
+        <li><strong>HTML 壳发到生产</strong>——壳是给手点优化的；模块才是要保留的</li>
+      </ul>
+    </section>
+
+    <section id="ui">
+      <h2>UI branch</h2>
+
+      <p><span class="tag tag-ui">UI</span> 同一个路由下生成 N 个 <strong>结构不同</strong> 的变体，靠 URL search param 切换 + 浮动 switcher 切。</p>
+
+      <h3>关键原则</h3>
+
+      <div class="callout">
+        <strong>UI prototype 必须嵌进真实 app 来评。</strong>孤立路由是真空——每个变体单独看都还行。<strong>Sub-shape A（默认）> Sub-shape B（最后手段）</strong>。
+      </div>
+
+      <h3>Sub-shape A · 改现有页面（默认）</h3>
+
+      <p>路由已存在。变体渲染在同一个路由，按 <code>?variant=</code> URL param 切换。<strong>已有 data fetch / params / auth 全保留</strong>，只换 subtree。</p>
+      <p>新东西也尽量嵌进 host page（dashboard 新区域、settings 新卡片、流程里新一步）——也是 sub-shape A。</p>
+
+      <h3>Sub-shape B · 新建 throwaway 路由（最后手段）</h3>
+
+      <p>只有当真没地方嵌（全新顶层 surface / 流程无法内嵌）才用。按项目路由约定走，命名带 <code>prototype</code>。同样用 <code>?variant=</code> 模式。</p>
+
+      <h3>N = 3（默认），cap 5</h3>
+
+      <p>超过 5 个开始变成噪声，不是"radically different"。</p>
+
+      <h3>变体必须 <strong>结构</strong> 不同</h3>
+
+      <p>不同 layout / 不同信息层级 / 不同主交互——不是换颜色换文案。<strong>三个稍微微调的 card grid 不是 prototype，是 wallpaper</strong>。两个太像就重做一个，带"do not use a card grid"约束。</p>
+
+      <h3>三个变体 + switcher 接线示例</h3>
+
+      <div class="skill-source">
+<pre><code>// pseudo-code, adapt to the project's framework
+const variant = searchParams.get('variant') ?? 'A';
+return (
+  <>
+    {variant === 'A' && <VariantA {...data} />}
+    {variant === 'B' && <VariantB {...data} />}
+    {variant === 'C' && <VariantC {...data} />}
+    <PrototypeSwitcher variants={['A','B','C']} current={variant} />
+  </>
+);</code></pre>
+      </div>
+
+      <h3>浮动 switcher bar</h3>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="UI prototype 浮动 switcher bar 解剖图">
+          <defs>
+            <style>
+              .ui-page { fill: #fafaf7; stroke: #c8c4bc; stroke-width: 1; }
+              .ui-v { fill: #fff; stroke: #c8c4bc; stroke-width: 1; }
+              .ui-v-active { fill: #fff0e0; stroke: #c7501f; stroke-width: 2; }
+              .ui-lbl { font: 11px sans-serif; fill: #6b6b6b; text-anchor: middle;
+                        font-family: monospace; }
+              .ui-v-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ui-bar { fill: #1a1a1a; stroke: #1a1a1a; stroke-width: 1; }
+              .ui-bar-lbl { font: 700 13px sans-serif; fill: white;
+                            text-anchor: middle; font-family: monospace; }
+              .ui-bar-sub { font: 11px sans-serif; fill: #ccc; text-anchor: middle; }
+              .ui-arrow { font: 700 14px sans-serif; fill: white; text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#6b4d8a">UI prototype · 同一页面下的三个变体 + 浮动 switcher</text>
+
+          <!-- page background -->
+          <rect class="ui-page" x="40" y="50" width="800" height="180" rx="4"/>
+
+          <!-- three variants stacked horizontally as if same page, different style -->
+          <g transform="translate(80,80)">
+            <rect class="ui-v-active" x="0" y="0" width="220" height="130" rx="4"/>
+            <text x="110" y="14" class="ui-lbl">?variant=A</text>
+            <text x="110" y="36" class="ui-v-lbl">Variant A</text>
+            <text x="110" y="52" class="ui-lbl">"Top hero + 3 cards"</text>
+            <rect x="20" y="64" width="180" height="14" rx="2" fill="#f3f0ea"/>
+            <rect x="20" y="84" width="60" height="36" rx="2" fill="#f3f0ea"/>
+            <rect x="86" y="84" width="60" height="36" rx="2" fill="#f3f0ea"/>
+            <rect x="152" y="84" width="48" height="36" rx="2" fill="#f3f0ea"/>
+          </g>
+
+          <g transform="translate(330,80)">
+            <rect class="ui-v" x="0" y="0" width="220" height="130" rx="4"/>
+            <text x="110" y="14" class="ui-lbl">?variant=B</text>
+            <text x="110" y="36" class="ui-v-lbl">Variant B</text>
+            <text x="110" y="52" class="ui-lbl">"Sidebar layout"</text>
+            <rect x="20" y="64" width="50" height="50" rx="2" fill="#f3f0ea"/>
+            <rect x="80" y="64" width="120" height="50" rx="2" fill="#f3f0ea"/>
+          </g>
+
+          <g transform="translate(580,80)">
+            <rect class="ui-v" x="0" y="0" width="220" height="130" rx="4"/>
+            <text x="110" y="14" class="ui-lbl">?variant=C</text>
+            <text x="110" y="36" class="ui-v-lbl">Variant C</text>
+            <text x="110" y="52" class="ui-lbl">"Single column dense"</text>
+            <rect x="20" y="64" width="180" height="10" rx="2" fill="#f3f0ea"/>
+            <rect x="20" y="80" width="180" height="10" rx="2" fill="#f3f0ea"/>
+            <rect x="20" y="96" width="180" height="10" rx="2" fill="#f3f0ea"/>
+          </g>
+
+          <!-- floating switcher bar at bottom -->
+          <g transform="translate(280,240)">
+            <rect class="ui-bar" x="0" y="0" width="320" height="36" rx="18"/>
+            <text x="40" y="22" class="ui-arrow">←</text>
+            <text x="160" y="20" class="ui-bar-lbl">B (Sidebar layout)</text>
+            <text x="160" y="32" class="ui-bar-sub">keyboard: ← / →</text>
+            <text x="280" y="22" class="ui-arrow">→</text>
+          </g>
+
+          <!-- arrow from switcher to variants -->
+          <text x="440" y="232" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">↑ 浮动 · 不属于被评估的页面</text>
+
+          <!-- production gate note -->
+          <text x="820" y="278" font="10px sans-serif" fill="#6b6b6b"
+                text-anchor="end" font-style="italic">hidden in production (NODE_ENV check)</text>
+        </svg>
+        <div class="diagram-caption">图 5 · 三个变体在同一页面下通过 URL 切换，浮动 switcher bar 永远在底部</div>
+      </div>
+
+      <h3>Switcher bar 行为</h3>
+      <ul>
+        <li>点击 ← / → 切换（循环）</li>
+        <li>更新 URL search param（用框架 router：Next <code>router.replace</code>、React Router <code>navigate</code>）——可分享、可刷新</li>
+        <li>键盘 ← / → 也能切——<strong>input / textarea / contenteditable 聚焦时不拦截</strong></li>
+        <li>视觉明显（高对比 pill + 阴影），不与被评估的页面混淆</li>
+        <li><strong>生产构建隐藏</strong>（<code>process.env.NODE_ENV !== 'production'</code>）——防漏到线上</li>
+        <li>做成共享组件，两 sub-shape 复用</li>
+      </ul>
+
+      <h3>Anti-patterns</h3>
+      <ul>
+        <li><strong>变体只是颜色 / 文案不同</strong>——tweak，不是 prototype</li>
+        <li>共享太多 layout（每个变体应能自由扔掉布局）</li>
+        <li>接真 mutation——指向 stub，问的是"长什么样"，不是"后端行不行"</li>
+        <li><strong>prototype 直接升生产</strong>——prototype 代码在 prototype 约束下写的，要重写</li>
+      </ul>
+    </section>
+
+    <section id="capture">
+      <h2>capture 流程</h2>
+
+      <p>prototype 用完后，<strong>两件事要 capture</strong>：决策（折进真代码）+ prototype 本身（作为 primary source）。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="capture 流程图：决策进 main，prototype 进 throwaway branch">
+          <defs>
+            <style>
+              .ca-main { fill: #e6f3e0; stroke: #4a7d4a; stroke-width: 2; }
+              .ca-tw { fill: #fff0e0; stroke: #c7501f; stroke-width: 2; }
+              .ca-issue { fill: #e8f0f7; stroke: #2d5f8a; stroke-width: 2; }
+              .ca-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ca-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .ca-arrow { stroke: #2d5f8a; stroke-width: 1.6; fill: none; }
+              .ca-arrow-tw { stroke: #c7501f; stroke-width: 1.4; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">capture：决策 + prototype 各归各位</text>
+
+          <!-- prototype (source) -->
+          <g transform="translate(40,60)">
+            <rect fill="#fafaf7" stroke="#c8c4bc" stroke-width="1" x="0" y="0" width="140" height="80" rx="6"/>
+            <text x="70" y="22" class="ca-lbl">prototype</text>
+            <text x="70" y="40" class="ca-sub">LOGIC 模块 / UI 变体</text>
+          </g>
+
+          <!-- validated decision (lift) -->
+          <g transform="translate(280,100)">
+            <rect class="ca-main" x="0" y="0" width="180" height="80" rx="6"/>
+            <text x="90" y="22" class="ca-lbl">main branch</text>
+            <text x="90" y="40" class="ca-sub" font-style="italic">只留验证过的决策</text>
+            <text x="90" y="58" class="ca-sub">LOGIC: 模块 lift 进真代码</text>
+            <text x="90" y="72" class="ca-sub">UI: winner 折进现有页</text>
+          </g>
+
+          <!-- throwaway branch -->
+          <g transform="translate(280,200)">
+            <rect class="ca-tw" x="0" y="0" width="180" height="50" rx="6"/>
+            <text x="90" y="22" class="ca-lbl">throwaway branch</text>
+            <text x="90" y="38" class="ca-sub">primary source · prototype 整体</text>
+          </g>
+
+          <!-- implementation issue -->
+          <g transform="translate(560,150)">
+            <rect class="ca-issue" x="0" y="0" width="260" height="60" rx="6"/>
+            <text x="130" y="22" class="ca-lbl">implementation issue</text>
+            <text x="130" y="40" class="ca-sub">commit "verdict: ..."</text>
+            <text x="130" y="54" class="ca-sub">+ 指针指向 throwaway branch</text>
+          </g>
+
+          <!-- arrows -->
+          <path class="ca-arrow" d="M 180 90 Q 230 130 280 130" marker-end="url(#pr-arr)"/>
+          <text x="220" y="105" class="ca-sub" font-style="italic">决策 lift</text>
+
+          <path class="ca-arrow-tw" d="M 180 110 Q 230 220 280 220" marker-end="url(#pr-arr-mut)"/>
+          <text x="220" y="200" class="ca-sub" font-style="italic">整体保留</text>
+
+          <path class="ca-arrow-tw" d="M 460 220 Q 540 220 560 200" marker-end="url(#pr-arr-mut)"/>
+          <text x="500" y="216" class="ca-sub" font-style="italic">指针</text>
+
+          <path class="ca-arrow" d="M 460 130 Q 540 170 560 170" marker-end="url(#pr-arr)"/>
+          <text x="500" y="146" class="ca-sub" font-style="italic">verdict</text>
+        </svg>
+        <div class="diagram-caption">图 6 · 决策进 main，prototype 整体进 throwaway branch，issue 留 verdict + 指针</div>
+      </div>
+
+      <h3>两条 branch 的 capture 差异</h3>
+
+      <h4>LOGIC branch</h4>
+      <ul>
+        <li><strong>真模块</strong>（reducer / 状态机 / pure functions）lift 进真实模块——这是 <strong>决策</strong></li>
+        <li>HTML 壳（page、按钮、walkthroughs）跟 prototype 一起进 throwaway branch</li>
+      </ul>
+
+      <h4>UI branch</h4>
+
+      <table>
+        <thead>
+          <tr><th>Sub-shape</th><th>决策（main）</th><th>throwaway branch</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>A · 现有页面</strong></td>
+            <td>winner 折进现有页面</td>
+            <td>loser + switcher + 全部变体</td>
+          </tr>
+          <tr>
+            <td><strong>B · 新路由</strong></td>
+            <td>winner 升为真路由</td>
+            <td>throwaway 路由 + switcher + 全部变体</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-warn">
+        <strong>Switcher 在 main 里会腐烂。</strong>变体组件 + switcher 留在 main 里会让下一个 reader 困惑（"这是要发的吗？"）——所以通通扔到 throwaway branch。
+      </div>
+    </section>
+
+    <section id="when">
+      <h2>何时用 / 不用</h2>
+
+      <h3>用 prototype</h3>
+      <ul>
+        <li>状态机 / 数据模型在纸上答不出来——"X 之后 Y 的边界情况对吗？"</li>
+        <li>UI 想看 3+ 个 radical options 才能挑</li>
+        <li>不想花一天在脑里挑三个模糊的 mockup</li>
+        <li>需要非开发者（PM、设计师、领域专家）按按钮体验</li>
+      </ul>
+
+      <h3>用 LOGIC 而不是 UI</h3>
+      <ul>
+        <li>问题是逻辑 / 状态 / 数据形状 / API 形状</li>
+        <li>答是 / 否 的事，不需要视觉对比</li>
+      </ul>
+
+      <h3>用 UI 而不是 LOGIC</h3>
+      <ul>
+        <li>问题是"长什么样"</li>
+        <li>要在多个 radical 选项里挑 / 拼</li>
+      </ul>
+
+      <h3>用 grill-with-docs 而不是 prototype</h3>
+      <ul>
+        <li>问题是定义模糊、概念层面的（"我们到底要做什么"）——对话能搞定</li>
+        <li>不需要看代码跑起来</li>
+      </ul>
+
+      <h3>用 to-spec 而不是 prototype</h3>
+      <ul>
+        <li>想法已经清楚，不需要验证形状</li>
+        <li>常规路径：spec → tickets → implement</li>
+      </ul>
+
+      <h3>不要用 prototype</h3>
+      <ul>
+        <li>答案在对话里已经清楚——直接 spec</li>
+        <li>只是修 bug——<code>/triage</code> → <code>/diagnosing-bugs</code></li>
+        <li>已经在动手写代码了——prototype 应该先于代码</li>
+        <li>能直接进 <code>grill-with-docs</code> 解决的——对话便宜很多</li>
+      </ul>
+    </section>
+
+    <section id="reference">
+      <h2>参考</h2>
+      <ul>
+        <li>Skill 源文件：<code>~/.agents/skills/prototype/SKILL.md</code>（27 行）</li>
+        <li>LOGIC 详细：<code>~/.agents/skills/prototype/LOGIC.md</code>（68 行）</li>
+        <li>UI 详细：<code>~/.agents/skills/prototype/UI.md</code>（113 行）</li>
+        <li>主流程上下文：<a href="to-spec.html">to-spec</a> / <a href="to-tickets.html">to-tickets</a></li>
+        <li>brought back via：<code>/handoff</code>（把 prototype 的判定带回主流程）</li>
+      </ul>
+    </section>
+
+    <footer>
+      Generated for <code>prototype</code> · 27 + 68 + 113 行 · LOGIC + UI 两个 branch · throwaway + capture · 单文件自包含
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // ============ 顶部：文档目录下拉 ============
+  (function () {
+    const trigger = document.querySelector('.doc-trigger');
+    const panel = document.getElementById('doc-panel');
+    if (!trigger || !panel) return;
+    function close() { panel.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+    function open() { panel.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.contains('open') ? close() : open();
+    });
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && !trigger.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => close()));
+  })();
+
+  // ============ 侧栏：滚动联动高亮 ============
+  (function () {
+    const links = document.querySelectorAll('.sidebar a[href^="#"]');
+    const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')))
+                              .filter(Boolean);
+    if (!sections.length) return;
+    const map = new Map();
+    links.forEach((a, i) => map.set(sections[i].id, a));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => obs.observe(s));
+  })();
+</script>
+
+</body>
+</html>

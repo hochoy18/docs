@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>grill-me · Skill 文档</title>
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #d8d4cc;
+      --accent: #2d5f8a;
+      --accent-soft: #e8f0f7;
+      --highlight: #c7501f;
+      --code-bg: #f3f0ea;
+      --code-fg: #2b2b2b;
+      --topnav-bg: rgba(250, 250, 247, 0.85);
+      --topnav-fg: #e8e8e6;
+      --topnav-muted: #8a8d96;
+      --topnav-border: #2a2d35;
+      --sidebar-bg: #f3f0ea;
+      --success: #4a7d4a;
+      --diff-add: #e6f3e0;
+      --diff-del: #fce8e0;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    /* ============ Top nav ============ */
+    .topnav { position: sticky; top: 0; z-index: 100;
+              background: var(--topnav-bg);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border-bottom: 1px solid var(--border); }
+    .topnav-inner { max-width: 1400px; margin: 0 auto;
+                    display: flex; align-items: center;
+                    height: 54px; padding: 0 28px; gap: 20px; }
+    .brand { font-weight: 600; font-size: 14px; color: var(--fg);
+             text-decoration: none; letter-spacing: 0.005em; white-space: nowrap; }
+    .brand .dot { display: inline-block; width: 6px; height: 6px;
+                  background: var(--accent); border-radius: 50%;
+                  margin-right: 8px; vertical-align: middle; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px;
+                  font-size: 13px; color: var(--muted);
+                  flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+    .breadcrumb .sep { color: #c8c4bc; }
+    .breadcrumb .node { font-family: "SF Mono", "Menlo", monospace; font-size: 12.5px; }
+    .breadcrumb .current { color: var(--fg); font-weight: 500; }
+    .doc-trigger { display: flex; align-items: center; gap: 8px;
+                   padding: 6px 12px 6px 14px; background: #fff;
+                   border: 1px solid var(--border); border-radius: 6px;
+                   font: inherit; font-size: 13px; color: var(--fg);
+                   cursor: pointer; transition: all 0.15s; font-family: inherit;
+                   white-space: nowrap; }
+    .doc-trigger:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-trigger .count { background: var(--accent-soft); color: var(--accent);
+                          font-size: 11px; font-weight: 600;
+                          padding: 1px 7px; border-radius: 9px;
+                          font-family: "SF Mono", monospace; }
+    .doc-trigger .chev { width: 12px; height: 12px; transition: transform 0.18s; opacity: 0.6; }
+    .doc-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); opacity: 1; }
+    .doc-panel { position: absolute; top: calc(100% + 6px); right: 28px;
+                 background: #fff; border: 1px solid var(--border); border-radius: 8px;
+                 padding: 6px; max-height: 80vh; overflow-y: auto;
+                 box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+                 min-width: 380px; display: none; }
+    .doc-panel.open { display: block; }
+    .doc-group { padding: 6px 4px; }
+    .doc-group + .doc-group { border-top: 1px solid var(--border);
+                              margin-top: 4px; padding-top: 10px; }
+    .doc-group-title { font-size: 10.5px; text-transform: uppercase;
+                       letter-spacing: 0.08em; color: var(--muted);
+                       font-weight: 700; margin-bottom: 6px; padding: 0 8px; }
+    .doc-link { display: flex; align-items: center; justify-content: space-between;
+                padding: 6px 10px; color: var(--fg); text-decoration: none;
+                font-size: 13px; border-radius: 4px;
+                font-family: "SF Mono", "Menlo", monospace; }
+    .doc-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-link.active { background: var(--accent); color: white; font-weight: 600; }
+    .doc-link.planned { color: #a8a49c; }
+    .doc-link.planned:hover { background: #f3f0ea; color: var(--fg); }
+    .doc-link .tag-mini { font-family: -apple-system, sans-serif; font-size: 10px;
+                          padding: 1px 6px; border-radius: 3px; font-weight: 500;
+                          background: rgba(255,255,255,0.25); }
+    .doc-link.planned .tag-mini { background: var(--code-bg); color: var(--muted); }
+    .doc-link.active .tag-mini { background: rgba(255,255,255,0.22); color: white; }
+
+    /* ============ Layout ============ */
+    .layout { display: grid; grid-template-columns: 240px 1fr; max-width: 1400px; margin: 0 auto; }
+
+    /* ============ Sidebar ============ */
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border);
+               padding: 28px 18px 28px 28px; position: sticky; top: 54px;
+               align-self: start; max-height: calc(100vh - 54px); overflow-y: auto; }
+    .sidebar h3 { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+                  color: var(--muted); margin: 0 0 12px; font-weight: 700; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { margin: 0; }
+    .sidebar a { display: block; padding: 5px 10px; color: var(--fg);
+                 text-decoration: none; font-size: 13.5px; border-radius: 3px;
+                 border-left: 2px solid transparent; transition: all 0.1s; }
+    .sidebar a:hover { background: rgba(45, 95, 138, 0.08); color: var(--accent); }
+    .sidebar a.active { background: rgba(45, 95, 138, 0.13); color: var(--accent);
+                        font-weight: 600; border-left-color: var(--accent); }
+    .sidebar .meta { margin-top: 28px; padding-top: 18px;
+                     border-top: 1px solid var(--border);
+                     font-size: 12px; color: var(--muted); }
+    .sidebar .meta .row { margin-bottom: 10px; }
+    .sidebar .meta strong { display: block; font-size: 11px; color: var(--muted);
+                            font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.06em; margin-bottom: 4px; }
+    .sidebar .meta .val { color: var(--fg); font-weight: 500; }
+
+    /* ============ Content ============ */
+    .content { padding: 28px 48px 96px; min-width: 0; }
+    .content > header { border-bottom: 2px solid var(--fg); padding-bottom: 20px; margin-bottom: 36px; }
+    h1 { font-size: 30px; margin: 0 0 8px; font-weight: 600; letter-spacing: -0.01em; }
+    h2 { font-size: 22px; margin: 56px 0 16px; font-weight: 600;
+         border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { font-size: 16px; margin: 28px 0 10px; font-weight: 600; color: var(--accent); }
+    p, li { font-size: 15px; }
+    .lede { font-size: 17px; color: var(--muted); margin: 0; }
+    .tag { display: inline-block; font-size: 12px; padding: 2px 8px;
+           background: var(--accent-soft); color: var(--accent);
+           border-radius: 3px; margin-right: 6px; font-weight: 500; }
+
+    code { background: var(--code-bg); color: var(--code-fg); padding: 1px 6px;
+           border-radius: 3px; font-family: "SF Mono", "Menlo", "Consolas", monospace;
+           font-size: 13.5px; }
+    pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px;
+          overflow-x: auto; font-size: 13px; line-height: 1.55; }
+    pre code { background: none; padding: 0; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 4px 0; }
+
+    .diagram { background: #fff; border: 1px solid var(--border);
+               border-radius: 6px; padding: 20px; margin: 24px 0; overflow-x: auto; }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram-caption { font-size: 13px; color: var(--muted);
+                       margin-top: 12px; text-align: center; font-style: italic; }
+
+    .skill-source { background: #fff; border: 1px solid var(--border);
+                    border-radius: 6px; padding: 20px 24px; margin: 24px 0;
+                    position: relative; }
+    .skill-source::before { content: "SKILL.md 全文"; position: absolute;
+                            top: -10px; left: 16px; background: #fff;
+                            padding: 0 8px; font-size: 11px;
+                            color: var(--muted); font-weight: 600;
+                            text-transform: uppercase; letter-spacing: 0.06em; }
+    .skill-source pre { margin: 0; }
+
+    .diff-box { background: #fff; border: 1px solid var(--border);
+                border-radius: 6px; padding: 0; margin: 24px 0; overflow: hidden; }
+    .diff-box table { margin: 0; font-family: "SF Mono", monospace; font-size: 12.5px; }
+    .diff-box th { background: #f9f7f1; color: var(--muted); font-size: 11px;
+                   text-transform: uppercase; letter-spacing: 0.06em; }
+    .diff-box td { padding: 4px 10px; border-bottom: 1px solid #efece5; }
+    .diff-add { background: var(--diff-add); color: #2d5a2d; }
+    .diff-del { background: var(--diff-del); color: #8a3a1a; text-decoration: line-through; opacity: 0.7; }
+    .diff-arrow { color: var(--muted); text-align: center; width: 30px; }
+    .diff-num { color: var(--muted); text-align: right; width: 28px; user-select: none; }
+
+    footer { margin-top: 80px; padding-top: 16px; border-top: 1px solid var(--border);
+             font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; border-right: none;
+                 border-bottom: 1px solid var(--border); }
+      .content { padding: 24px 24px 64px; }
+      .breadcrumb { display: none; }
+      .doc-panel { right: 16px; min-width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============ Top Nav ============ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span>SDD / Matt Pocock Skills</a>
+
+    <div class="breadcrumb">
+      <span class="node">Grilling</span>
+      <span class="sep">›</span>
+      <span class="node current">grill-me</span>
+    </div>
+
+    <button class="doc-trigger" aria-expanded="false" aria-controls="doc-panel">
+      <span>All skill docs</span>
+      <span class="count">19</span>
+      <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 4.5 L6 7.5 L9 4.5"/>
+      </svg>
+    </button>
+
+    <div class="doc-panel" id="doc-panel" role="menu">
+
+      <div class="doc-group">
+        <div class="doc-group-title">Precondition · 1</div>
+        <a href="setup-matt-pocock-skills.html" class="doc-link">setup-matt-pocock-skills</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Grilling · 4</div>
+        <a href="grill-with-docs.html" class="doc-link">grill-with-docs</a>
+        <a href="grill-me.html" class="doc-link active">grill-me <span class="tag-mini">you are here</span></a>
+        <a href="grilling.html" class="doc-link">grilling</a>
+        <a href="domain-modeling.html" class="doc-link">domain-modeling</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Main flow · 7</div>
+        <a href="to-spec.html" class="doc-link">to-spec</a>
+        <a href="to-tickets.html" class="doc-link">to-tickets</a>
+        <a href="implement.html" class="doc-link planned">implement <span class="tag-mini">planned</span></a>
+        <a href="code-review.html" class="doc-link planned">code-review <span class="tag-mini">planned</span></a>
+        <a href="tdd.html" class="doc-link">tdd</a>
+        <a href="prototype.html" class="doc-link">prototype</a>
+        <a href="handoff.html" class="doc-link planned">handoff <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">On-ramps · 4</div>
+        <a href="triage.html" class="doc-link planned">triage <span class="tag-mini">planned</span></a>
+        <a href="diagnosing-bugs.html" class="doc-link planned">diagnosing-bugs <span class="tag-mini">planned</span></a>
+        <a href="wayfinder.html" class="doc-link planned">wayfinder <span class="tag-mini">planned</span></a>
+        <a href="research.html" class="doc-link planned">research <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Codebase · 2</div>
+        <a href="improve-codebase-architecture.html" class="doc-link">improve-codebase-architecture</a>
+        <a href="codebase-design.html" class="doc-link">codebase-design</a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ============ Layout ============ -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>本页目录</h3>
+    <ul>
+      <li><a href="#purpose">用途</a></li>
+      <li><a href="#source">SKILL.md 全文</a></li>
+      <li><a href="#diff">与 grill-with-docs 的差异</a></li>
+      <li><a href="#family">Grilling 家族</a></li>
+      <li><a href="#when">何时用 / 不用</a></li>
+      <li><a href="#reference">参考</a></li>
+    </ul>
+    <div class="meta">
+      <div class="row">
+        <strong>状态</strong>
+        <span class="val">✓ 已发布</span>
+      </div>
+      <div class="row">
+        <strong>位置</strong>
+        <span class="val">docs/SDD/matt-pocock/</span>
+      </div>
+      <div class="row">
+        <strong>对应 skill</strong>
+        <span class="val">~/.agents/skills/<br>grill-me/</span>
+      </div>
+      <div class="row">
+        <strong>SKILL.md</strong>
+        <span class="val">5 行</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <header>
+      <div><span class="tag">轻量 wrapper</span><span class="tag">5 行</span><span class="tag">不写文件</span></div>
+      <h1>grill-me</h1>
+      <p class="lede"><code>grill-with-docs</code> 的轻量版——只调 <code>grilling</code>，不写任何文件。</p>
+    </header>
+
+    <section id="purpose">
+      <h2>用途</h2>
+      <p>
+        当你不在仓库里、或者只是想聊个设计，不希望产生任何 <code>CONTEXT.md</code> / <code>ADR</code> 文件变更——
+        用 <code>/grill-me</code> 启动一次纯净的采访。
+      </p>
+      <p>
+        它做的事：<strong>调一次 <code>grilling</code> skill</strong>。
+        它不调 <code>domain-modeling</code>——所以不会写文件。
+      </p>
+    </section>
+
+    <section id="source">
+      <h2>SKILL.md 全文</h2>
+
+      <p>5 行（4 行 frontmatter + 1 行调用指令）：</p>
+
+      <div class="skill-source">
+<pre><code>---
+name: grill-me
+description: A relentless interview to sharpen a plan or design.
+disable-model-invocation: true
+---
+
+Call the Skill tool with "grilling".</code></pre>
+      </div>
+    </section>
+
+    <section id="diff">
+      <h2>与 grill-with-docs 的差异</h2>
+
+      <p>两者几乎一字不差——只有两处删减：</p>
+
+      <div class="diff-box">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:30px">#</th>
+              <th>grill-with-docs</th>
+              <th style="width:30px"></th>
+              <th>grill-me</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="diff-num">3</td>
+              <td class="diff-del">description: A relentless interview to sharpen a plan or design,</td>
+              <td class="diff-arrow">→</td>
+              <td class="diff-add">description: A relentless interview to sharpen a plan or design.</td>
+            </tr>
+            <tr>
+              <td class="diff-num">4</td>
+              <td class="diff-del">&nbsp;&nbsp;which also creates docs (ADR's and glossary) as we go.</td>
+              <td class="diff-arrow"></td>
+              <td class="diff-add" style="background:transparent; text-decoration:none; opacity:0.3;">&nbsp;</td>
+            </tr>
+            <tr>
+              <td class="diff-num">7</td>
+              <td class="diff-del">Call the Skill tool twice, for "grilling" and "domain-modeling".</td>
+              <td class="diff-arrow">→</td>
+              <td class="diff-add">Call the Skill tool with "grilling".</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>语义对比</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th><code>grill-with-docs</code></th>
+            <th><code>grill-me</code></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>调几次 Skill</strong></td>
+            <td>2 次（<code>grilling</code> + <code>domain-modeling</code>）</td>
+            <td>1 次（只 <code>grilling</code>）</td>
+          </tr>
+          <tr>
+            <td><strong>写文件？</strong></td>
+            <td>✅ 写 <code>CONTEXT.md</code> / <code>docs/adr/</code></td>
+            <td>❌ 不写任何文件</td>
+          </tr>
+          <tr>
+            <td><strong>需要上下文？</strong></td>
+            <td>需要仓库（落档需要路径）</td>
+            <td>不需要（无副作用）</td>
+          </tr>
+          <tr>
+            <td><strong>对仓库的修改</strong></td>
+            <td>会创建/修改 <code>CONTEXT.md</code>、<code>docs/adr/*.md</code></td>
+            <td>零修改</td>
+          </tr>
+          <tr>
+            <td><strong><code>disable-model-invocation</code></strong></td>
+            <td>true</td>
+            <td>true（同样独占）</td>
+          </tr>
+          <tr>
+            <td><strong>典型场景</strong></td>
+            <td>在 GitHub repo 里打磨设计</td>
+            <td>无目录、纯聊天、临时评审</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="family">
+      <h2>Grilling 家族</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Grilling 家族：grill-me / grill-with-docs / grilling 三者关系">
+          <defs>
+            <marker id="gm-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <marker id="gm-arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#c7501f"/>
+            </marker>
+            <style>
+              .gm-wrapper { fill: #fff8eb; stroke: #c7501f; stroke-width: 1.8; }
+              .gm-engine { fill: #e8f0f7; stroke: #2d5f8a; stroke-width: 2.2; }
+              .gm-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .gm-sub { font: 11px sans-serif; fill: #6b6b6b; text-anchor: middle; font-style: italic; }
+              .gm-tag { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .arrow { stroke: #2d5f8a; stroke-width: 1.4; fill: none; }
+              .arrow-write { stroke: #c7501f; stroke-width: 1.4; fill: none; stroke-dasharray: 4 3; }
+              .arrow-lbl { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; font-style: italic; }
+              .files-lbl { font: 10px sans-serif; fill: #6b6b6b; font-family: "SF Mono", monospace; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">Grilling 家族的三个角色</text>
+
+          <!-- engine: grilling (center bottom) -->
+          <g transform="translate(350,200)">
+            <rect class="gm-engine" x="0" y="0" width="180" height="60" rx="8"/>
+            <text x="90" y="22" class="gm-lbl">grilling</text>
+            <text x="90" y="40" class="gm-tag">采访引擎（24 行）</text>
+            <text x="90" y="54" class="gm-tag">设计树 + frontier + round</text>
+          </g>
+
+          <!-- wrapper 1: grill-me (top left) -->
+          <g transform="translate(60,60)">
+            <rect class="gm-wrapper" x="0" y="0" width="200" height="80" rx="8"/>
+            <text x="100" y="26" class="gm-lbl">grill-me</text>
+            <text x="100" y="44" class="gm-sub">5 行 wrapper</text>
+            <text x="100" y="62" class="gm-tag">disable-model-invocation</text>
+          </g>
+
+          <!-- wrapper 2: grill-with-docs (top right) -->
+          <g transform="translate(620,60)">
+            <rect class="gm-wrapper" x="0" y="0" width="200" height="80" rx="8"/>
+            <text x="100" y="26" class="gm-lbl">grill-with-docs</text>
+            <text x="100" y="44" class="gm-sub">6 行 wrapper</text>
+            <text x="100" y="62" class="gm-tag">disable-model-invocation</text>
+          </g>
+
+          <!-- arrows wrappers → engine -->
+          <path class="arrow" d="M 160 140 L 160 170 L 350 200" marker-end="url(#gm-arr)"/>
+          <text x="195" y="160" class="arrow-lbl">调用</text>
+
+          <path class="arrow" d="M 720 140 L 720 170 L 530 200" marker-end="url(#gm-arr)"/>
+          <text x="685" y="160" class="arrow-lbl">调用</text>
+
+          <!-- grill-with-docs also → domain-modeling (right) -->
+          <g transform="translate(720,200)">
+            <rect class="gm-engine" x="0" y="0" width="120" height="60" rx="8"/>
+            <text x="60" y="22" class="gm-lbl">domain-modeling</text>
+            <text x="60" y="40" class="gm-tag">落档纪律</text>
+            <text x="60" y="54" class="gm-tag">（75 行）</text>
+          </g>
+
+          <path class="arrow-write" d="M 720 140 Q 770 175 770 200" marker-end="url(#gm-arr2)"/>
+
+          <!-- files note -->
+          <text x="60" y="280" class="files-lbl">→ CONTEXT.md / docs/adr/</text>
+        </svg>
+        <div class="diagram-caption">图 1 · grill-me / grill-with-docs 都是 grill-ing 的轻 / 重 wrapper</div>
+      </div>
+    </section>
+
+    <section id="when">
+      <h2>何时用 / 不用</h2>
+
+      <h3>用 grill-me</h3>
+      <ul>
+        <li>无工作目录 / 在随便一个目录聊设计</li>
+        <li>临时评审一个想法，不希望污染 <code>CONTEXT.md</code></li>
+        <li>想测试 <code>grilling</code> 引擎本身</li>
+        <li>做设计讨论、不打算立刻 commit 任何东西</li>
+      </ul>
+
+      <h3>用 grill-with-docs</h3>
+      <ul>
+        <li>在 GitHub repo 里、要沉淀到 <code>CONTEXT.md</code></li>
+        <li>会触发不可逆决定、需要 ADR 留档</li>
+        <li>后续要把成果接上 <code>/to-spec</code> → <code>/to-tickets</code></li>
+      </ul>
+
+      <h3>两个都不要用</h3>
+      <ul>
+        <li>想自动化 issue 处理 / bug 修复 → 调 <code>/triage</code> / <code>/diagnosing-bugs</code></li>
+        <li>想直接跑 <code>grilling</code> 引擎本身 → 直接调 <code>grilling</code>，不走 wrapper</li>
+        <li>已经有足够设计、想直接开始实现 → 跳过 grilling，直接 <code>/to-spec</code></li>
+      </ul>
+    </section>
+
+    <section id="reference">
+      <h2>参考</h2>
+      <ul>
+        <li>Skill 源文件：<code>~/.agents/skills/grill-me/SKILL.md</code>（5 行）</li>
+        <li>兄弟 wrapper：<a href="grill-with-docs.html">grill-with-docs</a>（6 行）</li>
+        <li>引擎：<a href="grilling.html">grilling</a>（24 行）</li>
+        <li>落档纪律：<a href="domain-modeling.html">domain-modeling</a>（75 行）</li>
+      </ul>
+    </section>
+
+    <footer>
+      Generated for <code>grill-me</code> · 5 行 wrapper · 不写文件 · Grilling 家族的轻量版 · 单文件自包含
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // ============ 顶部：文档目录下拉 ============
+  (function () {
+    const trigger = document.querySelector('.doc-trigger');
+    const panel = document.getElementById('doc-panel');
+    if (!trigger || !panel) return;
+    function close() { panel.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+    function open() { panel.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.contains('open') ? close() : open();
+    });
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && !trigger.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => close()));
+  })();
+
+  // ============ 侧栏：滚动联动高亮 ============
+  (function () {
+    const links = document.querySelectorAll('.sidebar a[href^="#"]');
+    const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')))
+                              .filter(Boolean);
+    if (!sections.length) return;
+    const map = new Map();
+    links.forEach((a, i) => map.set(sections[i].id, a));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => obs.observe(s));
+  })();
+</script>
+
+</body>
+</html>

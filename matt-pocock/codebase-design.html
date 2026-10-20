@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>codebase-design · Skill 文档</title>
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #d8d4cc;
+      --accent: #2d5f8a;
+      --accent-soft: #e8f0f7;
+      --highlight: #c7501f;
+      --code-bg: #f3f0ea;
+      --code-fg: #2b2b2b;
+      --topnav-bg: rgba(250, 250, 247, 0.85);
+      --sidebar-bg: #f3f0ea;
+      --success: #4a7d4a;
+      --vocab-color: #6b4d8a;
+      --vocab-soft: #f0e8f7;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    /* ============ Top nav ============ */
+    .topnav { position: sticky; top: 0; z-index: 100;
+              background: var(--topnav-bg);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border-bottom: 1px solid var(--border); }
+    .topnav-inner { max-width: 1400px; margin: 0 auto;
+                    display: flex; align-items: center;
+                    height: 54px; padding: 0 28px; gap: 20px;
+                    position: relative; }
+    .brand { font-weight: 600; font-size: 14px; color: var(--fg);
+             text-decoration: none; letter-spacing: 0.005em; white-space: nowrap; }
+    .brand .dot { display: inline-block; width: 6px; height: 6px;
+                  background: var(--accent); border-radius: 50%;
+                  margin-right: 8px; vertical-align: middle; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px;
+                  font-size: 13px; color: var(--muted);
+                  flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+    .breadcrumb .sep { color: #c8c4bc; }
+    .breadcrumb .node { font-family: "SF Mono", "Menlo", monospace; font-size: 12.5px; }
+    .breadcrumb .current { color: var(--fg); font-weight: 500; }
+    .doc-trigger { display: flex; align-items: center; gap: 8px;
+                   padding: 6px 12px 6px 14px; background: #fff;
+                   border: 1px solid var(--border); border-radius: 6px;
+                   font: inherit; font-size: 13px; color: var(--fg);
+                   cursor: pointer; transition: all 0.15s; font-family: inherit;
+                   white-space: nowrap; }
+    .doc-trigger:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-trigger .count { background: var(--accent-soft); color: var(--accent);
+                          font-size: 11px; font-weight: 600;
+                          padding: 1px 7px; border-radius: 9px;
+                          font-family: "SF Mono", monospace; }
+    .doc-trigger .chev { width: 12px; height: 12px; transition: transform 0.18s; opacity: 0.6; }
+    .doc-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); opacity: 1; }
+    .doc-panel { position: absolute; top: calc(100% + 6px); right: 28px;
+                 background: #fff; border: 1px solid var(--border); border-radius: 8px;
+                 padding: 6px; max-height: 80vh; overflow-y: auto;
+                 box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+                 min-width: 380px; display: none; }
+    .doc-panel.open { display: block; }
+    .doc-group { padding: 6px 4px; }
+    .doc-group + .doc-group { border-top: 1px solid var(--border);
+                              margin-top: 4px; padding-top: 10px; }
+    .doc-group-title { font-size: 10.5px; text-transform: uppercase;
+                       letter-spacing: 0.08em; color: var(--muted);
+                       font-weight: 700; margin-bottom: 6px; padding: 0 8px; }
+    .doc-link { display: flex; align-items: center; justify-content: space-between;
+                padding: 6px 10px; color: var(--fg); text-decoration: none;
+                font-size: 13px; border-radius: 4px;
+                font-family: "SF Mono", "Menlo", monospace; }
+    .doc-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-link.active { background: var(--accent); color: white; font-weight: 600; }
+    .doc-link.planned { color: #a8a49c; }
+    .doc-link.planned:hover { background: #f3f0ea; color: var(--fg); }
+    .doc-link .tag-mini { font-family: -apple-system, sans-serif; font-size: 10px;
+                          padding: 1px 6px; border-radius: 3px; font-weight: 500;
+                          background: rgba(255,255,255,0.25); }
+    .doc-link.planned .tag-mini { background: var(--code-bg); color: var(--muted); }
+    .doc-link.active .tag-mini { background: rgba(255,255,255,0.22); color: white; }
+
+    /* ============ Layout ============ */
+    .layout { display: grid; grid-template-columns: 240px 1fr; max-width: 1400px; margin: 0 auto; }
+
+    /* ============ Sidebar ============ */
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border);
+               padding: 28px 18px 28px 28px; position: sticky; top: 54px;
+               align-self: start; max-height: calc(100vh - 54px); overflow-y: auto; }
+    .sidebar h3 { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+                  color: var(--muted); margin: 0 0 12px; font-weight: 700; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { margin: 0; }
+    .sidebar a { display: block; padding: 5px 10px; color: var(--fg);
+                 text-decoration: none; font-size: 13.5px; border-radius: 3px;
+                 border-left: 2px solid transparent; transition: all 0.1s; }
+    .sidebar a:hover { background: rgba(45, 95, 138, 0.08); color: var(--accent); }
+    .sidebar a.active { background: rgba(45, 95, 138, 0.13); color: var(--accent);
+                        font-weight: 600; border-left-color: var(--accent); }
+    .sidebar .meta { margin-top: 28px; padding-top: 18px;
+                     border-top: 1px solid var(--border);
+                     font-size: 12px; color: var(--muted); }
+    .sidebar .meta .row { margin-bottom: 10px; }
+    .sidebar .meta strong { display: block; font-size: 11px; color: var(--muted);
+                            font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.06em; margin-bottom: 4px; }
+    .sidebar .meta .val { color: var(--fg); font-weight: 500; }
+
+    /* ============ Content ============ */
+    .content { padding: 28px 48px 96px; min-width: 0; }
+    .content > header { border-bottom: 2px solid var(--fg); padding-bottom: 20px; margin-bottom: 36px; }
+    h1 { font-size: 30px; margin: 0 0 8px; font-weight: 600; letter-spacing: -0.01em; }
+    h2 { font-size: 22px; margin: 56px 0 16px; font-weight: 600;
+         border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { font-size: 16px; margin: 28px 0 10px; font-weight: 600; color: var(--accent); }
+    h4 { font-size: 14px; margin: 20px 0 8px; font-weight: 600; color: #2b2b2b; }
+    p, li { font-size: 15px; }
+    .lede { font-size: 17px; color: var(--muted); margin: 0; }
+    .tag { display: inline-block; font-size: 12px; padding: 2px 8px;
+           background: var(--accent-soft); color: var(--accent);
+           border-radius: 3px; margin-right: 6px; font-weight: 500; }
+    .tag-hl { background: #fff0e0; color: var(--highlight); }
+    .tag-vocab { background: var(--vocab-soft); color: var(--vocab-color); }
+
+    code { background: var(--code-bg); color: var(--code-fg); padding: 1px 6px;
+           border-radius: 3px; font-family: "SF Mono", "Menlo", "Consolas", monospace;
+           font-size: 13.5px; }
+    pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px;
+          overflow-x: auto; font-size: 13px; line-height: 1.55; }
+    pre code { background: none; padding: 0; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 4px 0; }
+
+    .diagram { background: #fff; border: 1px solid var(--border);
+               border-radius: 6px; padding: 20px; margin: 24px 0; overflow-x: auto; }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram-caption { font-size: 13px; color: var(--muted);
+                       margin-top: 12px; text-align: center; font-style: italic; }
+
+    .skill-source { background: #fff; border: 1px solid var(--border);
+                    border-radius: 6px; padding: 20px 24px; margin: 24px 0;
+                    position: relative; }
+    .skill-source::before { content: "SOURCE"; position: absolute;
+                            top: -10px; left: 16px; background: #fff;
+                            padding: 0 8px; font-size: 11px;
+                            color: var(--muted); font-weight: 600;
+                            text-transform: uppercase; letter-spacing: 0.06em; }
+    .skill-source pre { margin: 0; max-height: 460px; }
+    .skill-source + .skill-source { margin-top: 40px; }
+
+    .callout { padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--accent);
+               margin: 16px 0; background: var(--accent-soft); }
+    .callout-warn { border-left-color: var(--highlight); background: #fce8e0; }
+    .callout-vocab { border-left-color: var(--vocab-color); background: var(--vocab-soft); }
+
+    footer { margin-top: 80px; padding-top: 16px; border-top: 1px solid var(--border);
+             font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; border-right: none;
+                 border-bottom: 1px solid var(--border); }
+      .content { padding: 24px 24px 64px; }
+      .breadcrumb { display: none; }
+      .doc-panel { right: 16px; min-width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============ Top Nav ============ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span>SDD / Matt Pocock Skills</a>
+
+    <div class="breadcrumb">
+      <span class="node">Vocabulary layer</span>
+      <span class="sep">›</span>
+      <span class="node current">codebase-design</span>
+    </div>
+
+    <button class="doc-trigger" aria-expanded="false" aria-controls="doc-panel">
+      <span>All skill docs</span>
+      <span class="count">19</span>
+      <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 4.5 L6 7.5 L9 4.5"/>
+      </svg>
+    </button>
+
+    <div class="doc-panel" id="doc-panel" role="menu">
+
+      <div class="doc-group">
+        <div class="doc-group-title">Precondition · 1</div>
+        <a href="setup-matt-pocock-skills.html" class="doc-link">setup-matt-pocock-skills</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Grilling · 4</div>
+        <a href="grill-with-docs.html" class="doc-link">grill-with-docs</a>
+        <a href="grill-me.html" class="doc-link">grill-me</a>
+        <a href="grilling.html" class="doc-link">grilling</a>
+        <a href="domain-modeling.html" class="doc-link">domain-modeling</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Main flow · 7</div>
+        <a href="to-spec.html" class="doc-link">to-spec</a>
+        <a href="to-tickets.html" class="doc-link">to-tickets</a>
+        <a href="implement.html" class="doc-link planned">implement <span class="tag-mini">planned</span></a>
+        <a href="code-review.html" class="doc-link planned">code-review <span class="tag-mini">planned</span></a>
+        <a href="tdd.html" class="doc-link">tdd</a>
+        <a href="prototype.html" class="doc-link">prototype</a>
+        <a href="handoff.html" class="doc-link planned">handoff <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">On-ramps · 4</div>
+        <a href="triage.html" class="doc-link planned">triage <span class="tag-mini">planned</span></a>
+        <a href="diagnosing-bugs.html" class="doc-link planned">diagnosing-bugs <span class="tag-mini">planned</span></a>
+        <a href="wayfinder.html" class="doc-link planned">wayfinder <span class="tag-mini">planned</span></a>
+        <a href="research.html" class="doc-link planned">research <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Codebase · 2</div>
+        <a href="improve-codebase-architecture.html" class="doc-link">improve-codebase-architecture</a>
+        <a href="codebase-design.html" class="doc-link active">codebase-design <span class="tag-mini">you are here</span></a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ============ Layout ============ -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>本页目录</h3>
+    <ul>
+      <li><a href="#purpose">用途</a></li>
+      <li><a href="#flow-position">主流程位置</a></li>
+      <li><a href="#glossary">核心词汇</a></li>
+      <li><a href="#deep-vs-shallow">Deep vs Shallow</a></li>
+      <li><a href="#principles">四条原则</a></li>
+      <li><a href="#testability">可测性三招</a></li>
+      <li><a href="#deepening-source">DEEPENING.md 全文</a></li>
+      <li><a href="#deepening-key-ideas">DEEPENING 关键概念</a></li>
+      <li><a href="#dit-source">DESIGN-IT-TWICE.md 全文</a></li>
+      <li><a href="#dit-process">DESIGN-IT-TWICE 流程</a></li>
+      <li><a href="#when">何时用 / 不用</a></li>
+      <li><a href="#skill-source">SKILL.md 全文</a></li>
+      <li><a href="#reference">参考</a></li>
+    </ul>
+    <div class="meta">
+      <div class="row">
+        <strong>状态</strong>
+        <span class="val">✓ 已发布</span>
+      </div>
+      <div class="row">
+        <strong>位置</strong>
+        <span class="val">docs/SDD/matt-pocock/</span>
+      </div>
+      <div class="row">
+        <strong>对应 skill</strong>
+        <span class="val">~/.agents/skills/<br>codebase-design/</span>
+      </div>
+      <div class="row">
+        <strong>文件</strong>
+        <span class="val">SKILL.md 114 行<br>+ DEEPENING.md 38 行<br>+ DESIGN-IT-TWICE.md 45 行</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <header>
+      <div><span class="tag tag-vocab">Vocabulary layer</span><span class="tag">deep module</span><span class="tag tag-hl">seam-first</span></div>
+      <h1>codebase-design</h1>
+      <p class="lede"><strong>深模块词汇表</strong>——为"模块的形状"做设计的共享语言：module / interface / seam / adapter / depth，用严格的词讨论，别再说"组件 / API / boundary"。</p>
+    </header>
+
+    <section id="purpose">
+      <h2>用途</h2>
+      <p>
+        设计对话一旦用词松散就会陷入"这个组件调那个服务"的空转。<code>codebase-design</code> 提供一套<strong>词穷条款 + 必须遵守的原则</strong>，让"这个模块是好是坏"的争论变得可操作。
+      </p>
+
+      <p><strong>两件事它做</strong>：</p>
+      <ol>
+        <li><strong>词汇源</strong>——给所有其他 skill 用一致的语言讨论代码形状（deep module、seam、adapter、leverage、locality）</li>
+        <li><strong>操作手册</strong>——DEEPENING（怎么加深一个 shallow 模块族）+ DESIGN-IT-TWICE（怎么并行想多套接口）</li>
+      </ol>
+
+      <div class="callout callout-vocab">
+        <strong>Vocabulary underneath 层。</strong>不主动改代码——只决定我们用什么词和原则讨论代码。直接调用场景：用户在设计一个模块 / 在找 deepening 机会 / 在挑 seam 位置 / 想让代码更可测或 AI 更可导航时拉它。
+      </div>
+    </section>
+
+    <section id="flow-position">
+      <h2>主流程位置</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="codebase-design 在 ask-matt 里的位置：vocabulary underneath 层，被 tdd 和 improve-codebase-architecture 引用">
+          <defs>
+            <marker id="cd-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6b4d8a"/>
+            </marker>
+            <marker id="cd-arr-mut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <style>
+              .cd-vocab { fill: var(--vocab-soft); stroke: var(--vocab-color); stroke-width: 2; }
+              .cd-flow { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .cd-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .cd-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .cd-callout { font: 10px sans-serif; fill: var(--vocab-color);
+                            text-anchor: middle; font-style: italic; }
+              .cd-arrow-vocab { stroke: var(--vocab-color); stroke-width: 1.4; fill: none; }
+              .cd-arrow-flow { stroke: #c8c4bc; stroke-width: 1.4; fill: none; }
+              .cd-zone-lbl { font: 700 11px sans-serif; fill: var(--muted);
+                             text-transform: uppercase; letter-spacing: 0.1em; }
+            </style>
+          </defs>
+
+          <text x="460" y="22" font="700 14px sans-serif" fill="#2d5f8a"
+                text-anchor="middle">ask-matt 中的位置：vocabulary underneath 层</text>
+
+          <!-- main flow row (light, background) -->
+          <text x="40" y="60" class="cd-zone-lbl">Main flow (lives inside)</text>
+          <g transform="translate(40,72)">
+            <rect class="cd-flow" x="0" y="0" width="120" height="46" rx="6"/>
+            <text x="60" y="18" class="cd-lbl">grill-with-docs</text>
+            <text x="60" y="34" class="cd-sub">CONTEXT / ADR</text>
+          </g>
+          <g transform="translate(180,72)">
+            <rect class="cd-flow" x="0" y="0" width="120" height="46" rx="6"/>
+            <text x="60" y="18" class="cd-lbl">to-spec</text>
+            <text x="60" y="34" class="cd-sub">→ issue</text>
+          </g>
+          <g transform="translate(320,72)">
+            <rect class="cd-flow" x="0" y="0" width="120" height="46" rx="6"/>
+            <text x="60" y="18" class="cd-lbl">to-tickets</text>
+            <text x="60" y="34" class="cd-sub">→ DAG</text>
+          </g>
+          <g transform="translate(460,72)">
+            <rect class="cd-flow" x="0" y="0" width="120" height="46" rx="6"/>
+            <text x="60" y="18" class="cd-lbl">implement</text>
+            <text x="60" y="34" class="cd-sub">(runs /tdd)</text>
+          </g>
+          <g transform="translate(600,72)">
+            <rect class="cd-flow" x="0" y="0" width="120" height="46" rx="6"/>
+            <text x="60" y="18" class="cd-lbl">code-review</text>
+            <text x="60" y="34" class="cd-sub">2-axis</text>
+          </g>
+          <g transform="translate(740,72)">
+            <rect class="cd-flow" x="0" y="0" width="140" height="46" rx="6"/>
+            <text x="70" y="18" class="cd-lbl">ship</text>
+            <text x="70" y="34" class="cd-sub">merge → deploy</text>
+          </g>
+          <path class="cd-arrow-flow" d="M 160 95 L 180 95" marker-end="url(#cd-arr-mut)"/>
+          <path class="cd-arrow-flow" d="M 300 95 L 320 95" marker-end="url(#cd-arr-mut)"/>
+          <path class="cd-arrow-flow" d="M 440 95 L 460 95" marker-end="url(#cd-arr-mut)"/>
+          <path class="cd-arrow-flow" d="M 580 95 L 600 95" marker-end="url(#cd-arr-mut)"/>
+          <path class="cd-arrow-flow" d="M 720 95 L 740 95" marker-end="url(#cd-arr-mut)"/>
+
+          <!-- code health (below main flow) -->
+          <text x="40" y="148" class="cd-zone-lbl">Codebase health (off-flow, kept sharp)</text>
+          <g transform="translate(60,160)">
+            <rect class="cd-flow" x="0" y="0" width="200" height="46" rx="6"/>
+            <text x="100" y="18" class="cd-lbl">improve-codebase-architecture</text>
+            <text x="100" y="34" class="cd-sub">surfaces deepening candidates</text>
+          </g>
+          <g transform="translate(290,160)">
+            <rect class="cd-flow" x="0" y="0" width="200" height="46" rx="6"/>
+            <text x="100" y="18" class="cd-lbl">codebase-design</text>
+            <text x="100" y="34" class="cd-sub" font-style="italic" fill="#6b4d8a">bench for chosen candidate</text>
+          </g>
+          <path class="cd-arrow-flow" d="M 260 183 L 290 183" marker-end="url(#cd-arr-mut)"/>
+          <text x="275" y="178" class="cd-sub" font-style="italic">bench</text>
+
+          <!-- vocabulary layer (bottom) -->
+          <text x="40" y="240" class="cd-zone-lbl">Vocabulary underneath</text>
+          <g transform="translate(150,250)">
+            <rect class="cd-vocab" x="0" y="0" width="180" height="40" rx="6"/>
+            <text x="90" y="18" class="cd-lbl">domain-modeling</text>
+            <text x="90" y="32" class="cd-sub">domain language</text>
+          </g>
+          <g transform="translate(370,250)">
+            <rect class="cd-vocab" x="0" y="0" width="180" height="40" rx="6"/>
+            <text x="90" y="18" class="cd-lbl">codebase-design</text>
+            <text x="90" y="32" class="cd-sub">module vocabulary</text>
+          </g>
+          <g transform="translate(590,250)">
+            <rect class="cd-vocab" x="0" y="0" width="180" height="40" rx="6" opacity="0.7"/>
+            <text x="90" y="18" class="cd-lbl">writing-for-agents</text>
+            <text x="90" y="32" class="cd-sub">doc writing</text>
+          </g>
+
+          <!-- arrows up from vocab to consumers -->
+          <path class="cd-arrow-vocab" d="M 460 250 Q 380 220 460 205" marker-end="url(#cd-arr)"/>
+          <text x="420" y="232" class="cd-callout">tdd · /implement</text>
+          <path class="cd-arrow-vocab" d="M 520 250 Q 480 220 270 205" marker-end="url(#cd-arr)"/>
+          <text x="350" y="232" class="cd-callout">improve-codebase-architecture</text>
+          <path class="cd-arrow-vocab" d="M 580 250 Q 600 220 800 130" marker-end="url(#cd-arr)"/>
+          <text x="710" y="200" class="cd-callout">anywhere you design</text>
+        </svg>
+        <div class="diagram-caption">图 1 · codebase-design 不在主流程上；任何"设计/讨论模块形状"的时刻都被引用</div>
+      </div>
+
+      <p><strong>从主流程上观察</strong>：你在 <code>/tdd</code> 里写测试、在 <code>/implement</code> 里抽接口、在 <code>/improve-codebase-architecture</code> 里挑候选——三处都会读到 <code>codebase-design</code> 的词汇，但 vocabulary 层本身**不驱动流程**。</p>
+    </section>
+
+    <section id="glossary">
+      <h2>核心词汇</h2>
+
+      <p>SKILL.md 第 12 行明文：</p>
+      <div class="callout">
+        <strong>Use these terms exactly:</strong> don't substitute "component," "service," "API," or "boundary." Consistent language is the whole point.
+      </div>
+
+      <h3>词汇关系图</h3>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="core vocabulary relationships: module, interface, seam, adapter, depth, leverage, locality">
+          <defs>
+            <marker id="gl-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6b6b6b"/>
+            </marker>
+            <style>
+              .gl-node { fill: var(--vocab-soft); stroke: var(--vocab-color); stroke-width: 2; }
+              .gl-node-build { fill: #fff0e0; stroke: var(--highlight); stroke-width: 2; }
+              .gl-node-effect { fill: #e8f0f7; stroke: var(--accent); stroke-width: 2; }
+              .gl-edge { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+              .gl-edge-lbl { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle;
+                             font-style: italic; background: white; }
+              .gl-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .gl-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="20" font="700 13px sans-serif" fill="#6b4d8a">core vocabulary relationships</text>
+
+          <!-- center: Module -->
+          <g transform="translate(380,150)">
+            <rect class="gl-node" x="0" y="0" width="120" height="50" rx="8"/>
+            <text x="60" y="22" class="gl-lbl">Module</text>
+            <text x="60" y="38" class="gl-sub">one interface</text>
+          </g>
+
+          <!-- Interface (left) -->
+          <g transform="translate(80,80)">
+            <rect class="gl-node" x="0" y="0" width="140" height="50" rx="8"/>
+            <text x="70" y="22" class="gl-lbl">Interface</text>
+            <text x="70" y="38" class="gl-sub">type + invariants +</text>
+            <text x="70" y="50" class="gl-sub">ordering + errors</text>
+          </g>
+
+          <!-- Seam (right) -->
+          <g transform="translate(660,80)">
+            <rect class="gl-node" x="0" y="0" width="140" height="50" rx="8"/>
+            <text x="70" y="22" class="gl-lbl">Seam</text>
+            <text x="70" y="38" class="gl-sub">(Feathers)</text>
+            <text x="70" y="50" class="gl-sub">where interface lives</text>
+          </g>
+
+          <!-- Implementation (bottom-left) -->
+          <g transform="translate(80,260)">
+            <rect class="gl-node-build" x="0" y="0" width="140" height="50" rx="8"/>
+            <text x="70" y="22" class="gl-lbl">Implementation</text>
+            <text x="70" y="38" class="gl-sub">module's body</text>
+            <text x="70" y="50" class="gl-sub">(vs Adapter)</text>
+          </g>
+
+          <!-- Adapter (bottom-right) -->
+          <g transform="translate(660,260)">
+            <rect class="gl-node-build" x="0" y="0" width="140" height="50" rx="8"/>
+            <text x="70" y="22" class="gl-lbl">Adapter</text>
+            <text x="70" y="38" class="gl-sub">concrete at seam</text>
+            <text x="70" y="50" class="gl-sub">role, not substance</text>
+          </g>
+
+          <!-- Depth (top center) -->
+          <g transform="translate(380,30)">
+            <rect class="gl-node-effect" x="0" y="0" width="120" height="40" rx="8"/>
+            <text x="60" y="18" class="gl-lbl">Depth</text>
+            <text x="60" y="32" class="gl-sub">small iface, big body</text>
+          </g>
+
+          <!-- Leverage (left of depth, top-left) -->
+          <g transform="translate(120,30)">
+            <rect class="gl-node-effect" x="0" y="0" width="120" height="40" rx="8"/>
+            <text x="60" y="18" class="gl-lbl">Leverage</text>
+            <text x="60" y="32" class="gl-sub">callers' gain</text>
+          </g>
+
+          <!-- Locality (right of depth, top-right) -->
+          <g transform="translate(640,30)">
+            <rect class="gl-node-effect" x="0" y="0" width="120" height="40" rx="8"/>
+            <text x="60" y="18" class="gl-lbl">Locality</text>
+            <text x="60" y="32" class="gl-sub">maintainers' gain</text>
+          </g>
+
+          <!-- edges -->
+          <!-- Module ↔ Interface -->
+          <path class="gl-edge" d="M 220 105 L 380 165" marker-end="url(#gl-arr)"/>
+          <text x="290" y="125" class="gl-edge-lbl">has</text>
+
+          <!-- Module ↔ Implementation -->
+          <path class="gl-edge" d="M 220 285 L 380 185" marker-end="url(#gl-arr)"/>
+          <text x="290" y="265" class="gl-edge-lbl">contains</text>
+
+          <!-- Seam ↔ Adapter -->
+          <path class="gl-edge" d="M 660 105 L 660 285" marker-end="url(#gl-arr)"/>
+          <text x="710" y="200" class="gl-edge-lbl">sits at</text>
+
+          <!-- Interface ↔ Seam -->
+          <path class="gl-edge" d="M 220 95 L 660 95" marker-end="url(#gl-arr)"/>
+          <text x="440" y="85" class="gl-edge-lbl">lives at</text>
+
+          <!-- Depth → Module (property of) -->
+          <path class="gl-edge" d="M 440 70 L 440 150" marker-end="url(#gl-arr)"/>
+          <text x="480" y="115" class="gl-edge-lbl">property of</text>
+
+          <!-- Depth → Leverage -->
+          <path class="gl-edge" d="M 380 50 L 240 50" marker-end="url(#gl-arr)"/>
+          <text x="300" y="42" class="gl-edge-lbl">yields</text>
+
+          <!-- Depth → Locality -->
+          <path class="gl-edge" d="M 500 50 L 640 50" marker-end="url(#gl-arr)"/>
+          <text x="570" y="42" class="gl-edge-lbl">yields</text>
+
+          <text x="440" y="350" class="gl-sub" font-style="italic">
+            颜色: 紫=核心概念 / 橙=构建元素 / 蓝=结果效应
+          </text>
+        </svg>
+        <div class="diagram-caption">图 2 · Module / Interface / Seam / Adapter 是 4 个核心点；Depth 是 interface 的属性，Leverage + Locality 是 depth 给两边带来的好处</div>
+      </div>
+
+      <h3>词汇速查表</h3>
+      <table>
+        <thead>
+          <tr><th>词</th><th>一句话</th><th>该避的开</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Module</strong></td>
+            <td>有接口 + 实现的东西。函数、类、包、跨层切片都算</td>
+            <td>"component / service / unit"</td>
+          </tr>
+          <tr>
+            <td><strong>Interface</strong></td>
+            <td>调用方要知道的全部：签名 + 不变量 + 顺序 + 错误 + 配置 + 性能</td>
+            <td>"API / signature"（太窄）</td>
+          </tr>
+          <tr>
+            <td><strong>Implementation</strong></td>
+            <td>模块内部。注：adapter 反例≠它——同名东西可小 adapter / 大实现</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Depth</strong></td>
+            <td><strong>接口处的 leverage</strong>——每个单位接口驱动多少行为</td>
+            <td>"行数比例"（奖励灌水）</td>
+          </tr>
+          <tr>
+            <td><strong>Seam</strong></td>
+            <td>不去那个位置也能改行为的**位置**（Feathers）</td>
+            <td>"boundary"（撞 DDD Bounded Context）</td>
+          </tr>
+          <tr>
+            <td><strong>Adapter</strong></td>
+            <td>在 seam 处满足接口的东西。描述<strong>角色</strong>不是内容</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Leverage</strong></td>
+            <td>调用方从 depth 拿到的——一个实现，N 个 caller + M 个测试复用</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Locality</strong></td>
+            <td>维护者从 depth 拿到的——改动集中一处</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="deep-vs-shallow">
+      <h2>Deep vs Shallow</h2>
+
+      <p>核心判断：<strong>depth 是接口处的 leverage</strong>，不是行数比。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Deep vs Shallow 模块对比图">
+          <defs>
+            <style>
+              .ds-deep { fill: #e8f0f7; stroke: var(--accent); stroke-width: 2.5; }
+              .ds-deep-iface { fill: #c8def0; stroke: var(--accent); stroke-width: 2.5; }
+              .ds-shallow-iface { fill: #fce0d0; stroke: var(--highlight); stroke-width: 2.5; }
+              .ds-shallow { fill: #fff0e0; stroke: var(--highlight); stroke-width: 2.5; }
+              .ds-frame { fill: none; stroke: #6b6b6b; stroke-width: 1.4; }
+              .ds-arrows { stroke: #6b6b6b; stroke-width: 1.2; fill: none; }
+              .ds-bold { font: 700 14px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ds-sublbl { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .ds-vert { font: 11px sans-serif; fill: #2d5f8a; text-anchor: middle;
+                         font-style: italic; }
+              .ds-warn { font: 11px sans-serif; fill: #c7501f; text-anchor: middle;
+                         font-style: italic; font-weight: 600; }
+              .ds-method { font: 11px sans-serif; fill: #1a1a1a; text-anchor: middle;
+                           font-family: monospace; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">deep 模块 vs shallow 模块</text>
+
+          <!-- LEFT: DEEP -->
+          <g transform="translate(40,55)">
+            <text x="200" y="-5" class="ds-bold" fill="#2d5f8a">DEEP module ✓</text>
+
+            <!-- interface strip (small) -->
+            <rect class="ds-deep-iface" x="0" y="0" width="400" height="40" rx="6"/>
+            <text x="60" y="25" class="ds-method">createOrder</text>
+            <text x="160" y="25" class="ds-method">getStatus</text>
+            <text x="260" y="25" class="ds-method">addItem</text>
+            <text x="350" y="25" class="ds-method">checkout</text>
+
+            <text x="200" y="58" class="ds-sublbl">interface · 4 methods · small</text>
+
+            <!-- deep body -->
+            <rect class="ds-deep" x="0" y="78" width="400" height="220" rx="6"/>
+            <text x="200" y="98" class="ds-bold">deep implementation</text>
+            <!-- mock contents -->
+            <g opacity="0.5">
+              <rect x="20" y="110" width="360" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="126" width="280" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="142" width="340" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="158" width="220" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="174" width="320" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="190" width="260" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="206" width="340" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="222" width="300" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="238" width="240" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="254" width="280" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="270" width="320" height="10" rx="2" fill="#c8def0"/>
+              <rect x="20" y="286" width="260" height="10" rx="2" fill="#c8def0"/>
+            </g>
+            <text x="200" y="248" font="700 13px sans-serif" fill="#2d5f8a" text-anchor="middle">complex logic hidden</text>
+
+            <!-- leverage arrow -->
+            <text x="200" y="320" class="ds-vert">leverage ↑  ·  locality ↑</text>
+          </g>
+
+          <!-- RIGHT: SHALLOW -->
+          <g transform="translate(480,55)">
+            <text x="200" y="-5" class="ds-bold" fill="#c7501f">SHALLOW module ✗</text>
+
+            <!-- interface strip (large) -->
+            <rect class="ds-shallow-iface" x="0" y="0" width="400" height="80" rx="6"/>
+            <text x="60" y="20" class="ds-method">createOrder</text>
+            <text x="60" y="36" class="ds-method">addItem</text>
+            <text x="60" y="52" class="ds-method">removeItem</text>
+            <text x="60" y="68" class="ds-method">setQuantity</text>
+
+            <text x="200" y="20" class="ds-method">getStatus</text>
+            <text x="200" y="36" class="ds-method">getById</text>
+            <text x="200" y="52" class="ds-method">getByDate</text>
+            <text x="200" y="68" class="ds-method">list</text>
+
+            <text x="340" y="20" class="ds-method">checkout</text>
+            <text x="340" y="36" class="ds-method">applyCoupon</text>
+            <text x="340" y="52" class="ds-method">setAddress</text>
+            <text x="340" y="68" class="ds-method">cancel</text>
+
+            <text x="200" y="98" class="ds-sublbl">interface · 12 methods · large</text>
+
+            <!-- thin body -->
+            <rect class="ds-shallow" x="0" y="118" width="400" height="60" rx="6"/>
+            <text x="200" y="142" class="ds-bold">thin pass-through</text>
+            <text x="200" y="158" class="ds-sublbl">call X then Y then return</text>
+
+            <!-- shallow marker -->
+            <text x="200" y="200" class="ds-warn">just a pass-through ✗</text>
+          </g>
+
+          <!-- unifying arrow: leverage -->
+          <text x="440" y="350" class="ds-sublbl" font-style="italic">
+            depth 问的不是"实现多大"，而是"实现多大 ÷ 接口多大"
+          </text>
+        </svg>
+        <div class="diagram-caption">图 3 · 同一个领域：4 方法接口 + 复杂实现（深）vs 12 方法接口 + pass-through（浅）</div>
+      </div>
+
+      <h3>设计接口时的三问</h3>
+      <p>设计任何一个接口时反复问自己：</p>
+      <ol>
+        <li><strong>能少几个方法吗？</strong>——每个方法都是 contract 增量，能合并就合并</li>
+        <li><strong>能简化参数吗？</strong>——复合参数 / builder / 命令对象是不是更可读？</li>
+        <li><strong>能再多藏点复杂度在内部吗？</strong>——内部小零件组装好了，外部就不该看见</li>
+      </ol>
+    </section>
+
+    <section id="principles">
+      <h2>四条原则（SKILL.md 核心）</h2>
+
+      <h3>① Depth 是 <strong>接口</strong> 的属性</h3>
+      <p>深模块内部可以由小的、可 mock 的、可替换的部件组成——它们<strong>不是接口的一部分</strong>。</p>
+      <ul>
+        <li><strong>External seam</strong> — 在模块自己的接口上</li>
+        <li><strong>Internal seam</strong> — 模块<strong>自己实现内</strong>私有（给模块自己的测试用）</li>
+      </ul>
+      <p style="color: var(--highlight);"><strong>不要因为测试方便</strong>就把 internal seam 暴露到接口上。</p>
+
+      <h3>② The Deletion Test</h3>
+      <div class="diagram">
+        <svg viewBox="0 0 880 200" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="The Deletion Test 决策图">
+          <defs>
+            <style>
+              .del-q { fill: #fff8eb; stroke: #c7501f; stroke-width: 1.8; }
+              .del-good { fill: #e6f3e0; stroke: var(--success); stroke-width: 2; }
+              .del-bad { fill: #fce0d0; stroke: var(--highlight); stroke-width: 2; }
+              .del-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .del-sub { font: 11px sans-serif; fill: #6b6b6b; text-anchor: middle;
+                         font-style: italic; }
+              .del-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">the deletion test</text>
+
+          <g transform="translate(290,50)">
+            <rect class="del-q" x="0" y="0" width="300" height="50" rx="8"/>
+            <text x="150" y="22" class="del-lbl">删掉这个模块</text>
+            <text x="150" y="40" class="del-sub">复杂度去哪了？</text>
+          </g>
+
+          <g transform="translate(60,140)">
+            <rect class="del-good" x="0" y="0" width="240" height="50" rx="8"/>
+            <text x="120" y="20" class="del-lbl">复杂度重新出现在 N 处</text>
+            <text x="120" y="38" class="del-sub" font-weight="700" fill="#4a7d4a">✓ 模块 earning its keep</text>
+          </g>
+
+          <g transform="translate(580,140)">
+            <rect class="del-bad" x="0" y="0" width="240" height="50" rx="8"/>
+            <text x="120" y="20" class="del-lbl">复杂度直接消失</text>
+            <text x="120" y="38" class="del-sub" font-weight="700" fill="#c7501f">✗ 只是 pass-through</text>
+          </g>
+
+          <path class="del-arrow" d="M 380 100 Q 280 130 320 140" marker-end="url(#cd-arr-mut)"/>
+          <path class="del-arrow" d="M 500 100 Q 600 130 600 140" marker-end="url(#cd-arr-mut)"/>
+        </svg>
+        <div class="diagram-caption">图 4 · 删除测试——是判断 wrapper 该不该存在的硬标准</div>
+      </div>
+
+      <h3>③ Interface is the Test Surface</h3>
+      <p>调用方和测试<strong>过的是同一个 seam</strong>。</p>
+      <p>如果你想测<strong>接口之内</strong>的事——模块多半形状错了。</p>
+
+      <h3>④ One Adapter vs Two Adapters</h3>
+      <div class="callout">
+        <strong>1 adapter = 假 seam</strong>（纯间接层）。<br>
+        <strong>2 adapter = 真 seam</strong>（开 port）。<br>
+        不要引入 seam，除非真的有东西 across 它会变化。
+      </div>
+    </section>
+
+    <section id="testability">
+      <h2>可测性三招</h2>
+
+      <p>接口为可测性设计。这三招是 SKILL.md 的实际落地：</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>原则</th>
+            <th>难测的反例</th>
+            <th>可测的正例</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>Accept dependencies, don't create them</strong></td>
+            <td><code>function processOrder(order) { const gateway = new StripeGateway(); }</code></td>
+            <td><code>function processOrder(order, paymentGateway) {}</code></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>Return results, don't produce side effects</strong></td>
+            <td><code>applyDiscount(cart): void { cart.total -= d }</code></td>
+            <td><code>calculateDiscount(cart): Discount</code></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>Small surface area</strong></td>
+            <td>12 个方法，每个都靠 mock framework 续命</td>
+            <td>3-4 方法，无需 mock 也能驱</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>前两招的本质：让 caller 持<strong>决策权</strong>（要不要真 stripe、要不要真改 cart）；第三招让测试 setup 维持在小。</p>
+    </section>
+
+    <section id="deepening-source">
+      <h2>DEEPENING.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code># Deepening
+
+How to deepen a cluster of shallow modules safely, given its dependencies.
+Assumes the vocabulary in SKILL.md: module, interface, seam, adapter.
+
+## Dependency categories
+
+When assessing a candidate for deepening, classify its dependencies. The
+category determines how the deepened module is tested across its seam.
+
+### 1. In-process
+
+Pure computation, in-memory state, no I/O. Always deepenable: merge the
+modules and test through the new interface directly. No adapter needed.
+
+### 2. Local-substitutable
+
+Dependencies that have local test stand-ins (PGLite for Postgres,
+in-memory filesystem). Deepenable if the stand-in exists. The deepened
+module is tested with the stand-in running in the test suite. The seam
+is internal; no port at the module's external interface.
+
+### 3. Remote but owned (Ports &amp; Adapters)
+
+Your own services across a network boundary (microservices, internal
+APIs). Define a port (interface) at the seam. The deep module owns the
+logic; the transport is injected as an adapter. Tests use an in-memory
+adapter. Production uses an HTTP/gRPC/queue adapter.
+
+Recommendation shape: "Define a port at the seam, implement an HTTP
+adapter for production and an in-memory adapter for testing, so the
+logic sits in one deep module even though it's deployed across a
+network."
+
+### 4. True external (Mock)
+
+Third-party services (Stripe, Twilio, etc.) you don't control. The
+deepened module takes the external dependency as an injected port;
+tests provide a mock adapter.
+
+## Seam discipline
+
+- One adapter means a hypothetical seam. Two adapters means a real one.
+  Don't introduce a port unless at least two adapters are justified
+  (typically production + test). A single-adapter seam is just
+  indirection.
+- Internal seams vs external seams. A deep module can have internal
+  seams (private to its implementation, used by its own tests) as well
+  as the external seam at its interface. Don't expose internal seams
+  through the interface just because tests use them.
+
+## Testing strategy: replace, don't layer
+
+- Old unit tests on shallow modules become waste once tests at the
+  deepened module's interface exist; delete them.
+- Write new tests at the deepened module's interface. The interface is
+  the test surface.
+- Tests assert on observable outcomes through the interface, not
+  internal state.
+- Tests should survive internal refactors, since they describe
+  behaviour, not implementation. If a test has to change when the
+  implementation changes, it's testing past the interface.</code></pre>
+      </div>
+    </section>
+
+    <section id="deepening-key-ideas">
+      <h2>DEEPENING 关键概念</h2>
+
+      <h3>依赖四分类（决定怎么测）</h3>
+      <p>候选能不能被加深，看它的依赖落在哪一类——不同类有不同的 seam 做法。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="DEEPENING 依赖四分类 2x2 矩阵">
+          <defs>
+            <style>
+              .dc-cat-1 { fill: #e6f3e0; stroke: var(--success); stroke-width: 2; }
+              .dc-cat-2 { fill: #e8f0f7; stroke: var(--accent); stroke-width: 2; }
+              .dc-cat-3 { fill: #f0e8f7; stroke: var(--vocab-color); stroke-width: 2; }
+              .dc-cat-4 { fill: #fce8e0; stroke: var(--highlight); stroke-width: 2; }
+              .dc-num { font: 700 28px sans-serif; }
+              .dc-lbl { font: 700 13px sans-serif; fill: #1a1a1a; }
+              .dc-sub { font: 10px sans-serif; fill: #6b6b6b; }
+              .dc-ex { font: 11px sans-serif; fill: #6b6b6b; }
+              .dc-axis { stroke: #6b6b6b; stroke-width: 1.4; }
+              .dc-axis-lbl { font: 11px sans-serif; fill: #6b6b6b; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">dependency categories · 决定 seam 怎么做</text>
+
+          <!-- axes -->
+          <line class="dc-axis" x1="100" y1="320" x2="800" y2="320"/>
+          <line class="dc-axis" x1="100" y1="80" x2="100" y2="320"/>
+
+          <!-- axis labels -->
+          <text x="450" y="345" class="dc-axis-lbl" text-anchor="middle">owned by us → owned by external</text>
+          <text x="60" y="200" class="dc-axis-lbl" text-anchor="middle"
+                transform="rotate(-90 60 200)">in-process → cross-process</text>
+
+          <!-- 1: in-process (top-left) -->
+          <g transform="translate(120,100)">
+            <rect class="dc-cat-1" x="0" y="0" width="320" height="100" rx="8"/>
+            <text x="20" y="36" class="dc-num" fill="#4a7d4a">1</text>
+            <text x="60" y="32" class="dc-lbl">In-process</text>
+            <text x="60" y="50" class="dc-sub">纯计算 · 内存 · no I/O</text>
+            <text x="20" y="74" class="dc-ex"><tspan font-weight="700">always deepenable</tspan></text>
+            <text x="20" y="90" class="dc-ex">合模块 + 直接测新接口</text>
+          </g>
+
+          <!-- 2: local-substitutable (top-right-ish but here it's in-process + we have stand-in) -->
+          <g transform="translate(460,100)">
+            <rect class="dc-cat-2" x="0" y="0" width="320" height="100" rx="8"/>
+            <text x="20" y="36" class="dc-num" fill="#2d5f8a">2</text>
+            <text x="60" y="32" class="dc-lbl">Local-substitutable</text>
+            <text x="60" y="50" class="dc-sub">PGLite for Postgres · in-mem fs</text>
+            <text x="20" y="74" class="dc-ex"><tspan font-weight="700">depenable if stand-in exists</tspan></text>
+            <text x="20" y="90" class="dc-ex">seam 内化，模块接口无 port</text>
+          </g>
+
+          <!-- 3: remote but owned (bottom-left) -->
+          <g transform="translate(120,220)">
+            <rect class="dc-cat-3" x="0" y="0" width="320" height="100" rx="8"/>
+            <text x="20" y="36" class="dc-num" fill="#6b4d8a">3</text>
+            <text x="60" y="32" class="dc-lbl">Remote but owned (Ports &amp; Adapters)</text>
+            <text x="60" y="50" class="dc-sub">自家服务跨网络 · 微服务 · 内部 API</text>
+            <text x="20" y="74" class="dc-ex"><tspan font-weight="700">定义 port + 注入 adapter</tspan></text>
+            <text x="20" y="90" class="dc-ex">prod: HTTP · test: in-mem</text>
+          </g>
+
+          <!-- 4: true external (bottom-right) -->
+          <g transform="translate(460,220)">
+            <rect class="dc-cat-4" x="0" y="0" width="320" height="100" rx="8"/>
+            <text x="20" y="36" class="dc-num" fill="#c7501f">4</text>
+            <text x="60" y="32" class="dc-lbl">True external (Mock)</text>
+            <text x="60" y="50" class="dc-sub">Stripe · Twilio · 你控制不了的第三方</text>
+            <text x="20" y="74" class="dc-ex"><tspan font-weight="700">注入 port · test 用 mock</tspan></text>
+            <text x="20" y="90" class="dc-ex">prod: real SDK · test: mock adapter</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">图 5 · 依赖四分类——决定 deepened 模块怎么在不同场景下被测</div>
+      </div>
+
+      <h3>Seam 纪律</h3>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 240" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="seam discipline: 1 adapter vs 2 adapters decision">
+          <defs>
+            <style>
+              .sd-bad { fill: #fce8e0; stroke: #c7501f; stroke-width: 2; }
+              .sd-good { fill: #e6f3e0; stroke: #4a7d4a; stroke-width: 2; }
+              .sd-num { font: 700 18px sans-serif; }
+              .sd-lbl { font: 700 13px sans-serif; fill: #1a1a1a; }
+              .sd-sub { font: 11px sans-serif; fill: #6b6b6b; }
+              .sd-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">seam discipline · 真假 seam</text>
+
+          <g transform="translate(40,55)">
+            <rect class="sd-bad" x="0" y="0" width="380" height="160" rx="8"/>
+            <text x="20" y="36" class="sd-num" fill="#c7501f">1</text>
+            <text x="60" y="32" class="sd-lbl">adapter · hypothetical seam ✗</text>
+            <text x="20" y="64" class="sd-sub">只有 production 一个 adapter</text>
+            <text x="20" y="84" class="sd-sub" font-style="italic">→ 纯间接层，no value</text>
+            <text x="20" y="110" class="sd-lbl" font-weight="400" fill="#c7501f" font-size="13">不要引入 port</text>
+            <text x="20" y="130" class="sd-sub">"如果再有另一个 adapter 就开"</text>
+          </g>
+
+          <g transform="translate(460,55)">
+            <rect class="sd-good" x="0" y="0" width="380" height="160" rx="8"/>
+            <text x="20" y="36" class="sd-num" fill="#4a7d4a">2+</text>
+            <text x="60" y="32" class="sd-lbl">adapters · real seam ✓</text>
+            <text x="20" y="64" class="sd-sub">通常: production adapter + test adapter</text>
+            <text x="20" y="90" class="sd-lbl" font-weight="400" fill="#4a7d4a" font-size="13">port 开在 seam 上</text>
+            <text x="20" y="110" class="sd-sub">prod: HTTP/gRPC · test: in-mem</text>
+            <text x="20" y="130" class="sd-sub">deep module 拥有逻辑 + 注入 transport</text>
+          </g>
+
+          <path class="sd-arrow" d="M 420 140 L 460 140" marker-end="url(#cd-arr-mut)"/>
+          <text x="440" y="232" class="sd-sub" text-anchor="middle" font-style="italic">
+            重申：internal seam ≠ external seam ——别为图测试方便把内部 seam 暴露到接口上
+          </text>
+        </svg>
+        <div class="diagram-caption">图 6 · 1 adapter 是假 seam，2 adapter 起是真 seam</div>
+      </div>
+
+      <h3>Replace, don't layer（替换而非堆叠）</h3>
+
+      <p>加深之后，<strong>旧的 shallow 模块单测就是废</strong>——不是草率删除，是它们测的东西已经被新接口级测试覆盖了。</p>
+
+      <table>
+        <thead>
+          <tr><th>旧做法（layer）</th><th>新做法（replace）</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>每个 shallow 模块写自己的单测</td>
+            <td>deepened 模块的<strong>接口</strong>写测试</td>
+          </tr>
+          <tr>
+            <td>观察内部状态（mock 内部、spy 状态）</td>
+            <td><strong>通过接口观察 outcome</strong></td>
+          </tr>
+          <tr>
+            <td>实现一改就崩</td>
+            <td>实现 refactor，测试不动（描述行为）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-warn">
+        <strong>越界测标志：</strong>如果实现一改测试就得动——它在测接口<strong>里面</strong>的事，模块形状多半不对。
+      </div>
+    </section>
+
+    <section id="dit-source">
+      <h2>DESIGN-IT-TWICE.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code># Design It Twice
+
+When the user wants to explore alternative interfaces for a chosen
+deepening candidate, use this parallel sub-agent pattern. Based on
+"Design It Twice" (Ousterhout): your first idea is unlikely to be the
+best.
+
+Uses the vocabulary in SKILL.md: module, interface, seam, adapter,
+leverage.
+
+## Process
+
+### 1. Frame the problem space
+
+Before spawning sub-agents, write a user-facing explanation of the
+problem space for the chosen candidate:
+- The constraints any new interface would need to satisfy
+- The dependencies it would rely on, and which category they fall
+  into (see DEEPENING.md)
+- A rough illustrative code sketch to ground the constraints, not a
+  proposal, just a way to make the constraints concrete
+
+Show this to the user, then immediately proceed to Step 2. The user
+reads and thinks while the sub-agents work in parallel.
+
+### 2. Spawn sub-agents
+
+Spawn 3+ sub-agents in parallel. Each must produce a radically
+different interface for the deepened module.
+
+Prompt each sub-agent with a separate technical brief (file paths,
+coupling details, dependency category from DEEPENING.md, what sits
+behind the seam). The brief is independent of the user-facing
+problem-space explanation in Step 1. Give each agent a different
+design constraint:
+- Agent 1: "Minimize the interface: aim for 1–3 entry points max.
+  Maximise leverage per entry point."
+- Agent 2: "Maximise flexibility: support many use cases and
+  extension."
+- Agent 3: "Optimise for the most common caller: make the default
+  case trivial."
+- Agent 4 (if applicable): "Design around ports &amp; adapters for
+  cross-seam dependencies."
+
+Include both SKILL.md vocabulary and CONTEXT.md vocabulary in the brief
+so each sub-agent names things consistently with the architecture
+language and the project's domain language.
+
+Each sub-agent outputs:
+1. Interface (types, methods, params, plus invariants, ordering, error
+   modes)
+2. Usage example showing how callers use it
+3. What the implementation hides behind the seam
+4. Dependency strategy and adapters (see DEEPENING.md)
+5. Trade-offs: where leverage is high, where it's thin
+
+### 3. Present and compare
+
+Present designs sequentially so the user can absorb each one, then
+compare them in prose. Contrast by depth (leverage at the interface),
+locality (where change concentrates), and seam placement.
+
+After comparing, give your own recommendation: which design you think
+is strongest and why. If elements from different designs would combine
+well, propose a hybrid. Be opinionated: the user wants a strong read,
+not a menu.</code></pre>
+      </div>
+    </section>
+
+    <section id="dit-process">
+      <h2>DESIGN-IT-TWICE 流程</h2>
+
+      <p>什么时候用——你<strong>已经选好 deepening 候选了</strong>，但想看多种接口形状再下单。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="DESIGN-IT-TWICE 流程图：3 steps from framing to recommendation">
+          <defs>
+            <marker id="dit-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6b4d8a"/>
+            </marker>
+            <style>
+              .dit-step { fill: #fff; stroke: var(--vocab-color); stroke-width: 2; }
+              .dit-step-hi { fill: var(--vocab-soft); stroke: var(--vocab-color); stroke-width: 2.5; }
+              .dit-step-num { font: 700 22px sans-serif; fill: var(--vocab-color); }
+              .dit-step-lbl { font: 700 14px sans-serif; fill: #1a1a1a; }
+              .dit-step-sub { font: 11px sans-serif; fill: #6b6b6b; }
+              .dit-subagent { fill: #f3f0ea; stroke: #6b6b6b; stroke-width: 1.5; }
+              .dit-subagent-hi { fill: #fff8eb; stroke: #c7501f; stroke-width: 2; }
+              .dit-sa-lbl { font: 700 11px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .dit-sa-sub { font: 9px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .dit-arrow { stroke: var(--vocab-color); stroke-width: 1.6; fill: none; }
+              .dit-arrow-thin { stroke: #c8c4bc; stroke-width: 1.2; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#6b4d8a">Design It Twice · 三步流程</text>
+
+          <!-- Step 1: frame -->
+          <g transform="translate(30,55)">
+            <rect class="dit-step-hi" x="0" y="0" width="200" height="100" rx="8"/>
+            <text x="14" y="32" class="dit-step-num">1</text>
+            <text x="50" y="28" class="dit-step-lbl">Frame problem space</text>
+            <text x="14" y="56" class="dit-step-sub">给用户写问题空间说明</text>
+            <text x="14" y="72" class="dit-step-sub">+ 约束 + 依赖分类</text>
+            <text x="14" y="88" class="dit-step-sub">+ 一个示意代码 sketch</text>
+          </g>
+
+          <!-- Step 2: spawn -->
+          <g transform="translate(310,55)">
+            <rect class="dit-step" x="0" y="0" width="220" height="100" rx="8"/>
+            <text x="14" y="32" class="dit-step-num">2</text>
+            <text x="50" y="28" class="dit-step-lbl">Spawn sub-agents</text>
+            <text x="14" y="56" class="dit-step-sub">3+ 并行，各给独立 brief</text>
+            <text x="14" y="72" class="dit-step-sub">每条 constraint 都不一样</text>
+            <text x="14" y="88" class="dit-step-sub" font-style="italic">"first idea unlikely best"</text>
+          </g>
+
+          <!-- Step 3: compare -->
+          <g transform="translate(610,55)">
+            <rect class="dit-step" x="0" y="0" width="240" height="100" rx="8"/>
+            <text x="14" y="32" class="dit-step-num">3</text>
+            <text x="50" y="28" class="dit-step-lbl">Present &amp; compare</text>
+            <text x="14" y="56" class="dit-step-sub">顺序展示 + 散文比较</text>
+            <text x="14" y="72" class="dit-step-sub">depth · locality · seam</text>
+            <text x="14" y="88" class="dit-step-sub" font-weight="700" fill="#6b4d8a">→ opinionated recommendation</text>
+          </g>
+
+          <path class="dit-arrow" d="M 230 105 L 310 105" marker-end="url(#dit-arr)"/>
+          <path class="dit-arrow" d="M 530 105 L 610 105" marker-end="url(#dit-arr)"/>
+
+          <!-- Sub-agents under step 2 -->
+          <text x="420" y="200" class="dit-step-sub" text-anchor="middle" font-style="italic">step 2 的 sub-agents</text>
+
+          <g transform="translate(310,215)">
+            <rect class="dit-subagent-hi" x="0" y="0" width="100" height="74" rx="6"/>
+            <text x="50" y="18" class="dit-sa-lbl">A1 · Minimal</text>
+            <text x="50" y="36" class="dit-sa-sub">1-3 entry points</text>
+            <text x="50" y="50" class="dit-sa-sub">max leverage</text>
+            <text x="50" y="64" class="dit-sa-sub">per entry point</text>
+          </g>
+
+          <g transform="translate(420,215)">
+            <rect class="dit-subagent" x="0" y="0" width="100" height="74" rx="6"/>
+            <text x="50" y="18" class="dit-sa-lbl">A2 · Flexible</text>
+            <text x="50" y="36" class="dit-sa-sub">multi use cases</text>
+            <text x="50" y="50" class="dit-sa-sub">+ extension</text>
+            <text x="50" y="64" class="dit-sa-sub">+ composability</text>
+          </g>
+
+          <g transform="translate(530,215)">
+            <rect class="dit-subagent" x="0" y="0" width="100" height="74" rx="6"/>
+            <text x="50" y="18" class="dit-sa-lbl">A3 · Common</text>
+            <text x="50" y="36" class="dit-sa-sub">caller first</text>
+            <text x="50" y="50" class="dit-sa-sub">default case</text>
+            <text x="50" y="64" class="dit-sa-sub">trivial</text>
+          </g>
+
+          <g transform="translate(640,215)">
+            <rect class="dit-subagent" x="0" y="0" width="100" height="74" rx="6"/>
+            <text x="50" y="18" class="dit-sa-lbl">A4 · Ports</text>
+            <text x="50" y="36" class="dit-sa-sub">跨 seam 设计</text>
+            <text x="50" y="50" class="dit-sa-sub">adapters</text>
+            <text x="50" y="64" class="dit-sa-sub">(可选)</text>
+          </g>
+
+          <!-- arrow from sub-agents to step 3 -->
+          <path class="dit-arrow-thin" d="M 720 252 Q 750 252 730 105" marker-end="url(#dit-arr)"/>
+          <text x="755" y="200" class="dit-step-sub" font-style="italic">设计带回到 step 3</text>
+
+          <!-- outputs row -->
+          <text x="20" y="320" class="dit-step-lbl">每个 sub-agent 输出口径（必须 5 项）</text>
+          <text x="20" y="345" class="dit-step-sub">1. Interface（签名 + 不变量 + 顺序 + 错误模式）</text>
+          <text x="20" y="362" class="dit-step-sub">2. Usage example · 3. Seam 后面藏什么 · 4. 依赖策略 + adapters · 5. Trade-offs</text>
+        </svg>
+        <div class="diagram-caption">图 7 · 三步：frame → spawn 并行 → 给出 opinionated recommendation</div>
+      </div>
+
+      <h3>4 个 sub-agent 的不同约束</h3>
+      <table>
+        <thead>
+          <tr><th>Agent</th><th>约束</th><th>适合</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>A1 · Minimal</strong></td>
+            <td>接口最小化，1–3 个 entry points，最大 leverage per entry point</td>
+            <td>稳定的核心服务，宁要小接口多实现</td>
+          </tr>
+          <tr>
+            <td><strong>A2 · Flexible</strong></td>
+            <td>最大灵活度，支持多用例 + 可扩展</td>
+            <td>领域还在动的、可能加用例的</td>
+          </tr>
+          <tr>
+            <td><strong>A3 · Common-caller</strong></td>
+            <td>为最常见 caller 优化，默认情况 trivial</td>
+            <td>90% 的调用路径都长得一样</td>
+          </tr>
+          <tr>
+            <td><strong>A4 · Ports &amp; Adapters</strong></td>
+            <td>绕 ports &amp; adapters 设计跨 seam 依赖</td>
+            <td>跨网络 / 跨进程 / 不同 transport</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>对比三维度（最后一步）</h3>
+      <ul>
+        <li><strong>depth</strong>——leverage 在不在接口处</li>
+        <li><strong>locality</strong>——改动是否集中</li>
+        <li><strong>seam placement</strong>——seam 放对地方了吗</li>
+      </ul>
+
+      <div class="callout">
+        <strong>Be opinionated: the user wants a strong read, not a menu.</strong><br>
+        给出明确推荐 + 可以 hybrid。<strong>不要给菜单</strong>——用户来找你就是要 strong read。
+      </div>
+    </section>
+
+    <section id="when">
+      <h2>何时用 / 不用</h2>
+
+      <h3>直接调 <code>/codebase-design</code>（用户显式）</h3>
+      <ul>
+        <li>设计 / 改进一个<strong>模块的接口</strong></li>
+        <li><strong>找 deepening 机会</strong>（在 chain of shallow 模块中挑候选）</li>
+        <li>决定 <strong>seam 放在哪</strong></li>
+        <li>让代码<strong>更可测 / 更 AI 可导航</strong></li>
+        <li>重构已经"长出来 12 个 wrapper" 的一段代码</li>
+      </ul>
+
+      <h3>被其他 skill 引用（隐式）</h3>
+      <ul>
+        <li><code>/tdd</code> 写测试时——问"接口 + 测试表面"用</li>
+        <li><code>/implement</code> 抽接口 / 决定 seam</li>
+        <li><code>/improve-codebase-architecture</code> <strong>挑出候选后</strong>用 DEEPENING + DESIGN-IT-TWICE</li>
+      </ul>
+
+      <h3>用 <code>/improve-codebase-architecture</code> 而不是直接 <code>/codebase-design</code></h3>
+      <ul>
+        <li>还没选候选——需要<strong>先 survey</strong>（找 deepening 候选）</li>
+        <li>"整体看一下代码库哪些地方可以变深"</li>
+      </ul>
+      <p>顺序：<code>improve-codebase-architecture</code>（survey）→ <strong>挑一个</strong> → <code>codebase-design</code>（DEEPENING 给操作方法）→ 可选 <strong>DESIGN-IT-TWICE</strong>（多想几个接口）。</p>
+
+      <h3>用 <code>/domain-modeling</code> 而不是 <code>/codebase-design</code></h3>
+      <ul>
+        <li>问题是<strong>词汇 / 域词语</strong>，不是代码形状</li>
+        <li>问题："account 现在做三件事，分开还是合并？" ← domain-modeling</li>
+        <li>问题："这账户模块接口该多大？" ← codebase-design</li>
+      </ul>
+
+      <h3>不用 codebase-design</h3>
+      <ul>
+        <li>在写应用代码——直接 spec / tickets / implement 推</li>
+        <li>只想看上下游流程——<code>grill-with-docs</code></li>
+        <li>在写测试——直接 <code>/tdd</code>，词自动带过来</li>
+      </ul>
+    </section>
+
+    <section id="skill-source">
+      <h2>SKILL.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code>---
+name: codebase-design
+description: Shared vocabulary for designing deep modules. Use when the user
+  wants to design or improve a module's interface, find deepening opportunities,
+  decide where a seam goes, make code more testable or AI-navigable, or when
+  another skill needs the deep-module vocabulary.
+---
+
+# Codebase Design
+
+Design deep modules: a lot of behaviour behind a small interface, placed at a
+clean seam, testable through that interface. Use this language and these
+principles wherever code is being designed or restructured. The aim is leverage
+for callers, locality for maintainers, and testability for everyone.
+
+## Glossary
+
+Use these terms exactly: don't substitute "component," "service," "API," or
+"boundary." Consistent language is the whole point.
+
+**Module**: anything with an interface and an implementation. Deliberately
+scale-agnostic: a function, class, package, or tier-spanning slice. Avoid:
+unit, component, service.
+
+**Interface**: everything a caller must know to use the module correctly: the
+type signature, but also invariants, ordering constraints, error modes,
+required configuration, and performance characteristics. Avoid: API,
+signature (too narrow, they refer only to the type-level surface).
+
+**Implementation**: what's inside a module, its body of code. Distinct from
+Adapter: a thing can be a small adapter with a large implementation (a
+Postgres repo) or a large adapter with a small implementation (an in-memory
+fake). Reach for "adapter" when the seam is the topic; "implementation"
+otherwise.
+
+**Depth**: leverage at the interface. The amount of behaviour a caller (or
+test) can exercise per unit of interface they have to learn. A module is deep
+when a large amount of behaviour sits behind a small interface, shallow when
+the interface is nearly as complex as the implementation.
+
+**Seam** (Michael Feathers): a place where you can alter behaviour without
+editing in that place; the location at which a module's interface lives.
+Where to put the seam is its own design decision, distinct from what goes
+behind it. Avoid: boundary (overloaded with DDD's bounded context).
+
+**Adapter**: a concrete thing that satisfies an interface at a seam.
+Describes role (what slot it fills), not substance (what's inside).
+
+**Leverage**: what callers get from depth. More capability per unit of
+interface they learn. One implementation pays back across N call sites and
+M tests.
+
+**Locality**: what maintainers get from depth. Change, bugs, knowledge, and
+verification concentrate in one place rather than spreading across callers.
+Fix once, fixed everywhere.
+
+## Deep vs shallow
+
+Deep module = small interface + lots of implementation:
+[ASCII box]
+
+Shallow module = large interface + little implementation (avoid):
+[ASCII box]
+
+When designing an interface, ask:
+- Can I reduce the number of methods?
+- Can I simplify the parameters?
+- Can I hide more complexity inside?
+
+## Principles
+
+- Depth is a property of the interface, not the implementation. A deep module
+  can be internally composed of small, mockable, swappable parts; they just
+  aren't part of the interface. A module can have internal seams (private to
+  its implementation, used by its own tests) as well as the external seam at
+  its interface.
+- The deletion test. Imagine deleting the module. If complexity vanishes, it
+  was a pass-through. If complexity reappears across N callers, it was
+  earning its keep.
+- The interface is the test surface. Callers and tests cross the same seam.
+  If you want to test past the interface, the module is probably the wrong
+  shape.
+- One adapter means a hypothetical seam. Two adapters means a real one.
+  Don't introduce a seam unless something actually varies across it.
+
+## Designing for testability
+
+[code examples for accept dependencies · return results · small surface]
+
+## Relationships
+
+[relationship table]
+
+## Rejected framings
+
+- Depth as ratio of implementation-lines to interface-lines (Ousterhout):
+  rewards padding the implementation. We use depth-as-leverage instead.
+- "Interface" as the TypeScript interface keyword or a class's public
+  methods: too narrow.
+- "Boundary": overloaded. Say seam or interface.
+
+## Going deeper
+
+- Deepening a cluster given its dependencies, see DEEPENING.md.
+- Exploring alternative interfaces, see DESIGN-IT-TWICE.md.</code></pre>
+      </div>
+    </section>
+
+    <section id="reference">
+      <h2>参考</h2>
+      <ul>
+        <li>Skill 源文件：<code>~/.agents/skills/codebase-design/SKILL.md</code>（114 行）</li>
+        <li>DEEPENING：<code>~/.agents/skills/codebase-design/DEEPENING.md</code>（38 行）</li>
+        <li>DESIGN-IT-TWICE：<code>~/.agents/skills/codebase-design/DESIGN-IT-TWICE.md</code>（45 行）</li>
+        <li>配对：<a href="domain-modeling.html">domain-modeling</a>（domain vocabulary · 词汇层另一件）</li>
+        <li>上游 survey：<code>improve-codebase-architecture</code>（找候选 → 用本 skill 加深）</li>
+        <li>下游使用：<code>/tdd</code> / <code>/implement</code> / <code>/codebase-design</code>（review 时）</li>
+      </ul>
+    </section>
+
+    <footer>
+      Generated for <code>codebase-design</code> · 114 + 38 + 45 行 · 词汇源 + 加深手册 + 接口设计两次方法 · 单文件自包含
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // ============ 顶部：文档目录下拉 ============
+  (function () {
+    const trigger = document.querySelector('.doc-trigger');
+    const panel = document.getElementById('doc-panel');
+    if (!trigger || !panel) return;
+    function close() { panel.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+    function open() { panel.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.contains('open') ? close() : open();
+    });
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && !trigger.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => close()));
+  })();
+
+  // ============ 侧栏：滚动联动高亮 ============
+  (function () {
+    const links = document.querySelectorAll('.sidebar a[href^="#"]');
+    const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')))
+                              .filter(Boolean);
+    if (!sections.length) return;
+    const map = new Map();
+    links.forEach((a, i) => map.set(sections[i].id, a));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => obs.observe(s));
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>to-spec · Skill 文档</title>
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #d8d4cc;
+      --accent: #2d5f8a;
+      --accent-soft: #e8f0f7;
+      --highlight: #c7501f;
+      --code-bg: #f3f0ea;
+      --code-fg: #2b2b2b;
+      --topnav-bg: rgba(250, 250, 247, 0.85);
+      --topnav-muted: #8a8d96;
+      --sidebar-bg: #f3f0ea;
+      --success: #4a7d4a;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    /* ============ Top nav ============ */
+    .topnav { position: sticky; top: 0; z-index: 100;
+              background: var(--topnav-bg);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border-bottom: 1px solid var(--border); }
+    .topnav-inner { max-width: 1400px; margin: 0 auto;
+                    display: flex; align-items: center;
+                    height: 54px; padding: 0 28px; gap: 20px; }
+    .brand { font-weight: 600; font-size: 14px; color: var(--fg);
+             text-decoration: none; letter-spacing: 0.005em; white-space: nowrap; }
+    .brand .dot { display: inline-block; width: 6px; height: 6px;
+                  background: var(--accent); border-radius: 50%;
+                  margin-right: 8px; vertical-align: middle; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px;
+                  font-size: 13px; color: var(--muted);
+                  flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+    .breadcrumb .sep { color: #c8c4bc; }
+    .breadcrumb .node { font-family: "SF Mono", "Menlo", monospace; font-size: 12.5px; }
+    .breadcrumb .current { color: var(--fg); font-weight: 500; }
+    .doc-trigger { display: flex; align-items: center; gap: 8px;
+                   padding: 6px 12px 6px 14px; background: #fff;
+                   border: 1px solid var(--border); border-radius: 6px;
+                   font: inherit; font-size: 13px; color: var(--fg);
+                   cursor: pointer; transition: all 0.15s; font-family: inherit;
+                   white-space: nowrap; }
+    .doc-trigger:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-trigger .count { background: var(--accent-soft); color: var(--accent);
+                          font-size: 11px; font-weight: 600;
+                          padding: 1px 7px; border-radius: 9px;
+                          font-family: "SF Mono", monospace; }
+    .doc-trigger .chev { width: 12px; height: 12px; transition: transform 0.18s; opacity: 0.6; }
+    .doc-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); opacity: 1; }
+    .doc-panel { position: absolute; top: calc(100% + 6px); right: 28px;
+                 background: #fff; border: 1px solid var(--border); border-radius: 8px;
+                 padding: 6px; max-height: 80vh; overflow-y: auto;
+                 box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+                 min-width: 380px; display: none; }
+    .doc-panel.open { display: block; }
+    .doc-group { padding: 6px 4px; }
+    .doc-group + .doc-group { border-top: 1px solid var(--border);
+                              margin-top: 4px; padding-top: 10px; }
+    .doc-group-title { font-size: 10.5px; text-transform: uppercase;
+                       letter-spacing: 0.08em; color: var(--muted);
+                       font-weight: 700; margin-bottom: 6px; padding: 0 8px; }
+    .doc-link { display: flex; align-items: center; justify-content: space-between;
+                padding: 6px 10px; color: var(--fg); text-decoration: none;
+                font-size: 13px; border-radius: 4px;
+                font-family: "SF Mono", "Menlo", monospace; }
+    .doc-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-link.active { background: var(--accent); color: white; font-weight: 600; }
+    .doc-link.planned { color: #a8a49c; }
+    .doc-link.planned:hover { background: #f3f0ea; color: var(--fg); }
+    .doc-link .tag-mini { font-family: -apple-system, sans-serif; font-size: 10px;
+                          padding: 1px 6px; border-radius: 3px; font-weight: 500;
+                          background: rgba(255,255,255,0.25); }
+    .doc-link.planned .tag-mini { background: var(--code-bg); color: var(--muted); }
+    .doc-link.active .tag-mini { background: rgba(255,255,255,0.22); color: white; }
+
+    /* ============ Layout ============ */
+    .layout { display: grid; grid-template-columns: 240px 1fr; max-width: 1400px; margin: 0 auto; }
+
+    /* ============ Sidebar ============ */
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border);
+               padding: 28px 18px 28px 28px; position: sticky; top: 54px;
+               align-self: start; max-height: calc(100vh - 54px); overflow-y: auto; }
+    .sidebar h3 { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+                  color: var(--muted); margin: 0 0 12px; font-weight: 700; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { margin: 0; }
+    .sidebar a { display: block; padding: 5px 10px; color: var(--fg);
+                 text-decoration: none; font-size: 13.5px; border-radius: 3px;
+                 border-left: 2px solid transparent; transition: all 0.1s; }
+    .sidebar a:hover { background: rgba(45, 95, 138, 0.08); color: var(--accent); }
+    .sidebar a.active { background: rgba(45, 95, 138, 0.13); color: var(--accent);
+                        font-weight: 600; border-left-color: var(--accent); }
+    .sidebar .meta { margin-top: 28px; padding-top: 18px;
+                     border-top: 1px solid var(--border);
+                     font-size: 12px; color: var(--muted); }
+    .sidebar .meta .row { margin-bottom: 10px; }
+    .sidebar .meta strong { display: block; font-size: 11px; color: var(--muted);
+                            font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.06em; margin-bottom: 4px; }
+    .sidebar .meta .val { color: var(--fg); font-weight: 500; }
+
+    /* ============ Content ============ */
+    .content { padding: 28px 48px 96px; min-width: 0; }
+    .content > header { border-bottom: 2px solid var(--fg); padding-bottom: 20px; margin-bottom: 36px; }
+    h1 { font-size: 30px; margin: 0 0 8px; font-weight: 600; letter-spacing: -0.01em; }
+    h2 { font-size: 22px; margin: 56px 0 16px; font-weight: 600;
+         border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { font-size: 16px; margin: 28px 0 10px; font-weight: 600; color: var(--accent); }
+    p, li { font-size: 15px; }
+    .lede { font-size: 17px; color: var(--muted); margin: 0; }
+    .tag { display: inline-block; font-size: 12px; padding: 2px 8px;
+           background: var(--accent-soft); color: var(--accent);
+           border-radius: 3px; margin-right: 6px; font-weight: 500; }
+    .tag-hl { background: #fff0e0; color: var(--highlight); }
+
+    code { background: var(--code-bg); color: var(--code-fg); padding: 1px 6px;
+           border-radius: 3px; font-family: "SF Mono", "Menlo", "Consolas", monospace;
+           font-size: 13.5px; }
+    pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px;
+          overflow-x: auto; font-size: 13px; line-height: 1.55; }
+    pre code { background: none; padding: 0; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 4px 0; }
+
+    .diagram { background: #fff; border: 1px solid var(--border);
+               border-radius: 6px; padding: 20px; margin: 24px 0; overflow-x: auto; }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram-caption { font-size: 13px; color: var(--muted);
+                       margin-top: 12px; text-align: center; font-style: italic; }
+
+    .skill-source { background: #fff; border: 1px solid var(--border);
+                    border-radius: 6px; padding: 20px 24px; margin: 24px 0;
+                    position: relative; }
+    .skill-source::before { content: "SKILL.md 全文"; position: absolute;
+                            top: -10px; left: 16px; background: #fff;
+                            padding: 0 8px; font-size: 11px;
+                            color: var(--muted); font-weight: 600;
+                            text-transform: uppercase; letter-spacing: 0.06em; }
+    .skill-source pre { margin: 0; }
+
+    footer { margin-top: 80px; padding-top: 16px; border-top: 1px solid var(--border);
+             font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; border-right: none;
+                 border-bottom: 1px solid var(--border); }
+      .content { padding: 24px 24px 64px; }
+      .breadcrumb { display: none; }
+      .doc-panel { right: 16px; min-width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============ Top Nav ============ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span>SDD / Matt Pocock Skills</a>
+
+    <div class="breadcrumb">
+      <span class="node">Main flow</span>
+      <span class="sep">›</span>
+      <span class="node current">to-spec</span>
+    </div>
+
+    <button class="doc-trigger" aria-expanded="false" aria-controls="doc-panel">
+      <span>All skill docs</span>
+      <span class="count">19</span>
+      <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 4.5 L6 7.5 L9 4.5"/>
+      </svg>
+    </button>
+
+    <div class="doc-panel" id="doc-panel" role="menu">
+
+      <div class="doc-group">
+        <div class="doc-group-title">Precondition · 1</div>
+        <a href="setup-matt-pocock-skills.html" class="doc-link">setup-matt-pocock-skills</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Grilling · 4</div>
+        <a href="grill-with-docs.html" class="doc-link">grill-with-docs</a>
+        <a href="grill-me.html" class="doc-link">grill-me</a>
+        <a href="grilling.html" class="doc-link">grilling</a>
+        <a href="domain-modeling.html" class="doc-link">domain-modeling</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Main flow · 7</div>
+        <a href="to-spec.html" class="doc-link active">to-spec <span class="tag-mini">you are here</span></a>
+        <a href="to-tickets.html" class="doc-link">to-tickets</a>
+        <a href="implement.html" class="doc-link planned">implement <span class="tag-mini">planned</span></a>
+        <a href="code-review.html" class="doc-link planned">code-review <span class="tag-mini">planned</span></a>
+        <a href="tdd.html" class="doc-link">tdd</a>
+        <a href="prototype.html" class="doc-link">prototype</a>
+        <a href="handoff.html" class="doc-link planned">handoff <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">On-ramps · 4</div>
+        <a href="triage.html" class="doc-link planned">triage <span class="tag-mini">planned</span></a>
+        <a href="diagnosing-bugs.html" class="doc-link planned">diagnosing-bugs <span class="tag-mini">planned</span></a>
+        <a href="wayfinder.html" class="doc-link planned">wayfinder <span class="tag-mini">planned</span></a>
+        <a href="research.html" class="doc-link planned">research <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Codebase · 2</div>
+        <a href="improve-codebase-architecture.html" class="doc-link">improve-codebase-architecture</a>
+        <a href="codebase-design.html" class="doc-link">codebase-design</a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ============ Layout ============ -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>本页目录</h3>
+    <ul>
+      <li><a href="#purpose">用途</a></li>
+      <li><a href="#flow-position">主流程位置</a></li>
+      <li><a href="#process">三步流程</a></li>
+      <li><a href="#source">SKILL.md 全文</a></li>
+      <li><a href="#template">六段模板</a></li>
+      <li><a href="#seams">seams：测试切口</a></li>
+      <li><a href="#when">何时用 / 不用</a></li>
+      <li><a href="#reference">参考</a></li>
+    </ul>
+    <div class="meta">
+      <div class="row">
+        <strong>状态</strong>
+        <span class="val">✓ 已发布</span>
+      </div>
+      <div class="row">
+        <strong>位置</strong>
+        <span class="val">docs/SDD/matt-pocock/</span>
+      </div>
+      <div class="row">
+        <strong>对应 skill</strong>
+        <span class="val">~/.agents/skills/<br>to-spec/</span>
+      </div>
+      <div class="row">
+        <strong>SKILL.md</strong>
+        <span class="val">75 行</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <header>
+      <div><span class="tag">Main flow</span><span class="tag">合成</span><span class="tag tag-hl">不采访</span></div>
+      <h1>to-spec</h1>
+      <p class="lede">把当前对话压成一篇 spec，发到 issue tracker 上挂 <code>ready-for-agent</code>——不再采访，只合成。</p>
+    </header>
+
+    <section id="purpose">
+      <h2>用途</h2>
+      <p>
+        <code>to-spec</code> 是主流程上 <strong>"聊完 → 立项"</strong> 的桥。
+        它的本质是 <strong>synthesis（合成）</strong>，不是 interview（采访）——SKILL.md 第一句明说："<strong>Do NOT interview the user; just synthesize what you already know</strong>"。
+      </p>
+      <p>它和 <code>grill-with-docs</code> 的分工：</p>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th><code>grill-with-docs</code></th>
+            <th><code>to-spec</code></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>做什么</strong></td>
+            <td>问问题，提炼共识</td>
+            <td>把共识写下来</td>
+          </tr>
+          <tr>
+            <td><strong>产物</strong></td>
+            <td><code>CONTEXT.md</code> / ADRs（私人笔记）</td>
+            <td>一个公开的 spec issue</td>
+          </tr>
+          <tr>
+            <td><strong>对用户的态度</strong></td>
+            <td>不停追问</td>
+            <td>不再打扰</td>
+          </tr>
+          <tr>
+            <td><strong>调用次数</strong></td>
+            <td>2 次 skill（grilling + domain-modeling）</td>
+            <td>0 次 skill，全靠当前上下文</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="background: var(--accent-soft); padding: 14px 18px; border-radius: 6px;
+                border-left: 3px solid var(--accent); margin-top: 20px;">
+        <strong>关键：</strong>如果觉得信息不够，那是 <code>grill-with-docs</code> 没做透，<strong>不要靠 <code>to-spec</code> 来补</strong>。
+      </p>
+    </section>
+
+    <section id="flow-position">
+      <h2>主流程位置</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="主流程图：idea 到 ship，to-spec 高亮在第二步">
+          <defs>
+            <marker id="ts-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <marker id="ts-arr-mut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#c8c4bc"/>
+            </marker>
+            <style>
+              .ts-box { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .ts-box-active { fill: #fff0e0; stroke: #c7501f; stroke-width: 2.5; }
+              .ts-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ts-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .ts-arrow { stroke: #2d5f8a; stroke-width: 1.6; fill: none; }
+              .ts-arrow-mut { stroke: #c8c4bc; stroke-width: 1.4; fill: none; }
+              .ts-flow-tag { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle;
+                             font-style: italic; }
+              .ts-tag-hl { font: 700 11px sans-serif; fill: #c7501f; text-anchor: middle;
+                           text-transform: uppercase; letter-spacing: 0.1em; }
+            </style>
+          </defs>
+
+          <text x="460" y="22" font="700 14px sans-serif" fill="#2d5f8a"
+                text-anchor="middle">Main flow：idea → ship</text>
+
+          <!-- Step 1: grill -->
+          <g transform="translate(30,80)">
+            <rect class="ts-box" x="0" y="0" width="140" height="70" rx="8"/>
+            <text x="70" y="24" class="ts-lbl">grill-with-docs</text>
+            <text x="70" y="42" class="ts-sub">采访 · 提炼共识</text>
+            <text x="70" y="58" class="ts-sub">→ CONTEXT.md / ADR</text>
+          </g>
+
+          <!-- Step 2: to-spec (highlighted) -->
+          <g transform="translate(200,80)">
+            <rect class="ts-box-active" x="0" y="0" width="140" height="70" rx="8"/>
+            <text x="70" y="14" class="ts-tag-hl">YOU ARE HERE</text>
+            <text x="70" y="34" class="ts-lbl">to-spec</text>
+            <text x="70" y="52" class="ts-sub">合成 · 不采访</text>
+            <text x="70" y="68" class="ts-sub">→ issue (ready-for-agent)</text>
+          </g>
+
+          <!-- Step 3: to-tickets -->
+          <g transform="translate(370,80)">
+            <rect class="ts-box" x="0" y="0" width="140" height="70" rx="8"/>
+            <text x="70" y="24" class="ts-lbl">to-tickets</text>
+            <text x="70" y="42" class="ts-sub">拆分 · tracer-bullet</text>
+            <text x="70" y="58" class="ts-sub">→ N 个阻塞边 ticket</text>
+          </g>
+
+          <!-- Step 4: implement -->
+          <g transform="translate(540,80)">
+            <rect class="ts-box" x="0" y="0" width="140" height="70" rx="8"/>
+            <text x="70" y="24" class="ts-lbl">implement</text>
+            <text x="70" y="42" class="ts-sub">每个 ticket 一个会话</text>
+            <text x="70" y="58" class="ts-sub">→ TDD 驱动 + code-review</text>
+          </g>
+
+          <!-- Step 5: ship -->
+          <g transform="translate(710,80)">
+            <rect class="ts-box" x="0" y="0" width="170" height="70" rx="8"/>
+            <text x="85" y="24" class="ts-lbl">ship</text>
+            <text x="85" y="42" class="ts-sub">merge → deploy</text>
+          </g>
+
+          <!-- arrows -->
+          <path class="ts-arrow" d="M 170 115 L 200 115" marker-end="url(#ts-arr)"/>
+          <path class="ts-arrow" d="M 340 115 L 370 115" marker-end="url(#ts-arr)"/>
+          <path class="ts-arrow" d="M 510 115 L 540 115" marker-end="url(#ts-arr)"/>
+          <path class="ts-arrow" d="M 680 115 L 710 115" marker-end="url(#ts-arr)"/>
+
+          <!-- fork: prototype (above) -->
+          <text x="100" y="40" class="ts-flow-tag">分歧：能聊清吗？</text>
+          <text x="345" y="40" class="ts-flow-tag">分歧：要拆 N 个吗？</text>
+
+          <!-- below: on-ramps enter before grill -->
+          <text x="460" y="180" class="ts-flow-tag" text-anchor="middle">
+            ↑↑ on-ramps（triage / diagnosing-bugs / wayfinder）汇入 grill-with-docs ↑
+          </text>
+        </svg>
+        <div class="diagram-caption">图 1 · to-spec 在主流程里把"聊出来的东西"固化成可发布的 spec issue</div>
+      </div>
+    </section>
+
+    <section id="process">
+      <h2>三步流程</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="to-spec 三步流程：探索、划 seams、写并发布">
+          <defs>
+            <marker id="ts2-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <marker id="ts2-arr-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#c7501f"/>
+            </marker>
+            <style>
+              .ts2-step { fill: #fff; stroke: #2d5f8a; stroke-width: 2; }
+              .ts2-step-hi { fill: #fff0e0; stroke: #c7501f; stroke-width: 2.5; }
+              .ts2-num { font: 700 22px sans-serif; fill: #2d5f8a; }
+              .ts2-num-hi { font: 700 22px sans-serif; fill: #c7501f; }
+              .ts2-lbl { font: 700 14px sans-serif; fill: #1a1a1a; }
+              .ts2-sub { font: 11px sans-serif; fill: #6b6b6b; }
+              .ts2-flow { stroke: #2d5f8a; stroke-width: 1.6; fill: none; }
+              .ts2-back { stroke: #c7501f; stroke-width: 1.4; fill: none;
+                          stroke-dasharray: 4 3; }
+              .ts2-flow-lbl { font: 10px sans-serif; fill: #6b6b6b;
+                              text-anchor: middle; font-style: italic; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">to-spec 三步流程</text>
+
+          <!-- input -->
+          <g transform="translate(30,80)">
+            <rect x="0" y="0" width="120" height="60" rx="6" fill="#f3f0ea" stroke="#c8c4bc"/>
+            <text x="60" y="24" class="ts2-lbl" text-anchor="middle">当前对话</text>
+            <text x="60" y="42" class="ts2-sub" text-anchor="middle">grill-with-docs 之后</text>
+          </g>
+
+          <!-- Step 1: explore -->
+          <g transform="translate(190,55)">
+            <rect class="ts2-step" x="0" y="0" width="160" height="110" rx="8"/>
+            <text x="14" y="28" class="ts2-num">1</text>
+            <text x="50" y="28" class="ts2-lbl">探索仓库</text>
+            <text x="14" y="50" class="ts2-sub">用 CONTEXT.md</text>
+            <text x="14" y="66" class="ts2-sub">词汇；尊重现有 ADR</text>
+            <text x="14" y="92" class="ts2-sub" font-style="italic">如果已经看过，</text>
+            <text x="14" y="104" class="ts2-sub" font-style="italic">就跳过</text>
+          </g>
+
+          <!-- Step 2: sketch seams -->
+          <g transform="translate(390,55)">
+            <rect class="ts2-step" x="0" y="0" width="160" height="110" rx="8"/>
+            <text x="14" y="28" class="ts2-num">2</text>
+            <text x="50" y="28" class="ts2-lbl">划 seams</text>
+            <text x="14" y="50" class="ts2-sub">复用已有 → 高层</text>
+            <text x="14" y="66" class="ts2-sub">理想 = 1 个 seam</text>
+            <text x="14" y="92" class="ts2-sub" font-style="italic">→ 跟用户</text>
+            <text x="14" y="104" class="ts2-sub" font-style="italic">确认 seam</text>
+          </g>
+
+          <!-- Step 3: write + publish -->
+          <g transform="translate(590,55)">
+            <rect class="ts2-step-hi" x="0" y="0" width="240" height="110" rx="8"/>
+            <text x="14" y="28" class="ts2-num-hi">3</text>
+            <text x="50" y="28" class="ts2-lbl">写 spec + 发布</text>
+            <text x="14" y="50" class="ts2-sub">6 段模板填好</text>
+            <text x="14" y="66" class="ts2-sub">发到 issue tracker</text>
+            <text x="14" y="82" class="ts2-sub" font-weight="700" fill="#c7501f">贴 ready-for-agent</text>
+            <text x="14" y="102" class="ts2-sub" font-style="italic">（不再额外 triage）</text>
+          </g>
+
+          <!-- output -->
+          <g transform="translate(740,220)">
+            <rect x="0" y="0" width="110" height="50" rx="6" fill="#e6f3e0" stroke="#4a7d4a"/>
+            <text x="55" y="20" class="ts2-lbl" text-anchor="middle">Issue</text>
+            <text x="55" y="36" class="ts2-sub" text-anchor="middle">ready-for-agent</text>
+          </g>
+
+          <!-- forward arrows -->
+          <path class="ts2-flow" d="M 150 110 L 190 110" marker-end="url(#ts2-arr)"/>
+          <path class="ts2-flow" d="M 350 110 L 390 110" marker-end="url(#ts2-arr)"/>
+          <path class="ts2-flow" d="M 550 110 L 590 110" marker-end="url(#ts2-arr)"/>
+
+          <!-- step 3 → output -->
+          <path class="ts2-flow" d="M 710 165 Q 730 220 740 245" marker-end="url(#ts2-arr)"/>
+
+          <!-- backward arrow from step 2 to user check -->
+          <path class="ts2-back" d="M 470 165 L 470 235" marker-end="url(#ts2-arr-back)"/>
+          <text x="475" y="200" class="ts2-flow-lbl" text-anchor="start">seams 对吗？→ 用户</text>
+        </svg>
+        <div class="diagram-caption">图 2 · 三步：探索 → 划 seams → 写并发布（seam 确认是 back-loop）</div>
+      </div>
+
+      <h3>第 1 步：探索仓库</h3>
+      <p>用 <code>CONTEXT.md</code> 的词汇；尊重 <code>docs/adr/</code> 里相关区域的现有决定。如果刚刚 <code>grill-with-docs</code> 聊完，这一轮已经做过，可以跳。</p>
+
+      <h3>第 2 步：划 seams（关键！）</h3>
+      <p>决定测试要插在哪一层。原则：</p>
+      <ul>
+        <li><strong>优先复用已有 seam</strong>——别为这个 spec 创造新 seam</li>
+        <li><strong>能高就高</strong>——高层 seam 测得更宽，重构时更稳</li>
+        <li><strong>理想数量 = 1</strong>——seam 越少越好。一个就够</li>
+        <li>必须 <strong>跟用户确认</strong>——seam 是后续实现的核心约束</li>
+      </ul>
+
+      <h3>第 3 步：写 spec → 发布</h3>
+      <p>按 6 段模板填完，发到 issue tracker（GitHub / GitLab / local markdown，看 <code>docs/agents/issue-tracker.md</code> 的设置）。直接贴 <code>ready-for-agent</code> 标签，<strong>不再额外 triage</strong>——spec 本身就是给 agent 看的。</p>
+    </section>
+
+    <section id="source">
+      <h2>SKILL.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code>---
+name: to-spec
+description: "Turn the current conversation into a spec and publish it to the
+  project issue tracker: no interview, just synthesis of what you've already
+  discussed."
+disable-model-invocation: true
+---
+
+This skill takes the current conversation context and codebase understanding
+and produces a spec. Do NOT interview the user; just synthesize what you
+already know.
+
+The issue tracker and triage label vocabulary should have been provided to
+you. If not, tell the user to run `/setup-matt-pocock-skills`.
+
+## Process
+
+1. Explore the repo to understand the current state of the codebase, if you
+   haven't already. Use the project's domain glossary vocabulary throughout
+   the spec, and respect any ADRs in the area you're touching.
+
+2. Sketch out the seams at which you're going to test the feature. Existing
+   seams should be preferred to new ones. Use the highest seam possible. If
+   new seams are needed, propose them at the highest point you can. The
+   fewer seams across the codebase, the better - the ideal number is one.
+
+   Check with the user that these seams match their expectations.
+
+3. Write the spec using the template below, then publish it to the project
+   issue tracker. Apply the `ready-for-agent` triage label - no need for
+   additional triage.
+
+<spec-template>
+[... 6 段模板]
+</spec-template></code></pre>
+      </div>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 8px;">
+        完整文件 75 行，其中模板占 ~50 行；流程说明只有 3 步，相当精炼。
+      </p>
+    </section>
+
+    <section id="template">
+      <h2>六段模板</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="spec 6 段模板解剖图">
+          <defs>
+            <style>
+              .seg { stroke-width: 1.5; }
+              .seg-user { fill: #e8f0f7; stroke: #2d5f8a; }
+              .seg-eng { fill: #fff0e0; stroke: #c7501f; }
+              .seg-test { fill: #f0e8f7; stroke: #6b4d8a; }
+              .seg-misc { fill: #f3f0ea; stroke: #6b6b6b; }
+              .seg-lbl { font: 700 13px sans-serif; fill: #1a1a1a; }
+              .seg-sub { font: 10px sans-serif; fill: #6b6b6b; }
+              .seg-tag { font: 700 10px sans-serif; fill: #6b6b6b;
+                         text-transform: uppercase; letter-spacing: 0.08em; }
+              .seg-view { font: 11px sans-serif; fill: #1a1a1a; font-style: italic; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">Spec 模板的 6 段</text>
+
+          <!-- row 1: user perspective -->
+          <text x="20" y="56" class="seg-tag">用户视角</text>
+
+          <g transform="translate(20,66)">
+            <rect class="seg seg-user" x="0" y="0" width="200" height="70" rx="6"/>
+            <text x="14" y="22" class="seg-lbl">① Problem Statement</text>
+            <text x="14" y="42" class="seg-sub">用户遇到什么问题</text>
+            <text x="14" y="58" class="seg-sub">（从用户的视角，不是工程师的）</text>
+          </g>
+
+          <g transform="translate(240,66)">
+            <rect class="seg seg-user" x="0" y="0" width="200" height="70" rx="6"/>
+            <text x="14" y="22" class="seg-lbl">② Solution</text>
+            <text x="14" y="42" class="seg-sub">怎么解（仍然用户视角）</text>
+            <text x="14" y="58" class="seg-sub">不要讲实现细节</text>
+          </g>
+
+          <g transform="translate(460,66)">
+            <rect class="seg seg-user" x="0" y="0" width="380" height="70" rx="6"/>
+            <text x="14" y="22" class="seg-lbl">③ User Stories</text>
+            <text x="14" y="42" class="seg-sub">As an <actor>, I want <feature>, so that <benefit></text>
+            <text x="14" y="58" class="seg-sub">长长的 list — 覆盖所有角度</text>
+          </g>
+
+          <!-- row 2: engineering decisions -->
+          <text x="20" y="170" class="seg-tag">工程师视角 · 决策</text>
+
+          <g transform="translate(20,180)">
+            <rect class="seg seg-eng" x="0" y="0" width="500" height="80" rx="6"/>
+            <text x="14" y="22" class="seg-lbl">④ Implementation Decisions</text>
+            <text x="14" y="42" class="seg-sub">模块 / 接口 / 架构 / Schema / API 契约 / 交互</text>
+            <text x="14" y="62" class="seg-sub" fill="#c7501f" font-weight="700">
+              ✗ 不放文件路径 · ✗ 不放代码片段（会过时）
+            </text>
+            <text x="14" y="74" class="seg-sub" font-style="italic">
+              例外：prototype 抓的决策片段（状态机/reducer/schema/类型）可内联
+            </text>
+          </g>
+
+          <!-- row 3: testing -->
+          <text x="20" y="290" class="seg-tag">测试视角</text>
+
+          <g transform="translate(20,300)">
+            <rect class="seg seg-test" x="0" y="0" width="380" height="70" rx="6"/>
+            <text x="14" y="22" class="seg-lbl">⑤ Testing Decisions</text>
+            <text x="14" y="42" class="seg-sub">什么算好测试（只测外部行为，不测实现）</text>
+            <text x="14" y="58" class="seg-sub">测哪些模块 · 先例参考</text>
+          </g>
+
+          <g transform="translate(420,300)">
+            <rect class="seg seg-misc" x="0" y="0" width="420" height="70" rx="6"/>
+            <text x="14" y="22" class="seg-lbl">⑥ Out of Scope + Further Notes</text>
+            <text x="14" y="42" class="seg-sub">不做什么 · 其他备注</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">图 3 · 6 段模板 — 前 3 段用户视角，中间 1 段工程师决策，最后 2 段测试 + 边界</div>
+      </div>
+
+      <h3>各段详解</h3>
+
+      <h4>① Problem Statement</h4>
+      <p>用户视角描述问题。不要写"系统慢"，要写"客户提交订单后 5 分钟才收到确认邮件，期间一直焦虑是否成功"。</p>
+
+      <h4>② Solution</h4>
+      <p>用户视角描述解法。同样不要讲技术——讲结果。</p>
+
+      <h4>③ User Stories</h4>
+      <p><strong>越长越好</strong>。覆盖所有角色、所有用例、所有边界。每条都按这个格式：</p>
+      <pre><code>1. As an <actor>, I want <feature>, so that <benefit></code></pre>
+      <p>例：</p>
+      <pre><code>1. As a mobile bank customer, I want to see balance on my accounts,
+   so that I can make better informed decisions about my spending</code></pre>
+
+      <h4>④ Implementation Decisions</h4>
+      <p>这部分给实现 agent 看。可以包括：</p>
+      <ul>
+        <li>要建 / 改的模块</li>
+        <li>模块的接口</li>
+        <li>开发者的技术澄清</li>
+        <li>架构决定</li>
+        <li>Schema 变更</li>
+        <li>API 契约</li>
+        <li>具体交互</li>
+      </ul>
+      <p style="background: #fce8e0; padding: 14px 18px; border-radius: 6px;
+                border-left: 3px solid var(--highlight); margin-top: 12px;">
+        <strong>严禁</strong>写具体文件路径 / 代码片段——这些会过时。<br>
+        <strong>唯一例外</strong>：<code>/prototype</code> 跑出的、能比文字更精确表达决策的片段（状态机、reducer、schema、类型 shape）可以内联一句，并标注"来自 prototype"。
+      </p>
+
+      <h4>⑤ Testing Decisions</h4>
+      <ul>
+        <li><strong>什么算好测试</strong>：只测外部行为，不测实现细节</li>
+        <li>测哪些模块</li>
+        <li>类似先例（仓库里现有测试哪些长得像要写的）</li>
+      </ul>
+
+      <h4>⑥ Out of Scope + Further Notes</h4>
+      <p>Out of Scope 写清楚不做什么——避免实现 agent 跑偏。Further Notes 是兜底段。</p>
+    </section>
+
+    <section id="seams">
+      <h2>seams：测试切口</h2>
+
+      <p>Seam 是 <code>to-spec</code> 里最容易被低估的一步。它 <strong>不进 spec</strong>，但决定了实现的测试结构。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="seam 高低对比：低层 SQL 测试 vs 高层 HTTP endpoint 测试">
+          <defs>
+            <style>
+              .layer { fill: #fff; stroke: #c8c4bc; stroke-width: 1; }
+              .layer-hi { fill: #fff0e0; stroke: #c7501f; stroke-width: 1.8; }
+              .layer-lbl { font: 600 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .layer-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .brace { stroke: #6b6b6b; stroke-width: 1.2; fill: none; }
+              .brace-lbl { font: 10px sans-serif; fill: #6b6b6b;
+                           text-transform: uppercase; letter-spacing: 0.08em; }
+              .arrow-up { fill: #c7501f; stroke: #c7501f; stroke-width: 1.4; }
+              .arrow-lbl { font: 700 11px sans-serif; fill: #c7501f;
+                           text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">seam 越高越好（理想 = 1 个）</text>
+
+          <!-- top: highest seam -->
+          <g transform="translate(150,55)">
+            <rect class="layer-hi" x="0" y="0" width="600" height="38" rx="4"/>
+            <text x="300" y="18" class="layer-lbl">HTTP endpoint / GraphQL resolver</text>
+            <text x="300" y="32" class="layer-sub">最高 seam · 一测覆盖整条业务路径</text>
+          </g>
+
+          <g transform="translate(150,98)">
+            <rect class="layer" x="0" y="0" width="600" height="32" rx="4"/>
+            <text x="300" y="18" class="layer-lbl">reducer / state machine</text>
+            <text x="300" y="30" class="layer-sub" font-style="italic">↑ 比 HTTP 低一层，但仍能测一整块业务行为</text>
+          </g>
+
+          <g transform="translate(150,135)">
+            <rect class="layer" x="0" y="0" width="600" height="32" rx="4"/>
+            <text x="300" y="18" class="layer-lbl">action handler / service method</text>
+            <text x="300" y="30" class="layer-sub" font-style="italic">↑ 中层 · 每个 action 单独测</text>
+          </g>
+
+          <g transform="translate(150,172)">
+            <rect class="layer" x="0" y="0" width="600" height="32" rx="4"/>
+            <text x="300" y="18" class="layer-lbl">SQL / repository / adapter</text>
+            <text x="300" y="30" class="layer-sub" font-style="italic">↑ 最低 seam · 跟实现绑死，重构就碎</text>
+          </g>
+
+          <!-- arrows up -->
+          <path class="arrow-up" d="M 770 200 L 770 80" marker-end="url(#ts2-arr-back)"/>
+          <text x="780" y="140" class="arrow-lbl" text-anchor="start">↑ 越往上越好</text>
+
+          <text x="40" y="76" class="brace-lbl" font-style="italic" fill="#c7501f">推荐</text>
+          <text x="40" y="118" class="brace-lbl">可接受</text>
+          <text x="40" y="155" class="brace-lbl">可接受</text>
+          <text x="40" y="192" class="brace-lbl">慎用</text>
+
+          <!-- bottom callout -->
+          <text x="440" y="240" class="layer-sub" text-anchor="middle" font-style="italic">
+            1 个 HTTP-level 测试胜过 10 个 repository-level 测试
+          </text>
+          <text x="440" y="256" class="layer-sub" text-anchor="middle" font-style="italic">
+            · 重构时高层测试更稳
+          </text>
+        </svg>
+        <div class="diagram-caption">图 4 · seam 层次 — 选最高的那层</div>
+      </div>
+
+      <p><strong>为什么 seam 是关键：</strong>seam 决定了实现阶段的测试架构。一旦确定，实现 agent 就要按这个切法建测试。Spec 里只写一句"测试 seam 设在 X 层"，实现就不会乱跑。</p>
+    </section>
+
+    <section id="when">
+      <h2>何时用 / 不用</h2>
+
+      <h3>用 to-spec</h3>
+      <ul>
+        <li><code>grill-with-docs</code> 已经聊透，想正式立项</li>
+        <li>已经决定要做的功能，想给后续 agent 一份清晰的输入</li>
+        <li>想要 GitHub / GitLab issue 形式的 spec 留档</li>
+      </ul>
+
+      <h3>用 to-tickets 而不是 to-spec</h3>
+      <ul>
+        <li>spec 已经存在，想 <strong>拆成多个 ticket</strong> 分给多个 agent</li>
+        <li>spec 是分阶段的（tracer-bullet），不是单块的</li>
+      </ul>
+
+      <h3>用 prototype 而不是 to-spec</h3>
+      <ul>
+        <li>设计问题在对话里解决不了，需要看代码跑起来什么样</li>
+        <li>答案明显是 throwaway code 就够，不需要完整 spec</li>
+      </ul>
+
+      <h3>用 wayfinder 而不是 to-spec</h3>
+      <ul>
+        <li>想法太大、跨多 session、地图还没画出来</li>
+        <li>先 <code>wayfinder</code> 把决策 tickets 解完，再 <code>to-spec</code> 收口</li>
+      </ul>
+
+      <h3>不要用 to-spec</h3>
+      <ul>
+        <li>信息还不够 → 先回 <code>grill-with-docs</code></li>
+        <li>已经动手写代码了 → spec 应该先于代码</li>
+        <li>只是 bug 修复 → 用 <code>/triage</code> → <code>/diagnosing-bugs</code></li>
+      </ul>
+    </section>
+
+    <section id="reference">
+      <h2>参考</h2>
+      <ul>
+        <li>Skill 源文件：<code>~/.agents/skills/to-spec/SKILL.md</code>（75 行）</li>
+        <li>上游：<a href="grill-with-docs.html">grill-with-docs</a>（采访，喂入当前对话）</li>
+        <li>下游：<code>to-tickets</code>（把 spec 拆成阻塞边的 ticket）</li>
+        <li>前提：<a href="setup-matt-pocock-skills.html">setup-matt-pocock-skills</a>（issue tracker / 标签配置）</li>
+        <li>另一种"立项"：<a href="prototype.html">prototype</a>（throwaway code 替代 spec）</li>
+      </ul>
+    </section>
+
+    <footer>
+      Generated for <code>to-spec</code> · 75 行 · synthesis（不采访）· 三步流程 · 六段模板 · 单文件自包含
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // ============ 顶部：文档目录下拉 ============
+  (function () {
+    const trigger = document.querySelector('.doc-trigger');
+    const panel = document.getElementById('doc-panel');
+    if (!trigger || !panel) return;
+    function close() { panel.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+    function open() { panel.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.contains('open') ? close() : open();
+    });
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && !trigger.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => close()));
+  })();
+
+  // ============ 侧栏：滚动联动高亮 ============
+  (function () {
+    const links = document.querySelectorAll('.sidebar a[href^="#"]');
+    const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')))
+                              .filter(Boolean);
+    if (!sections.length) return;
+    const map = new Map();
+    links.forEach((a, i) => map.set(sections[i].id, a));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => obs.observe(s));
+  })();
+</script>
+
+</body>
+</html>

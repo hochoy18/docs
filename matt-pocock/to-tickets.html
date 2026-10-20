@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>to-tickets · Skill 文档</title>
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #d8d4cc;
+      --accent: #2d5f8a;
+      --accent-soft: #e8f0f7;
+      --highlight: #c7501f;
+      --code-bg: #f3f0ea;
+      --code-fg: #2b2b2b;
+      --topnav-bg: rgba(250, 250, 247, 0.85);
+      --topnav-muted: #8a8d96;
+      --sidebar-bg: #f3f0ea;
+      --success: #4a7d4a;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    /* ============ Top nav ============ */
+    .topnav { position: sticky; top: 0; z-index: 100;
+              background: var(--topnav-bg);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border-bottom: 1px solid var(--border); }
+    .topnav-inner { max-width: 1400px; margin: 0 auto;
+                    display: flex; align-items: center;
+                    height: 54px; padding: 0 28px; gap: 20px; }
+    .brand { font-weight: 600; font-size: 14px; color: var(--fg);
+             text-decoration: none; letter-spacing: 0.005em; white-space: nowrap; }
+    .brand .dot { display: inline-block; width: 6px; height: 6px;
+                  background: var(--accent); border-radius: 50%;
+                  margin-right: 8px; vertical-align: middle; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px;
+                  font-size: 13px; color: var(--muted);
+                  flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+    .breadcrumb .sep { color: #c8c4bc; }
+    .breadcrumb .node { font-family: "SF Mono", "Menlo", monospace; font-size: 12.5px; }
+    .breadcrumb .current { color: var(--fg); font-weight: 500; }
+    .doc-trigger { display: flex; align-items: center; gap: 8px;
+                   padding: 6px 12px 6px 14px; background: #fff;
+                   border: 1px solid var(--border); border-radius: 6px;
+                   font: inherit; font-size: 13px; color: var(--fg);
+                   cursor: pointer; transition: all 0.15s; font-family: inherit;
+                   white-space: nowrap; }
+    .doc-trigger:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-trigger .count { background: var(--accent-soft); color: var(--accent);
+                          font-size: 11px; font-weight: 600;
+                          padding: 1px 7px; border-radius: 9px;
+                          font-family: "SF Mono", monospace; }
+    .doc-trigger .chev { width: 12px; height: 12px; transition: transform 0.18s; opacity: 0.6; }
+    .doc-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); opacity: 1; }
+    .doc-panel { position: absolute; top: calc(100% + 6px); right: 28px;
+                 background: #fff; border: 1px solid var(--border); border-radius: 8px;
+                 padding: 6px; max-height: 80vh; overflow-y: auto;
+                 box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+                 min-width: 380px; display: none; }
+    .doc-panel.open { display: block; }
+    .doc-group { padding: 6px 4px; }
+    .doc-group + .doc-group { border-top: 1px solid var(--border);
+                              margin-top: 4px; padding-top: 10px; }
+    .doc-group-title { font-size: 10.5px; text-transform: uppercase;
+                       letter-spacing: 0.08em; color: var(--muted);
+                       font-weight: 700; margin-bottom: 6px; padding: 0 8px; }
+    .doc-link { display: flex; align-items: center; justify-content: space-between;
+                padding: 6px 10px; color: var(--fg); text-decoration: none;
+                font-size: 13px; border-radius: 4px;
+                font-family: "SF Mono", "Menlo", monospace; }
+    .doc-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-link.active { background: var(--accent); color: white; font-weight: 600; }
+    .doc-link.planned { color: #a8a49c; }
+    .doc-link.planned:hover { background: #f3f0ea; color: var(--fg); }
+    .doc-link .tag-mini { font-family: -apple-system, sans-serif; font-size: 10px;
+                          padding: 1px 6px; border-radius: 3px; font-weight: 500;
+                          background: rgba(255,255,255,0.25); }
+    .doc-link.planned .tag-mini { background: var(--code-bg); color: var(--muted); }
+    .doc-link.active .tag-mini { background: rgba(255,255,255,0.22); color: white; }
+
+    /* ============ Layout ============ */
+    .layout { display: grid; grid-template-columns: 240px 1fr; max-width: 1400px; margin: 0 auto; }
+
+    /* ============ Sidebar ============ */
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border);
+               padding: 28px 18px 28px 28px; position: sticky; top: 54px;
+               align-self: start; max-height: calc(100vh - 54px); overflow-y: auto; }
+    .sidebar h3 { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+                  color: var(--muted); margin: 0 0 12px; font-weight: 700; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { margin: 0; }
+    .sidebar a { display: block; padding: 5px 10px; color: var(--fg);
+                 text-decoration: none; font-size: 13.5px; border-radius: 3px;
+                 border-left: 2px solid transparent; transition: all 0.1s; }
+    .sidebar a:hover { background: rgba(45, 95, 138, 0.08); color: var(--accent); }
+    .sidebar a.active { background: rgba(45, 95, 138, 0.13); color: var(--accent);
+                        font-weight: 600; border-left-color: var(--accent); }
+    .sidebar .meta { margin-top: 28px; padding-top: 18px;
+                     border-top: 1px solid var(--border);
+                     font-size: 12px; color: var(--muted); }
+    .sidebar .meta .row { margin-bottom: 10px; }
+    .sidebar .meta strong { display: block; font-size: 11px; color: var(--muted);
+                            font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.06em; margin-bottom: 4px; }
+    .sidebar .meta .val { color: var(--fg); font-weight: 500; }
+
+    /* ============ Content ============ */
+    .content { padding: 28px 48px 96px; min-width: 0; }
+    .content > header { border-bottom: 2px solid var(--fg); padding-bottom: 20px; margin-bottom: 36px; }
+    h1 { font-size: 30px; margin: 0 0 8px; font-weight: 600; letter-spacing: -0.01em; }
+    h2 { font-size: 22px; margin: 56px 0 16px; font-weight: 600;
+         border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { font-size: 16px; margin: 28px 0 10px; font-weight: 600; color: var(--accent); }
+    h4 { font-size: 14px; margin: 20px 0 8px; font-weight: 600; color: #2b2b2b; }
+    p, li { font-size: 15px; }
+    .lede { font-size: 17px; color: var(--muted); margin: 0; }
+    .tag { display: inline-block; font-size: 12px; padding: 2px 8px;
+           background: var(--accent-soft); color: var(--accent);
+           border-radius: 3px; margin-right: 6px; font-weight: 500; }
+    .tag-hl { background: #fff0e0; color: var(--highlight); }
+
+    code { background: var(--code-bg); color: var(--code-fg); padding: 1px 6px;
+           border-radius: 3px; font-family: "SF Mono", "Menlo", "Consolas", monospace;
+           font-size: 13.5px; }
+    pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px;
+          overflow-x: auto; font-size: 13px; line-height: 1.55; }
+    pre code { background: none; padding: 0; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 4px 0; }
+
+    .diagram { background: #fff; border: 1px solid var(--border);
+               border-radius: 6px; padding: 20px; margin: 24px 0; overflow-x: auto; }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram-caption { font-size: 13px; color: var(--muted);
+                       margin-top: 12px; text-align: center; font-style: italic; }
+
+    .skill-source { background: #fff; border: 1px solid var(--border);
+                    border-radius: 6px; padding: 20px 24px; margin: 24px 0;
+                    position: relative; }
+    .skill-source::before { content: "SKILL.md 全文"; position: absolute;
+                            top: -10px; left: 16px; background: #fff;
+                            padding: 0 8px; font-size: 11px;
+                            color: var(--muted); font-weight: 600;
+                            text-transform: uppercase; letter-spacing: 0.06em; }
+    .skill-source pre { margin: 0; max-height: 480px; }
+
+    .callout { padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--accent);
+               margin: 16px 0; background: var(--accent-soft); }
+    .callout-warn { border-left-color: var(--highlight); background: #fce8e0; }
+
+    footer { margin-top: 80px; padding-top: 16px; border-top: 1px solid var(--border);
+             font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; border-right: none;
+                 border-bottom: 1px solid var(--border); }
+      .content { padding: 24px 24px 64px; }
+      .breadcrumb { display: none; }
+      .doc-panel { right: 16px; min-width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============ Top Nav ============ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span>SDD / Matt Pocock Skills</a>
+
+    <div class="breadcrumb">
+      <span class="node">Main flow</span>
+      <span class="sep">›</span>
+      <span class="node current">to-tickets</span>
+    </div>
+
+    <button class="doc-trigger" aria-expanded="false" aria-controls="doc-panel">
+      <span>All skill docs</span>
+      <span class="count">19</span>
+      <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 4.5 L6 7.5 L9 4.5"/>
+      </svg>
+    </button>
+
+    <div class="doc-panel" id="doc-panel" role="menu">
+
+      <div class="doc-group">
+        <div class="doc-group-title">Precondition · 1</div>
+        <a href="setup-matt-pocock-skills.html" class="doc-link">setup-matt-pocock-skills</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Grilling · 4</div>
+        <a href="grill-with-docs.html" class="doc-link">grill-with-docs</a>
+        <a href="grill-me.html" class="doc-link">grill-me</a>
+        <a href="grilling.html" class="doc-link">grilling</a>
+        <a href="domain-modeling.html" class="doc-link">domain-modeling</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Main flow · 7</div>
+        <a href="to-spec.html" class="doc-link">to-spec</a>
+        <a href="to-tickets.html" class="doc-link active">to-tickets <span class="tag-mini">you are here</span></a>
+        <a href="implement.html" class="doc-link planned">implement <span class="tag-mini">planned</span></a>
+        <a href="code-review.html" class="doc-link planned">code-review <span class="tag-mini">planned</span></a>
+        <a href="tdd.html" class="doc-link">tdd</a>
+        <a href="prototype.html" class="doc-link">prototype</a>
+        <a href="handoff.html" class="doc-link planned">handoff <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">On-ramps · 4</div>
+        <a href="triage.html" class="doc-link planned">triage <span class="tag-mini">planned</span></a>
+        <a href="diagnosing-bugs.html" class="doc-link planned">diagnosing-bugs <span class="tag-mini">planned</span></a>
+        <a href="wayfinder.html" class="doc-link planned">wayfinder <span class="tag-mini">planned</span></a>
+        <a href="research.html" class="doc-link planned">research <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Codebase · 2</div>
+        <a href="improve-codebase-architecture.html" class="doc-link">improve-codebase-architecture</a>
+        <a href="codebase-design.html" class="doc-link">codebase-design</a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ============ Layout ============ -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>本页目录</h3>
+    <ul>
+      <li><a href="#purpose">用途</a></li>
+      <li><a href="#flow-position">主流程位置</a></li>
+      <li><a href="#process">五步流程</a></li>
+      <li><a href="#source">SKILL.md 全文</a></li>
+      <li><a href="#vertical">vertical slice 规则</a></li>
+      <li><a href="#dag">阻塞边 / DAG / frontier</a></li>
+      <li><a href="#wide-refactor">wide refactor 例外</a></li>
+      <li><a href="#publish">发布形态</a></li>
+      <li><a href="#when">何时用 / 不用</a></li>
+      <li><a href="#reference">参考</a></li>
+    </ul>
+    <div class="meta">
+      <div class="row">
+        <strong>状态</strong>
+        <span class="val">✓ 已发布</span>
+      </div>
+      <div class="row">
+        <strong>位置</strong>
+        <span class="val">docs/SDD/matt-pocock/</span>
+      </div>
+      <div class="row">
+        <strong>对应 skill</strong>
+        <span class="val">~/.agents/skills/<br>to-tickets/</span>
+      </div>
+      <div class="row">
+        <strong>SKILL.md</strong>
+        <span class="val">105 行</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <header>
+      <div><span class="tag">Main flow</span><span class="tag">拆票</span><span class="tag tag-hl">DAG</span></div>
+      <h1>to-tickets</h1>
+      <p class="lede">把 spec / 计划 / 对话拆成 <strong>tracer-bullet tickets</strong>，每条带 <strong>阻塞边</strong>，发到 issue tracker。每个 ticket 一个 fresh context window。</p>
+    </header>
+
+    <section id="purpose">
+      <h2>用途</h2>
+      <p>
+        <code>to-spec</code> 出来是一整篇 spec；<code>to-tickets</code> 把 spec 拆成 <strong>多条小 ticket</strong>，
+        每条带显式依赖关系（哪个必须先做完），然后发到 tracker 上让 agent 各拿各的做。
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th><code>to-spec</code></th>
+            <th><code>to-tickets</code></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>产物</strong></td>
+            <td>1 篇 spec = 1 个 issue</td>
+            <td>N 个 ticket = N 个 issue（或文件）</td>
+          </tr>
+          <tr>
+            <td><strong>粒度</strong></td>
+            <td>完整功能描述</td>
+            <td>单 context window 内可完成的薄片</td>
+          </tr>
+          <tr>
+            <td><strong>依赖关系</strong></td>
+            <td>不显式画</td>
+            <td>显式 DAG（每条 ticket 列 Block by）</td>
+          </tr>
+          <tr>
+            <td><strong>谁来做</strong></td>
+            <td>用户审一次后交给实现 agent</td>
+            <td>每个 ticket 一个 agent session</td>
+          </tr>
+          <tr>
+            <td><strong>互动</strong></td>
+            <td>纯 synthesis，不采访</td>
+            <td>第 4 步 <strong>跟用户对题</strong>（粒度/阻塞）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>关键概念组合：</p>
+      <ul>
+        <li><strong>vertical slice</strong> —— 每条 ticket 端到端穿过各层</li>
+        <li><strong>blocking edges</strong> —— 显式 DAG</li>
+        <li><strong>frontier</strong> —— 所有 blocker 已 done 的 ticket 集合</li>
+      </ul>
+    </section>
+
+    <section id="flow-position">
+      <h2>主流程位置</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="主流程图：idea 到 ship，to-tickets 高亮在第三步">
+          <defs>
+            <marker id="tt-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <style>
+              .tt-box { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .tt-box-active { fill: #fff0e0; stroke: #c7501f; stroke-width: 2.5; }
+              .tt-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .tt-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .tt-arrow { stroke: #2d5f8a; stroke-width: 1.6; fill: none; }
+              .tt-flow-tag { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle;
+                             font-style: italic; }
+              .tt-tag-hl { font: 700 11px sans-serif; fill: #c7501f; text-anchor: middle;
+                           text-transform: uppercase; letter-spacing: 0.1em; }
+            </style>
+          </defs>
+
+          <text x="460" y="22" font="700 14px sans-serif" fill="#2d5f8a"
+                text-anchor="middle">Main flow：idea → ship</text>
+
+          <g transform="translate(30,80)">
+            <rect class="tt-box" x="0" y="0" width="140" height="70" rx="8"/>
+            <text x="70" y="24" class="tt-lbl">grill-with-docs</text>
+            <text x="70" y="42" class="tt-sub">采访 · 提炼共识</text>
+            <text x="70" y="58" class="tt-sub">→ CONTEXT.md / ADR</text>
+          </g>
+
+          <g transform="translate(200,80)">
+            <rect class="tt-box" x="0" y="0" width="140" height="70" rx="8"/>
+            <text x="70" y="24" class="tt-lbl">to-spec</text>
+            <text x="70" y="42" class="tt-sub">合成 · 不采访</text>
+            <text x="70" y="58" class="tt-sub">→ issue (ready-for-agent)</text>
+          </g>
+
+          <g transform="translate(370,80)">
+            <rect class="tt-box-active" x="0" y="0" width="140" height="70" rx="8"/>
+            <text x="70" y="14" class="tt-tag-hl">YOU ARE HERE</text>
+            <text x="70" y="34" class="tt-lbl">to-tickets</text>
+            <text x="70" y="52" class="tt-sub">拆票 · tracer-bullet</text>
+            <text x="70" y="68" class="tt-sub">→ N 个 ticket + DAG</text>
+          </g>
+
+          <g transform="translate(540,80)">
+            <rect class="tt-box" x="0" y="0" width="140" height="70" rx="8"/>
+            <text x="70" y="24" class="tt-lbl">implement</text>
+            <text x="70" y="42" class="tt-sub">每个 ticket 一个会话</text>
+            <text x="70" y="58" class="tt-sub">→ TDD 驱动 + code-review</text>
+          </g>
+
+          <g transform="translate(710,80)">
+            <rect class="tt-box" x="0" y="0" width="170" height="70" rx="8"/>
+            <text x="85" y="24" class="tt-lbl">ship</text>
+            <text x="85" y="42" class="tt-sub">merge → deploy</text>
+          </g>
+
+          <path class="tt-arrow" d="M 170 115 L 200 115" marker-end="url(#tt-arr)"/>
+          <path class="tt-arrow" d="M 340 115 L 370 115" marker-end="url(#tt-arr)"/>
+          <path class="tt-arrow" d="M 510 115 L 540 115" marker-end="url(#tt-arr)"/>
+          <path class="tt-arrow" d="M 680 115 L 710 115" marker-end="url(#tt-arr)"/>
+
+          <text x="100" y="40" class="tt-flow-tag">分歧：能聊清吗？</text>
+          <text x="345" y="40" class="tt-flow-tag">分歧：要拆 N 个吗？</text>
+
+          <text x="460" y="180" class="tt-flow-tag" text-anchor="middle">
+            ↑↑ on-ramps（triage / diagnosing-bugs / wayfinder）汇入 grill-with-docs ↑
+          </text>
+        </svg>
+        <div class="diagram-caption">图 1 · to-tickets 在主流程里把"1 篇 spec"拆成"N 条带阻塞边的小 ticket"</div>
+      </div>
+    </section>
+
+    <section id="process">
+      <h2>五步流程</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="to-tickets 五步流程图">
+          <defs>
+            <marker id="tt2-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <marker id="tt2-arr-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#c7501f"/>
+            </marker>
+            <style>
+              .tt2-step { fill: #fff; stroke: #2d5f8a; stroke-width: 2; }
+              .tt2-step-hi { fill: #fff0e0; stroke: #c7501f; stroke-width: 2.5; }
+              .tt2-num { font: 700 22px sans-serif; fill: #2d5f8a; }
+              .tt2-num-hi { font: 700 22px sans-serif; fill: #c7501f; }
+              .tt2-lbl { font: 700 13px sans-serif; fill: #1a1a1a; }
+              .tt2-sub { font: 10px sans-serif; fill: #6b6b6b; }
+              .tt2-flow { stroke: #2d5f8a; stroke-width: 1.6; fill: none; }
+              .tt2-back { stroke: #c7501f; stroke-width: 1.4; fill: none;
+                          stroke-dasharray: 4 3; }
+              .tt2-flow-lbl { font: 10px sans-serif; fill: #6b6b6b;
+                              text-anchor: middle; font-style: italic; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">to-tickets 五步流程</text>
+
+          <g transform="translate(30,60)">
+            <rect x="0" y="0" width="120" height="50" rx="6" fill="#f3f0ea" stroke="#c8c4bc"/>
+            <text x="60" y="20" class="tt2-lbl" text-anchor="middle">输入</text>
+            <text x="60" y="36" class="tt2-sub" text-anchor="middle">spec / 对话 / URL</text>
+          </g>
+
+          <g transform="translate(190,40)">
+            <rect class="tt2-step" x="0" y="0" width="140" height="90" rx="8"/>
+            <text x="14" y="26" class="tt2-num">1</text>
+            <text x="50" y="26" class="tt2-lbl">收集上下文</text>
+            <text x="14" y="46" class="tt2-sub">从当前对话拿</text>
+            <text x="14" y="62" class="tt2-sub">或 fetch spec 路径</text>
+            <text x="14" y="78" class="tt2-sub" font-style="italic">/ issue 号</text>
+          </g>
+
+          <g transform="translate(370,40)">
+            <rect class="tt2-step" x="0" y="0" width="140" height="90" rx="8"/>
+            <text x="14" y="26" class="tt2-num">2</text>
+            <text x="50" y="26" class="tt2-lbl">探索仓库</text>
+            <text x="14" y="46" class="tt2-sub" font-style="italic">可选</text>
+            <text x="14" y="62" class="tt2-sub">找预重构机会</text>
+            <text x="14" y="78" class="tt2-sub">用 domain 词汇</text>
+          </g>
+
+          <g transform="translate(550,40)">
+            <rect class="tt2-step-hi" x="0" y="0" width="160" height="90" rx="8"/>
+            <text x="14" y="26" class="tt2-num-hi">3</text>
+            <text x="50" y="26" class="tt2-lbl">起草垂直薄片</text>
+            <text x="14" y="46" class="tt2-sub">tracer-bullet</text>
+            <text x="14" y="62" class="tt2-sub" font-weight="700" fill="#c7501f">+ 阻塞边（DAG）</text>
+            <text x="14" y="78" class="tt2-sub" font-style="italic">预重构单独成 ticket</text>
+          </g>
+
+          <g transform="translate(60,170)">
+            <rect class="tt2-step" x="0" y="0" width="200" height="90" rx="8"/>
+            <text x="14" y="26" class="tt2-num">4</text>
+            <text x="50" y="26" class="tt2-lbl">跟用户对题</text>
+            <text x="14" y="46" class="tt2-sub">列标题 / 阻塞 / 交付</text>
+            <text x="14" y="62" class="tt2-sub">粒度对吗？阻塞对吗？</text>
+            <text x="14" y="78" class="tt2-sub" font-style="italic">要合/拆吗？</text>
+          </g>
+
+          <g transform="translate(300,170)">
+            <rect class="tt2-step-hi" x="0" y="0" width="240" height="90" rx="8"/>
+            <text x="14" y="26" class="tt2-num-hi">5</text>
+            <text x="50" y="26" class="tt2-lbl">发布</text>
+            <text x="14" y="46" class="tt2-sub">local → 1 文件/ticket</text>
+            <text x="14" y="62" class="tt2-sub">真 tracker → 1 issue/ticket</text>
+            <text x="14" y="78" class="tt2-sub">贴 ready-for-agent</text>
+          </g>
+
+          <g transform="translate(580,170)">
+            <rect x="0" y="0" width="260" height="90" rx="6" fill="#e6f3e0" stroke="#4a7d4a"/>
+            <text x="130" y="22" class="tt2-lbl" text-anchor="middle">work the frontier</text>
+            <text x="130" y="42" class="tt2-sub" text-anchor="middle">blokcer 都 done 的 ticket 集合</text>
+            <text x="130" y="60" class="tt2-sub" text-anchor="middle">任一都能拿起来做</text>
+            <text x="130" y="78" class="tt2-sub" text-anchor="middle" font-style="italic">chain 上是 top → bottom</text>
+          </g>
+
+          <!-- forward arrows -->
+          <path class="tt2-flow" d="M 150 80 L 190 80" marker-end="url(#tt2-arr)"/>
+          <path class="tt2-flow" d="M 330 80 L 370 80" marker-end="url(#tt2-arr)"/>
+          <path class="tt2-flow" d="M 510 80 L 550 80" marker-end="url(#tt2-arr)"/>
+
+          <!-- step 3 → step 4 (down-left) -->
+          <path class="tt2-flow" d="M 600 130 Q 350 175 260 170" marker-end="url(#tt2-arr)"/>
+
+          <!-- step 4 → step 5 -->
+          <path class="tt2-flow" d="M 260 215 L 300 215" marker-end="url(#tt2-arr)"/>
+
+          <!-- step 5 → frontier -->
+          <path class="tt2-flow" d="M 540 215 L 580 215" marker-end="url(#tt2-arr)"/>
+
+          <!-- input → step 1 -->
+          <path class="tt2-flow" d="M 150 80 L 190 80" marker-end="url(#tt2-arr)"/>
+
+          <!-- back loop: step 4 → step 3 (quiz may revise slices) -->
+          <path class="tt2-back" d="M 160 170 Q 350 130 550 130" marker-end="url(#tt2-arr-back)"/>
+          <text x="350" y="148" class="tt2-flow-lbl" text-anchor="middle">调整切片 → 回步骤 3</text>
+        </svg>
+        <div class="diagram-caption">图 2 · 五步 + 步骤 4 的回环（quiz 可能要求重切）</div>
+      </div>
+
+      <h3>第 1 步 · 收集上下文</h3>
+      <p>从当前对话直接拿；如果用户传参（spec 路径 / issue 号 / URL），fetch 完整 body + comments。</p>
+
+      <h3>第 2 步 · 探索仓库（可选）</h3>
+      <p>用 <code>CONTEXT.md</code> 词汇；尊重 <code>docs/adr/</code> 里相关决定；<strong>特别要找预重构机会</strong>——"先让变更容易，再做容易的变更"。预重构单独成 ticket，先做。</p>
+
+      <h3>第 3 步 · 起草垂直薄片</h3>
+      <p>每片带 <strong>blocked by</strong>。没 blocker 的 ticket 可以立刻开始。</p>
+
+      <h3>第 4 步 · 跟用户对题（必做）</h3>
+      <p>把列表给用户：每条 ticket 显示 <strong>标题 / Blocked by / What it delivers</strong>。问：</p>
+      <ul>
+        <li>粒度对吗？（太粗 / 太细）</li>
+        <li>阻塞边对吗？（每条 ticket 真的只依赖真正 gate 它的吗）</li>
+        <li>要合并 / 再拆吗？</li>
+      </ul>
+      <p>迭代到用户批准。回环回第 3 步调整。</p>
+
+      <h3>第 5 步 · 发布</h3>
+      <p>按 tracker 类型走不同形态——见后面"发布形态"段。</p>
+    </section>
+
+    <section id="source">
+      <h2>SKILL.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code>---
+name: to-tickets
+description: Break a plan, spec, or the current conversation into a set of
+  tracer-bullet tickets, each declaring its blocking edges, published to the
+  configured tracker (edges as text in one file per ticket locally, or native
+  blocking links on a real tracker).
+disable-model-invocation: true
+---
+
+# To Tickets
+
+Break a plan, spec, or conversation into a set of **tickets**: tracer-bullet
+vertical slices, each declaring the tickets that **block** it.
+
+The issue tracker and triage label vocabulary should have been provided to
+you. If not, tell the user to run `/setup-matt-pocock-skills`.
+
+## Process
+
+### 1. Gather context
+Work from whatever is already in the conversation context. If the user
+passes a reference (a spec path, an issue number or URL) as an argument,
+fetch it and read its full body and comments.
+
+### 2. Explore the codebase (optional)
+... Look for opportunities to prefactor ...
+
+### 3. Draft vertical slices
+- Each slice cuts a narrow but COMPLETE path through every layer
+- A completed slice is demoable or verifiable on its own
+- Each slice is sized to fit in a single fresh context window
+- Any prefactoring should be done first
+
+[Wide refactor paragraph: expand–contract pattern]
+
+### 4. Quiz the user
+Present the proposed breakdown as a numbered list.
+- Title
+- Blocked by
+- What it delivers
+
+### 5. Publish
+- Local → `.scratch/<feature>/issues/<NN>-<slug>.md`
+- Real tracker → one issue per ticket, native blocking / sub-issue
+- Apply `ready-for-agent`</code></pre>
+      </div>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 8px;">
+        完整文件 105 行（含两个 ticket 模板）。最大的一段是 wide refactor 的展开–收缩规则和"不要写文件路径 / 代码"的纪律——跟 to-spec 一致。
+      </p>
+    </section>
+
+    <section id="vertical">
+      <h2>vertical slice 规则</h2>
+
+      <p><strong>vertical slice</strong> = 切功能；<strong>horizontal slice</strong> = 切层。<code>to-tickets</code> 强制 vertical。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="vertical vs horizontal slicing 对比">
+          <defs>
+            <style>
+              .layer-row { fill: #fff; stroke: #c8c4bc; stroke-width: 1; }
+              .layer-lbl { font: 600 11px sans-serif; fill: #6b6b6b;
+                           text-transform: uppercase; letter-spacing: 0.06em;
+                           text-anchor: end; }
+              .slice-lbl { font: 700 11px sans-serif; fill: #1a1a1a;
+                           text-anchor: middle; }
+              .v-bar { fill: #e8f0f7; stroke: #2d5f8a; stroke-width: 1.2; }
+              .v-bar-done { fill: #c8dceb; }
+              .h-bar { fill: #fff0e0; stroke: #c7501f; stroke-width: 1.2; }
+              .h-bar-done { fill: #f3d6b8; }
+              .badge-ok { font: 700 10px sans-serif; fill: #2d5f8a; }
+              .badge-no { font: 700 10px sans-serif; fill: #c7501f; }
+              .axis { font: 11px sans-serif; fill: #6b6b6b; font-style: italic;
+                      text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">切法对比</text>
+
+          <!-- LEFT: vertical slicing -->
+          <text x="220" y="60" font="700 13px sans-serif" fill="#2d5f8a"
+                text-anchor="middle">✓ vertical slice（to-tickets 强制）</text>
+
+          <!-- layers (rows) -->
+          <text x="60" y="100" class="layer-lbl">UI</text>
+          <rect x="80" y="84" width="280" height="22" fill="#fafaf7" stroke="#e8e3d8"/>
+          <rect class="v-bar" x="80" y="84" width="40" height="22"/>
+          <rect class="v-bar" x="124" y="84" width="50" height="22"/>
+          <rect class="v-bar" x="178" y="84" width="55" height="22"/>
+          <rect class="v-bar" x="237" y="84" width="55" height="22"/>
+          <rect class="v-bar" x="296" y="84" width="64" height="22"/>
+
+          <text x="60" y="135" class="layer-lbl">API</text>
+          <rect x="80" y="119" width="280" height="22" fill="#fafaf7" stroke="#e8e3d8"/>
+          <rect class="v-bar" x="80" y="119" width="40" height="22"/>
+          <rect class="v-bar" x="124" y="119" width="50" height="22"/>
+          <rect class="v-bar" x="178" y="119" width="55" height="22"/>
+          <rect class="v-bar" x="237" y="119" width="55" height="22"/>
+          <rect class="v-bar" x="296" y="119" width="64" height="22"/>
+
+          <text x="60" y="170" class="layer-lbl">Schema</text>
+          <rect x="80" y="154" width="280" height="22" fill="#fafaf7" stroke="#e8e3d8"/>
+          <rect class="v-bar" x="80" y="154" width="40" height="22"/>
+          <rect class="v-bar" x="124" y="154" width="50" height="22"/>
+          <rect class="v-bar" x="178" y="154" width="55" height="22"/>
+          <rect class="v-bar" x="237" y="154" width="55" height="22"/>
+          <rect class="v-bar" x="296" y="154" width="64" height="22"/>
+
+          <text x="60" y="205" class="layer-lbl">Tests</text>
+          <rect x="80" y="189" width="280" height="22" fill="#fafaf7" stroke="#e8e3d8"/>
+          <rect class="v-bar" x="80" y="189" width="40" height="22"/>
+          <rect class="v-bar" x="124" y="189" width="50" height="22"/>
+          <rect class="v-bar" x="178" y="189" width="55" height="22"/>
+          <rect class="v-bar" x="237" y="189" width="55" height="22"/>
+          <rect class="v-bar" x="296" y="189" width="64" height="22"/>
+
+          <!-- slice labels (bottom) -->
+          <text x="100" y="226" class="slice-lbl">T01</text>
+          <text x="149" y="226" class="slice-lbl">T02</text>
+          <text x="205" y="226" class="slice-lbl">T03</text>
+          <text x="264" y="226" class="slice-lbl">T04</text>
+          <text x="328" y="226" class="slice-lbl">T05</text>
+
+          <text x="220" y="252" class="badge-ok" text-anchor="middle">✓ 每条都是端到端</text>
+          <text x="220" y="268" class="badge-ok" text-anchor="middle">✓ 完成就能 demo</text>
+          <text x="220" y="284" class="badge-ok" text-anchor="middle">✓ 单 session 可吃下</text>
+
+          <!-- separator -->
+          <line x1="450" y1="80" x2="450" y2="290" stroke="#c8c4bc" stroke-dasharray="4 3"/>
+
+          <!-- RIGHT: horizontal slicing -->
+          <text x="660" y="60" font="700 13px sans-serif" fill="#c7501f"
+                text-anchor="middle">✗ horizontal slice（不允许）</text>
+
+          <text x="500" y="100" class="layer-lbl">UI</text>
+          <rect x="520" y="84" width="280" height="22" fill="#fafaf7" stroke="#e8e3d8"/>
+          <rect class="h-bar" x="520" y="84" width="280" height="22"/>
+
+          <text x="500" y="135" class="layer-lbl">API</text>
+          <rect x="520" y="119" width="280" height="22" fill="#fafaf7" stroke="#e8e3d8"/>
+          <rect class="h-bar" x="520" y="119" width="280" height="22"/>
+
+          <text x="500" y="170" class="layer-lbl">Schema</text>
+          <rect x="520" y="154" width="280" height="22" fill="#fafaf7" stroke="#e8e3d8"/>
+          <rect class="h-bar" x="520" y="154" width="280" height="22"/>
+
+          <text x="500" y="205" class="layer-lbl">Tests</text>
+          <rect x="520" y="189" width="280" height="22" fill="#fafaf7" stroke="#e8e3d8"/>
+          <rect class="h-bar" x="520" y="189" width="280" height="22"/>
+
+          <text x="660" y="232" class="slice-lbl">"先做全 schema，再做全 API，再做全 UI"</text>
+          <text x="660" y="252" class="badge-no" text-anchor="middle">✗ 早期没法 demo</text>
+          <text x="660" y="268" class="badge-no" text-anchor="middle">✗ 完成前 stack 不通</text>
+          <text x="660" y="284" class="badge-no" text-anchor="middle">✗ 任意一层卡住全停</text>
+
+          <!-- bottom axis -->
+          <text x="220" y="330" class="axis">功能（注册 / 登录 / 注销 / 修改）</text>
+          <text x="660" y="330" class="axis">层（schema → API → UI → tests）</text>
+
+          <text x="440" y="360" font="700 12px sans-serif" fill="#1a1a1a"
+                text-anchor="middle">垂直切 = 每片窄但完整穿过每一层</text>
+        </svg>
+        <div class="diagram-caption">图 3 · vertical slice = 端到端薄片，horizontal slice = 按层横切（不允许）</div>
+      </div>
+
+      <h3>vertical slice 的硬性规则</h3>
+      <ul>
+        <li><strong>每片窄但 COMPLETE</strong>：穿过 schema / API / UI / tests</li>
+        <li><strong>完成一片就 demoable / verifiable</strong></li>
+        <li><strong>大小 = 单 fresh context window</strong>（smart zone，~150k tokens）</li>
+        <li><strong>预重构先做</strong>（第 2 步识别出来，独立成 ticket，先做）</li>
+      </ul>
+
+      <h3>tracer bullet 是什么</h3>
+      <p>Tracer bullet 是 vertical slice 的极端形态——一条最细但端到端可见的轨迹，让整个 stack 跑起来。早期几条 tracer bullet 就是为了证明架构成立（比如最小化的"<code>/api/ping</code> + 前端 <code>fetch</code> + 显示结果"）。</p>
+    </section>
+
+    <section id="dag">
+      <h2>阻塞边 / DAG / frontier</h2>
+
+      <p>每张 ticket 声明 <strong>Block by</strong>——它必须等哪些 ticket 先做完。没 blocker 的可以立刻开始。</p>
+      <p>全部 blocker 都 done 的 ticket 集合 = <strong>frontier</strong>（前线）。日常节奏就是 <strong>work the frontier</strong>。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="DAG 和 frontier：用户认证功能的 7 张 ticket 依赖图">
+          <defs>
+            <marker id="tt3-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <style>
+              .tk { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .tk-done { fill: #e6f3e0; stroke: #4a7d4a; }
+              .tk-front { fill: #fff0e0; stroke: #c7501f; stroke-width: 2; }
+              .tk-lbl { font: 700 12px sans-serif; fill: #1a1a1a;
+                        text-anchor: middle; }
+              .tk-id { font: 700 10px sans-serif; fill: #6b6b6b;
+                       text-anchor: middle; font-family: monospace; }
+              .tk-sub { font: 10px sans-serif; fill: #6b6b6b;
+                        text-anchor: middle; }
+              .dag { stroke: #2d5f8a; stroke-width: 1.4; fill: none; }
+              .dag-done { stroke: #4a7d4a; }
+              .legend-lbl { font: 11px sans-serif; fill: #1a1a1a; }
+              .legend-tag { font: 700 10px sans-serif; fill: #6b6b6b;
+                            text-transform: uppercase; letter-spacing: 0.06em; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">例：用户认证功能的 ticket DAG</text>
+
+          <!-- T01 (done) -->
+          <g transform="translate(60,60)">
+            <rect class="tk-done" x="0" y="0" width="160" height="48" rx="6"/>
+            <text x="80" y="14" class="tk-id">T01 ✓</text>
+            <text x="80" y="30" class="tk-lbl">sessions 表 schema</text>
+          </g>
+
+          <!-- T02 (done) -->
+          <g transform="translate(280,60)">
+            <rect class="tk-done" x="0" y="0" width="160" height="48" rx="6"/>
+            <text x="80" y="14" class="tk-id">T02 ✓</text>
+            <text x="80" y="30" class="tk-lbl">password column</text>
+          </g>
+
+          <!-- T03 (frontier) -->
+          <g transform="translate(60,160)">
+            <rect class="tk-front" x="0" y="0" width="160" height="48" rx="6"/>
+            <text x="80" y="14" class="tk-id" fill="#c7501f">T03 ⚡ frontier</text>
+            <text x="80" y="30" class="tk-lbl">register endpoint</text>
+          </g>
+
+          <!-- T04 (frontier) -->
+          <g transform="translate(280,160)">
+            <rect class="tk-front" x="0" y="0" width="160" height="48" rx="6"/>
+            <text x="80" y="14" class="tk-id" fill="#c7501f">T04 ⚡ frontier</text>
+            <text x="80" y="30" class="tk-lbl">login endpoint</text>
+          </g>
+
+          <!-- T05 (depends on T03) -->
+          <g transform="translate(60,260)">
+            <rect class="tk" x="0" y="0" width="160" height="48" rx="6"/>
+            <text x="80" y="14" class="tk-id">T05</text>
+            <text x="80" y="30" class="tk-lbl">注销 endpoint</text>
+          </g>
+
+          <!-- T06 (depends on T04) -->
+          <g transform="translate(280,260)">
+            <rect class="tk" x="0" y="0" width="160" height="48" rx="6"/>
+            <text x="80" y="14" class="tk-id">T06</text>
+            <text x="80" y="30" class="tk-lbl">前端登录页</text>
+          </g>
+
+          <!-- T07 (depends on T03+T04+T05+T06) -->
+          <g transform="translate(530,160)">
+            <rect class="tk" x="0" y="0" width="160" height="48" rx="6"/>
+            <text x="80" y="14" class="tk-id">T07</text>
+            <text x="80" y="30" class="tk-lbl">session middleware</text>
+          </g>
+
+          <!-- arrows -->
+          <!-- T01 done → T03, T04 -->
+          <path class="dag dag-done" d="M 140 108 L 140 160" marker-end="url(#tt3-arr)"/>
+          <path class="dag dag-done" d="M 360 108 L 360 160" marker-end="url(#tt3-arr)"/>
+
+          <!-- T02 done → T03, T04 -->
+          <path class="dag dag-done" d="M 280 84 Q 200 100 140 160" marker-end="url(#tt3-arr)"/>
+          <path class="dag dag-done" d="M 360 84 Q 360 120 360 160" marker-end="url(#tt3-arr)"/>
+
+          <!-- T03 → T05, T07 -->
+          <path class="dag" d="M 140 208 L 140 260" marker-end="url(#tt3-arr)"/>
+          <path class="dag" d="M 220 184 Q 380 130 530 184" marker-end="url(#tt3-arr)"/>
+
+          <!-- T04 → T06, T07 -->
+          <path class="dag" d="M 360 208 L 360 260" marker-end="url(#tt3-arr)"/>
+          <path class="dag" d="M 440 184 Q 500 184 530 184" marker-end="url(#tt3-arr)"/>
+
+          <!-- T06 → T07 -->
+          <path class="dag" d="M 440 284 Q 540 220 610 208" marker-end="url(#tt3-arr)"/>
+
+          <!-- T05 → T07 -->
+          <path class="dag" d="M 220 284 Q 400 240 530 208" marker-end="url(#tt3-arr)"/>
+
+          <!-- frontier ellipse -->
+          <ellipse cx="220" cy="184" rx="240" ry="80" fill="none"
+                   stroke="#c7501f" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.6"/>
+          <text x="430" y="124" font="700 11px sans-serif" fill="#c7501f"
+                text-anchor="middle" font-style="italic">frontier（任何一张都能立刻拿起来）</text>
+
+          <!-- legend -->
+          <g transform="translate(720,60)">
+            <rect class="tk-done" x="0" y="0" width="14" height="14" rx="2"/>
+            <text x="22" y="11" class="legend-lbl">done</text>
+            <rect class="tk-front" x="0" y="20" width="14" height="14" rx="2"/>
+            <text x="22" y="31" class="legend-lbl">frontier</text>
+            <rect class="tk" x="0" y="40" width="14" height="14" rx="2"/>
+            <text x="22" y="51" class="legend-lbl">blocked</text>
+          </g>
+
+          <text x="450" y="340" class="axis" font-style="italic"
+                text-anchor="middle" font-size="12" fill="#6b6b6b">
+            完成 T03 / T04 → 推进 frontier 至 T05 + T06 + T07
+          </text>
+        </svg>
+        <div class="diagram-caption">图 4 · T01/T02 已 done → T03/T04 进 frontier。完成它们推进到 T05/T06/T07</div>
+      </div>
+
+      <h3>frontier 是什么</h3>
+      <p>任意时刻，可以立刻开干的 ticket 集合。它的 size 是并行度上限——如果 frontier = 1（线性链），就只能串行；如果 frontier = 3，可以并行。</p>
+
+      <h3>work the frontier</h3>
+      <p>完成 frontier 上的一张 ticket，就让它的 successors 进 frontier。线性链上就是 top → bottom；并行图上就多个同时开。</p>
+
+      <div class="callout">
+        <strong>不要做的事：</strong> 不关、不改 spec issue（parent）。<code>to-tickets</code> 是把 spec 拆票，不是改源头。
+      </div>
+    </section>
+
+    <section id="wide-refactor">
+      <h2>wide refactor 例外</h2>
+
+      <p>不是所有变更都能切薄片。<strong>wide refactor</strong>：</p>
+      <ul>
+        <li>一个机械变更（重命名列、改类型）</li>
+        <li><strong>blast radius</strong> 横跨整个代码库</li>
+        <li>单次编辑击碎上千个调用点</li>
+        <li><strong>任何 vertical slice 都做不到 green</strong>（中间态整体编译/测试失败）</li>
+      </ul>
+
+      <p>这种情况不进 tracer bullet 流程，按 <strong>expand–contract</strong>：</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="expand-contract 三阶段时序图">
+          <defs>
+            <marker id="tt4-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <style>
+              .ph { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .ph-1 { fill: #e8f0f7; stroke: #2d5f8a; }
+              .ph-2 { fill: #fff0e0; stroke: #c7501f; }
+              .ph-3 { fill: #e6f3e0; stroke: #4a7d4a; }
+              .ph-lbl { font: 700 13px sans-serif; fill: #1a1a1a;
+                        text-anchor: middle; }
+              .ph-sub { font: 10px sans-serif; fill: #6b6b6b;
+                        text-anchor: middle; }
+              .ph-tk { font: 700 10px sans-serif; fill: #6b6b6b;
+                       text-anchor: middle; font-family: monospace; }
+              .ph-flow { stroke: #2d5f8a; stroke-width: 1.6; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">expand – contract 三阶段</text>
+
+          <!-- Phase 1: Expand -->
+          <g transform="translate(40,60)">
+            <rect class="ph ph-1" x="0" y="0" width="220" height="140" rx="8"/>
+            <text x="110" y="22" class="ph-lbl">① Expand</text>
+            <text x="110" y="40" class="ph-sub" font-style="italic">1 张 ticket</text>
+            <text x="20" y="62" class="ph-tk">T01</text>
+            <text x="20" y="80" class="ph-sub" text-anchor="start">· 新旧并排</text>
+            <text x="20" y="96" class="ph-sub" text-anchor="start">· 旧形态保留</text>
+            <text x="20" y="112" class="ph-sub" text-anchor="start">· CI 全绿</text>
+            <text x="110" y="130" class="ph-sub">无 blocker</text>
+          </g>
+
+          <!-- Phase 2: Migrate -->
+          <g transform="translate(290,60)">
+            <rect class="ph ph-2" x="0" y="0" width="300" height="140" rx="8"/>
+            <text x="150" y="22" class="ph-lbl">② Migrate（多批）</text>
+            <text x="150" y="40" class="ph-sub" font-style="italic">每批 1 张 ticket</text>
+            <text x="20" y="62" class="ph-tk">T02</text>
+            <text x="20" y="80" class="ph-sub" text-anchor="start">· 按 blast radius 分</text>
+            <text x="170" y="62" class="ph-tk">T03</text>
+            <text x="170" y="80" class="ph-sub" text-anchor="start">· per package/dir</text>
+            <text x="20" y="100" class="ph-sub" text-anchor="start">· Block by T01</text>
+            <text x="170" y="100" class="ph-sub" text-anchor="start">· Block by T01</text>
+            <text x="150" y="124" class="ph-sub" font-style="italic">每批自己保持 CI 绿</text>
+          </g>
+
+          <!-- Phase 3: Contract -->
+          <g transform="translate(620,60)">
+            <rect class="ph ph-3" x="0" y="0" width="220" height="140" rx="8"/>
+            <text x="110" y="22" class="ph-lbl">③ Contract</text>
+            <text x="110" y="40" class="ph-sub" font-style="italic">1 张 ticket</text>
+            <text x="20" y="62" class="ph-tk">T04</text>
+            <text x="20" y="80" class="ph-sub" text-anchor="start">· 删旧形态</text>
+            <text x="20" y="96" class="ph-sub" text-anchor="start">· Block by 所有</text>
+            <text x="20" y="112" class="ph-sub" text-anchor="start">  migrate 批</text>
+            <text x="110" y="130" class="ph-sub">final</text>
+          </g>
+
+          <!-- arrows -->
+          <path class="ph-flow" d="M 260 130 L 290 130" marker-end="url(#tt4-arr)"/>
+          <path class="ph-flow" d="M 590 130 L 620 130" marker-end="url(#tt4-arr)"/>
+
+          <!-- bottom note -->
+          <text x="440" y="230" class="ph-sub" text-anchor="middle" font-style="italic">
+            例：把 <tspan font-family="monospace" fill="#1a1a1a">user.name</tspan> 重命名为 <tspan font-family="monospace" fill="#1a1a1a">user.display_name</tspan>
+          </text>
+          <text x="440" y="248" class="ph-sub" text-anchor="middle" font-style="italic">
+            T01 同时加 display_name · T02/T03 按目录迁 · T04 删 name
+          </text>
+        </svg>
+        <div class="diagram-caption">图 5 · expand → migrate（按 blast radius 分批）→ contract</div>
+      </div>
+
+      <h3>当分批也保持不住 green</h3>
+
+      <p>如果分批后单批自己保持不住 CI green（green 只能在最终态保证），就让它们 <strong>共用一个 integration branch</strong>，所有 batch 共同 block 一个 <strong>integrate-and-verify</strong> ticket——green 只在那里保证。</p>
+
+      <div class="callout callout-warn">
+        <strong>判断标准：</strong>"单批保持不住 green" 是罕见但合法的——只能靠 integration branch + 最终 integrate ticket 来救。绝大多数情况仍坚持 "每批单独 green"。
+      </div>
+    </section>
+
+    <section id="publish">
+      <h2>发布形态</h2>
+
+      <p>按 tracker 类型走不同物理形态——tickets 内容一致，只是阻塞关系的物理表示不同。</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Local markdown（<code>.scratch/</code>）</th>
+            <th>真 tracker（GitHub / Linear / …）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>每个 ticket</strong></td>
+            <td>1 个 <code>.md</code> 文件</td>
+            <td>1 个 issue</td>
+          </tr>
+          <tr>
+            <td><strong>路径</strong></td>
+            <td><code>.scratch/<feature>/issues/<NN>-<slug>.md</code></td>
+            <td>tracker 上创建 issue</td>
+          </tr>
+          <tr>
+            <td><strong>编号</strong></td>
+            <td><code>01</code> 起，按依赖顺序（blocker 先）</td>
+            <td>按依赖顺序发布（让 blocking 引用真实 ID）</td>
+          </tr>
+          <tr>
+            <td><strong>阻塞关系</strong></td>
+            <td>文本列出 blocker 的编号/标题</td>
+            <td>平台原生 blocking / sub-issue 关系</td>
+          </tr>
+          <tr>
+            <td><strong>标签</strong></td>
+            <td><code>Status: ready-for-agent</code>（写在 frontmatter）</td>
+            <td><code>ready-for-agent</code> triage 标签</td>
+          </tr>
+          <tr>
+            <td><strong>内容字段</strong></td>
+            <td colspan="2" style="text-align:center;">What to build / Blocked by / Acceptance criteria</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>local ticket 文件模板</h3>
+      <div class="skill-source">
+<pre><code># <NN>: <Ticket title>
+
+**What to build:** the end-to-end behaviour this ticket makes work,
+from the user's perspective, not a layer-by-layer implementation list.
+
+**Blocked by:** the numbers/titles of the tickets that gate this one,
+or "None (can start immediately)".
+
+**Status:** ready-for-agent
+
+- [ ] Acceptance criterion 1
+- [ ] Acceptance criterion 2</code></pre>
+      </div>
+
+      <h3>issue 模板（真 tracker）</h3>
+      <div class="skill-source">
+<pre><code>## Parent
+[可选 · 引到 spec issue]
+
+## What to build
+[用户视角 · 端到端]
+
+## Acceptance criteria
+- [ ] Criterion 1
+- [ ] Criterion 2
+
+## Blocked by
+- #&lt;id1&gt; · &lt;title&gt;
+- #&lt;id2&gt; · &lt;title&gt;</code></pre>
+      </div>
+
+      <h3>纪律：no file paths / no code</h3>
+      <div class="callout callout-warn">
+        跟 <code>to-spec</code> 一致：<strong>不放文件路径 / 不放代码片段</strong>（会过时）。唯一例外：prototype 抓的、能比文字更精确表达决策的片段可内联，标注"来自 prototype"。
+      </div>
+    </section>
+
+    <section id="when">
+      <h2>何时用 / 不用</h2>
+
+      <h3>用 to-tickets</h3>
+      <ul>
+        <li><code>to-spec</code> 后想正式开工</li>
+        <li>活大到要跨多 session（spec 内的功能点多到一张 session 吃不下）</li>
+        <li>想显式画依赖图，看清并行度</li>
+        <li>想把多张 ticket 分给多个 agent（前端 / 后端 / schema）并行做</li>
+      </ul>
+
+      <h3>用 implement 而不是 to-tickets</h3>
+      <ul>
+        <li>spec 已经够小，单 session 内能做完</li>
+        <li>不需要并行 / 不需要显式 DAG</li>
+      </ul>
+
+      <h3>用 prototype 而不是 to-tickets</h3>
+      <ul>
+        <li>设计还没确定，先 throwaway code 验</li>
+      </ul>
+
+      <h3>用 wayfinder 而不是 to-tickets</h3>
+      <ul>
+        <li>想法太大，连地图都没画出来</li>
+        <li>先 wayfinder 解 decision tickets，结束后再 to-tickets 收口</li>
+      </ul>
+
+      <h3>不要用 to-tickets</h3>
+      <ul>
+        <li>没有 spec 就想直接拆票 → 先回 <code>to-spec</code> 写 spec</li>
+        <li>bug 修复 → <code>/triage</code> → <code>/diagnosing-bugs</code></li>
+        <li>复杂度没大到需要 DAG → 直接 <code>/implement</code></li>
+      </ul>
+    </section>
+
+    <section id="reference">
+      <h2>参考</h2>
+      <ul>
+        <li>Skill 源文件：<code>~/.agents/skills/to-tickets/SKILL.md</code>（105 行）</li>
+        <li>上游：<a href="to-spec.html">to-spec</a>（提供要拆的 spec）</li>
+        <li>下游：<code>implement</code>（每张 ticket 一个 session）</li>
+        <li>前提：<a href="setup-matt-pocock-skills.html">setup-matt-pocock-skills</a>（issue tracker / 标签配置）</li>
+        <li>同源/参考：<a href="prototype.html">prototype</a>（vertical slice 内的预验证）</li>
+      </ul>
+    </section>
+
+    <footer>
+      Generated for <code>to-tickets</code> · 105 行 · tracer-bullet + DAG · 五步流程 · single-file 自包含
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // ============ 顶部：文档目录下拉 ============
+  (function () {
+    const trigger = document.querySelector('.doc-trigger');
+    const panel = document.getElementById('doc-panel');
+    if (!trigger || !panel) return;
+    function close() { panel.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+    function open() { panel.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.contains('open') ? close() : open();
+    });
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && !trigger.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => close()));
+  })();
+
+  // ============ 侧栏：滚动联动高亮 ============
+  (function () {
+    const links = document.querySelectorAll('.sidebar a[href^="#"]');
+    const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')))
+                              .filter(Boolean);
+    if (!sections.length) return;
+    const map = new Map();
+    links.forEach((a, i) => map.set(sections[i].id, a));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => obs.observe(s));
+  })();
+</script>
+
+</body>
+</html>

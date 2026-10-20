@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>improve-codebase-architecture · Skill 文档</title>
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #d8d4cc;
+      --accent: #2d5f8a;
+      --accent-soft: #e8f0f7;
+      --highlight: #c7501f;
+      --amber: #d97706;
+      --amber-soft: #fef3c7;
+      --success: #4a7d4a;
+      --code-bg: #f3f0ea;
+      --code-fg: #2b2b2b;
+      --topnav-bg: rgba(250, 250, 247, 0.85);
+      --sidebar-bg: #f3f0ea;
+      --codebase-color: #1f5d4a;
+      --codebase-soft: #d8ebe0;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    /* ============ Top nav ============ */
+    .topnav { position: sticky; top: 0; z-index: 100;
+              background: var(--topnav-bg);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border-bottom: 1px solid var(--border); }
+    .topnav-inner { max-width: 1400px; margin: 0 auto;
+                    display: flex; align-items: center;
+                    height: 54px; padding: 0 28px; gap: 20px;
+                    position: relative; }
+    .brand { font-weight: 600; font-size: 14px; color: var(--fg);
+             text-decoration: none; letter-spacing: 0.005em; white-space: nowrap; }
+    .brand .dot { display: inline-block; width: 6px; height: 6px;
+                  background: var(--accent); border-radius: 50%;
+                  margin-right: 8px; vertical-align: middle; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px;
+                  font-size: 13px; color: var(--muted);
+                  flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+    .breadcrumb .sep { color: #c8c4bc; }
+    .breadcrumb .node { font-family: "SF Mono", "Menlo", monospace; font-size: 12.5px; }
+    .breadcrumb .current { color: var(--fg); font-weight: 500; }
+    .doc-trigger { display: flex; align-items: center; gap: 8px;
+                   padding: 6px 12px 6px 14px; background: #fff;
+                   border: 1px solid var(--border); border-radius: 6px;
+                   font: inherit; font-size: 13px; color: var(--fg);
+                   cursor: pointer; transition: all 0.15s; font-family: inherit;
+                   white-space: nowrap; }
+    .doc-trigger:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-trigger .count { background: var(--accent-soft); color: var(--accent);
+                          font-size: 11px; font-weight: 600;
+                          padding: 1px 7px; border-radius: 9px;
+                          font-family: "SF Mono", monospace; }
+    .doc-trigger .chev { width: 12px; height: 12px; transition: transform 0.18s; opacity: 0.6; }
+    .doc-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); opacity: 1; }
+    .doc-panel { position: absolute; top: calc(100% + 6px); right: 28px;
+                 background: #fff; border: 1px solid var(--border); border-radius: 8px;
+                 padding: 6px; max-height: 80vh; overflow-y: auto;
+                 box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+                 min-width: 380px; display: none; }
+    .doc-panel.open { display: block; }
+    .doc-group { padding: 6px 4px; }
+    .doc-group + .doc-group { border-top: 1px solid var(--border);
+                              margin-top: 4px; padding-top: 10px; }
+    .doc-group-title { font-size: 10.5px; text-transform: uppercase;
+                       letter-spacing: 0.08em; color: var(--muted);
+                       font-weight: 700; margin-bottom: 6px; padding: 0 8px; }
+    .doc-link { display: flex; align-items: center; justify-content: space-between;
+                padding: 6px 10px; color: var(--fg); text-decoration: none;
+                font-size: 13px; border-radius: 4px;
+                font-family: "SF Mono", "Menlo", monospace; }
+    .doc-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-link.active { background: var(--accent); color: white; font-weight: 600; }
+    .doc-link.planned { color: #a8a49c; }
+    .doc-link.planned:hover { background: #f3f0ea; color: var(--fg); }
+    .doc-link .tag-mini { font-family: -apple-system, sans-serif; font-size: 10px;
+                          padding: 1px 6px; border-radius: 3px; font-weight: 500;
+                          background: rgba(255,255,255,0.25); }
+    .doc-link.planned .tag-mini { background: var(--code-bg); color: var(--muted); }
+    .doc-link.active .tag-mini { background: rgba(255,255,255,0.22); color: white; }
+
+    /* ============ Layout ============ */
+    .layout { display: grid; grid-template-columns: 240px 1fr; max-width: 1400px; margin: 0 auto; }
+
+    /* ============ Sidebar ============ */
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border);
+               padding: 28px 18px 28px 28px; position: sticky; top: 54px;
+               align-self: start; max-height: calc(100vh - 54px); overflow-y: auto; }
+    .sidebar h3 { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+                  color: var(--muted); margin: 0 0 12px; font-weight: 700; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { margin: 0; }
+    .sidebar a { display: block; padding: 5px 10px; color: var(--fg);
+                 text-decoration: none; font-size: 13.5px; border-radius: 3px;
+                 border-left: 2px solid transparent; transition: all 0.1s; }
+    .sidebar a:hover { background: rgba(45, 95, 138, 0.08); color: var(--accent); }
+    .sidebar a.active { background: rgba(45, 95, 138, 0.13); color: var(--accent);
+                        font-weight: 600; border-left-color: var(--accent); }
+    .sidebar .meta { margin-top: 28px; padding-top: 18px;
+                     border-top: 1px solid var(--border);
+                     font-size: 12px; color: var(--muted); }
+    .sidebar .meta .row { margin-bottom: 10px; }
+    .sidebar .meta strong { display: block; font-size: 11px; color: var(--muted);
+                            font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.06em; margin-bottom: 4px; }
+    .sidebar .meta .val { color: var(--fg); font-weight: 500; }
+
+    /* ============ Content ============ */
+    .content { padding: 28px 48px 96px; min-width: 0; }
+    .content > header { border-bottom: 2px solid var(--fg); padding-bottom: 20px; margin-bottom: 36px; }
+    h1 { font-size: 30px; margin: 0 0 8px; font-weight: 600; letter-spacing: -0.01em; }
+    h2 { font-size: 22px; margin: 56px 0 16px; font-weight: 600;
+         border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { font-size: 16px; margin: 28px 0 10px; font-weight: 600; color: var(--accent); }
+    h4 { font-size: 14px; margin: 20px 0 8px; font-weight: 600; color: #2b2b2b; }
+    p, li { font-size: 15px; }
+    .lede { font-size: 17px; color: var(--muted); margin: 0; }
+    .tag { display: inline-block; font-size: 12px; padding: 2px 8px;
+           background: var(--accent-soft); color: var(--accent);
+           border-radius: 3px; margin-right: 6px; font-weight: 500; }
+    .tag-hl { background: #fff0e0; color: var(--highlight); }
+    .tag-amber { background: var(--amber-soft); color: var(--amber); }
+    .tag-codebase { background: var(--codebase-soft); color: var(--codebase-color); }
+    .tag-emerald { background: #d1fae5; color: #065f46; }
+    .tag-slate { background: #e2e8f0; color: #475569; }
+
+    code { background: var(--code-bg); color: var(--code-fg); padding: 1px 6px;
+           border-radius: 3px; font-family: "SF Mono", "Menlo", "Consolas", monospace;
+           font-size: 13.5px; }
+    pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px;
+          overflow-x: auto; font-size: 13px; line-height: 1.55; }
+    pre code { background: none; padding: 0; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 4px 0; }
+
+    .diagram { background: #fff; border: 1px solid var(--border);
+               border-radius: 6px; padding: 20px; margin: 24px 0; overflow-x: auto; }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram-caption { font-size: 13px; color: var(--muted);
+                       margin-top: 12px; text-align: center; font-style: italic; }
+
+    .skill-source { background: #fff; border: 1px solid var(--border);
+                    border-radius: 6px; padding: 20px 24px; margin: 24px 0;
+                    position: relative; }
+    .skill-source::before { content: "SOURCE"; position: absolute;
+                            top: -10px; left: 16px; background: #fff;
+                            padding: 0 8px; font-size: 11px;
+                            color: var(--muted); font-weight: 600;
+                            text-transform: uppercase; letter-spacing: 0.06em; }
+    .skill-source pre { margin: 0; max-height: 460px; }
+    .skill-source + .skill-source { margin-top: 40px; }
+
+    .callout { padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--accent);
+               margin: 16px 0; background: var(--accent-soft); }
+    .callout-warn { border-left-color: var(--highlight); background: #fce8e0; }
+    .callout-amber { border-left-color: var(--amber); background: var(--amber-soft); }
+    .callout-codebase { border-left-color: var(--codebase-color); background: var(--codebase-soft); }
+
+    /* mini mockup (sample report preview) */
+    .mockup { background: #f5f3ec; border: 1px solid var(--border);
+              border-radius: 6px; padding: 16px; margin: 16px 0; }
+    .mockup-title { font-family: "SF Mono", monospace; font-size: 13px;
+                    color: var(--muted); margin-bottom: 8px; font-weight: 600; }
+    .mock-card { background: #fff; border: 1px solid var(--border);
+                 border-radius: 6px; padding: 14px; margin: 10px 0; }
+    .mock-card .title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+    .mock-card .meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .mock-card .meta span { font-size: 10px; padding: 2px 6px; border-radius: 3px;
+                            font-family: "SF Mono", monospace; }
+    .mock-card .meta .files { background: #f3f0ea; color: #6b6b6b; }
+    .mock-card .problem { color: var(--highlight); font-size: 13px; font-weight: 600; margin: 6px 0; }
+    .mock-card .solution { color: var(--success); font-size: 13px; font-weight: 600; margin: 6px 0; }
+    .mock-card .wins { font-size: 12px; color: var(--fg); font-family: monospace; }
+    .mock-card .wins li { margin: 2px 0; }
+
+    footer { margin-top: 80px; padding-top: 16px; border-top: 1px solid var(--border);
+             font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; border-right: none;
+                 border-bottom: 1px solid var(--border); }
+      .content { padding: 24px 24px 64px; }
+      .breadcrumb { display: none; }
+      .doc-panel { right: 16px; min-width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============ Top Nav ============ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span>SDD / Matt Pocock Skills</a>
+
+    <div class="breadcrumb">
+      <span class="node">Codebase</span>
+      <span class="sep">›</span>
+      <span class="node current">improve-codebase-architecture</span>
+    </div>
+
+    <button class="doc-trigger" aria-expanded="false" aria-controls="doc-panel">
+      <span>All skill docs</span>
+      <span class="count">19</span>
+      <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 4.5 L6 7.5 L9 4.5"/>
+      </svg>
+    </button>
+
+    <div class="doc-panel" id="doc-panel" role="menu">
+
+      <div class="doc-group">
+        <div class="doc-group-title">Precondition · 1</div>
+        <a href="setup-matt-pocock-skills.html" class="doc-link">setup-matt-pocock-skills</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Grilling · 4</div>
+        <a href="grill-with-docs.html" class="doc-link">grill-with-docs</a>
+        <a href="grill-me.html" class="doc-link">grill-me</a>
+        <a href="grilling.html" class="doc-link">grilling</a>
+        <a href="domain-modeling.html" class="doc-link">domain-modeling</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Main flow · 7</div>
+        <a href="to-spec.html" class="doc-link">to-spec</a>
+        <a href="to-tickets.html" class="doc-link">to-tickets</a>
+        <a href="implement.html" class="doc-link planned">implement <span class="tag-mini">planned</span></a>
+        <a href="code-review.html" class="doc-link planned">code-review <span class="tag-mini">planned</span></a>
+        <a href="tdd.html" class="doc-link">tdd</a>
+        <a href="prototype.html" class="doc-link">prototype</a>
+        <a href="handoff.html" class="doc-link planned">handoff <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">On-ramps · 4</div>
+        <a href="triage.html" class="doc-link planned">triage <span class="tag-mini">planned</span></a>
+        <a href="diagnosing-bugs.html" class="doc-link planned">diagnosing-bugs <span class="tag-mini">planned</span></a>
+        <a href="wayfinder.html" class="doc-link planned">wayfinder <span class="tag-mini">planned</span></a>
+        <a href="research.html" class="doc-link planned">research <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Codebase · 2</div>
+        <a href="improve-codebase-architecture.html" class="doc-link active">improve-codebase-architecture <span class="tag-mini">you are here</span></a>
+        <a href="codebase-design.html" class="doc-link">codebase-design</a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ============ Layout ============ -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>本页目录</h3>
+    <ul>
+      <li><a href="#purpose">用途</a></li>
+      <li><a href="#flow-position">主流程位置</a></li>
+      <li><a href="#process">三步流程总览</a></li>
+      <li><a href="#explore">步骤 1 · Explore</a></li>
+      <li><a href="#html-report">步骤 2 · HTML report</a></li>
+      <li><a href="#grilling">步骤 3 · Grilling loop</a></li>
+      <li><a href="#card">候选卡 6 项</a></li>
+      <li><a href="#patterns">4 个图样</a></li>
+      <li><a href="#vocab">词汇 & Tone</a></li>
+      <li><a href="#adr">ADR 冲突处理</a></li>
+      <li><a href="#chain">完整任务链</a></li>
+      <li><a href="#when">何时用 / 不用</a></li>
+      <li><a href="#skill-source">SKILL.md 全文</a></li>
+      <li><a href="#report-source">HTML-REPORT.md 全文</a></li>
+      <li><a href="#reference">参考</a></li>
+    </ul>
+    <div class="meta">
+      <div class="row">
+        <strong>状态</strong>
+        <span class="val">✓ 已发布</span>
+      </div>
+      <div class="row">
+        <strong>位置</strong>
+        <span class="val">docs/SDD/matt-pocock/</span>
+      </div>
+      <div class="row">
+        <strong>对应 skill</strong>
+        <span class="val">~/.agents/skills/<br>improve-codebase-<br>architecture/</span>
+      </div>
+      <div class="row">
+        <strong>SKILL.md</strong>
+        <span class="val">72 行<br>+ HTML-REPORT.md 124 行</span>
+      </div>
+      <div class="row">
+        <strong>产物</strong>
+        <span class="val">OS temp 下<br>自包含 HTML</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <header>
+      <div><span class="tag tag-codebase">Codebase health</span><span class="tag tag-hl">disable-model-invocation</span><span class="tag">→ temp HTML</span><span class="tag">→ visual</span></div>
+      <h1>improve-codebase-architecture</h1>
+      <p class="lede"><strong>Survey the codebase for deepening opportunities</strong>——只在用户显式调用下执行，产出一份 OS temp 下的自包含 visual HTML 报告，挑中候选后才进 grilling。</p>
+    </header>
+
+    <section id="purpose">
+      <h2>用途</h2>
+
+      <p>
+        在 codebase 不出问题的时候也保持它对人和 agent 都好打理。<code>improve-codebase-architecture</code> 是<strong>survey</strong>——找 N 个<strong>deepening opportunities</strong>（把 shallow 模块加深的候选），给用户挑。
+      </p>
+
+      <div class="callout callout-codebase">
+        <strong>Codebase health 层 · 不是 main flow。</strong>不在功能 work 上跑——用户在空闲时刻 / 头脑清醒时用它"保持 codebase 对 agent 友好"。
+      </div>
+
+      <p><strong>关键约束（写在 frontmatter 上）</strong>：</p>
+      <pre><code>disable-model-invocation: true</code></pre>
+      <p>意味着它<strong>不能</strong>被其他 skill 自动触发——必须用户显式调 <code>/improve-codebase-architecture</code>。理由：动 codebase 形状是大动作，不能默默发生。</p>
+
+      <p><strong>目标</strong>（SKILL.md 第 9 行）：</p>
+      <blockquote>
+        Surface architectural friction and propose <strong>deepening opportunities</strong>: refactors that turn shallow modules into deep ones. The aim is <strong>testability</strong> and <strong>AI-navigability</strong>.
+      </blockquote>
+
+      <p><strong>两个 vocabulary 必带</strong>：</p>
+      <ul>
+        <li><code>/codebase-design</code> 的 module/interface/depth/seam/adapter/leverage/locality——架构侧</li>
+        <li><code>CONTEXT.md</code> 里的项目自有词汇——领域侧。说"Order intake module"，不要说"FooBarHandler"</li>
+        <li><code>docs/adr/</code>——已经决定的，不要重新讨论</li>
+      </ul>
+    </section>
+
+    <section id="flow-position">
+      <h2>主流程位置</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 320" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="improve-codebase-architecture 在 ask-matt 中的位置：codebase health 层">
+          <defs>
+            <marker id="ic-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#1f5d4a"/>
+            </marker>
+            <style>
+              .ic-zone { fill: var(--codebase-soft); stroke: var(--codebase-color);
+                         stroke-width: 1.5; stroke-dasharray: 2 3; }
+              .ic-box-cb { fill: #fff; stroke: var(--codebase-color); stroke-width: 2; }
+              .ic-box-vocab { fill: var(--codebase-soft); stroke: var(--codebase-color);
+                              stroke-width: 2; }
+              .ic-box-main { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .ic-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ic-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .ic-arrow { stroke: var(--codebase-color); stroke-width: 1.6; fill: none; }
+              .ic-arrow-thin { stroke: #c8c4bc; stroke-width: 1.2; fill: none; }
+              .ic-zone-lbl { font: 700 11px sans-serif; fill: var(--codebase-color);
+                             text-transform: uppercase; letter-spacing: 0.1em; }
+            </style>
+          </defs>
+
+          <text x="460" y="22" font="700 14px sans-serif" fill="#1f5d4a"
+                text-anchor="middle">ask-matt 位置：codebase health 层（off main flow）</text>
+
+          <!-- main flow band -->
+          <text x="40" y="55" class="ic-zone-lbl" fill="#2d5f8a">Main flow（不会触发 ica）</text>
+          <g transform="translate(40,65)">
+            <rect class="ic-box-main" x="0" y="0" width="120" height="40" rx="6"/>
+            <text x="60" y="16" class="ic-lbl">grill-with-docs</text>
+            <text x="60" y="32" class="ic-sub">/ ADR</text>
+          </g>
+          <g transform="translate(180,65)">
+            <rect class="ic-box-main" x="0" y="0" width="120" height="40" rx="6"/>
+            <text x="60" y="16" class="ic-lbl">to-spec</text>
+            <text x="60" y="32" class="ic-sub">→ issue</text>
+          </g>
+          <g transform="translate(320,65)">
+            <rect class="ic-box-main" x="0" y="0" width="120" height="40" rx="6"/>
+            <text x="60" y="16" class="ic-lbl">to-tickets</text>
+            <text x="60" y="32" class="ic-sub">/ DAG</text>
+          </g>
+          <g transform="translate(460,65)">
+            <rect class="ic-box-main" x="0" y="0" width="120" height="40" rx="6"/>
+            <text x="60" y="16" class="ic-lbl">implement</text>
+            <text x="60" y="32" class="ic-sub">(/tdd)</text>
+          </g>
+          <g transform="translate(600,65)">
+            <rect class="ic-box-main" x="0" y="0" width="120" height="40" rx="6"/>
+            <text x="60" y="16" class="ic-lbl">code-review</text>
+            <text x="60" y="32" class="ic-sub">2-axis</text>
+          </g>
+          <g transform="translate(740,65)">
+            <rect class="ic-box-main" x="0" y="0" width="140" height="40" rx="6"/>
+            <text x="70" y="16" class="ic-lbl">ship</text>
+            <text x="70" y="32" class="ic-sub">merge → deploy</text>
+          </g>
+          <path class="ic-arrow-thin" d="M 160 85 L 180 85" marker-end="url(#ic-arr)"/>
+          <path class="ic-arrow-thin" d="M 300 85 L 320 85" marker-end="url(#ic-arr)"/>
+          <path class="ic-arrow-thin" d="M 440 85 L 460 85" marker-end="url(#ic-arr)"/>
+          <path class="ic-arrow-thin" d="M 580 85 L 600 85" marker-end="url(#ic-arr)"/>
+          <path class="ic-arrow-thin" d="M 720 85 L 740 85" marker-end="url(#ic-arr)"/>
+
+          <!-- codebase health zone -->
+          <rect class="ic-zone" x="40" y="135" width="840" height="170" rx="10"/>
+
+          <text x="50" y="155" class="ic-zone-lbl">Codebase health（off-flow · 显式触发）</text>
+
+          <!-- ica -->
+          <g transform="translate(150,175)">
+            <rect class="ic-box-cb" x="0" y="0" width="220" height="80" rx="8"/>
+            <text x="110" y="18" class="ic-lbl">improve-codebase-architecture</text>
+            <text x="110" y="36" class="ic-sub">survey · N 候选 → HTML 报告</text>
+            <text x="110" y="56" class="ic-sub">disable-model-invocation</text>
+            <text x="110" y="72" class="ic-sub">用户在空闲时显式调用</text>
+          </g>
+
+          <!-- selected candidate -->
+          <g transform="translate(450,175)">
+            <rect class="ic-box-main" x="0" y="0" width="180" height="80" rx="8"/>
+            <text x="90" y="18" class="ic-lbl">candidate</text>
+            <text x="90" y="36" class="ic-sub">用户挑 1</text>
+            <text x="90" y="56" class="ic-sub">→ 进 main flow</text>
+            <text x="90" y="72" class="ic-sub">(/grill-with-docs)</text>
+          </g>
+
+          <!-- vocabulary pair -->
+          <g transform="translate(700,175)">
+            <rect class="ic-box-vocab" x="0" y="0" width="160" height="80" rx="8"/>
+            <text x="80" y="18" class="ic-lbl">codebase-design</text>
+            <text x="80" y="36" class="ic-sub">design · DEEPENING</text>
+            <text x="80" y="52" class="ic-sub">DESIGN-IT-TWICE</text>
+          </g>
+
+          <path class="ic-arrow" d="M 370 215 L 450 215" marker-end="url(#ic-arr)"/>
+          <text x="410" y="206" class="ic-sub" font-style="italic">挑 1 个</text>
+
+          <path class="ic-arrow" d="M 480 255 Q 480 290 750 255" marker-end="url(#ic-arr)"/>
+          <text x="600" y="285" class="ic-sub" font-style="italic">design it twice（可选）</text>
+
+          <text x="460" y="312" class="ic-sub" font-style="italic">
+            ica 是 find（survey）· codebase-design 是 design（单点）· grill-with-docs 把 deepen 后的 idea 带进 main flow
+          </text>
+        </svg>
+        <div class="diagram-caption">图 1 · ica 跟 grill-with-docs / codebase-design 的关系</div>
+      </div>
+    </section>
+
+    <section id="process">
+      <h2>三步流程总览</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="三步流程图：Explore / Write HTML / Grilling loop">
+          <defs>
+            <marker id="ic-arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#1f5d4a"/>
+            </marker>
+            <style>
+              .ic-step { fill: #fff; stroke: var(--codebase-color); stroke-width: 2; }
+              .ic-step-hi { fill: var(--codebase-soft); stroke: var(--codebase-color); stroke-width: 2.5; }
+              .ic-step-num { font: 700 26px sans-serif; fill: var(--codebase-color); }
+              .ic-step-lbl { font: 700 15px sans-serif; fill: #1a1a1a; }
+              .ic-step-sub { font: 11px sans-serif; fill: #6b6b6b; }
+              .ic-step-task { font: 11px sans-serif; fill: var(--codebase-color);
+                              font-weight: 600; }
+              .ic-arrow { stroke: var(--codebase-color); stroke-width: 1.8; fill: none; }
+              .ic-tool { fill: #fff8eb; stroke: var(--amber); stroke-width: 1.5;
+                         stroke-dasharray: 3 2; }
+              .ic-tool-lbl { font: 10px sans-serif; fill: var(--amber);
+                             text-anchor: middle; font-weight: 600; font-family: monospace; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#1f5d4a">三步流程（disable-model-invocation · 用户显式触发）</text>
+
+          <!-- Step 1 -->
+          <g transform="translate(30,60)">
+            <rect class="ic-step-hi" x="0" y="0" width="220" height="200" rx="8"/>
+            <text x="16" y="36" class="ic-step-num">1</text>
+            <text x="56" y="32" class="ic-step-lbl">Explore</text>
+            <text x="16" y="60" class="ic-step-task">scope first · YAGNI</text>
+            <text x="16" y="80" class="ic-step-sub">用户给了方向？→ 直接去</text>
+            <text x="16" y="96" class="ic-step-sub">否则 git log --oneline</text>
+            <text x="16" y="112" class="ic-step-sub">找 hot spots</text>
+
+            <text x="16" y="138" class="ic-step-sub" font-weight="600">sub-agent 自然漫游：</text>
+            <text x="16" y="156" class="ic-step-sub">· 概念散在多模块？</text>
+            <text x="16" y="172" class="ic-step-sub">· shallow 模块在哪儿？</text>
+            <text x="16" y="188" class="ic-step-sub">· leak across seam？</text>
+
+            <!-- tool callout -->
+            <g transform="translate(180,140)">
+              <rect class="ic-tool" x="0" y="0" width="32" height="50" rx="6"/>
+              <text x="16" y="20" class="ic-tool-lbl">sub</text>
+              <text x="16" y="34" class="ic-tool-lbl">agent</text>
+            </g>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(330,60)">
+            <rect class="ic-step" x="0" y="0" width="220" height="200" rx="8"/>
+            <text x="16" y="36" class="ic-step-num">2</text>
+            <text x="56" y="32" class="ic-step-lbl">Present HTML report</text>
+            <text x="16" y="60" class="ic-step-task">OS temp · 自包含</text>
+            <text x="16" y="80" class="ic-step-sub">路径：</text>
+            <text x="16" y="96" class="ic-step-sub" font-family="monospace">$TMPDIR / tmp /</text>
+            <text x="16" y="112" class="ic-step-sub" font-family="monospace">%TEMP%</text>
+
+            <text x="16" y="138" class="ic-step-sub font-weight:700" font-weight="600">每个候选一张卡：</text>
+            <text x="16" y="156" class="ic-step-sub">· files / problem / solution</text>
+            <text x="16" y="172" class="ic-step-sub">· before/after 图</text>
+            <text x="16" y="188" class="ic-step-sub">· 强度 + dependency 类</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(630,60)">
+            <rect class="ic-step-hi" x="0" y="0" width="220" height="200" rx="8"/>
+            <text x="16" y="36" class="ic-step-num">3</text>
+            <text x="56" y="32" class="ic-step-lbl">Grilling loop</text>
+            <text x="16" y="60" class="ic-step-task">用户挑 1 个 → 烤</text>
+            <text x="16" y="80" class="ic-step-sub">约束 / 依赖 / 形状</text>
+            <text x="16" y="96" class="ic-step-sub">seam 后藏什么 / 测试存活</text>
+
+            <text x="16" y="122" class="ic-step-sub" font-weight="600">in-line 副作用：</text>
+            <text x="16" y="140" class="ic-step-sub">· 命名 → CONTEXT.md</text>
+            <text x="16" y="156" class="ic-step-sub">· 拒绝理由 load-bearing</text>
+            <text x="16" y="172" class="ic-step-sub">  → 提议 ADR</text>
+            <text x="16" y="188" class="ic-step-sub">· 看多种接口 → design-it-twice</text>
+          </g>
+
+          <path class="ic-arrow" d="M 250 160 L 330 160" marker-end="url(#ic-arr2)"/>
+          <path class="ic-arrow" d="M 550 160 L 630 160" marker-end="url(#ic-arr2)"/>
+
+          <!-- Q after step 2 -->
+          <g transform="translate(330,290)">
+            <rect fill="#fff8eb" stroke="var(--amber)" stroke-width="1.5" x="0" y="0" width="220" height="50" rx="6"/>
+            <text x="110" y="22" class="ic-step-sub" text-anchor="middle"
+                  font-style="italic" fill="var(--amber)" font-weight="600">写出报告后唯一的问题：</text>
+            <text x="110" y="40" class="ic-step-sub" text-anchor="middle"
+                  font-style="italic" fill="var(--amber)">"Which of these would you like to explore?"</text>
+          </g>
+
+          <text x="440" y="370" class="ic-step-sub" text-anchor="middle" font-style="italic">
+            关键：步骤 2 写完报告后，绝不直接给接口设计——等用户挑出来
+          </text>
+        </svg>
+        <div class="diagram-caption">图 2 · 三步：Explore → Write HTML → Grilling loop（step 1 和 3 都喂 deep-module 词汇进 step 2 的卡片）</div>
+      </div>
+    </section>
+
+    <section id="explore">
+      <h2>步骤 1 · Explore</h2>
+
+      <h3>核心原则 · scope first, YAGNI</h3>
+
+      <div class="callout">
+        Deepening a module pays off by making future changes to it easier, so put extra weight on the parts of the codebase that have recently changed.
+      </div>
+
+      <h3>两条进入路径</h3>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 240" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Explore 进入路径决策图">
+          <defs>
+            <style>
+              .ex-q { fill: #fff8eb; stroke: var(--amber); stroke-width: 1.8; }
+              .ex-b { fill: #fff; stroke: var(--codebase-color); stroke-width: 2; }
+              .ex-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ex-sub { font: 11px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .ex-arrow { stroke: var(--codebase-color); stroke-width: 1.4; fill: none; }
+              .ex-mono { font-family: "SF Mono", monospace; font-size: 12px;
+                         fill: var(--codebase-color); text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#1f5d4a">scope 决策</text>
+
+          <g transform="translate(280,50)">
+            <rect class="ex-q" x="0" y="0" width="320" height="48" rx="8"/>
+            <text x="160" y="22" class="ex-lbl">用户给了方向吗？</text>
+            <text x="160" y="40" class="ex-sub">模块 / 子系统 / 痛点</text>
+          </g>
+
+          <!-- Yes path -->
+          <g transform="translate(50,140)">
+            <rect class="ex-b" x="0" y="0" width="320" height="80" rx="8"/>
+            <text x="160" y="22" class="ex-lbl" fill="var(--codebase-color)">YES</text>
+            <text x="160" y="42" class="ex-sub">take it · 跳过以下推断</text>
+            <text x="160" y="60" class="ex-sub">直接去那个方向扫</text>
+            <text x="160" y="76" class="ex-mono">read CONTEXT.md + ADRs in area</text>
+          </g>
+
+          <!-- No path -->
+          <g transform="translate(510,140)">
+            <rect class="ex-b" x="0" y="0" width="320" height="80" rx="8"/>
+            <text x="160" y="22" class="ex-lbl" fill="var(--codebase-color)">NO</text>
+            <text x="160" y="42" class="ex-sub">git log --oneline（往回走）</text>
+            <text x="160" y="60" class="ex-sub">找 hot spots</text>
+            <text x="160" y="76" class="ex-mono">scattered? → widen the net</text>
+          </g>
+
+          <path class="ex-arrow" d="M 380 98 Q 280 130 210 140" marker-end="url(#ic-arr)"/>
+          <path class="ex-arrow" d="M 500 98 Q 600 130 670 140" marker-end="url(#ic-arr)"/>
+        </svg>
+        <div class="diagram-caption">图 3 · scope 决策——给方向直接去；没给走 hot spots</div>
+      </div>
+
+      <h3>sub-agent 自然漫游找什么</h3>
+
+      <table>
+        <thead>
+          <tr><th>信号</th><th>问题</th><th>deep-module 术语</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>一个概念要在多个小模块之间跳来跳去</td>
+            <td>概念是不是该有个 deepen 的模块？</td>
+            <td>没有 <strong>locality</strong></td>
+          </tr>
+          <tr>
+            <td>模块 shallow，接口和实现差不多复杂</td>
+            <td>包了几个 pass-through，能合吗？</td>
+            <td><strong>shallow module</strong></td>
+          </tr>
+          <tr>
+            <td>为了测抽了 pure function，但 bug 在调用处</td>
+            <td>测试 surface 是不是抽错了？</td>
+            <td>接口 vs 实现错位</td>
+          </tr>
+          <tr>
+            <td>紧耦合模块过 seam 漏</td>
+            <td>seam 放对了吗？</td>
+            <td><strong>leak across seam</strong></td>
+          </tr>
+          <tr>
+            <td>测不动 / 当前接口测不全</td>
+            <td>这是测试 surface 还是模块形状问题？</td>
+            <td>"interface is the test surface"</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>The Deletion Test（每个疑似 shallow 的都跑一次）</h3>
+      <blockquote>
+        Imagine deleting the module. <strong>If complexity vanishes</strong>, it was a pass-through. <strong>If complexity reappears across N callers</strong>, it was earning its keep.
+      </blockquote>
+    </section>
+
+    <section id="html-report">
+      <h2>步骤 2 · HTML report</h2>
+
+      <h3>输出位置（关键）</h3>
+
+      <div class="callout callout-warn">
+        <strong>写到 OS temp 目录 · 不进 repo。</strong>
+        <code>&lt;$TMPDIR 或 /tmp 或 %TEMP%&gt;/architecture-review-&lt;timestamp&gt;.html</code>
+        每个 run 一个新文件。打开（open / xdg-open / start）后告诉用户绝对路径。
+      </div>
+
+      <p style="font-size: 14px; color: var(--muted);">
+        注：HTML-REPORT.md 范本用了 Tailwind via CDN + Mermaid via CDN——这是这个 skill 自己产物的特点。Documentation 文档（本文件）是用户为 skill 写的二次说明，仍走我们已有的约束：自包含、不引入外部 CDN。
+      </p>
+
+      <h3>报告总体结构</h3>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="HTML 报告总体结构：header / candidates / top recommendation">
+          <defs>
+            <style>
+              .ic-head { fill: #fff; stroke: #c8c4bc; stroke-width: 1; }
+              .ic-cand { fill: #fff; stroke: var(--codebase-color); stroke-width: 1.6;
+                         stroke-dasharray: 4 3; }
+              .ic-top { fill: var(--codebase-soft); stroke: var(--codebase-color); stroke-width: 2; }
+              .ic-zone-lbl { font: 700 10px sans-serif; fill: var(--muted);
+                             text-transform: uppercase; letter-spacing: 0.1em; }
+              .ic-card-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ic-card-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#1f5d4a">HTML 报告整体布局</text>
+
+          <text x="20" y="55" class="ic-zone-lbl">Header · 极简</text>
+          <g transform="translate(40,65)">
+            <rect class="ic-head" x="0" y="0" width="800" height="40" rx="4"/>
+            <text x="20" y="16" class="ic-card-lbl" text-anchor="start" font-size="12">Repo Name</text>
+            <text x="20" y="32" class="ic-card-sub" text-anchor="start" font-size="10">date · 图例（实=module, 虚=seam, 红=leak, 深=deep）</text>
+            <text x="780" y="24" class="ic-card-sub" text-anchor="end" fill="var(--codebase-color)" font-weight="600">→ 没有 introduction paragraph</text>
+          </g>
+
+          <text x="20" y="125" class="ic-zone-lbl">Candidates · 多张卡，每张深度不同</text>
+          <g transform="translate(40,135)">
+            <rect class="ic-cand" x="0" y="0" width="380" height="100" rx="6"/>
+            <text x="190" y="30" class="ic-card-lbl">Candidate 1</text>
+            <text x="190" y="50" class="ic-card-sub">files · problem · solution</text>
+            <text x="190" y="68" class="ic-card-sub">before/after diagram</text>
+            <text x="190" y="86" class="ic-card-sub">Strong / Worth exploring / Speculative</text>
+          </g>
+          <g transform="translate(440,135)">
+            <rect class="ic-cand" x="0" y="0" width="380" height="100" rx="6"/>
+            <text x="190" y="30" class="ic-card-lbl">Candidate 2</text>
+            <text x="190" y="50" class="ic-card-sub">files · problem · solution</text>
+            <text x="190" y="68" class="ic-card-sub">before/after diagram</text>
+            <text x="190" y="86" class="ic-card-sub">+ dependency 类别标签</text>
+          </g>
+          <g transform="translate(40,250)">
+            <rect class="ic-cand" x="0" y="0" width="200" height="50" rx="6"/>
+            <text x="100" y="22" class="ic-card-lbl">Candidate N...</text>
+            <text x="100" y="40" class="ic-card-sub">...</text>
+          </g>
+          <g transform="translate(260,250)">
+            <rect class="ic-cand" x="0" y="0" width="560" height="50" rx="6" stroke-dasharray="2 4"/>
+            <text x="280" y="22" class="ic-card-lbl" fill="var(--muted)" font-style="italic">"speculative" candidates often lighter-weight</text>
+            <text x="280" y="40" class="ic-card-sub">strength 标签让它一眼区分</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">图 4 · Header → Candidates → Top recommendation</div>
+      </div>
+
+      <p><strong>结尾必须有 Top recommendation 段</strong>——一张更大卡，候选名 + 一句话 + 锚链接到那张候选卡。不要罗列所有候选优缺点。</p>
+    </section>
+
+    <section id="grilling">
+      <h2>步骤 3 · Grilling loop</h2>
+
+      <p>用户挑出 1 个候选 → 调 <code>grilling</code> skill 走决策树。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Grilling loop 流程：跑决策树 + in-line 副作用">
+          <defs>
+            <style>
+              .gl-core { fill: var(--codebase-soft); stroke: var(--codebase-color); stroke-width: 2.5; }
+              .gl-side { fill: #fff; stroke: var(--amber); stroke-width: 1.6;
+                         stroke-dasharray: 4 3; }
+              .gl-tool { fill: #fff8eb; stroke: var(--amber); stroke-width: 1.5; }
+              .gl-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .gl-sub { font: 11px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .gl-arrow { stroke: var(--codebase-color); stroke-width: 1.6; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#1f5d4a">grilling loop · in-line 副作用</text>
+
+          <!-- Center -->
+          <g transform="translate(290,40)">
+            <rect class="gl-core" x="0" y="0" width="300" height="60" rx="8"/>
+            <text x="150" y="22" class="gl-lbl">grilling skill</text>
+            <text x="150" y="42" class="gl-sub">走约束 · 依赖 · 形状 · seam · 测试</text>
+          </g>
+
+          <!-- Side: domain-modeling -->
+          <g transform="translate(50,140)">
+            <rect class="gl-side" x="0" y="0" width="180" height="60" rx="8"/>
+            <text x="90" y="22" class="gl-lbl">domain-modeling</text>
+            <text x="90" y="40" class="gl-sub">命名 → 更新 CONTEXT.md</text>
+          </g>
+
+          <g transform="translate(260,140)">
+            <rect class="gl-side" x="0" y="0" width="180" height="60" rx="8"/>
+            <text x="90" y="22" class="gl-lbl" font-size="12">sharpening fuzzy term</text>
+            <text x="90" y="40" class="gl-sub">→ 直接更新 CONTEXT.md</text>
+          </g>
+
+          <g transform="translate(470,140)">
+            <rect class="gl-side" x="0" y="0" width="180" height="60" rx="8"/>
+            <text x="90" y="22" class="gl-lbl">reject with reason</text>
+            <text x="90" y="40" class="gl-sub">load-bearing → 提议 ADR</text>
+          </g>
+
+          <g transform="translate(680,140)">
+            <rect class="gl-side" x="0" y="0" width="160" height="60" rx="8"/>
+            <text x="80" y="22" class="gl-lbl" font-size="12">see alt interfaces</text>
+            <text x="80" y="40" class="gl-sub">→ codebases-design · DIT</text>
+          </g>
+
+          <path class="gl-arrow" d="M 440 80 Q 280 110 140 140" marker-end="url(#ic-arr)"/>
+          <path class="gl-arrow" d="M 460 90 Q 400 120 350 140" marker-end="url(#ic-arr)"/>
+          <path class="gl-arrow" d="M 480 100 Q 520 130 560 140" marker-end="url(#ic-arr)"/>
+          <path class="gl-arrow" d="M 510 100 Q 640 130 760 140" marker-end="url(#ic-arr)"/>
+
+          <!-- "in-line" note -->
+          <text x="440" y="232" class="gl-sub" text-anchor="middle" font-style="italic">
+            4 个副作用都是 in-line——决定一变就发生，不是事后补
+          </text>
+
+          <!-- tool side -->
+          <g transform="translate(680,225)">
+            <rect class="gl-tool" x="0" y="0" width="160" height="36" rx="6"/>
+            <text x="80" y="16" class="gl-sub" font-weight="700" fill="var(--amber)">提议 ADR 的措辞：</text>
+            <text x="80" y="30" class="gl-sub" fill="var(--amber)" font-style="italic">"Want me to record this as an ADR…"</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">图 5 · grilling 期间的 4 个 in-line 副作用</div>
+      </div>
+
+      <h3>什么时候提议 ADR（关键判断）</h3>
+      <p><strong>只在 load-bearing + 未来 explorer 也需要</strong>用的时候提议——下面三个不要提议：</p>
+      <ul>
+        <li>"现在不值"——ephemeral</li>
+        <li>自明的事——不需 ADR 注解</li>
+        <li>今天对的、明天就过时的——暂时记录会污染 docs/adr/</li>
+      </ul>
+    </section>
+
+    <section id="card">
+      <h2>候选卡 6 项</h2>
+
+      <p>每张 candidate card 用 6 个组件撑起来。<strong>如果图看不懂就重画</strong>，不要加 paragraph。</p>
+
+      <div class="mockup">
+        <div class="mockup-title">// Sample card (mock-up) — 真实报告画风近似这个</div>
+
+        <div class="mock-card">
+          <div class="title">Collapse the Order intake pipeline</div>
+          <div class="meta">
+            <span class="files">src/orders/intake/{handler,validator,repo}.ts</span>
+            <span class="files" style="background:#d1fae5;color:#065f46;">Strong</span>
+            <span class="files" style="background:#f0e8f7;color:#6b4d8a;">in-process</span>
+          </div>
+          <div class="problem">PROBLEM · interface nearly matches implementation — pass-through</div>
+          <div class="solution">SOLUTION · merge 3 wrappers into one Order intake module; tests hit the new interface</div>
+          <ul class="wins">
+            <li>· locality: bugs in one place</li>
+            <li>· leverage: 1 interface, 4 call sites</li>
+            <li>· interface shrinks; impl absorbs wrappers</li>
+          </ul>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>#</th><th>组件</th><th>约束</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>Title</strong></td>
+            <td>短，命名 deepening（如 "Collapse the Order intake pipeline"）</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>Badge</strong></td>
+            <td>
+              <span class="tag tag-emerald">Strong</span> 强制考虑 ·
+              <span class="tag tag-amber">Worth exploring</span> 看情况 ·
+              <span class="tag tag-slate">Speculative</span> 不一定做<br>
+              + 依赖类：<code>in-process</code> / <code>local-substitutable</code> / <code>ports &amp; adapters</code> / <code>mock</code>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>Files</strong></td>
+            <td>monospace 列表，<code>font-mono text-sm</code></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>Before / After diagram</strong></td>
+            <td>核心 · 两栏并排 · <strong>320px 高</strong> · 一目了然</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><strong>Problem + Solution + Wins</strong></td>
+            <td>各 1 句；wins ≤6 字 bullets</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><strong>ADR callout</strong>（可选）</td>
+            <td>琥珀框，1 行，说明是否冲突</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="patterns">
+      <h2>4 个图样（mixed, never the same）</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="4 个图样：Mermaid graph / Hand-built / Cross-section / Mass diagram">
+          <defs>
+            <style>
+              .pa-card { fill: #fff; stroke: #c8c4bc; stroke-width: 1.2; }
+              .pa-title { font: 700 13px sans-serif; fill: #1a1a1a; }
+              .pa-sub { font: 10px sans-serif; fill: var(--muted); font-style: italic; }
+              .pa-use { font: 10px sans-serif; fill: #6b6b6b; }
+              .pa-deep { fill: #1e293b; }
+              .pa-shallow { fill: #fff; stroke: #c8c4bc; }
+              .pa-seam { stroke: var(--codebase-color); stroke-width: 1.5; stroke-dasharray: 4 3; fill: none; }
+              .pa-leak { stroke: #dc2626; stroke-width: 1.5; fill: none; }
+              .pa-band { fill: #d6e4e9; stroke: var(--codebase-color); stroke-width: 0.5; }
+              .pa-band-thin { fill: #fff; stroke: var(--codebase-color); stroke-width: 0.5; opacity: 0.7; }
+              .pa-band-deep { fill: #1e293b; stroke: #1e293b; }
+              .pa-iface { fill: #cbd5e1; stroke: #475569; }
+              .pa-impl { fill: #cbd5e1; stroke: #475569; }
+              .pa-node-lbl { font: 700 10px sans-serif; fill: #1a1a1a; text-anchor: middle;
+                             text-transform: uppercase; letter-spacing: 0.05em; }
+              .pa-deep-lbl { font: 700 10px sans-serif; fill: white; text-anchor: middle;
+                             text-transform: uppercase; letter-spacing: 0.05em; }
+              .pa-zone-lbl { font: 700 10px sans-serif; fill: var(--codebase-color);
+                             text-transform: uppercase; letter-spacing: 0.1em; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#1f5d4a">4 个图样（mixed · 不全用 mermaid）</text>
+
+          <!-- 1. Mermaid graph -->
+          <g transform="translate(30,55)">
+            <rect class="pa-card" x="0" y="0" width="430" height="220" rx="6"/>
+            <text x="14" y="22" class="pa-title">1 · Mermaid graph (workhorse)</text>
+            <text x="14" y="38" class="pa-sub">call graph · dependencies · sequence · "X calls Y calls Z"</text>
+
+            <!-- demo call graph -->
+            <g transform="translate(20,55)">
+              <rect class="pa-shallow" x="0" y="0" width="70" height="30" rx="4"/>
+              <text x="35" y="18" class="pa-node-lbl">OrderHandler</text>
+            </g>
+            <line x1="90" y1="70" x2="130" y2="70" stroke="#6b6b6b" stroke-width="1.2" marker-end="url(#ic-arr)"/>
+            <g transform="translate(130,55)">
+              <rect class="pa-shallow" x="0" y="0" width="70" height="30" rx="4"/>
+              <text x="35" y="18" class="pa-node-lbl">OrderValidator</text>
+            </g>
+            <line x1="200" y1="70" x2="240" y2="70" stroke="#6b6b6b" stroke-width="1.2" marker-end="url(#ic-arr)"/>
+            <g transform="translate(240,55)">
+              <rect class="pa-shallow" x="0" y="0" width="70" height="30" rx="4"/>
+              <text x="35" y="18" class="pa-node-lbl">OrderRepo</text>
+            </g>
+            <path class="pa-leak" d="M 275 85 Q 275 130 195 130 Q 130 130 130 95" marker-end="url(#ic-arr)"/>
+            <g transform="translate(155,115)">
+              <rect class="pa-shallow" x="0" y="0" width="80" height="30" rx="4"/>
+              <text x="40" y="18" class="pa-node-lbl">PricingClient</text>
+            </g>
+            <text x="195" y="160" font="10px sans-serif" fill="#dc2626" font-style="italic">leak across seam</text>
+
+            <text x="14" y="195" class="pa-use">style with classDef · leakage edges 红 · deep module 黑</text>
+          </g>
+
+          <!-- 2. Hand-built -->
+          <g transform="translate(490,55)">
+            <rect class="pa-card" x="0" y="0" width="400" height="220" rx="6"/>
+            <text x="14" y="22" class="pa-title">2 · Hand-built boxes-and-arrows</text>
+            <text x="14" y="38" class="pa-sub">when Mermaid layout fights you（深模块的厚感）</text>
+
+            <!-- before: 3 shallow -->
+            <text x="14" y="60" class="pa-sub" font-weight="600">before: 3 shallow wrappers</text>
+            <g transform="translate(20,68)">
+              <rect class="pa-shallow" x="0" y="0" width="80" height="20" rx="3"/>
+              <text x="40" y="14" class="pa-node-lbl" font-size="9">handler</text>
+            </g>
+            <g transform="translate(20,92)">
+              <rect class="pa-shallow" x="0" y="0" width="80" height="20" rx="3"/>
+              <text x="40" y="14" class="pa-node-lbl" font-size="9">validator</text>
+            </g>
+            <g transform="translate(20,116)">
+              <rect class="pa-shallow" x="0" y="0" width="80" height="20" rx="3"/>
+              <text x="40" y="14" class="pa-node-lbl" font-size="9">repo</text>
+            </g>
+
+            <!-- after: 1 deep -->
+            <text x="180" y="60" class="pa-sub" font-weight="600" fill="var(--codebase-color)">after: 1 deep module</text>
+            <g transform="translate(180,65)">
+              <rect class="pa-deep" x="0" y="0" width="190" height="80" rx="6"/>
+              <text x="95" y="20" class="pa-deep-lbl">Order intake</text>
+              <text x="95" y="36" class="pa-deep-lbl" fill="#94a3b8" font-weight="400" font-style="italic">deep module</text>
+              <rect x="10" y="50" width="170" height="2" fill="#475569"/>
+              <text x="95" y="68" class="pa-deep-lbl" fill="#94a3b8" font-size="9">1 interface · 3 internal parts (faded)</text>
+            </g>
+
+            <text x="14" y="195" class="pa-use">Mermaid 渲染不出这种深模块的厚感——手画</text>
+          </g>
+
+          <!-- 3. Cross-section -->
+          <g transform="translate(30,290)">
+            <rect class="pa-card" x="0" y="0" width="430" height="220" rx="6"/>
+            <text x="14" y="22" class="pa-title">3 · Cross-section</text>
+            <text x="14" y="38" class="pa-sub">layered shallowness</text>
+
+            <text x="14" y="55" class="pa-sub" font-weight="600">before: 6 thin layers each doing nothing</text>
+            <g transform="translate(20,65)">
+              <rect class="pa-band-thin" x="0" y="0" width="170" height="12" rx="2"/>
+              <text x="10" y="9" class="pa-node-lbl" font-size="9" text-anchor="start">middleware/parse</text>
+              <rect class="pa-band-thin" x="0" y="14" width="170" height="12" rx="2"/>
+              <text x="10" y="23" class="pa-node-lbl" font-size="9" text-anchor="start">middleware/auth</text>
+              <rect class="pa-band-thin" x="0" y="28" width="170" height="12" rx="2"/>
+              <text x="10" y="37" class="pa-node-lbl" font-size="9" text-anchor="start">middleware/log</text>
+              <rect class="pa-band-thin" x="0" y="42" width="170" height="12" rx="2"/>
+              <text x="10" y="51" class="pa-node-lbl" font-size="9" text-anchor="start">middleware/validate</text>
+              <rect class="pa-band-thin" x="0" y="56" width="170" height="12" rx="2"/>
+              <text x="10" y="65" class="pa-node-lbl" font-size="9" text-anchor="start">middleware/route</text>
+              <rect class="pa-band-thin" x="0" y="70" width="170" height="12" rx="2"/>
+              <text x="10" y="79" class="pa-node-lbl" font-size="9" text-anchor="start">middleware/handler</text>
+            </g>
+
+            <text x="220" y="55" class="pa-sub" font-weight="600" fill="var(--codebase-color)">after: 1 thick band</text>
+            <g transform="translate(220,65)">
+              <rect class="pa-band-deep" x="0" y="0" width="170" height="82" rx="2"/>
+              <text x="85" y="50" class="pa-deep-lbl" font-weight="700">Order intake</text>
+            </g>
+
+            <text x="14" y="195" class="pa-use">向调用方暴露 1 个入口，6 层逻辑藏起来</text>
+          </g>
+
+          <!-- 4. Mass diagram -->
+          <g transform="translate(490,290)">
+            <rect class="pa-card" x="0" y="0" width="400" height="220" rx="6"/>
+            <text x="14" y="22" class="pa-title">4 · Mass diagram</text>
+            <text x="14" y="38" class="pa-sub">"interface ≈ implementation" 的可视化</text>
+
+            <!-- before: iface ≈ impl -->
+            <text x="14" y="55" class="pa-sub" font-weight="600" fill="var(--highlight)">SHALLOW (before)</text>
+            <g transform="translate(20,65)">
+              <rect class="pa-iface" x="0" y="0" width="60" height="60" rx="3"/>
+              <text x="30" y="28" class="pa-node-lbl" fill="white">interface</text>
+              <text x="30" y="40" class="pa-node-lbl" fill="white">60px tall</text>
+              <line x1="32" y1="60" x2="32" y2="65" stroke="#475569" stroke-width="1.2"/>
+              <text x="40" y="74" class="pa-use" font-size="9">12 methods</text>
+            </g>
+            <g transform="translate(110,65)">
+              <rect class="pa-impl" x="0" y="0" width="60" height="60" rx="3"/>
+              <text x="30" y="28" class="pa-node-lbl" fill="white">implementation</text>
+              <text x="30" y="40" class="pa-node-lbl" fill="white">60px tall</text>
+              <text x="40" y="74" class="pa-use" font-size="9">pass-through</text>
+            </g>
+
+            <!-- after: small iface / big impl -->
+            <text x="200" y="55" class="pa-sub" font-weight="600" fill="var(--success)">DEEP (after)</text>
+            <g transform="translate(210,55)">
+              <rect class="pa-iface" x="0" y="0" width="60" height="14" rx="3"/>
+              <text x="30" y="11" class="pa-node-lbl" fill="white" font-size="9">3 methods</text>
+              <text x="40" y="28" class="pa-use" font-size="9">→ tiny</text>
+            </g>
+            <g transform="translate(290,55)">
+              <rect class="pa-impl" x="0" y="0" width="60" height="100" rx="3"/>
+              <text x="30" y="40" class="pa-node-lbl" fill="white" font-size="9">complex</text>
+              <text x="30" y="54" class="pa-node-lbl" fill="white" font-size="9">hidden</text>
+              <text x="40" y="114" class="pa-use" font-size="9">→ deep</text>
+            </g>
+
+            <text x="14" y="195" class="pa-use">before: 接口 ≈ 实现 → pass-through · after: 接口小 + 实现深</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">图 6 · 4 个图样——为不同 case 选不同 shape，让报告不"长得都一个样"</div>
+      </div>
+    </section>
+
+    <section id="vocab">
+      <h2>词汇 & Tone</h2>
+
+      <p>报告的全部文字必须用 codebase-design 词汇——SKILL.md 第 13 行明文：</p>
+
+      <div class="callout">
+        Use these terms exactly in every suggestion, and don't drift into "component," "service," "API," or "boundary."
+      </div>
+
+      <h3>该用 vs 替换陷阱</h3>
+      <table>
+        <thead>
+          <tr><th>该用</th><th>永不替换为</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>module</strong></td><td>component · service · unit · layer · wrapper</td></tr>
+          <tr><td><strong>interface</strong></td><td>API · signature</td></tr>
+          <tr><td><strong>implementation</strong></td><td>body · code</td></tr>
+          <tr><td><strong>seam</strong></td><td>boundary</td></tr>
+          <tr><td><strong>adapter</strong></td><td>implementation · wrapper</td></tr>
+          <tr><td><strong>depth</strong> / <strong>deep</strong> / <strong>shallow</strong></td><td>—</td></tr>
+          <tr><td><strong>leverage</strong> / <strong>locality</strong></td><td>"maintainability" · "cleanliness"</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Wins bullets 模板</h3>
+      <p>每个 win 用 glossary 词。**易维护 / 更干净 / 更好的架构** 这些不进词汇表，<strong>不要用</strong>。</p>
+
+      <table>
+        <thead>
+          <tr><th>可写</th><th>不该这么写</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>"locality: bugs concentrate in one module"</code></td>
+            <td>"easier to maintain"</td>
+          </tr>
+          <tr>
+            <td><code>"leverage: 1 interface, N call sites"</code></td>
+            <td>"cleaner code"</td>
+          </tr>
+          <tr>
+            <td><code>"interface shrinks; implementation absorbs the wrappers"</code></td>
+            <td>"better architecture"</td>
+          </tr>
+          <tr>
+            <td><code>"2 adapters justify the seam: HTTP in prod, in-memory in tests"</code></td>
+            <td>"testable"</td>
+          </tr>
+          <tr>
+            <td><code>"pricing leaks across the seam"</code></td>
+            <td>"pricing kind of crosses some boundaries"</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Wins 字数 & 内容</h3>
+      <p><strong>≤6 字 / bullet</strong>。Sentence 能变 bullet 就变；bullet 能 cut 就 cut。</p>
+
+      <div class="callout callout-warn">
+        "If a sentence could be a bullet, make it a bullet. If a bullet could be cut, cut it. If a term isn't in the codebase-design glossary, reach for one that is before inventing a new one."
+      </div>
+    </section>
+
+    <section id="adr">
+      <h2>ADR 冲突处理</h2>
+
+      <p>候选和已存在的 ADR 矛盾时——<strong>只在值得 reopen 时</strong>放进报告。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 220" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="ADR 冲突处理决策">
+          <defs>
+            <style>
+              .adr-q { fill: #fff8eb; stroke: var(--amber); stroke-width: 1.8; }
+              .adr-no { fill: #e6f3e0; stroke: var(--success); stroke-width: 2; }
+              .adr-yes { fill: #fce8e0; stroke: var(--highlight); stroke-width: 2; }
+              .adr-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .adr-sub { font: 11px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .adr-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#1f5d4a">ADR 冲突决策</text>
+
+          <g transform="translate(290,40)">
+            <rect class="adr-q" x="0" y="0" width="300" height="50" rx="8"/>
+            <text x="150" y="22" class="adr-lbl">候选和 ADR 矛盾？</text>
+            <text x="150" y="40" class="adr-sub">摩擦真的够 reopen 吗？</text>
+          </g>
+
+          <g transform="translate(60,140)">
+            <rect class="adr-no" x="0" y="0" width="300" height="60" rx="8"/>
+            <text x="150" y="22" class="adr-lbl">NO · 不放进报告</text>
+            <text x="150" y="40" class="adr-sub">"ADR forbids so don't list"</text>
+            <text x="150" y="56" class="adr-sub" font-weight="700" fill="var(--success)">跳过 · 不要 theoretical refactor 凑数</text>
+          </g>
+
+          <g transform="translate(520,140)">
+            <rect class="adr-yes" x="0" y="0" width="300" height="60" rx="8"/>
+            <text x="150" y="22" class="adr-lbl">YES · 放进报告</text>
+            <text x="150" y="40" class="adr-sub">琥珀 callout：</text>
+            <text x="150" y="56" class="adr-sub" font-weight="700" fill="var(--highlight)">"contradicts ADR-0007, but worth reopening because…"</text>
+          </g>
+
+          <path class="adr-arrow" d="M 380 90 Q 280 130 210 140" marker-end="url(#ic-arr)"/>
+          <path class="adr-arrow" d="M 500 90 Q 600 130 670 140" marker-end="url(#ic-arr)"/>
+        </svg>
+        <div class="diagram-caption">图 7 · ADR 冲突：摩擦够了 reopen 才标，否则不列</div>
+      </div>
+    </section>
+
+    <section id="chain">
+      <h2>完整任务链</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="ica 完整任务链：ica find → grill idea → codebase-design deepen → main flow build">
+          <defs>
+            <marker id="ic-arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#1f5d4a"/>
+            </marker>
+            <style>
+              .ic-chain { fill: var(--codebase-soft); stroke: var(--codebase-color); stroke-width: 2; }
+              .ic-chain-main { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .ic-chain-vocab { fill: var(--codebase-soft); stroke: var(--codebase-color); stroke-width: 2; }
+              .ic-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ic-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .ic-arrow { stroke: var(--codebase-color); stroke-width: 1.6; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#1f5d4a">ica + 下游 task chain</text>
+
+          <g transform="translate(20,60)">
+            <rect class="ic-chain" x="0" y="0" width="160" height="70" rx="8"/>
+            <text x="80" y="22" class="ic-lbl">improve-codebase</text>
+            <text x="80" y="40" class="ic-lbl">-architecture</text>
+            <text x="80" y="58" class="ic-sub">survey · N candidates</text>
+          </g>
+
+          <g transform="translate(220,60)">
+            <rect class="ic-chain-main" x="0" y="0" width="160" height="70" rx="8"/>
+            <text x="80" y="22" class="ic-lbl">grill-with-docs</text>
+            <text x="80" y="40" class="ic-lbl">(主流程起)</text>
+            <text x="80" y="58" class="ic-sub">挑 1 个 → 进 idea</text>
+          </g>
+
+          <g transform="translate(420,60)">
+            <rect class="ic-chain-vocab" x="0" y="0" width="160" height="70" rx="8"/>
+            <text x="80" y="22" class="ic-lbl">codebase-design</text>
+            <text x="80" y="40" class="ic-lbl">DEEPENING / DIT</text>
+            <text x="80" y="58" class="ic-sub">加深 · 定接口</text>
+          </g>
+
+          <g transform="translate(620,60)">
+            <rect class="ic-chain-main" x="0" y="0" width="120" height="70" rx="8"/>
+            <text x="60" y="22" class="ic-lbl">to-spec</text>
+            <text x="60" y="40" class="ic-lbl">→ issue</text>
+            <text x="60" y="58" class="ic-sub">把决策写成 spec</text>
+          </g>
+
+          <g transform="translate(780,60)">
+            <rect class="ic-chain-main" x="0" y="0" width="120" height="70" rx="8"/>
+            <text x="60" y="22" class="ic-lbl">to-tickets →</text>
+            <text x="60" y="40" class="ic-lbl">implement</text>
+            <text x="60" y="58" class="ic-sub">tickets + DAG + 写码</text>
+          </g>
+
+          <path class="ic-arrow" d="M 180 95 L 220 95" marker-end="url(#ic-arr3)"/>
+          <path class="ic-arrow" d="M 380 95 L 420 95" marker-end="url(#ic-arr3)"/>
+          <path class="ic-arrow" d="M 580 95 L 620 95" marker-end="url(#ic-arr3)"/>
+          <path class="ic-arrow" d="M 740 95 L 780 95" marker-end="url(#ic-arr3)"/>
+
+          <text x="460" y="170" font="11px sans-serif" fill="#6b6b6b" text-anchor="middle" font-style="italic">
+            ica 不是 build 工具——它只负责 find + 提候选 · 后续都是其他 skill 的事
+          </text>
+        </svg>
+        <div class="diagram-caption">图 8 · 完整链路：ica find → grill 进主流程 → codebase-design 深化 → spec → tickets → implement</div>
+      </div>
+
+      <p><strong>它和 /codebase-design 的本质区别</strong>：</p>
+      <ul>
+        <li><code>/improve-codebase-architecture</code> = <strong>find</strong> N candidates（在 survey 上）</li>
+        <li><code>/codebase-design</code> = <strong>design</strong> 一个（在 single-candidate bench 上）</li>
+        <li>序：<code>ica</code> 先（survey）→ 挑 1 → <code>codebase-design</code> 后（design）</li>
+      </ul>
+    </section>
+
+    <section id="when">
+      <h2>何时用 / 不用</h2>
+
+      <h3>用 <code>/improve-codebase-architecture</code></h3>
+      <ul>
+        <li>用户<strong>空闲 / 想保持 codebase 对 agent 友好</strong></li>
+        <li>最近改动散但没明显 hot spot——想扫一遍</li>
+        <li>觉得"这块代码不对劲"但说不清——希望系统性找出 shallow 模块</li>
+        <li>想接 codebase-design 之前——先有候选，再 design</li>
+      </ul>
+
+      <h3>用 <code>/codebase-design</code> 而不是 <code>/improve-codebase-architecture</code></h3>
+      <ul>
+        <li>已经<strong>选好候选</strong>——直接进 DEEPENING 或 DESIGN-IT-TWICE</li>
+        <li>想避免出"完整报告"的仪式——直接开始 deepen</li>
+      </ul>
+
+      <h3>用 <code>/domain-modeling</code> 而不是 <code>/improve-codebase-architecture</code></h3>
+      <ul>
+        <li>问题在<strong>域词汇</strong>（同词做多事 / 模糊术语），不在代码形状</li>
+      </ul>
+
+      <h3>用 <code>/grill-with-docs</code> 而不是 <code>/improve-codebase-architecture</code></h3>
+      <ul>
+        <li>已经在做<strong>功能 feature</strong>——这跟 codebase health 是两件独立的事</li>
+      </ul>
+
+      <h3>不用 <code>/improve-codebase-architecture</code></h3>
+      <ul>
+        <li>正在赶 ship——会拖节奏</li>
+        <li>刚完成大 refactor——留时间稳定，不要立刻又扫</li>
+        <li>没有 codebase（<code>/improve-codebase-architecture</code> 是 codebase-bound 的）</li>
+      </ul>
+    </section>
+
+    <section id="skill-source">
+      <h2>SKILL.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code>---
+name: improve-codebase-architecture
+description: Scan a codebase for deepening opportunities, present them as a
+  visual HTML report, then grill through whichever one you pick.
+disable-model-invocation: true
+---
+
+# Improve Codebase Architecture
+
+Surface architectural friction and propose deepening opportunities: refactors
+that turn shallow modules into deep ones. The aim is testability and
+AI-navigability.
+
+This command is informed by the project's domain model and built on a shared
+design vocabulary:
+- Call the Skill tool with "codebase-design" for the architecture vocabulary
+  (module, interface, depth, seam, adapter, leverage, locality) and its
+  principles (the deletion test, "the interface is the test surface", "one
+  adapter = hypothetical seam, two = real"). Use these terms exactly in every
+  suggestion, and don't drift into "component," "service," "API," or
+  "boundary."
+- The domain language in CONTEXT.md gives names to good seams; ADRs in
+  docs/adr/ record decisions this command should not re-litigate.
+
+## Process
+
+### 1. Explore
+
+Scope before you scan: YAGNI. Deepening a module pays off by making future
+changes to it easier, so put extra weight on the parts of the codebase that
+have recently changed. Decide where to look before you look:
+- If the user named a direction (a module, a subsystem, a pain point), take
+  it, and skip the inference below.
+- Otherwise, walk back a good stretch of the commit history (git log --oneline)
+  to find the codebase's hot spots, the files and areas that keep coming up,
+  and let those paths pull your attention first. If the changes are scattered
+  with no clear hot spot, widen the net.
+
+Read the project's domain glossary (CONTEXT.md) and any ADRs in the area
+you're touching first.
+
+Then spawn a sub-agent to walk the codebase. Don't follow rigid heuristics;
+explore organically and note where you experience friction:
+- Where does understanding one concept require bouncing between many small
+  modules?
+- Where are modules shallow, with an interface nearly as complex as the
+  implementation?
+- Where have pure functions been extracted just for testability, but the real
+  bugs hide in how they're called (no locality)?
+- Where do tightly-coupled modules leak across their seams?
+- Which parts of the codebase are untested, or hard to test through their
+  current interface?
+
+Apply the deletion test to anything you suspect is shallow: would deleting it
+concentrate complexity, or just move it? A "yes, concentrates" is the signal
+you want.
+
+### 2. Present candidates as an HTML report
+
+Write a self-contained HTML file to the OS temp directory so nothing lands in
+the repo. Resolve the temp dir from $TMPDIR, falling back to /tmp (or %TEMP%
+on Windows), and write to &lt;tmpdir&gt;/architecture-review-&lt;timestamp&gt;.html so
+each run gets a fresh file. Open it for the user (xdg-open on Linux, open on
+macOS, start on Windows) and tell them the absolute path.
+
+The report uses Tailwind via CDN for layout and styling, and Mermaid via CDN
+for diagrams where a graph/flow/sequence reliably communicates the structure.
+Mix Mermaid with hand-crafted CSS/SVG visuals: use Mermaid when relationships
+are graph-shaped (call graphs, dependencies, sequences), and hand-built
+divs/SVG when you want something more editorial (mass diagrams,
+cross-sections, collapse animations). Each candidate gets a before/after
+visualisation. Be visual.
+
+For each candidate, render a card with:
+- Files: which files/modules are involved
+- Problem: why the current architecture is causing friction
+- Solution: plain English description of what would change
+- Benefits: explained in terms of locality and leverage, and how tests would
+  improve
+- Before / After diagram: side-by-side, custom-drawn, illustrating the
+  shallowness and the deepening
+- Recommendation strength: one of Strong, Worth exploring, Speculative,
+  rendered as a badge
+
+End the report with a Top recommendation section: which candidate you'd tackle
+first and why.
+
+Use CONTEXT.md vocabulary for the domain, and the /codebase-design vocabulary
+for the architecture. If CONTEXT.md defines "Order," talk about "the Order
+intake module," not "the FooBarHandler," and not "the Order service."
+
+ADR conflicts: if a candidate contradicts an existing ADR, only surface it
+when the friction is real enough to warrant revisiting the ADR. Mark it
+clearly in the card (e.g. a warning callout: "contradicts ADR-0007, but
+worth reopening because…"). Don't list every theoretical refactor an ADR
+forbids.
+
+See HTML-REPORT.md for the full HTML scaffold, diagram patterns, and styling
+guidance.
+
+Do NOT propose interfaces yet. After the file is written, ask the user:
+"Which of these would you like to explore?"
+
+### 3. Grilling loop
+
+Once the user picks a candidate, call the Skill tool with "grilling" to walk
+the decision tree with them: constraints, dependencies, the shape of the
+deepened module, what sits behind the seam, what tests survive.
+
+Side effects happen inline as decisions crystallize; call the Skill tool with
+"domain-modeling" to keep the domain model current as you go:
+- Naming a deepened module after a concept not in CONTEXT.md? Add the term to
+  CONTEXT.md. Create the file lazily if it doesn't exist.
+- Sharpening a fuzzy term during the conversation? Update CONTEXT.md right
+  there.
+- User rejects the candidate with a load-bearing reason? Offer an ADR,
+  framed as: "Want me to record this as an ADR so future architecture
+  reviews don't re-suggest it?" Only offer when the reason would actually be
+  needed by a future explorer to avoid re-suggesting the same thing; skip
+  ephemeral reasons ("not worth it right now") and self-evident ones.
+- Want to explore alternative interfaces for the deepened module? Call the
+  Skill tool with "codebase-design" and use its design-it-twice parallel
+  sub-agent pattern.</code></pre>
+      </div>
+    </section>
+
+    <section id="report-source">
+      <h2>HTML-REPORT.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code># HTML Report Format
+
+The architectural review is rendered as a single self-contained HTML file in
+the OS temp directory. Tailwind and Mermaid both come from CDNs. Mermaid
+handles graph-shaped diagrams reliably; hand-built divs and inline SVG handle
+the more editorial visuals (mass diagrams, cross-sections). Mix the two:
+don't lean on Mermaid for everything, it'll start to look generic.
+
+## Scaffold
+
+&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;title&gt;Architecture review for {{repo name}}&lt;/title&gt;
+    &lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
+    &lt;script type="module"&gt;
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/...mjs";
+      mermaid.initialize({ startOnLoad: true, theme: "neutral",
+                           securityLevel: "loose" });
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body class="bg-stone-50 text-slate-900 font-sans"&gt;
+    &lt;main class="max-w-5xl mx-auto px-6 py-12 space-y-12"&gt;
+      &lt;header&gt;...&lt;/header&gt;
+      &lt;section id="candidates" class="space-y-10"&gt;...&lt;/section&gt;
+      &lt;section id="top-recommendation"&gt;...&lt;/section&gt;
+    &lt;/main&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+## Header
+
+Repo name, date, and a compact legend: solid box = module, dashed line =
+seam, red arrow = leakage, thick dark box = deep module. No introduction
+paragraph. Straight into the candidates.
+
+## Candidate card
+
+The diagrams carry the weight. Prose is sparse, plain, and uses the glossary
+terms (from the /codebase-design skill) without ceremony.
+
+Each candidate is one &lt;article&gt;:
+- Title: short, names the deepening
+- Badge row: recommendation strength (Strong = emerald, Worth exploring =
+  amber, Speculative = slate), plus a tag for the dependency category
+  (in-process, local-substitutable, ports &amp; adapters, mock)
+- Files: monospaced list
+- Before / After diagram: the centrepiece. Two columns, side by side
+- Problem: one sentence
+- Solution: one sentence
+- Wins: bullets, ≤6 words each
+- ADR callout (if applicable): one line in an amber-tinted box
+
+No paragraphs of explanation. If the diagram needs a paragraph to be
+understood, redraw the diagram.
+
+## Diagram patterns
+
+Pick the pattern that fits the candidate. Mix them. Don't make every diagram
+look the same.
+
+### Mermaid graph (workhorse for dependencies / call flow)
+Use a Mermaid flowchart or graph when the point is "X calls Y calls Z, and
+look at the mess." Wrap it in a Tailwind-styled card. Style with classDef
+to colour leakage edges red and the deep module dark.
+
+### Hand-built boxes-and-arrows (when Mermaid's layout fights you)
+Modules as &lt;div&gt;s with borders and labels. Arrows as inline SVG. Reach
+for this when you want the "after" diagram to feel like one thick-bordered
+deep module with greyed-out internals.
+
+### Cross-section (good for layered shallowness)
+Stack horizontal bands. Before: 6 thin layers each doing nothing. After: 1
+thick band labelled with the consolidated responsibility.
+
+### Mass diagram (good for "interface as wide as implementation")
+Two rectangles per module: one for interface surface area, one for
+implementation. Before: interface ≈ implementation (shallow). After: small
+interface, tall implementation (deep).
+
+### Call-graph collapse
+Before: a tree of function calls rendered as nested boxes. After: the same
+tree collapsed into one box, with the now-internal calls shown faded inside
+it.
+
+## Style guidance
+
+Lean editorial, not corporate-dashboard. Generous whitespace. Serif optional
+for headings.
+
+Colour sparingly: one accent (emerald or indigo) plus red for leakage and
+amber for warnings. Keep diagrams ~320px tall. Use text-xs uppercase
+tracking-wider for module labels. The only scripts are the Tailwind CDN and
+the Mermaid ESM import. The report is otherwise static.
+
+## Top recommendation section
+
+One larger card. Candidate name, one sentence on why, anchor link to its
+card. That's it.
+
+## Tone
+
+Plain English, concise, but the architectural nouns and verbs come straight
+from the /codebase-design skill.
+
+Use exactly: module, interface, implementation, depth, deep, shallow, seam,
+adapter, leverage, locality.
+
+Never substitute: component, service, unit (for module) · API, signature
+(for interface) · boundary (for seam) · layer, wrapper (for module, when
+you mean module).
+
+Phrasings that fit the style:
+- "Order intake module is shallow: interface nearly matches the implementation."
+- "Pricing leaks across the seam."
+- "Deepen: one interface, one place to test."
+- "Two adapters justify the seam: HTTP in prod, in-memory in tests."
+
+Wins bullets name the gain in glossary terms.
+
+No hedging, no throat-clearing, no "it's worth noting that…". If a sentence
+could be a bullet, make it a bullet. If a bullet could be cut, cut it. If a
+term isn't in the /codebase-design glossary, reach for one that is before
+inventing a new one.</code></pre>
+      </div>
+    </section>
+
+    <section id="reference">
+      <h2>参考</h2>
+      <ul>
+        <li>Skill 源文件：<code>~/.agents/skills/improve-codebase-architecture/SKILL.md</code>（72 行）</li>
+        <li>HTML report 范式：<code>~/.agents/skills/improve-codebase-architecture/HTML-REPORT.md</code>（124 行）</li>
+        <li>本 skill 的 vocabulary：<a href="codebase-design.html">codebase-design</a></li>
+        <li>下游：<a href="grill-with-docs.html">grill-with-docs</a>（把候选带进主流程）</li>
+        <li>下游：<code>grilling</code>（决策树，原语）</li>
+        <li>下游：<a href="domain-modeling.html">domain-modeling</a>（in-line 副作用）</li>
+      </ul>
+    </section>
+
+    <footer>
+      Generated for <code>improve-codebase-architecture</code> · 72 + 124 行 · 三步流程（survey → visual report → grill loop）· disable-model-invocation · 产物落到 OS temp
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // ============ 顶部：文档目录下拉 ============
+  (function () {
+    const trigger = document.querySelector('.doc-trigger');
+    const panel = document.getElementById('doc-panel');
+    if (!trigger || !panel) return;
+    function close() { panel.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+    function open() { panel.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.contains('open') ? close() : open();
+    });
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && !trigger.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => close()));
+  })();
+
+  // ============ 侧栏：滚动联动高亮 ============
+  (function () {
+    const links = document.querySelectorAll('.sidebar a[href^="#"]');
+    const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')))
+                              .filter(Boolean);
+    if (!sections.length) return;
+    const map = new Map();
+    links.forEach((a, i) => map.set(sections[i].id, a));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => obs.observe(s));
+  })();
+</script>
+
+</body>
+</html>

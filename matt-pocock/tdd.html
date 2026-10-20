@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>tdd · Skill 文档</title>
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #d8d4cc;
+      --accent: #2d5f8a;
+      --accent-soft: #e8f0f7;
+      --highlight: #c7501f;
+      --red: #b91c1c;
+      --red-soft: #fee2e2;
+      --green: #15803d;
+      --green-soft: #dcfce7;
+      --amber: #d97706;
+      --amber-soft: #fef3c7;
+      --code-bg: #f3f0ea;
+      --code-fg: #2b2b2b;
+      --topnav-bg: rgba(250, 250, 247, 0.85);
+      --sidebar-bg: #f3f0ea;
+      --mainflow-color: #2d5f8a;
+      --mainflow-soft: #e8f0f7;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    /* ============ Top nav ============ */
+    .topnav { position: sticky; top: 0; z-index: 100;
+              background: var(--topnav-bg);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border-bottom: 1px solid var(--border); }
+    .topnav-inner { max-width: 1400px; margin: 0 auto;
+                    display: flex; align-items: center;
+                    height: 54px; padding: 0 28px; gap: 20px;
+                    position: relative; }
+    .brand { font-weight: 600; font-size: 14px; color: var(--fg);
+             text-decoration: none; letter-spacing: 0.005em; white-space: nowrap; }
+    .brand .dot { display: inline-block; width: 6px; height: 6px;
+                  background: var(--accent); border-radius: 50%;
+                  margin-right: 8px; vertical-align: middle; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px;
+                  font-size: 13px; color: var(--muted);
+                  flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+    .breadcrumb .sep { color: #c8c4bc; }
+    .breadcrumb .node { font-family: "SF Mono", "Menlo", monospace; font-size: 12.5px; }
+    .breadcrumb .current { color: var(--fg); font-weight: 500; }
+    .doc-trigger { display: flex; align-items: center; gap: 8px;
+                   padding: 6px 12px 6px 14px; background: #fff;
+                   border: 1px solid var(--border); border-radius: 6px;
+                   font: inherit; font-size: 13px; color: var(--fg);
+                   cursor: pointer; transition: all 0.15s; font-family: inherit;
+                   white-space: nowrap; }
+    .doc-trigger:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-trigger .count { background: var(--accent-soft); color: var(--accent);
+                          font-size: 11px; font-weight: 600;
+                          padding: 1px 7px; border-radius: 9px;
+                          font-family: "SF Mono", monospace; }
+    .doc-trigger .chev { width: 12px; height: 12px; transition: transform 0.18s; opacity: 0.6; }
+    .doc-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); opacity: 1; }
+    .doc-panel { position: absolute; top: calc(100% + 6px); right: 28px;
+                 background: #fff; border: 1px solid var(--border); border-radius: 8px;
+                 padding: 6px; max-height: 80vh; overflow-y: auto;
+                 box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+                 min-width: 380px; display: none; }
+    .doc-panel.open { display: block; }
+    .doc-group { padding: 6px 4px; }
+    .doc-group + .doc-group { border-top: 1px solid var(--border);
+                              margin-top: 4px; padding-top: 10px; }
+    .doc-group-title { font-size: 10.5px; text-transform: uppercase;
+                       letter-spacing: 0.08em; color: var(--muted);
+                       font-weight: 700; margin-bottom: 6px; padding: 0 8px; }
+    .doc-link { display: flex; align-items: center; justify-content: space-between;
+                padding: 6px 10px; color: var(--fg); text-decoration: none;
+                font-size: 13px; border-radius: 4px;
+                font-family: "SF Mono", "Menlo", monospace; }
+    .doc-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-link.active { background: var(--accent); color: white; font-weight: 600; }
+    .doc-link.planned { color: #a8a49c; }
+    .doc-link.planned:hover { background: #f3f0ea; color: var(--fg); }
+    .doc-link .tag-mini { font-family: -apple-system, sans-serif; font-size: 10px;
+                          padding: 1px 6px; border-radius: 3px; font-weight: 500;
+                          background: rgba(255,255,255,0.25); }
+    .doc-link.planned .tag-mini { background: var(--code-bg); color: var(--muted); }
+    .doc-link.active .tag-mini { background: rgba(255,255,255,0.22); color: white; }
+
+    /* ============ Layout ============ */
+    .layout { display: grid; grid-template-columns: 240px 1fr; max-width: 1400px; margin: 0 auto; }
+
+    /* ============ Sidebar ============ */
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border);
+               padding: 28px 18px 28px 28px; position: sticky; top: 54px;
+               align-self: start; max-height: calc(100vh - 54px); overflow-y: auto; }
+    .sidebar h3 { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+                  color: var(--muted); margin: 0 0 12px; font-weight: 700; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { margin: 0; }
+    .sidebar a { display: block; padding: 5px 10px; color: var(--fg);
+                 text-decoration: none; font-size: 13.5px; border-radius: 3px;
+                 border-left: 2px solid transparent; transition: all 0.1s; }
+    .sidebar a:hover { background: rgba(45, 95, 138, 0.08); color: var(--accent); }
+    .sidebar a.active { background: rgba(45, 95, 138, 0.13); color: var(--accent);
+                        font-weight: 600; border-left-color: var(--accent); }
+    .sidebar .meta { margin-top: 28px; padding-top: 18px;
+                     border-top: 1px solid var(--border);
+                     font-size: 12px; color: var(--muted); }
+    .sidebar .meta .row { margin-bottom: 10px; }
+    .sidebar .meta strong { display: block; font-size: 11px; color: var(--muted);
+                            font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.06em; margin-bottom: 4px; }
+    .sidebar .meta .val { color: var(--fg); font-weight: 500; }
+
+    /* ============ Content ============ */
+    .content { padding: 28px 48px 96px; min-width: 0; }
+    .content > header { border-bottom: 2px solid var(--fg); padding-bottom: 20px; margin-bottom: 36px; }
+    h1 { font-size: 30px; margin: 0 0 8px; font-weight: 600; letter-spacing: -0.01em; }
+    h2 { font-size: 22px; margin: 56px 0 16px; font-weight: 600;
+         border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { font-size: 16px; margin: 28px 0 10px; font-weight: 600; color: var(--accent); }
+    h4 { font-size: 14px; margin: 20px 0 8px; font-weight: 600; color: #2b2b2b; }
+    p, li { font-size: 15px; }
+    .lede { font-size: 17px; color: var(--muted); margin: 0; }
+    .tag { display: inline-block; font-size: 12px; padding: 2px 8px;
+           background: var(--accent-soft); color: var(--accent);
+           border-radius: 3px; margin-right: 6px; font-weight: 500; }
+    .tag-hl { background: #fff0e0; color: var(--highlight); }
+    .tag-red { background: var(--red-soft); color: var(--red); }
+    .tag-green { background: var(--green-soft); color: var(--green); }
+    .tag-amber { background: var(--amber-soft); color: var(--amber); }
+
+    code { background: var(--code-bg); color: var(--code-fg); padding: 1px 6px;
+           border-radius: 3px; font-family: "SF Mono", "Menlo", "Consolas", monospace;
+           font-size: 13.5px; }
+    pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px;
+          overflow-x: auto; font-size: 13px; line-height: 1.55; }
+    pre code { background: none; padding: 0; font-size: 13px; }
+    pre.bad { background: #fce8e0; border-left: 3px solid var(--highlight); }
+    pre.bad code::before { content: "✗ BAD  "; color: var(--highlight); font-weight: 700; }
+    pre.good { background: #e6f3e0; border-left: 3px solid var(--green); }
+    pre.good code::before { content: "✓ GOOD "; color: var(--green); font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 4px 0; }
+
+    .diagram { background: #fff; border: 1px solid var(--border);
+               border-radius: 6px; padding: 20px; margin: 24px 0; overflow-x: auto; }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram-caption { font-size: 13px; color: var(--muted);
+                       margin-top: 12px; text-align: center; font-style: italic; }
+
+    .skill-source { background: #fff; border: 1px solid var(--border);
+                    border-radius: 6px; padding: 20px 24px; margin: 24px 0;
+                    position: relative; }
+    .skill-source::before { content: "SOURCE"; position: absolute;
+                            top: -10px; left: 16px; background: #fff;
+                            padding: 0 8px; font-size: 11px;
+                            color: var(--muted); font-weight: 600;
+                            text-transform: uppercase; letter-spacing: 0.06em; }
+    .skill-source pre { margin: 0; max-height: 460px; }
+    .skill-source + .skill-source { margin-top: 40px; }
+
+    .callout { padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--accent);
+               margin: 16px 0; background: var(--accent-soft); }
+    .callout-warn { border-left-color: var(--highlight); background: #fce8e0; }
+    .callout-good { border-left-color: var(--green); background: var(--green-soft); }
+    .callout-amber { border-left-color: var(--amber); background: var(--amber-soft); }
+
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+    .compare > div { border-radius: 6px; padding: 14px; border: 1px solid var(--border); }
+    .compare .bad { background: var(--red-soft); border-color: var(--red); }
+    .compare .good { background: var(--green-soft); border-color: var(--green); }
+    .compare .label { font: 700 11px sans-serif; text-transform: uppercase;
+                       letter-spacing: 0.08em; margin-bottom: 8px; }
+    .compare .bad .label { color: var(--red); }
+    .compare .good .label { color: var(--green); }
+    .compare p { margin: 0 0 8px; font-size: 13px; }
+    .compare ul { font-size: 13px; margin: 6px 0; padding-left: 20px; }
+
+    footer { margin-top: 80px; padding-top: 16px; border-top: 1px solid var(--border);
+             font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; border-right: none;
+                 border-bottom: 1px solid var(--border); }
+      .content { padding: 24px 24px 64px; }
+      .breadcrumb { display: none; }
+      .doc-panel { right: 16px; min-width: 300px; }
+      .compare { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============ Top Nav ============ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span>SDD / Matt Pocock Skills</a>
+
+    <div class="breadcrumb">
+      <span class="node">Main flow</span>
+      <span class="sep">›</span>
+      <span class="node current">tdd</span>
+    </div>
+
+    <button class="doc-trigger" aria-expanded="false" aria-controls="doc-panel">
+      <span>All skill docs</span>
+      <span class="count">19</span>
+      <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 4.5 L6 7.5 L9 4.5"/>
+      </svg>
+    </button>
+
+    <div class="doc-panel" id="doc-panel" role="menu">
+
+      <div class="doc-group">
+        <div class="doc-group-title">Precondition · 1</div>
+        <a href="setup-matt-pocock-skills.html" class="doc-link">setup-matt-pocock-skills</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Grilling · 4</div>
+        <a href="grill-with-docs.html" class="doc-link">grill-with-docs</a>
+        <a href="grill-me.html" class="doc-link">grill-me</a>
+        <a href="grilling.html" class="doc-link">grilling</a>
+        <a href="domain-modeling.html" class="doc-link">domain-modeling</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Main flow · 7</div>
+        <a href="to-spec.html" class="doc-link">to-spec</a>
+        <a href="to-tickets.html" class="doc-link">to-tickets</a>
+        <a href="implement.html" class="doc-link planned">implement <span class="tag-mini">planned</span></a>
+        <a href="code-review.html" class="doc-link planned">code-review <span class="tag-mini">planned</span></a>
+        <a href="tdd.html" class="doc-link active">tdd <span class="tag-mini">you are here</span></a>
+        <a href="prototype.html" class="doc-link">prototype</a>
+        <a href="handoff.html" class="doc-link planned">handoff <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">On-ramps · 4</div>
+        <a href="triage.html" class="doc-link planned">triage <span class="tag-mini">planned</span></a>
+        <a href="diagnosing-bugs.html" class="doc-link planned">diagnosing-bugs <span class="tag-mini">planned</span></a>
+        <a href="wayfinder.html" class="doc-link planned">wayfinder <span class="tag-mini">planned</span></a>
+        <a href="research.html" class="doc-link planned">research <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Codebase · 2</div>
+        <a href="improve-codebase-architecture.html" class="doc-link">improve-codebase-architecture</a>
+        <a href="codebase-design.html" class="doc-link">codebase-design</a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ============ Layout ============ -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>本页目录</h3>
+    <ul>
+      <li><a href="#purpose">用途</a></li>
+      <li><a href="#flow-position">主流程位置</a></li>
+      <li><a href="#good-test">什么算好测试</a></li>
+      <li><a href="#seams">Seams · 测试住哪</a></li>
+      <li><a href="#anti-patterns">3 个 Anti-patterns</a></li>
+      <li><a href="#loop">Loop 规则</a></li>
+      <li><a href="#examples">Good vs Bad 实例</a></li>
+      <li><a href="#mocking-when">mocking.md · 何时 mock</a></li>
+      <li><a href="#mocking-how">为可 mock 而设计</a></li>
+      <li><a href="#vs-codebase">与 codebase-design 的边界</a></li>
+      <li><a href="#chain">主流程 triple 配对</a></li>
+      <li><a href="#when">何时用 / 不用</a></li>
+      <li><a href="#skill-source">SKILL.md 全文</a></li>
+      <li><a href="#tests-source">tests.md 全文</a></li>
+      <li><a href="#mocking-source">mocking.md 全文</a></li>
+      <li><a href="#reference">参考</a></li>
+    </ul>
+    <div class="meta">
+      <div class="row">
+        <strong>状态</strong>
+        <span class="val">✓ 已发布</span>
+      </div>
+      <div class="row">
+        <strong>位置</strong>
+        <span class="val">docs/SDD/matt-pocock/</span>
+      </div>
+      <div class="row">
+        <strong>对应 skill</strong>
+        <span class="val">~/.agents/skills/tdd/</span>
+      </div>
+      <div class="row">
+        <strong>文件</strong>
+        <span class="val">SKILL.md 39 行<br>+ tests.md 78 行<br>+ mocking.md 60 行</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <header>
+      <div><span class="tag">Main flow</span><span class="tag tag-hl">red → green</span><span class="tag tag-amber">at seams only</span><span class="tag">reference</span></div>
+      <h1>tdd</h1>
+      <p class="lede"><strong>让 red→green loop 产出值得保留的测试</strong>——不是跑 loop 的会话，是决定测试该长什么样的 reference。seam-only · vertical slices · refactor 属于 code-review 不属于 loop。</p>
+    </header>
+
+    <section id="purpose">
+      <h2>用途</h2>
+
+      <p>从 <code>/implement</code> 默认 drive 到 <code>/tdd</code>，但 <code>/tdd</code> 本身不运行 loop——它<strong>管测试该长什么样</strong>。三件事：</p>
+      <ol>
+        <li><strong>好测试长什么样</strong>（<code>tests.md</code>）</li>
+        <li><strong>在哪写</strong>（seam-only）</li>
+        <li><strong>怎么 mock</strong>（只在 system boundary）</li>
+      </ol>
+
+      <div class="callout">
+        <strong>Reference, not session.</strong>SKILL.md 第 26 行明文："It is the shared source of the module, interface, depth, seam, adapter, leverage and locality terms, and it is <strong>a reference to consult, not a session to run.</strong>"——<code>codebase-design</code> 是 reference，<code>tdd</code> 也是 reference。
+      </div>
+
+      <p><strong>每次 cycle 前/中（不是后）</strong>查：</p>
+      <blockquote>
+        Every section applies on every cycle: consult them before and during the loop, not after. (SKILL.md 第 8 行)
+      </blockquote>
+    </section>
+
+    <section id="flow-position">
+      <h2>主流程位置</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="tdd 在主流程的位置：/implement 内置 drive /tdd，refactor 转 /code-review">
+          <defs>
+            <marker id="tdd-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <style>
+              .tdd-main { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .tdd-self { fill: var(--mainflow-soft); stroke: var(--mainflow-color); stroke-width: 2.5; }
+              .tdd-review { fill: #fef3c7; stroke: var(--amber); stroke-width: 2; }
+              .tdd-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .tdd-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .tdd-arrow { stroke: var(--mainflow-color); stroke-width: 1.6; fill: none; }
+              .tdd-arrow-back { stroke: var(--amber); stroke-width: 1.4; fill: none; stroke-dasharray: 4 3; }
+              .tdd-zone { font: 700 11px sans-serif; fill: var(--mainflow-color);
+                          text-transform: uppercase; letter-spacing: 0.1em; }
+            </style>
+          </defs>
+
+          <text x="460" y="22" font="700 14px sans-serif" fill="#2d5f8a"
+                text-anchor="middle">/tdd 在主流程 triple 中的位置</text>
+
+          <text x="40" y="58" class="tdd-zone">Main flow</text>
+
+          <g transform="translate(60,75)">
+            <rect class="tdd-main" x="0" y="0" width="170" height="60" rx="8"/>
+            <text x="85" y="22" class="tdd-lbl">to-spec</text>
+            <text x="85" y="42" class="tdd-sub">issue + scope</text>
+          </g>
+          <g transform="translate(260,75)">
+            <rect class="tdd-main" x="0" y="0" width="170" height="60" rx="8"/>
+            <text x="85" y="22" class="tdd-lbl">to-tickets</text>
+            <text x="85" y="42" class="tdd-sub">DAG of slices</text>
+          </g>
+          <g transform="translate(460,75)">
+            <rect class="tdd-main" x="0" y="0" width="170" height="60" rx="8"/>
+            <text x="85" y="22" class="tdd-lbl">implement</text>
+            <text x="85" y="42" class="tdd-sub">(drives /tdd)</text>
+          </g>
+          <g transform="translate(660,75)">
+            <rect class="tdd-main" x="0" y="0" width="170" height="60" rx="8"/>
+            <text x="85" y="22" class="tdd-lbl">code-review</text>
+            <text x="85" y="42" class="tdd-sub">2-axis · refactor</text>
+          </g>
+
+          <path class="tdd-arrow" d="M 230 105 L 260 105" marker-end="url(#tdd-arr)"/>
+          <path class="tdd-arrow" d="M 430 105 L 460 105" marker-end="url(#tdd-arr)"/>
+          <path class="tdd-arrow" d="M 630 105 L 660 105" marker-end="url(#tdd-arr)"/>
+
+          <!-- tdd as reference scaffold -->
+          <g transform="translate(440,160)">
+            <rect class="tdd-self" x="0" y="0" width="210" height="50" rx="8"/>
+            <text x="105" y="20" class="tdd-lbl">/tdd · reference</text>
+            <text x="105" y="38" class="tdd-sub">测试长什么样 · seam · mock</text>
+          </g>
+
+          <path class="tdd-arrow-back" d="M 545 160 Q 545 135 545 138" marker-end="url(#tdd-arr)"/>
+          <text x="555" y="148" class="tdd-sub" font-style="italic">implement 内置 consult tdd</text>
+
+          <text x="450" y="240" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">
+            "/tdd 由 /implement 内置驱动；refactor 是 review 阶段的事，不是 loop 的一部分"
+          </text>
+        </svg>
+        <div class="diagram-caption">图 1 · tdd 不是独立 run 的会话——是 /implement 每个 slice 都查的 reference</div>
+      </div>
+    </section>
+
+    <section id="good-test">
+      <h2>什么算好测试</h2>
+
+      <p>SKILL.md 第 14 行的核心定义：</p>
+      <blockquote>
+        Tests verify behavior through <strong>public interfaces</strong>, not implementation details. Code can change entirely; tests shouldn't. A good test reads like a specification: <em>"user can checkout with valid cart"</em> tells you exactly what capability exists, and it survives refactors because it doesn't care about internal structure.
+      </blockquote>
+
+      <h3>好测试的 5 特征</h3>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 240" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="好测试的 5 个特征">
+          <defs>
+            <style>
+              .gt-feat { fill: var(--green-soft); stroke: var(--green); stroke-width: 2; }
+              .gt-num { font: 700 22px sans-serif; fill: var(--green); }
+              .gt-lbl { font: 700 12px sans-serif; fill: #1a1a1a; }
+              .gt-sub { font: 10px sans-serif; fill: #6b6b6b; }
+              .gt-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">好测试的 5 特征 · tests.md 17-23 行</text>
+
+          <!-- center -->
+          <g transform="translate(370,90)">
+            <rect class="gt-feat" x="0" y="0" width="140" height="60" rx="8" stroke-width="3"/>
+            <text x="70" y="22" class="gt-lbl" text-anchor="middle">GOOD TEST</text>
+            <text x="70" y="42" class="gt-sub" text-anchor="middle">= specification</text>
+          </g>
+
+          <!-- spokes -->
+          <g transform="translate(40,30)">
+            <rect class="gt-feat" x="0" y="0" width="220" height="50" rx="8"/>
+            <text x="14" y="20" class="gt-num">1</text>
+            <text x="50" y="18" class="gt-lbl">tests behavior</text>
+            <text x="50" y="34" class="gt-sub">users / callers care about</text>
+          </g>
+          <path class="gt-arrow" d="M 260 55 L 370 100" marker-end="url(#tdd-arr)"/>
+
+          <g transform="translate(40,100)">
+            <rect class="gt-feat" x="0" y="0" width="220" height="50" rx="8"/>
+            <text x="14" y="20" class="gt-num">2</text>
+            <text x="50" y="18" class="gt-lbl">public API only</text>
+            <text x="50" y="34" class="gt-sub">never private / internal</text>
+          </g>
+          <path class="gt-arrow" d="M 260 125 L 370 120" marker-end="url(#tdd-arr)"/>
+
+          <g transform="translate(40,170)">
+            <rect class="gt-feat" x="0" y="0" width="220" height="50" rx="8"/>
+            <text x="14" y="20" class="gt-num">3</text>
+            <text x="50" y="18" class="gt-lbl">survives refactor</text>
+            <text x="50" y="34" class="gt-sub">behavior 不变，测试不动</text>
+          </g>
+          <path class="gt-arrow" d="M 260 195 Q 320 170 380 145" marker-end="url(#tdd-arr)"/>
+
+          <g transform="translate(620,30)">
+            <rect class="gt-feat" x="0" y="0" width="220" height="50" rx="8"/>
+            <text x="14" y="20" class="gt-num">4</text>
+            <text x="50" y="18" class="gt-lbl">describes WHAT not HOW</text>
+            <text x="50" y="34" class="gt-sub">名字讲能力，不讲实现</text>
+          </g>
+          <path class="gt-arrow" d="M 620 55 L 510 100" marker-end="url(#tdd-arr)"/>
+
+          <g transform="translate(620,100)">
+            <rect class="gt-feat" x="0" y="0" width="220" height="50" rx="8"/>
+            <text x="14" y="20" class="gt-num">5</text>
+            <text x="50" y="18" class="gt-lbl">one logical assertion</text>
+            <text x="50" y="34" class="gt-sub">一条测试验一件事</text>
+          </g>
+          <path class="gt-arrow" d="M 620 125 L 510 120" marker-end="url(#tdd-arr)"/>
+
+          <g transform="translate(620,170)">
+            <rect class="gt-feat" x="0" y="0" width="220" height="50" rx="8" opacity="0.85"/>
+            <text x="14" y="20" class="gt-num">+</text>
+            <text x="50" y="18" class="gt-lbl">reads like spec</text>
+            <text x="50" y="34" class="gt-sub">读起来像产品规格</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">图 2 · 5 特征围一中心——中心就是"测试像一份 spec"</div>
+      </div>
+
+      <h3>代码示例（tests.md 第 9-15 行）</h3>
+
+      <div class="skill-source">
+<pre class="good"><code>test("user can checkout with valid cart", async () => {
+  const cart = createCart();
+  cart.add(product);
+  const result = await checkout(cart, paymentMethod);
+  expect(result.status).toBe("confirmed");
+});</code></pre>
+      </div>
+
+      <p style="font-size: 13px; color: var(--muted);">
+        名字讲 capability（"can checkout"），不说"should call X" / "should mock Y"。`paymentMethod` 是被注入的依赖（→ 衔接到 mocking.md "Accept dependencies"）。
+      </p>
+    </section>
+
+    <section id="seams">
+      <h2>Seams · 测试住哪</h2>
+
+      <p>这是 SKILL.md 第 19-26 行的核心段——最常被引用的部分：</p>
+
+      <blockquote>
+        A <strong>seam</strong> is the public boundary you test at: the interface where you observe behavior <em>without reaching inside</em>. <strong>Tests live at seams, never against internals.</strong>
+      </blockquote>
+
+      <h3>seam 在 codebase-design 词汇里</h3>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="seam 是模块的 public 边界，测试在 seam 上不在内部">
+          <defs>
+            <style>
+              .sm-deep { fill: #1e293b; stroke: #1e293b; stroke-width: 2; }
+              .sm-dep-deep { fill: var(--mainflow-soft); stroke: var(--mainflow-color); stroke-width: 1.4; }
+              .sm-seam { stroke: var(--highlight); stroke-width: 3; fill: none; stroke-dasharray: 6 3; }
+              .sm-test { fill: var(--amber-soft); stroke: var(--amber); stroke-width: 2; }
+              .sm-internal { fill: #475569; stroke: #334155; stroke-width: 1; }
+              .sm-private-mark { stroke: #ef4444; stroke-width: 2; stroke-dasharray: 3 2; fill: none; }
+              .sm-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .sm-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .sm-deep-lbl { font: 700 11px sans-serif; fill: white; text-anchor: middle;
+                             text-transform: uppercase; letter-spacing: 0.05em; }
+              .sm-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+              .sm-test-lbl { font: 700 10px sans-serif; fill: var(--amber);
+                             text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">seam = public boundary · test 上方 / internal 下方</text>
+
+          <!-- deep module -->
+          <g transform="translate(280,60)">
+            <rect class="sm-deep" x="0" y="0" width="320" height="180" rx="8"/>
+            <text x="160" y="22" class="sm-deep-lbl">module · checked(cart, payment)</text>
+
+            <line class="sm-seam" x1="0" y1="40" x2="320" y2="40"/>
+
+            <g transform="translate(20,55)">
+              <rect class="sm-internal" x="0" y="0" width="120" height="30" rx="4"/>
+              <text x="60" y="20" class="sm-sub">validate cart</text>
+            </g>
+            <g transform="translate(160,55)">
+              <rect class="sm-internal" x="0" y="0" width="60" height="30" rx="4"/>
+              <text x="30" y="20" class="sm-sub">price</text>
+            </g>
+            <g transform="translate(240,55)">
+              <rect class="sm-internal" x="0" y="0" width="60" height="30" rx="4"/>
+              <text x="30" y="20" class="sm-sub">charge</text>
+            </g>
+            <g transform="translate(80,100)">
+              <rect class="sm-internal" x="0" y="0" width="160" height="30" rx="4"/>
+              <text x="80" y="20" class="sm-sub">persist order</text>
+            </g>
+            <text x="20" y="155" class="sm-sub" font-style="italic" font-size="10">↑ internals · private · never touch from test</text>
+          </g>
+
+          <!-- seam label -->
+          <text x="440" y="100" class="sm-test-lbl" font-size="11" font-weight="700">— — — seam — — —</text>
+
+          <!-- test on seam -->
+          <g transform="translate(280,30)">
+            <rect class="sm-test" x="0" y="0" width="320" height="0" rx="4"/>
+          </g>
+          <g transform="translate(670,40)">
+            <rect class="sm-test" x="0" y="0" width="180" height="50" rx="6"/>
+            <text x="90" y="20" class="sm-lbl">test</text>
+            <text x="90" y="38" class="sm-sub">"user can checkout…"</text>
+          </g>
+          <line class="sm-arrow" x1="670" y1="65" x2="600" y2="100" marker-end="url(#tdd-arr)"/>
+
+          <!-- "internal" not allowed -->
+          <g transform="translate(40,140)">
+            <rect fill="#fee2e2" stroke="#ef4444" stroke-width="1.5" x="0" y="0" width="200" height="60" rx="6"/>
+            <text x="100" y="22" class="sm-lbl" fill="#ef4444">"test calls validate"</text>
+            <text x="100" y="40" class="sm-sub" fill="#ef4444" font-style="italic">穿越 seam ← ✗</text>
+            <text x="100" y="54" class="sm-sub" fill="#ef4444" font-weight="700">reaches inside</text>
+          </g>
+          <path class="sm-private-mark" d="M 240 165 L 290 130" marker-end="url(#tdd-arr)"/>
+
+          <text x="440" y="260" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">
+            "Test only at pre-agreed seams. Before writing any test, write down the seams under test and confirm them with the user."
+          </text>
+        </svg>
+        <div class="diagram-caption">图 3 · seam 是 public boundary 上的虚线；测试在它上面，内部不能动</div>
+      </div>
+
+      <h3>Pre-agreed seams 流程</h3>
+
+      <div class="callout">
+        <strong>Ask this before writing any test:</strong>
+        <blockquote>"What's the public interface, and which seams should we test?"</blockquote>
+        没有"提前 confirmed 的 seam"，就<strong>不写</strong>测试。这是把测试精力放在 critical paths 的方法。
+      </div>
+
+      <p><strong>"shape of interface itself in question" 怎么办</strong>（SKILL.md 第 26 行）？</p>
+      <p>→ 调 codebase-design 词汇。它是 consult，不跑 session。</p>
+    </section>
+
+    <section id="anti-patterns">
+      <h2>3 个 Anti-patterns</h2>
+
+      <p>SKILL.md 第 30-32 行写了 3 个 + 各自 detection signal。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="3 anti-patterns 决策树">
+          <defs>
+            <style>
+              .ap-q { fill: #fef3c7; stroke: var(--amber); stroke-width: 1.8; }
+              .ap-bad { fill: var(--red-soft); stroke: var(--red); stroke-width: 2; }
+              .ap-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ap-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .ap-tell { font: 10px sans-serif; fill: var(--red); text-anchor: middle;
+                         font-style: italic; font-weight: 600; }
+              .ap-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#c7501f">3 anti-patterns · 测试 scent</text>
+
+          <!-- 1 -->
+          <g transform="translate(30,60)">
+            <rect class="ap-bad" x="0" y="0" width="280" height="90" rx="8"/>
+            <text x="140" y="20" class="ap-lbl">1 · implementation-coupled</text>
+            <text x="140" y="40" class="ap-sub">mocks 内部 collaborator</text>
+            <text x="140" y="54" class="ap-sub">测 private method</text>
+            <text x="140" y="68" class="ap-sub">side-channel 验证（直查 DB）</text>
+            <text x="140" y="84" class="ap-tell">信号: 重构但行为没变，测试就崩</text>
+          </g>
+
+          <!-- 2 -->
+          <g transform="translate(330,60)">
+            <rect class="ap-bad" x="0" y="0" width="280" height="90" rx="8"/>
+            <text x="140" y="20" class="ap-lbl">2 · tautological</text>
+            <text x="140" y="40" class="ap-sub">expect(add(a, b)).toBe(a + b)</text>
+            <text x="140" y="54" class="ap-sub">snapshot 手算同算法</text>
+            <text x="140" y="68" class="ap-sub">constant asserted equal to itself</text>
+            <text x="140" y="84" class="ap-tell">信号: by construction 通过，永远 disagree 不上</text>
+          </g>
+
+          <!-- 3 -->
+          <g transform="translate(630,60)">
+            <rect class="ap-bad" x="0" y="0" width="220" height="90" rx="8"/>
+            <text x="110" y="20" class="ap-lbl">3 · horizontal slicing</text>
+            <text x="110" y="40" class="ap-sub">all tests 写在先</text>
+            <text x="110" y="54" class="ap-sub">all impl 写在后</text>
+            <text x="110" y="84" class="ap-tell">信号: 测的是我想象，不是行为</text>
+          </g>
+
+          <!-- diagnostic labels -->
+          <text x="170" y="180" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">测的是"怎么实现"不是"做什么"</text>
+
+          <text x="470" y="180" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">预期值来源=同算法重算</text>
+
+          <text x="740" y="180" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">test 反映形状不反映行为</text>
+
+          <!-- fix row -->
+          <text x="20" y="220" font="700 12px sans-serif" fill="#2d5f8a">修正</text>
+
+          <g transform="translate(30,235)">
+            <rect fill="var(--green-soft)" stroke="var(--green)" stroke-width="2" x="0" y="0" width="280" height="60" rx="6"/>
+            <text x="140" y="22" class="ap-lbl">verifies through public API</text>
+            <text x="140" y="40" class="ap-sub" fill="var(--green)" font-style="italic">通过接口观察 outcome</text>
+          </g>
+
+          <g transform="translate(330,235)">
+            <rect fill="var(--green-soft)" stroke="var(--green)" stroke-width="2" x="0" y="0" width="280" height="60" rx="6"/>
+            <text x="140" y="22" class="ap-lbl">expected from independent source</text>
+            <text x="140" y="40" class="ap-sub" fill="var(--green)" font-style="italic">known literal / worked example / spec</text>
+          </g>
+
+          <g transform="translate(630,235)">
+            <rect fill="var(--green-soft)" stroke="var(--green)" stroke-width="2" x="0" y="0" width="220" height="60" rx="6"/>
+            <text x="110" y="22" class="ap-lbl">vertical slicing · tracer bullet</text>
+            <text x="110" y="40" class="ap-sub" fill="var(--green)" font-style="italic">one test → one impl → repeat</text>
+          </g>
+
+          <!-- arrows from bad to fix -->
+          <path class="ap-arrow" d="M 170 150 L 170 235" marker-end="url(#tdd-arr)"/>
+          <path class="ap-arrow" d="M 470 150 L 470 235" marker-end="url(#tdd-arr)"/>
+          <path class="ap-arrow" d="M 740 150 L 740 235" marker-end="url(#tdd-arr)"/>
+
+          <!-- bottom note -->
+          <text x="440" y="335" font="11px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">
+            vertical slicing 来自 to-tickets 的 tracer-bullet 概念——每个 slice 是"响应上一轮教的"一个 bullet
+          </text>
+          <text x="440" y="355" font="10px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">
+            (tdd 引用 to-tickets 的 vertical slice 风格而不是它自己的发明的)
+          </text>
+        </svg>
+        <div class="diagram-caption">图 4 · 3 个反模式 + 各自"信号" + 修正对照</div>
+      </div>
+    </section>
+
+    <section id="loop">
+      <h2>Loop 规则</h2>
+
+      <p>SKILL.md 第 36-38 行——3 条，简洁：</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="tdd loop 规则：red → green，refactor 不在 loop 内">
+          <defs>
+            <style>
+              .lp-box { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .lp-red { fill: var(--red-soft); stroke: var(--red); stroke-width: 2.5; }
+              .lp-green { fill: var(--green-soft); stroke: var(--green); stroke-width: 2.5; }
+              .lp-out { fill: var(--amber-soft); stroke: var(--amber); stroke-width: 2;
+                        stroke-dasharray: 5 3; }
+              .lp-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .lp-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .lp-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+              .lp-arrow-out { stroke: var(--amber); stroke-width: 1.4; fill: none; }
+              .lp-rule { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+              .lp-rule-lbl { font: 700 12px sans-serif; fill: var(--accent); }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">tdd loop · red → green（refactor 在外）</text>
+
+          <!-- the loop -->
+          <g transform="translate(80,80)">
+            <rect class="lp-red" x="0" y="0" width="140" height="80" rx="8"/>
+            <text x="70" y="22" class="lp-lbl">RED</text>
+            <text x="70" y="40" class="lp-sub">写失败的测试</text>
+            <text x="70" y="58" class="lp-sub">red before green</text>
+          </g>
+
+          <g transform="translate(280,80)">
+            <rect class="lp-green" x="0" y="0" width="140" height="80" rx="8"/>
+            <text x="70" y="22" class="lp-lbl">GREEN</text>
+            <text x="70" y="40" class="lp-sub">只写让测试过的代码</text>
+            <text x="70" y="58" class="lp-sub">"one seam · one test · one impl"</text>
+          </g>
+
+          <path class="lp-arrow" d="M 220 120 L 280 120" marker-end="url(#tdd-arr)"/>
+
+          <!-- back to red for next cycle -->
+          <path class="lp-arrow" d="M 350 160 Q 350 200 150 200 Q 100 200 100 160" marker-end="url(#tdd-arr)"/>
+          <text x="200" y="216" class="lp-sub" font-style="italic">tracer bullet · 回到 red 写下一个</text>
+
+          <!-- refactor outside -->
+          <g transform="translate(520,80)">
+            <rect class="lp-out" x="0" y="0" width="180" height="80" rx="8"/>
+            <text x="90" y="22" class="lp-lbl">REFACTOR</text>
+            <text x="90" y="40" class="lp-sub" font-weight="700" fill="var(--amber)">不是 loop 的一部分</text>
+            <text x="90" y="58" class="lp-sub">→ 属于 /code-review 阶段</text>
+          </g>
+
+          <path class="lp-arrow-out" d="M 420 120 L 520 120" marker-end="url(#tdd-arr)"/>
+          <text x="470" y="110" class="lp-sub" font-style="italic" fill="var(--amber)">清理时离开 loop</text>
+
+          <!-- 3 rules below -->
+          <text x="20" y="245" class="lp-rule-lbl">3 条 loop 规则</text>
+
+          <text x="40" y="265" font="11px sans-serif" fill="#1a1a1a">
+            <tspan font-weight="700">① red before green</tspan> · 写 fail 测试，再只写让过它的实现 · 不预写、不 speculative
+          </text>
+        </svg>
+        <div class="diagram-caption">图 5 · loop = RED → GREEN；REFACTOR 在外转交 code-review</div>
+      </div>
+
+      <ol>
+        <li><strong>Red before green</strong> — 先写失败的测试，再只写让它过的实现。不要预写下一个 / 不加 speculative 特性</li>
+        <li><strong>One slice at a time</strong> — 一个 seam · 一个测试 · 一个最小实现（per cycle）</li>
+        <li><strong>Refactoring 不属于 loop</strong> — refactor 是 <code>/code-review</code> 阶段的事，不是 red→green 循环的一部分</li>
+      </ol>
+    </section>
+
+    <section id="examples">
+      <h2>Good vs Bad 实例（tests.md 全文对照）</h2>
+
+      <h3>① Implementation-detail 测试（最常见的反模式）</h3>
+
+      <div class="skill-source">
+<pre class="bad"><code>test("checkout calls paymentService.process", async () => {
+  const mockPayment = jest.mock(paymentService);
+  await checkout(cart, payment);
+  expect(mockPayment.process).toHaveBeenCalledWith(cart.total);
+});</code></pre>
+      </div>
+
+      <p class="compare">
+        <div class="bad">
+          <div class="label">✗ 错在这里</div>
+          <p>名字讲 HOW：<code>calls paymentService.process</code></p>
+          <ul>
+            <li>mock 内部 collaborator</li>
+            <li>断言 call count（业务上不重要）</li>
+            <li>重构支付方法就崩</li>
+          </ul>
+        </div>
+        <div class="good">
+          <div class="label">✓ 改</div>
+          <p>名字讲 WHAT：<code>user can checkout with valid cart</code></p>
+          <ul>
+            <li>通过接口观察 outcome</li>
+            <li>公共 API only</li>
+            <li>支付换 provider，测试不动</li>
+          </ul>
+        </div>
+      </p>
+
+      <h3>② Side-channel 验证</h3>
+
+      <div class="compare">
+        <div class="bad">
+          <div class="label">✗ BAD · 绕开接口</div>
+          <pre><code>test("createUser saves to database", async () =&gt; {
+  await createUser({ name: "Alice" });
+  const row = await db.query(
+    "SELECT * FROM users WHERE name = ?",
+    ["Alice"]
+  );
+  expect(row).toBeDefined();
+});</code></pre>
+        </div>
+        <div class="good">
+          <div class="label">✓ GOOD · 通过接口</div>
+          <pre><code>test("createUser makes user retrievable", async () =&gt; {
+  const user = await createUser({ name: "Alice" });
+  const retrieved = await getUser(user.id);
+  expect(retrieved.name).toBe("Alice");
+});</code></pre>
+        </div>
+      </div>
+
+      <p><strong>同一件事</strong>：BAD 测"写到 DB"，GOOD 测"能取出来"。后者表达的是 user-facing capability。</p>
+
+      <h3>③ Tautological（预期值从同算法重算）</h3>
+
+      <div class="compare">
+        <div class="bad">
+          <div class="label">✗ BAD · 预期重算</div>
+          <pre><code>test("calculateTotal sums line items", () =&gt; {
+  const items = [{ price: 10 }, { price: 5 }];
+  const expected = items.reduce(
+    (sum, i) =&gt; sum + i.price, 0
+  );
+  expect(calculateTotal(items))
+    .toBe(expected);
+});</code></pre>
+        </div>
+        <div class="good">
+          <div class="label">✓ GOOD · 独立 literal</div>
+          <pre><code>test("calculateTotal sums line items", () =&gt; {
+  expect(calculateTotal([
+    { price: 10 }, { price: 5 }
+  ])).toBe(15);
+});</code></pre>
+        </div>
+      </div>
+
+      <p><strong>expected 来源规则</strong>（SKILL.md 第 31 行）：</p>
+      <blockquote>
+        Expected values must come from an <strong>independent source of truth</strong>: a known-good literal, a worked example, the spec.
+      </blockquote>
+
+      <table>
+        <thead>
+          <tr><th>类型</th><th>例子</th><th>用不用</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>known-good literal</td><td><code>expect(fn(x)).toBe(15)</code></td><td>✓</td></tr>
+          <tr><td>worked example</td><td>spec 段落手算一遍</td><td>✓</td></tr>
+          <tr><td>spec 摘录</td><td>从 SPEC.md 抄出来的数</td><td>✓</td></tr>
+          <tr><td>同算法重算</td><td><code>items.reduce</code> 算 sum 再断言</td><td>✗</td></tr>
+          <tr><td>snapshot 由同函数生成</td><td>手动 snapshot 用了同 reduce</td><td>✗</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="mocking-when">
+      <h2>mocking.md · 何时 mock</h2>
+
+      <p>整个 mocking.md 第 2 段：</p>
+
+      <blockquote>
+        Mock at <strong>system boundaries</strong> only
+      </blockquote>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="mock 只在 system boundary：你控制的 vs 不控制的">
+          <defs>
+            <style>
+              .mw-zone { fill: none; stroke: #c8c4bc; stroke-width: 1.4; stroke-dasharray: 4 3; }
+              .mw-zone-lbl { font: 700 11px sans-serif; fill: var(--muted);
+                             text-transform: uppercase; letter-spacing: 0.1em; }
+              .mw-mock { fill: var(--red-soft); stroke: var(--red); stroke-width: 2; }
+                  .mw-real  { fill: var(--green-soft); stroke: var(--green); stroke-width: 2; }
+                  .mw-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+                  .mw-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+                </style>
+              </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">mock 只在 system boundary · 你控制的 vs 不控制的</text>
+
+              <!-- INNER (you control) -->
+              <g transform="translate(60,55)">
+                <rect class="mw-zone" x="0" y="0" width="380" height="270" rx="10"/>
+                <text x="190" y="-5" class="mw-zone-lbl">你的控制范围内 · don't mock</text>
+
+                <g transform="translate(20,30)">
+                  <rect class="mw-real" x="0" y="0" width="160" height="36" rx="6"/>
+                  <text x="80" y="18" class="mw-lbl">your own classes</text>
+                  <text x="80" y="32" class="mw-sub">用真测试 / 集成测试</text>
+                </g>
+
+                <g transform="translate(20,80)">
+                  <rect class="mw-real" x="0" y="0" width="160" height="36" rx="6"/>
+                  <text x="80" y="18" class="mw-lbl">internal collaborators</text>
+                  <text x="80" y="32" class="mw-sub">用真 / 测试 DB 替代品</text>
+                </g>
+
+                <g transform="translate(20,130)">
+                  <rect class="mw-real" x="0" y="0" width="160" height="36" rx="6"/>
+                  <text x="80" y="18" class="mw-lbl">anything you control</text>
+                  <text x="80" y="32" class="mw-sub">代替品 · 真实现</text>
+                </g>
+
+                <text x="190" y="210" class="mw-sub" font-style="italic">— 这条规则和 codebase-design 对齐 —</text>
+                <text x="190" y="228" class="mw-sub">"one adapter = hypothetical seam"</text>
+                <text x="190" y="245" class="mw-sub">"two adapters = real seam"</text>
+              </g>
+
+              <!-- OUTER (don't control) -->
+              <g transform="translate(460,55)">
+                <rect class="mw-zone" x="0" y="0" width="380" height="270" rx="10" stroke="#ef4444"/>
+                <text x="190" y="-5" class="mw-zone-lbl" fill="#ef4444">system boundary · mock 是唯一选择</text>
+
+                <g transform="translate(20,30)">
+                  <rect class="mw-mock" x="0" y="0" width="160" height="36" rx="6"/>
+                  <text x="80" y="18" class="mw-lbl">external APIs</text>
+                  <text x="80" y="32" class="mw-sub">payment · email · etc.</text>
+                </g>
+
+                <g transform="translate(20,80)">
+                  <rect class="mw-mock" x="0" y="0" width="160" height="36" rx="6"/>
+                  <text x="80" y="18" class="mw-lbl">databases</text>
+                  <text x="80" y="32" class="mw-sub">sometimes · prefer test DB</text>
+                </g>
+
+                <g transform="translate(20,130)">
+                  <rect class="mw-mock" x="0" y="0" width="160" height="36" rx="6"/>
+                  <text x="80" y="18" class="mw-lbl">time / randomness</text>
+                  <text x="80" y="32" class="mw-sub">fixed fake clock · seeded RNG</text>
+                </g>
+
+                <g transform="translate(20,180)">
+                  <rect class="mw-mock" x="0" y="0" width="160" height="36" rx="6"/>
+                  <text x="80" y="18" class="mw-lbl">file system</text>
+                  <text x="80" y="32" class="mw-sub">sometimes · in-mem fs</text>
+                </g>
+              </g>
+            </svg>
+            <div class="diagram-caption">图 6 · mock 只在 right zone——你控制的不 mock；外部的才 mock</div>
+          </div>
+
+          <h3>与 codebase-design 的对齐</h3>
+
+          <p>这条规则看起来是 mocking 的，实则与 codebase-design 的 seam discipline 是同一观点：</p>
+          <ul>
+            <li>你控制的东西——已经有了真实现，加 mock = <strong>hypothetical seam</strong>（白增间接）</li>
+            <li>外部的东西——prod / test 两个 adapter 不可少（<strong>real seam</strong>），mock 是其中之一</li>
+          </ul>
+        </section>
+
+    <section id="mocking-how">
+      <h2>为可 mock 而设计（mocking.md · 2 条）</h2>
+
+      <h3>① Use dependency injection</h3>
+
+      <div class="compare">
+        <div class="bad">
+          <div class="label">✗ Hard to mock</div>
+          <pre><code>function processPayment(order) {
+  const client = new StripeClient(
+    process.env.STRIPE_KEY
+  );
+  return client.charge(order.total);
+}</code></pre>
+        </div>
+        <div class="good">
+          <div class="label">✓ Easy to mock</div>
+          <pre><code>function processPayment(order, paymentClient) {
+  return paymentClient.charge(order.total);
+}</code></pre>
+        </div>
+      </div>
+
+      <p><strong>这条正好是 codebase-design 可测性三招之一</strong>：<em>"Accept dependencies, don't create them."</em></p>
+
+      <h3>② Prefer SDK-style over generic fetch</h3>
+
+      <div class="compare">
+        <div class="bad">
+          <div class="label">✗ BAD · generic fetcher</div>
+          <pre><code>const api = {
+  fetch: (endpoint, options) =&gt;
+    fetch(endpoint, options),
+};</code></pre>
+          <p>mock 要写条件逻辑</p>
+        </div>
+        <div class="good">
+          <div class="label">✓ GOOD · SDK style</div>
+          <pre><code>const api = {
+  getUser:    (id)     =&gt; fetch(`/users/${id}`),
+  getOrders:  (userId) =&gt; fetch(`/users/${userId}/orders`),
+  createOrder:(data)   =&gt; fetch('/orders', {method:'POST',body:data}),
+};</code></pre>
+        </div>
+      </div>
+
+      <p>SDK-style 4 个好处（mocking.md 第 56-59 行）：</p>
+      <ul>
+        <li>每个 mock 只返一种形状</li>
+        <li>测试 setup 不要条件逻辑</li>
+        <li>一眼看出测试走了哪些 endpoint</li>
+        <li>逐 endpoint 类型安全</li>
+      </ul>
+
+      <p style="background: var(--accent-soft); padding: 12px 16px; border-radius: 6px; margin-top: 12px;">
+        <strong>恰好对到 codebase-design 的另一招</strong>：<em>"Small surface area"</em>——少数明确的方法，少分支。SDK-style 让接口"少数明确"，generic fetcher 让接口是一锅大杂烩。
+      </p>
+    </section>
+
+    <section id="vs-codebase">
+      <h2>与 codebase-design 的边界</h2>
+
+      <p>两个 skill 都是 reference，不是 session——但管的领域不一样。</p>
+
+      <table>
+        <thead>
+          <tr><th>维度</th><th>tdd</th><th>codebase-design</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>管的是</td><td>测试<strong>写得对</strong></td><td>模块<strong>形状设计</strong></td></tr>
+          <tr><td>出问题</td><td>测试崩而无意义 / 重构敏感</td><td>shallow 模块 / leak across seam</td></tr>
+          <tr><td>关键动作</td><td>test at seam · vertical slice · refactor 分离</td><td>deep module · delete-test · 2+ adapters</td></tr>
+          <tr><td>何时 consult</td><td>每个 red/green cycle</td><td>shape of interface in question</td></tr>
+        </tbody>
+      </table>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 200" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="tdd 与 codebase-design 边界对比">
+          <defs>
+            <style>
+              .vs-box { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .vs-self { fill: var(--mainflow-soft); stroke: var(--mainflow-color); stroke-width: 2.5; }
+              .vs-other { fill: var(--vocab-soft); stroke: var(--vocab-color); stroke-width: 2; }
+              .vs-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .vs-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .vs-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">两个 reference skill · 各管一面</text>
+
+          <g transform="translate(40,60)">
+            <rect class="vs-self" x="0" y="0" width="380" height="120" rx="8"/>
+            <text x="190" y="22" class="vs-lbl">/tdd</text>
+            <text x="190" y="42" class="vs-sub">测试品质 / seam / mock</text>
+            <text x="20" y="70" class="vs-sub" text-anchor="start">问：测试写在哪儿？</text>
+            <text x="20" y="88" class="vs-sub" text-anchor="start">问：什么是好测试？</text>
+            <text x="20" y="106" class="vs-sub" text-anchor="start">问：怎么 mock？</text>
+          </g>
+
+          <g transform="translate(460,60)">
+            <rect class="vs-other" x="0" y="0" width="380" height="120" rx="8"/>
+            <text x="190" y="22" class="vs-lbl">/codebase-design</text>
+            <text x="190" y="42" class="vs-sub">模块形状 / deep / seam</text>
+            <text x="20" y="70" class="vs-sub" text-anchor="start">问：seam 在哪儿？</text>
+            <text x="20" y="88" class="vs-sub" text-anchor="start">问：接口该多大？</text>
+            <text x="20" y="106" class="vs-sub" text-anchor="start">问：怎么 deepen 候选？</text>
+          </g>
+
+          <text x="430" y="190" class="vs-sub" font-style="italic" font-weight="700">互引：tdd 引用 codebase-design 的 seam 词</text>
+        </svg>
+        <div class="diagram-caption">图 7 · 互补：tdd 管测试品质，codebase-design 管接口形状</div>
+      </div>
+    </section>
+
+    <section id="chain">
+      <h2>主流程 triple 配对</h2>
+
+      <p>主流程上的 /implement → /code-review 双跳，/tdd 是它们之间的 reference：</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="主流程 triple: implement 内置 tdd，code-review 接管 refactor">
+          <defs>
+            <marker id="ch-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2d5f8a"/>
+            </marker>
+            <style>
+              .ch-impl { fill: var(--mainflow-soft); stroke: var(--mainflow-color); stroke-width: 2.5; }
+              .ch-review { fill: var(--amber-soft); stroke: var(--amber); stroke-width: 2.5; }
+              .ch-tdd { fill: #fff; stroke: var(--mainflow-color); stroke-width: 1.5; stroke-dasharray: 5 3; }
+              .ch-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .ch-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .ch-arrow { stroke: var(--mainflow-color); stroke-width: 1.6; fill: none; }
+              .ch-arrow-out { stroke: var(--amber); stroke-width: 1.4; fill: none; }
+              .ch-side { stroke: #6b6b6b; stroke-width: 1.2; fill: none; stroke-dasharray: 2 2; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">tdd + implement + code-review 的关系</text>
+
+          <g transform="translate(40,60)">
+            <rect class="ch-impl" x="0" y="0" width="220" height="80" rx="8"/>
+            <text x="110" y="22" class="ch-lbl">/implement</text>
+            <text x="110" y="42" class="ch-sub">build ticket</text>
+            <text x="110" y="62" class="ch-sub" font-weight="700">drives tdd inside</text>
+          </g>
+
+          <g transform="translate(330,60)">
+            <rect class="ch-tdd" x="0" y="0" width="220" height="80" rx="8"/>
+            <text x="110" y="22" class="ch-lbl">/tdd (reference)</text>
+            <text x="110" y="42" class="ch-sub">red → green loop</text>
+            <text x="110" y="62" class="ch-sub">test 写在 seam</text>
+          </g>
+
+          <g transform="translate(620,60)">
+            <rect class="ch-review" x="0" y="0" width="220" height="80" rx="8"/>
+            <text x="110" y="22" class="ch-lbl">/code-review</text>
+            <text x="110" y="42" class="ch-sub">2-axis · refactor 阶段</text>
+            <text x="110" y="62" class="ch-sub" font-weight="700">loop 外的事</text>
+          </g>
+
+          <path class="ch-arrow" d="M 260 100 L 330 100" marker-end="url(#ch-arr)"/>
+          <text x="295" y="92" class="ch-sub" font-style="italic">drives</text>
+
+          <path class="ch-arrow-out" d="M 550 100 L 620 100" marker-end="url(#ch-arr)"/>
+          <text x="585" y="92" class="ch-sub" font-style="italic" fill="var(--amber)">refactor 移交</text>
+
+          <!-- tdd consults design -->
+          <path class="ch-side" d="M 440 140 L 720 160" marker-end="url(#ch-arr)"/>
+          <text x="580" y="178" class="ch-sub" font-style="italic">tdd 引用 codebase-design</text>
+        </svg>
+        <div class="diagram-caption">图 8 · tdd 在 implement 内置驱动，refactor 移交给 code-review</div>
+      </div>
+    </section>
+
+    <section id="when">
+      <h2>何时用 / 不用</h2>
+
+      <h3>用 /tdd（直接调）</h3>
+      <ul>
+        <li>想"先写测试再建"但不需要走完整 <code>to-spec</code> / <code>to-tickets</code></li>
+        <li>已经进了 /implement 的 fresh context，需要参考 "seam-only · vertical slice · mock at boundary"</li>
+        <li>写测试时不知道"这是不是好测试"——回头查 anti-patterns</li>
+      </ul>
+
+      <h3>用 /implement 而不是 /tdd</h3>
+      <ul>
+        <li>是从 to-tickets 来的 ticket——走 /implement（内置 drive /tdd）</li>
+        <li>需要 cycle + context + commit 完整管理</li>
+      </ul>
+
+      <h3>用 /code-review 而不是 /tdd</h3>
+      <ul>
+        <li>已经过 red→green，现在要清理——/code-review 接管 refactor</li>
+        <li>SKILL.md 第 38 行明文："Refactoring is not part of the loop. It belongs to the review stage"</li>
+      </ul>
+
+      <h3>用 /codebase-design 而不是 /tdd</h3>
+      <ul>
+        <li>"interface 的形状本身值得讨论"（module / seam 该不该挪）</li>
+        <li>shallow 模块要 deepen——不是写测试的事，是重设计</li>
+      </ul>
+
+      <h3>不用 /tdd</h3>
+      <ul>
+        <li>不是 codebase 项目（纯文档 / 短脚本）</li>
+        <li>在赶 ship——先 mock + 手写 happy path，回头补测试</li>
+        <li>在跑 /research 或 /prototype——后者先验清逻辑，再回到 tdd 写正式测试</li>
+      </ul>
+    </section>
+
+    <section id="skill-source">
+      <h2>SKILL.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code>---
+name: tdd
+description: Test-driven development. Use when the user wants to build features
+  or fix bugs test-first, mentions "red-green-refactor", or wants integration
+  tests.
+---
+
+# Test-Driven Development
+
+TDD is the red → green loop. This skill is the reference that makes that loop
+produce tests worth keeping: what a good test is, where tests go, the
+anti-patterns, and the rules of the loop. Every section applies on every
+cycle: consult them before and during the loop, not after.
+
+When exploring the codebase, read CONTEXT.md (if it exists) so test names and
+interface vocabulary match the project's domain language, and respect ADRs in
+the area you're touching.
+
+## What a good test is
+
+Tests verify behavior through public interfaces, not implementation details.
+Code can change entirely; tests shouldn't. A good test reads like a
+specification: "user can checkout with valid cart" tells you exactly what
+capability exists, and it survives refactors because it doesn't care about
+internal structure.
+
+See tests.md for examples and mocking.md for mocking guidelines.
+
+## Seams: where tests go
+
+A seam is the public boundary you test at: the interface where you observe
+behavior without reaching inside. Tests live at seams, never against
+internals.
+
+Test only at pre-agreed seams. Before writing any test, write down the seams
+under test and confirm them with the user. No test is written at an
+unconfirmed seam. You can't test everything, so agreeing the seams up front
+is how testing effort lands on the critical paths and complex logic instead
+of every edge case.
+
+Ask: "What's the public interface, and which seams should we test?"
+
+When the shape of that interface is itself in question (how deep the module
+is, where the seam belongs, what the interface should expose), call the
+Skill tool with "codebase-design" for the vocabulary. It is the shared source
+of the module, interface, depth, seam, adapter, leverage and locality terms,
+and it is a reference to consult, not a session to run.
+
+## Anti-patterns
+
+- Implementation-coupled: mocks internal collaborators, tests private
+  methods, or verifies through a side channel (querying the database instead
+  of using the interface). The tell: the test breaks when you refactor but
+  behavior hasn't changed.
+- Tautological: the assertion recomputes the expected value the way the code
+  does (expect(add(a, b)).toBe(a + b), a snapshot derived by hand the same
+  way, a constant asserted equal to itself), so it passes by construction and
+  can never disagree with the code. Expected values must come from an
+  independent source of truth: a known-good literal, a worked example, the
+  spec.
+- Horizontal slicing: writing all tests first, then all implementation. Bulk
+  tests verify imagined behavior: you test the shape of things rather than
+  user-facing behavior, the tests go insensitive to real changes, and you
+  commit to test structure before understanding the implementation. Work in
+  vertical slices instead: one test → one implementation → repeat, each
+  test a tracer bullet that responds to what the last cycle taught you.
+
+## Rules of the loop
+
+- Red before green. Write the failing test first, then only enough code to
+  pass it. Don't anticipate future tests or add speculative features.
+- One slice at a time. One seam, one test, one minimal implementation per
+  cycle.
+- Refactoring is not part of the loop. It belongs to the review stage (see
+  the code-review skill), not the red → green implementation cycle.</code></pre>
+      </div>
+    </section>
+
+    <section id="tests-source">
+      <h2>tests.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code># Good and Bad Tests
+
+## Good Tests
+
+Integration-style: Test through real interfaces, not mocks of internal parts.
+
+```typescript
+// GOOD: Tests observable behavior
+test("user can checkout with valid cart", async () => {
+  const cart = createCart();
+  cart.add(product);
+  const result = await checkout(cart, paymentMethod);
+  expect(result.status).toBe("confirmed");
+});
+```
+
+Characteristics:
+- Tests behavior users/callers care about
+- Uses public API only
+- Survives internal refactors
+- Describes WHAT, not HOW
+- One logical assertion per test
+
+## Bad Tests
+
+Implementation-detail tests: Coupled to internal structure.
+
+```typescript
+// BAD: Tests implementation details
+test("checkout calls paymentService.process", async () => {
+  const mockPayment = jest.mock(paymentService);
+  await checkout(cart, payment);
+  expect(mockPayment.process).toHaveBeenCalledWith(cart.total);
+});
+```
+
+Red flags:
+- Mocking internal collaborators
+- Testing private methods
+- Asserting on call counts/order
+- Test breaks when refactoring without behavior change
+- Test name describes HOW not WHAT
+- Verifying through external means instead of interface
+
+```typescript
+// BAD: Bypasses interface to verify
+test("createUser saves to database", async () => {
+  await createUser({ name: "Alice" });
+  const row = await db.query("SELECT * FROM users WHERE name = ?", ["Alice"]);
+  expect(row).toBeDefined();
+});
+
+// GOOD: Verifies through interface
+test("createUser makes user retrievable", async () => {
+  const user = await createUser({ name: "Alice" });
+  const retrieved = await getUser(user.id);
+  expect(retrieved.name).toBe("Alice");
+});
+```
+
+Tautological tests: Expected value restates the implementation, so the test
+passes by construction.
+
+```typescript
+// BAD: Expected value is recomputed the way the code computes it
+test("calculateTotal sums line items", () => {
+  const items = [{ price: 10 }, { price: 5 }];
+  const expected = items.reduce((sum, i) => sum + i.price, 0);
+  expect(calculateTotal(items)).toBe(expected);
+});
+
+// GOOD: Expected value is an independent, known literal
+test("calculateTotal sums line items", () => {
+  expect(calculateTotal([{ price: 10 }, { price: 5 }])).toBe(15);
+});
+```</code></pre>
+      </div>
+    </section>
+
+    <section id="mocking-source">
+      <h2>mocking.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code># When to Mock
+
+Mock at system boundaries only:
+- External APIs (payment, email, etc.)
+- Databases (sometimes - prefer test DB)
+- Time/randomness
+- File system (sometimes)
+
+Don't mock:
+- Your own classes/modules
+- Internal collaborators
+- Anything you control
+
+## Designing for Mockability
+
+At system boundaries, design interfaces that are easy to mock:
+
+**1. Use dependency injection**
+
+Pass external dependencies in rather than creating them internally:
+
+```typescript
+// Easy to mock
+function processPayment(order, paymentClient) {
+  return paymentClient.charge(order.total);
+}
+
+// Hard to mock
+function processPayment(order) {
+  const client = new StripeClient(process.env.STRIPE_KEY);
+  return client.charge(order.total);
+}
+```
+
+**2. Prefer SDK-style interfaces over generic fetchers**
+
+Create specific functions for each external operation instead of one generic
+function with conditional logic:
+
+```typescript
+// GOOD: Each function is independently mockable
+const api = {
+  getUser:    (id)     => fetch(`/users/${id}`),
+  getOrders:  (userId) => fetch(`/users/${userId}/orders`),
+  createOrder:(data)   => fetch('/orders', { method: 'POST', body: data }),
+};
+
+// BAD: Mocking requires conditional logic inside the mock
+const api = {
+  fetch: (endpoint, options) => fetch(endpoint, options),
+};
+```
+
+The SDK approach means:
+- Each mock returns one specific shape
+- No conditional logic in test setup
+- Easier to see which endpoints a test exercises
+- Type safety per endpoint</code></pre>
+      </div>
+    </section>
+
+    <section id="reference">
+      <h2>参考</h2>
+      <ul>
+        <li>Skill 源文件：<code>~/.agents/skills/tdd/SKILL.md</code>（39 行）</li>
+        <li>Good vs Bad 实例：<code>~/.agents/skills/tdd/tests.md</code>（78 行）</li>
+        <li>Mocking 指南：<code>~/.agents/skills/tdd/mocking.md</code>（60 行）</li>
+        <li>配对：<a href="codebase-design.html">codebase-design</a>（seam 词汇来源）</li>
+        <li>驱动：<code>implement</code>（内置 drive /tdd 每个 slice）</li>
+        <li>review：<code>code-review</code>（refactor 阶段的下一个）</li>
+      </ul>
+    </section>
+
+    <footer>
+      Generated for <code>tdd</code> · 39 + 78 + 60 行 · seam-only testing · vertical slicing · mock at boundary · 单文件自包含
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // ============ 顶部：文档目录下拉 ============
+  (function () {
+    const trigger = document.querySelector('.doc-trigger');
+    const panel = document.getElementById('doc-panel');
+    if (!trigger || !panel) return;
+    function close() { panel.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+    function open() { panel.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.contains('open') ? close() : open();
+    });
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && !trigger.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => close()));
+  })();
+
+  // ============ 侧栏：滚动联动高亮 ============
+  (function () {
+    const links = document.querySelectorAll('.sidebar a[href^="#"]');
+    const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')))
+                              .filter(Boolean);
+    if (!sections.length) return;
+    const map = new Map();
+    links.forEach((a, i) => map.set(sections[i].id, a));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => obs.observe(s));
+  })();
+</script>
+
+</body>
+</html>
