@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>diagnosing-bugs · Skill 文档</title>
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #d8d4cc;
+      --accent: #2d5f8a;
+      --accent-soft: #e8f0f7;
+      --highlight: #c7501f;
+      --red: #b91c1c;
+      --red-soft: #fee2e2;
+      --green: #15803d;
+      --green-soft: #dcfce7;
+      --amber: #d97706;
+      --amber-soft: #fef3c7;
+      --code-bg: #f3f0ea;
+      --code-fg: #2b2b2b;
+      --topnav-bg: rgba(250, 250, 247, 0.85);
+      --sidebar-bg: #f3f0ea;
+      --onramp-color: #6b21a8;
+      --onramp-soft: #f3e8ff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    /* ============ Top nav ============ */
+    .topnav { position: sticky; top: 0; z-index: 100;
+              background: var(--topnav-bg);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border-bottom: 1px solid var(--border); }
+    .topnav-inner { max-width: 1400px; margin: 0 auto;
+                    display: flex; align-items: center;
+                    height: 54px; padding: 0 28px; gap: 20px;
+                    position: relative; }
+    .brand { font-weight: 600; font-size: 14px; color: var(--fg);
+             text-decoration: none; letter-spacing: 0.005em; white-space: nowrap; }
+    .brand .dot { display: inline-block; width: 6px; height: 6px;
+                  background: var(--accent); border-radius: 50%;
+                  margin-right: 8px; vertical-align: middle; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px;
+                  font-size: 13px; color: var(--muted);
+                  flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+    .breadcrumb .sep { color: #c8c4bc; }
+    .breadcrumb .node { font-family: "SF Mono", "Menlo", monospace; font-size: 12.5px; }
+    .breadcrumb .current { color: var(--fg); font-weight: 500; }
+    .doc-trigger { display: flex; align-items: center; gap: 8px;
+                   padding: 6px 12px 6px 14px; background: #fff;
+                   border: 1px solid var(--border); border-radius: 6px;
+                   font: inherit; font-size: 13px; color: var(--fg);
+                   cursor: pointer; transition: all 0.15s; font-family: inherit;
+                   white-space: nowrap; }
+    .doc-trigger:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-trigger .count { background: var(--accent-soft); color: var(--accent);
+                          font-size: 11px; font-weight: 600;
+                          padding: 1px 7px; border-radius: 9px;
+                          font-family: "SF Mono", monospace; }
+    .doc-trigger .chev { width: 12px; height: 12px; transition: transform 0.18s; opacity: 0.6; }
+    .doc-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); opacity: 1; }
+    .doc-panel { position: absolute; top: calc(100% + 6px); right: 28px;
+                 background: #fff; border: 1px solid var(--border); border-radius: 8px;
+                 padding: 6px; max-height: 80vh; overflow-y: auto;
+                 box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+                 min-width: 380px; display: none; }
+    .doc-panel.open { display: block; }
+    .doc-group { padding: 6px 4px; }
+    .doc-group + .doc-group { border-top: 1px solid var(--border);
+                              margin-top: 4px; padding-top: 10px; }
+    .doc-group-title { font-size: 10.5px; text-transform: uppercase;
+                       letter-spacing: 0.08em; color: var(--muted);
+                       font-weight: 700; margin-bottom: 6px; padding: 0 8px; }
+    .doc-link { display: flex; align-items: center; justify-content: space-between;
+                padding: 6px 10px; color: var(--fg); text-decoration: none;
+                font-size: 13px; border-radius: 4px;
+                font-family: "SF Mono", "Menlo", monospace; }
+    .doc-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-link.active { background: var(--accent); color: white; font-weight: 600; }
+    .doc-link.planned { color: #a8a49c; }
+    .doc-link.planned:hover { background: #f3f0ea; color: var(--fg); }
+    .doc-link .tag-mini { font-family: -apple-system, sans-serif; font-size: 10px;
+                          padding: 1px 6px; border-radius: 3px; font-weight: 500;
+                          background: rgba(255,255,255,0.25); }
+    .doc-link.planned .tag-mini { background: var(--code-bg); color: var(--muted); }
+    .doc-link.active .tag-mini { background: rgba(255,255,255,0.22); color: white; }
+
+    /* ============ Layout ============ */
+    .layout { display: grid; grid-template-columns: 240px 1fr; max-width: 1400px; margin: 0 auto; }
+
+    /* ============ Sidebar ============ */
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border);
+               padding: 28px 18px 28px 28px; position: sticky; top: 54px;
+               align-self: start; max-height: calc(100vh - 54px); overflow-y: auto; }
+    .sidebar h3 { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+                  color: var(--muted); margin: 0 0 12px; font-weight: 700; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { margin: 0; }
+    .sidebar a { display: block; padding: 5px 10px; color: var(--fg);
+                 text-decoration: none; font-size: 13.5px; border-radius: 3px;
+                 border-left: 2px solid transparent; transition: all 0.1s; }
+    .sidebar a:hover { background: rgba(45, 95, 138, 0.08); color: var(--accent); }
+    .sidebar a.active { background: rgba(45, 95, 138, 0.13); color: var(--accent);
+                        font-weight: 600; border-left-color: var(--accent); }
+    .sidebar .meta { margin-top: 28px; padding-top: 18px;
+                     border-top: 1px solid var(--border);
+                     font-size: 12px; color: var(--muted); }
+    .sidebar .meta .row { margin-bottom: 10px; }
+    .sidebar .meta strong { display: block; font-size: 11px; color: var(--muted);
+                            font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.06em; margin-bottom: 4px; }
+    .sidebar .meta .val { color: var(--fg); font-weight: 500; }
+
+    /* ============ Content ============ */
+    .content { padding: 28px 48px 96px; min-width: 0; }
+    .content > header { border-bottom: 2px solid var(--fg); padding-bottom: 20px; margin-bottom: 36px; }
+    h1 { font-size: 30px; margin: 0 0 8px; font-weight: 600; letter-spacing: -0.01em; }
+    h2 { font-size: 22px; margin: 56px 0 16px; font-weight: 600;
+         border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { font-size: 16px; margin: 28px 0 10px; font-weight: 600; color: var(--accent); }
+    h4 { font-size: 14px; margin: 20px 0 8px; font-weight: 600; color: #2b2b2b; }
+    p, li { font-size: 15px; }
+    .lede { font-size: 17px; color: var(--muted); margin: 0; }
+    .tag { display: inline-block; font-size: 12px; padding: 2px 8px;
+           background: var(--onramp-soft); color: var(--onramp-color);
+           border-radius: 3px; margin-right: 6px; font-weight: 500; }
+    .tag-hl { background: #fff0e0; color: var(--highlight); }
+    .tag-red { background: var(--red-soft); color: var(--red); }
+    .tag-green { background: var(--green-soft); color: var(--green); }
+    .tag-amber { background: var(--amber-soft); color: var(--amber); }
+
+    code { background: var(--code-bg); color: var(--code-fg); padding: 1px 6px;
+           border-radius: 3px; font-family: "SF Mono", "Menlo", "Consolas", monospace;
+           font-size: 13.5px; }
+    pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px;
+          overflow-x: auto; font-size: 13px; line-height: 1.55; }
+    pre code { background: none; padding: 0; font-size: 13px; }
+    pre.bad { background: #fce8e0; border-left: 3px solid var(--highlight); }
+    pre.bad code::before { content: "✗ BAD  "; color: var(--highlight); font-weight: 700; }
+    pre.good { background: #e6f3e0; border-left: 3px solid var(--green); }
+    pre.good code::before { content: "✓ GOOD "; color: var(--green); font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 4px 0; }
+
+    .diagram { background: #fff; border: 1px solid var(--border);
+               border-radius: 6px; padding: 20px; margin: 24px 0; overflow-x: auto; }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram-caption { font-size: 13px; color: var(--muted);
+                       margin-top: 12px; text-align: center; font-style: italic; }
+
+    .skill-source { background: #fff; border: 1px solid var(--border);
+                    border-radius: 6px; padding: 20px 24px; margin: 24px 0;
+                    position: relative; }
+    .skill-source::before { content: "SOURCE"; position: absolute;
+                            top: -10px; left: 16px; background: #fff;
+                            padding: 0 8px; font-size: 11px;
+                            color: var(--muted); font-weight: 600;
+                            text-transform: uppercase; letter-spacing: 0.06em; }
+    .skill-source pre { margin: 0; max-height: 460px; }
+    .skill-source + .skill-source { margin-top: 40px; }
+
+    .callout { padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--accent);
+               margin: 16px 0; background: var(--accent-soft); }
+    .callout-warn { border-left-color: var(--highlight); background: #fce8e0; }
+    .callout-good { border-left-color: var(--green); background: var(--green-soft); }
+    .callout-amber { border-left-color: var(--amber); background: var(--amber-soft); }
+
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+    .compare > div { border-radius: 6px; padding: 14px; border: 1px solid var(--border); }
+    .compare .bad { background: var(--red-soft); border-color: var(--red); }
+    .compare .good { background: var(--green-soft); border-color: var(--green); }
+    .compare .label { font: 700 11px sans-serif; text-transform: uppercase;
+                       letter-spacing: 0.08em; margin-bottom: 8px; }
+    .compare .bad .label { color: var(--red); }
+    .compare .good .label { color: var(--green); }
+    .compare p { margin: 0 0 8px; font-size: 13px; }
+    .compare ul { font-size: 13px; margin: 6px 0; padding-left: 20px; }
+
+    footer { margin-top: 80px; padding-top: 16px; border-top: 1px solid var(--border);
+             font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; border-right: none;
+                 border-bottom: 1px solid var(--border); }
+      .content { padding: 24px 24px 64px; }
+      .breadcrumb { display: none; }
+      .doc-panel { right: 16px; min-width: 300px; }
+      .compare { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============ Top Nav ============ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span>SDD / Matt Pocock Skills</a>
+
+    <div class="breadcrumb">
+      <span class="node">On-ramps</span>
+      <span class="sep">›</span>
+      <span class="node current">diagnosing-bugs</span>
+    </div>
+
+    <button class="doc-trigger" aria-expanded="false" aria-controls="doc-panel">
+      <span>All skill docs</span>
+      <span class="count">20</span>
+      <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 4.5 L6 7.5 L9 4.5"/>
+      </svg>
+    </button>
+
+    <div class="doc-panel" id="doc-panel" role="menu">
+
+      <div class="doc-group">
+        <div class="doc-group-title">Precondition · 2</div>
+        <a href="install-matt-pocock-skills.html" class="doc-link">install-matt-pocock-skills</a>
+        <a href="setup-matt-pocock-skills.html" class="doc-link">setup-matt-pocock-skills</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Grilling · 4</div>
+        <a href="grill-with-docs.html" class="doc-link">grill-with-docs</a>
+        <a href="grill-me.html" class="doc-link">grill-me</a>
+        <a href="grilling.html" class="doc-link">grilling</a>
+        <a href="domain-modeling.html" class="doc-link">domain-modeling</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Main flow · 7</div>
+        <a href="to-spec.html" class="doc-link">to-spec</a>
+        <a href="to-tickets.html" class="doc-link">to-tickets</a>
+        <a href="implement.html" class="doc-link planned">implement <span class="tag-mini">planned</span></a>
+        <a href="code-review.html" class="doc-link planned">code-review <span class="tag-mini">planned</span></a>
+        <a href="tdd.html" class="doc-link">tdd</a>
+        <a href="prototype.html" class="doc-link">prototype</a>
+        <a href="handoff.html" class="doc-link">handoff</a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">On-ramps · 4</div>
+        <a href="triage.html" class="doc-link planned">triage <span class="tag-mini">planned</span></a>
+        <a href="diagnosing-bugs.html" class="doc-link active">diagnosing-bugs <span class="tag-mini">you are here</span></a>
+        <a href="wayfinder.html" class="doc-link planned">wayfinder <span class="tag-mini">planned</span></a>
+        <a href="research.html" class="doc-link planned">research <span class="tag-mini">planned</span></a>
+      </div>
+
+      <div class="doc-group">
+        <div class="doc-group-title">Codebase · 2</div>
+        <a href="improve-codebase-architecture.html" class="doc-link">improve-codebase-architecture</a>
+        <a href="codebase-design.html" class="doc-link">codebase-design</a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ============ Layout ============ -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>本页目录</h3>
+    <ul>
+      <li><a href="#purpose">用途</a></li>
+      <li><a href="#flow-position">主流程位置</a></li>
+      <li><a href="#six-phases">六大阶段鸟瞰</a></li>
+      <li><a href="#redact">Redact 原则</a></li>
+      <li><a href="#phase-1">Phase 1 · 反馈环</a></li>
+      <li><a href="#phase-1-methods">10 种构建法</a></li>
+      <li><a href="#phase-1-tighten">Tighten · 让环更紧</a></li>
+      <li><a href="#phase-1-non-det">非确定性 bug</a></li>
+      <li><a href="#phase-1-cant-build">建不出环时</a></li>
+      <li><a href="#phase-2">Phase 2 · 复现 + 最小化</a></li>
+      <li><a href="#phase-3">Phase 3 · 假设</a></li>
+      <li><a href="#phase-4">Phase 4 · 入桩</a></li>
+      <li><a href="#phase-5">Phase 5 · 修复 + 回归测试</a></li>
+      <li><a href="#phase-6">Phase 6 · 清理</a></li>
+      <li><a href="#gates">阶段门控</a></li>
+      <li><a href="#signs">生效标志</a></li>
+      <li><a href="#relationships">与其他 skill</a></li>
+      <li><a href="#when">何时用 / 不用</a></li>
+      <li><a href="#skill-source">SKILL.md 全文</a></li>
+      <li><a href="#hitl-source">hitl-loop 模板</a></li>
+      <li><a href="#reference">参考</a></li>
+    </ul>
+    <div class="meta">
+      <div class="row">
+        <strong>状态</strong>
+        <span class="val">✓ 已发布</span>
+      </div>
+      <div class="row">
+        <strong>位置</strong>
+        <span class="val">docs/SDD/matt-pocock/</span>
+      </div>
+      <div class="row">
+        <strong>对应 skill</strong>
+        <span class="val">~/.claude/skills/diagnosing-bugs/</span>
+      </div>
+      <div class="row">
+        <strong>文件</strong>
+        <span class="val">SKILL.md 138 行<br>+ hitl-loop.template.sh<br>+ agents/openai.yaml</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <header>
+      <div><span class="tag">On-ramps</span><span class="tag tag-hl">red-capable loop</span><span class="tag tag-amber">6 phases</span><span class="tag tag-green">discipline</span></div>
+      <h1>diagnosing-bugs</h1>
+      <p class="lede"><strong>难 bug 的纪律 ——</strong>六阶段诊断法。核心不是理论、不是猜测，而是<strong>先有一条能红能绿的紧反馈环</strong>，再谈为什么。<em>"Build the right feedback loop, and the bug is 90% fixed."</em></p>
+    </header>
+
+    <section id="purpose">
+      <h2>用途</h2>
+
+      <p>适用：</p>
+      <ul>
+        <li><strong>难 bug</strong> —— 一眼看不出原因的失败</li>
+        <li><strong>间歇性失败</strong> —— 不是每次都重现</li>
+        <li><strong>回归</strong> —— 在两个已知好版本之间出现的差异</li>
+        <li><strong>性能回归</strong> —— 有 before / after，可量化</li>
+      </ul>
+
+      <div class="callout-warn">
+        <strong>不适用 ——</strong>不要因为"听起来严肃"就启动它。它<strong>故意又慢又全</strong>。
+        <ul style="margin: 6px 0 0; padding-left: 22px;">
+          <li>只是回答设计问题 → 用 <code>prototype</code></li>
+          <li>已规划好的 TDD 行为 → 用 <code>tdd</code></li>
+          <li>未经确认的第三方 bug 报告 → 先用 <code>triage</code></li>
+          <li>找不到合适的 seam → 先用 <code>improve-codebase-architecture</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="flow-position">
+      <h2>主流程位置</h2>
+
+      <div class="diagram">
+        <svg viewBox="0 0 940 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="diagnosing-bugs 在主流程的位置：从 on-ramp 进来，与 main flow 并行，不被驱动">
+          <defs>
+            <marker id="db-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7"
+                    markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6b21a8"/>
+            </marker>
+            <style>
+              .db-on { fill: var(--onramp-soft); stroke: var(--onramp-color); stroke-width: 1.4; }
+              .db-self { fill: var(--onramp-soft); stroke: var(--onramp-color); stroke-width: 2.5; }
+              .db-main { fill: #fff; stroke: #c8c4bc; stroke-width: 1.5; }
+              .db-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .db-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .db-arrow { stroke: var(--onramp-color); stroke-width: 1.6; fill: none; }
+              .db-zone { font: 700 11px sans-serif; fill: var(--onramp-color);
+                         text-transform: uppercase; letter-spacing: 0.1em; }
+            </style>
+          </defs>
+
+          <text x="470" y="22" font="700 14px sans-serif" fill="#6b21a8"
+                text-anchor="middle">/diagnosing-bugs · On-ramp 入口</text>
+
+          <text x="40" y="60" class="db-zone">On-ramps</text>
+
+          <g transform="translate(40,75)">
+            <rect class="db-on" x="0" y="0" width="160" height="60" rx="8"/>
+            <text x="80" y="22" class="db-lbl">triage</text>
+            <text x="80" y="42" class="db-sub">issue 评估</text>
+          </g>
+          <g transform="translate(220,75)">
+            <rect class="db-self" x="0" y="0" width="180" height="60" rx="8"/>
+            <text x="90" y="22" class="db-lbl">diagnosing-bugs</text>
+            <text x="90" y="42" class="db-sub">6 阶段 · red-loop</text>
+          </g>
+          <g transform="translate(420,75)">
+            <rect class="db-on" x="0" y="0" width="160" height="60" rx="8"/>
+            <text x="80" y="22" class="db-lbl">wayfinder</text>
+            <text x="80" y="42" class="db-sub">foggy effort</text>
+          </g>
+          <g transform="translate(620,75)">
+            <rect class="db-on" x="0" y="0" width="160" height="60" rx="8"/>
+            <text x="80" y="22" class="db-lbl">research</text>
+            <text x="80" y="42" class="db-sub">primary sources</text>
+          </g>
+
+          <text x="40" y="170" class="db-zone">Main flow</text>
+
+          <g transform="translate(220,185)">
+            <rect class="db-main" x="0" y="0" width="540" height="60" rx="8"/>
+            <text x="270" y="22" class="db-lbl">to-spec → to-tickets → implement → code-review</text>
+            <text x="270" y="42" class="db-sub">被驱动 · 不驱动 diagnostic</text>
+          </g>
+
+          <path class="db-arrow" d="M 310 135 Q 310 160 310 185" marker-end="url(#db-arr)"/>
+          <text x="320" y="166" class="db-sub" font-style="italic">完成 → 回主流程</text>
+        </svg>
+        <div class="diagram-caption">图 1 · on-ramp 入口 — 用户报告已失败时启用；不走主流程，不被 implement 驱动</div>
+      </div>
+    </section>
+
+    <section id="six-phases">
+      <h2>六大阶段鸟瞰</h2>
+
+      <p><strong>Phase 1 花 70% 的力气。</strong>后面五阶段是机械执行 —— 有了红命令，二分、假设、入桩都是消费它的方式。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 360" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="六阶段漏斗：Phase 1 占最大块，其余依次递减">
+          <defs>
+            <style>
+              .ph-1 { fill: var(--highlight); stroke: #8a3314; stroke-width: 2; }
+              .ph-2 { fill: #d97706; stroke: #a05a05; stroke-width: 2; }
+              .ph-3 { fill: #15803d; stroke: #0f5e2c; stroke-width: 2; }
+              .ph-4 { fill: #2d5f8a; stroke: #1a3f5f; stroke-width: 2; }
+              .ph-5 { fill: #6b21a8; stroke: #4a1772; stroke-width: 2; }
+              .ph-6 { fill: #475569; stroke: #2f3b4a; stroke-width: 2; }
+              .ph-lbl { font: 700 14px sans-serif; fill: white; text-anchor: middle; }
+              .ph-sub { font: 11px sans-serif; fill: rgba(255,255,255,0.92); text-anchor: middle; }
+              .ph-pct { font: 700 11px sans-serif; fill: white; text-anchor: middle; opacity: 0.85; }
+            </style>
+          </defs>
+
+          <text x="460" y="22" font="700 14px sans-serif" fill="#1a1a1a"
+                text-anchor="middle">6 阶段 · 力气分配</text>
+
+          <!-- Phase 1 (biggest) -->
+          <g transform="translate(60,60)">
+            <rect class="ph-1" x="0" y="0" width="800" height="120" rx="10"/>
+            <text x="400" y="40" class="ph-lbl" font-size="18">Phase 1 · Build a feedback loop</text>
+            <text x="400" y="64" class="ph-sub">"This is the skill. Everything else is mechanical."</text>
+            <text x="400" y="92" class="ph-pct">— 花 70% 的力气 —</text>
+            <text x="400" y="110" class="ph-sub">红命令 · 红绿切换 · 钉时间 · seed RNG</text>
+          </g>
+
+          <!-- Phase 2 -->
+          <g transform="translate(180,200)">
+            <rect class="ph-2" x="0" y="0" width="560" height="36" rx="6"/>
+            <text x="280" y="22" class="ph-lbl">Phase 2 · Reproduce + Minimise</text>
+          </g>
+
+          <!-- Phase 3 -->
+          <g transform="translate(240,246)">
+            <rect class="ph-3" x="0" y="0" width="440" height="36" rx="6"/>
+            <text x="220" y="22" class="ph-lbl">Phase 3 · Hypothesise (3–5 ranked)</text>
+          </g>
+
+          <!-- Phase 4 -->
+          <g transform="translate(290,292)">
+            <rect class="ph-4" x="0" y="0" width="340" height="26" rx="6"/>
+            <text x="170" y="18" class="ph-lbl">Phase 4 · Instrument (one variable)</text>
+          </g>
+
+          <!-- Phase 5 -->
+          <g transform="translate(360,326)">
+            <rect class="ph-5" x="0" y="0" width="200" height="22" rx="5"/>
+            <text x="100" y="15" class="ph-lbl">Phase 5 · Fix + Regression Test</text>
+          </g>
+
+          <!-- arrow from 5 to 6 -->
+          <text x="460" y="350" font="10px sans-serif" fill="#6b6b6b"
+                text-anchor="middle" font-style="italic">箭头 → Phase 6 · Cleanup (grep / commit)</text>
+        </svg>
+        <div class="diagram-caption">图 2 · Phase 1 占主导，其余五阶段加起来不到它的 1/3</div>
+      </div>
+    </section>
+
+    <section id="redact">
+      <h2>Redact 原则</h2>
+
+      <p>流程会暴露<strong>命令、输出、HAR、日志、core dump、token、cookie</strong>。<strong>没有内建脱敏指令</strong>，脱敏是用户责任。</p>
+
+      <div class="callout">
+        <strong>三条规则：</strong>
+        <ol style="margin: 6px 0 0; padding-left: 22px;">
+          <li><strong>把所有 secret 替换为 <code>&lt;REDACTED&gt;</code></strong> 再展示</li>
+          <li><strong>凭证走环境变量</strong>，让它不出现在你展示的命令里</li>
+          <li>抓到 artifact 里有 auth 头 —— <strong>只引用体现信号的那几行</strong></li>
+        </ol>
+      </div>
+
+      <p>脱敏后信息不足以诊断怎么办？明确告诉用户 —— 再说一次原文。<strong>不要伪造</strong>。</p>
+
+      <div class="compare">
+        <div class="bad">
+          <div class="label">✗ BAD · 在命令里带 secret</div>
+          <pre><code>curl -H "Authorization: Bearer sk-live-abc123..."
+  https://api.example.com/orders</code></pre>
+        </div>
+        <div class="good">
+          <div class="label">✓ GOOD · 凭证在 env</div>
+          <pre><code>curl -H "Authorization: Bearer $TOKEN"
+  https://api.example.com/orders
+
+# command output (redacted):
+# &lt;REDACTED auth header&gt;
+HTTP/1.1 500 Internal Server Error</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="phase-1">
+      <h2>Phase 1 · Build a feedback loop</h2>
+
+      <p>这是核心。SKILL.md 第 19–20 行：</p>
+      <blockquote>
+        If you have a <strong>tight</strong> pass/fail signal for the bug (one that goes red on <em>this</em> bug), you will find the cause; bisection, hypothesis-testing, and instrumentation all just consume it. If you don't have one, no amount of staring at code will save you.
+      </blockquote>
+
+      <h3>完成条件 · 一条「红命令」</h3>
+
+      <p>你能<strong>命名一条命令</strong>（脚本、test、curl）—— 已经至少跑过一次（展示 invocation + 输出，已脱敏），且满足：</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="紧反馈环四属性">
+          <defs>
+            <style>
+              .tl-box { fill: var(--green-soft); stroke: var(--green); stroke-width: 2; }
+              .tl-mid { fill: var(--amber-soft); stroke: var(--amber); stroke-width: 2; }
+              .tl-lbl { font: 700 14px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .tl-sub { font: 11px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .tl-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+              .tl-center { fill: var(--highlight); stroke: #8a3314; stroke-width: 3; }
+              .tl-center-lbl { font: 700 16px sans-serif; fill: white; text-anchor: middle; }
+              .tl-center-sub { font: 11px sans-serif; fill: white; text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="440" y="22" font="700 13px sans-serif" fill="#15803d"
+                text-anchor="middle">Tight loop · 四属性</text>
+
+          <g transform="translate(340,60)">
+            <rect class="tl-center" x="0" y="0" width="200" height="60" rx="10"/>
+            <text x="100" y="26" class="tl-center-lbl">RED-CAPABLE</text>
+            <text x="100" y="46" class="tl-center-sub">能因这个 bug 变红</text>
+          </g>
+
+          <g transform="translate(40,160)">
+            <rect class="tl-box" x="0" y="0" width="360" height="50" rx="8"/>
+            <text x="180" y="22" class="tl-lbl">DETERMINISTIC</text>
+            <text x="180" y="40" class="tl-sub">每次跑结果一致</text>
+          </g>
+          <g transform="translate(480,160)">
+            <rect class="tl-box" x="0" y="0" width="360" height="50" rx="8"/>
+            <text x="180" y="22" class="tl-lbl">FAST</text>
+            <text x="180" y="40" class="tl-sub">秒级，不是分钟</text>
+          </g>
+
+          <g transform="translate(40,230)">
+            <rect class="tl-mid" x="0" y="0" width="800" height="50" rx="8"/>
+            <text x="400" y="22" class="tl-lbl">AGENT-RUNNABLE</text>
+            <text x="400" y="40" class="tl-sub">无人值守可跑 · 一定要人参与 → 用 hitl-loop.template.sh 包起来</text>
+          </g>
+
+          <path class="tl-arrow" d="M 200 185 L 380 120" marker-end="url(#db-arr)"/>
+          <path class="tl-arrow" d="M 660 185 L 500 120" marker-end="url(#db-arr)"/>
+          <path class="tl-arrow" d="M 440 230 L 440 120" marker-end="url(#db-arr)"/>
+        </svg>
+        <div class="diagram-caption">图 3 · Red-capable 是核心；Deterministic / Fast / Agent-runnable 是外围</div>
+      </div>
+
+      <p><em>30 秒抖动的 loop 几乎等于没 loop；2 秒级才算紧。</em></p>
+    </section>
+
+    <section id="phase-1-methods">
+      <h2>10 种构建法（按优先级）</h2>
+
+      <p>从最爱 → 最便宜 → 最后手段。挑一种或组合。</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 920 460" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="10 种构建 loop 的方法按优先级排列">
+          <defs>
+            <style>
+              .m-tl { fill: var(--green-soft); stroke: var(--green); stroke-width: 1.6; }
+              .m-mid { fill: var(--amber-soft); stroke: var(--amber); stroke-width: 1.6; }
+              .m-last { fill: var(--red-soft); stroke: var(--red); stroke-width: 1.6; }
+              .m-num { font: 700 14px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .m-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .m-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="460" y="22" font="700 13px sans-serif" fill="#2d5f8a"
+                text-anchor="middle">Loop builders · 10 种按优先级</text>
+
+          <!-- column 1: preferred -->
+          <text x="100" y="50" font="700 11px sans-serif" fill="#15803d"
+                text-anchor="middle" letter-spacing="0.06em">优先 · PREFERRED</text>
+
+          <g transform="translate(20,60)">
+            <rect class="m-tl" x="0" y="0" width="170" height="50" rx="6"/>
+            <text x="20" y="20" class="m-num" text-anchor="start">1</text>
+            <text x="105" y="20" class="m-lbl">Failing test</text>
+            <text x="105" y="38" class="m-sub">seam 处 unit/integration/e2e</text>
+          </g>
+
+          <g transform="translate(20,120)">
+            <rect class="m-tl" x="0" y="0" width="170" height="50" rx="6"/>
+            <text x="20" y="20" class="m-num" text-anchor="start">2</text>
+            <text x="105" y="20" class="m-lbl">curl / HTTP</text>
+            <text x="105" y="38" class="m-sub">对 dev server 打</text>
+          </g>
+
+          <g transform="translate(20,180)">
+            <rect class="m-tl" x="0" y="0" width="170" height="50" rx="6"/>
+            <text x="20" y="20" class="m-num" text-anchor="start">3</text>
+            <text x="105" y="20" class="m-lbl">CLI + fixture</text>
+            <text x="105" y="38" class="m-sub">diff stdout vs snapshot</text>
+          </g>
+
+          <g transform="translate(20,240)">
+            <rect class="m-tl" x="0" y="0" width="170" height="50" rx="6"/>
+            <text x="20" y="20" class="m-num" text-anchor="start">4</text>
+            <text x="105" y="20" class="m-lbl">Headless browser</text>
+            <text x="105" y="38" class="m-sub">Playwright / Puppeteer</text>
+          </g>
+
+          <g transform="translate(20,300)">
+            <rect class="m-tl" x="0" y="0" width="170" height="50" rx="6"/>
+            <text x="20" y="20" class="m-num" text-anchor="start">5</text>
+            <text x="105" y="20" class="m-lbl">Replay trace</text>
+            <text x="105" y="38" class="m-sub">重放抓到的 request/payload</text>
+          </g>
+
+          <!-- column 2: medium -->
+          <text x="380" y="50" font="700 11px sans-serif" fill="#d97706"
+                text-anchor="middle" letter-spacing="0.06em">次优 · VIABLE</text>
+
+          <g transform="translate(220,60)">
+            <rect class="m-mid" x="0" y="0" width="170" height="50" rx="6"/>
+            <text x="20" y="20" class="m-num" text-anchor="start">6</text>
+            <text x="105" y="20" class="m-lbl">Throwaway harness</text>
+            <text x="105" y="38" class="m-sub">最小子系统 + mock 依赖</text>
+          </g>
+
+          <g transform="translate(220,120)">
+            <rect class="m-mid" x="0" y="0" width="170" height="50" rx="6"/>
+            <text x="20" y="20" class="m-num" text-anchor="start">7</text>
+            <text x="105" y="20" class="m-lbl">Property / fuzz</text>
+            <text x="105" y="38" class="m-sub">1000 次随机输入</text>
+          </g>
+
+          <g transform="translate(220,180)">
+            <rect class="m-mid" x="0" y="0" width="170" height="50" rx="6"/>
+            <text x="20" y="20" class="m-num" text-anchor="start">8</text>
+            <text x="105" y="20" class="m-lbl">Bisection harness</text>
+            <text x="105" y="38" class="m-sub">git bisect run 友好</text>
+          </g>
+
+          <g transform="translate(220,240)">
+            <rect class="m-mid" x="0" y="0" width="170" height="50" rx="6"/>
+            <text x="20" y="20" class="m-num" text-anchor="start">9</text>
+            <text x="105" y="20" class="m-lbl">Differential loop</text>
+            <text x="105" y="38" class="m-sub">新旧版本同输入 diff</text>
+          </g>
+
+          <!-- column 3: last resort -->
+          <text x="660" y="50" font="700 11px sans-serif" fill="#b91c1c"
+                text-anchor="middle" letter-spacing="0.06em">最后手段 · LAST RESORT</text>
+
+          <g transform="translate(420,60)">
+            <rect class="m-last" x="0" y="0" width="190" height="50" rx="6"/>
+            <text x="20" y="20" class="m-num" text-anchor="start">10</text>
+            <text x="115" y="20" class="m-lbl">HITL bash</text>
+            <text x="115" y="38" class="m-sub">hitl-loop.template.sh</text>
+          </g>
+
+          <text x="20" y="380" font="11px sans-serif" fill="#6b6b6b"
+                font-style="italic">挑选指南：bug 越靠近稳定代码 = 选靠前的；</text>
+          <text x="20" y="396" font="11px sans-serif" fill="#6b6b6b"
+                font-style="italic">越是不稳定的输入流 = 靠 property / differential / replay。</text>
+          <text x="20" y="420" font="700 12px sans-serif" fill="#b91c1c">警告</text>
+          <text x="20" y="436" font="11px sans-serif" fill="#6b6b6b">
+            如果第 10 个 HITL 还得搭，那就回到第 1–9 —— 永远不要用人手点鼠标当 loop。
+          </text>
+        </svg>
+        <div class="diagram-caption">图 4 · 越靠前越自动化 / 越被信任；HITL 是兜底</div>
+      </div>
+    </section>
+
+    <section id="phase-1-tighten">
+      <h2>Tighten · 让环更紧</h2>
+
+      <p>拿到 loop 之后<strong>继续打磨</strong>。把它当产品：</p>
+
+      <div class="compare">
+        <div class="bad">
+          <div class="label">问自己</div>
+          <ul>
+            <li><strong>能更短？</strong>cache 初始化、跳过无关 setup、缩测试范围</li>
+            <li><strong>信号更锐？</strong>断言<strong>具体症状</strong>，不是"没崩"</li>
+            <li><strong>更确定？</strong>钉时间、seed RNG、隔离文件系统、冻结网络</li>
+          </ul>
+        </div>
+        <div class="good">
+          <div class="label">目标</div>
+          <p>2 秒级、确定性、无人值守的红命令。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="phase-1-non-det">
+      <h2>非确定性 bug</h2>
+
+      <p>目标不是"干净复现"，而是<strong>提高复现率</strong>。</p>
+
+      <div class="callout-amber">
+        <strong>50% 的 flake 可调；1% 调不了</strong>。把复现率从 1% 抬到 50% 是前置条件。
+      </div>
+
+      <p>抬复现率的方法：</p>
+      <ul>
+        <li><strong>Loop 触发 100 次</strong> —— 不是单次，是 N 次</li>
+        <li><strong>并行</strong> —— 多实例一起跑</li>
+        <li><strong>加压</strong> —— 让 race condition 更容易暴露</li>
+        <li><strong>缩窄时间窗</strong> —— 钉住某个具体时刻</li>
+        <li><strong>注入 sleep</strong> —— 模拟慢路径</li>
+      </ul>
+    </section>
+
+    <section id="phase-1-cant-build">
+      <h2>建不出 loop 时</h2>
+
+      <div class="callout-warn">
+        <strong>停下来。明确说"我建不出 loop"。</strong>列出试过的东西。
+        <strong>不要在没 loop 时跳到 Phase 3 假设</strong> —— 那正是这个 skill 要阻止的失败模式。
+      </div>
+
+      <p>向用户要三选一：</p>
+      <ol>
+        <li><strong>(a) 环境访问</strong> —— 给我能复现的环境</li>
+        <li><strong>(b) 已脱敏的 artifact</strong> —— HAR 文件 / log dump / core dump / 带时间戳的录屏</li>
+        <li><strong>(c) 临时生产入桩授权</strong> —— 允许我在生产加埋点</li>
+      </ol>
+    </section>
+
+    <section id="phase-2">
+      <h2>Phase 2 · Reproduce + Minimise</h2>
+
+      <p>跑 loop，看它变红。确认三件事：</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 160" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Phase 2 三件确认事">
+          <defs>
+            <style>
+              .p2-box { fill: #fff; stroke: #c8c4bc; stroke-width: 1.4; }
+              .p2-check { fill: var(--green-soft); stroke: var(--green); stroke-width: 2; }
+              .p2-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .p2-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .p2-arrow { stroke: #6b6b6b; stroke-width: 1.4; fill: none; }
+            </style>
+          </defs>
+
+          <g transform="translate(40,50)">
+            <rect class="p2-check" x="0" y="0" width="240" height="70" rx="8"/>
+            <text x="20" y="22" class="p2-lbl" text-anchor="start" font-size="20" fill="#15803d">✓</text>
+            <text x="120" y="26" class="p2-lbl">匹配用户症状</text>
+            <text x="120" y="48" class="p2-sub">不是"恰好在附近的另一个错"</text>
+          </g>
+
+          <g transform="translate(310,50)">
+            <rect class="p2-check" x="0" y="0" width="240" height="70" rx="8"/>
+            <text x="20" y="22" class="p2-lbl" text-anchor="start" font-size="20" fill="#15803d">✓</text>
+            <text x="120" y="26" class="p2-lbl">可重复</text>
+            <text x="120" y="48" class="p2-sub">多次跑都红 / 间歇 bug 高复现率</text>
+          </g>
+
+          <g transform="translate(580,50)">
+            <rect class="p2-check" x="0" y="0" width="260" height="70" rx="8"/>
+            <text x="20" y="22" class="p2-lbl" text-anchor="start" font-size="20" fill="#15803d">✓</text>
+            <text x="130" y="26" class="p2-lbl">已捕获症状</text>
+            <text x="130" y="48" class="p2-sub">错误信息 / 错误输出 / 慢在哪</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">图 5 · Phase 2 三件确认事 · 错 bug = 错 fix</div>
+      </div>
+
+      <h3>最小化</h3>
+
+      <p>变红之后<strong>往最小子集砍</strong>：</p>
+      <ol>
+        <li>一次砍一个：输入 / 调用方 / 配置 / 数据 / 步骤</li>
+        <li>砍完跑 loop，保留承重件</li>
+        <li>直到<strong>每个剩余元素都是承重的</strong> —— 拿掉任意一个就变绿</li>
+      </ol>
+
+      <div class="callout">
+        <strong>为什么？</strong>最小化越狠 → Phase 3 假设空间越小 → Phase 5 回归测试越干净。<br>
+        <strong>不完成就不准进 Phase 3。</strong>
+      </div>
+    </section>
+
+    <section id="phase-3">
+      <h2>Phase 3 · Hypothesise</h2>
+
+      <p>生成 <strong>3–5 个排序后的假设</strong>。单假设会锚定在第一个看似合理的想法上。</p>
+
+      <p>每个假设必须<strong>可证伪</strong>。格式：</p>
+
+      <blockquote>
+        若 &lt;X&gt; 是因，则改 &lt;Y&gt; 会让 bug 消失 / 改 &lt;Z&gt; 会让 bug 加重。
+      </blockquote>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="3–5 排序假设 + 可证伪预测">
+          <defs>
+            <style>
+              .h-box { fill: #fff; stroke: #c8c4bc; stroke-width: 1.4; }
+              .h-top { fill: var(--green-soft); stroke: var(--green); stroke-width: 2; }
+              .h-lbl { font: 700 13px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .h-sub { font: 11px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .h-pred { font: 11px sans-serif; fill: var(--highlight); text-anchor: middle;
+                        font-style: italic; }
+            </style>
+          </defs>
+
+          <text x="440" y="22" font="700 13px sans-serif" fill="#2d5f8a"
+                text-anchor="middle">3–5 排序假设 · 每个都有预测</text>
+
+          <g transform="translate(40,60)">
+            <rect class="h-top" x="0" y="0" width="250" height="80" rx="8"/>
+            <text x="20" y="22" class="h-lbl" text-anchor="start">#1 (最可能)</text>
+            <text x="125" y="44" class="h-sub">因果描述</text>
+            <text x="125" y="62" class="h-pred">预测: 改 Y 会让 bug 消失</text>
+          </g>
+
+          <g transform="translate(310,60)">
+            <rect class="h-box" x="0" y="0" width="250" height="80" rx="8"/>
+            <text x="20" y="22" class="h-lbl" text-anchor="start">#2</text>
+            <text x="125" y="44" class="h-sub">因果描述</text>
+            <text x="125" y="62" class="h-pred">预测: 改 Y 会让 bug 消失</text>
+          </g>
+
+          <g transform="translate(580,60)">
+            <rect class="h-box" x="0" y="0" width="250" height="80" rx="8"/>
+            <text x="20" y="22" class="h-lbl" text-anchor="start">#3</text>
+            <text x="125" y="44" class="h-sub">因果描述</text>
+            <text x="125" y="62" class="h-pred">预测: 改 Y 会让 bug 消失</text>
+          </g>
+
+          <text x="20" y="180" font="700 12px sans-serif" fill="#2d5f8a">必做：先展示给用户</text>
+          <text x="20" y="200" font="11px sans-serif" fill="#6b6b6b">
+            用户的领域知识常常瞬间重排（"我们刚改过 #3"）或知道已排除的。Cheap checkpoint, big time saver。
+          </text>
+
+          <text x="20" y="234" font="700 12px sans-serif" fill="#b91c1c">警告</text>
+          <text x="20" y="252" font="11px sans-serif" fill="#6b6b6b">
+            说不清预测的假设 = <strong>vibe</strong>。丢掉或重写 —— 不要凑数。
+          </text>
+        </svg>
+        <div class="diagram-caption">图 6 · #1 标绿是排序最前；不必是最大块，排序是相对概率</div>
+      </div>
+    </section>
+
+    <section id="phase-4">
+      <h2>Phase 4 · Instrument</h2>
+
+      <p>每个探针要映射到 Phase 3 的某条具体预测。<strong>一次只改一个变量</strong>。</p>
+
+      <h3>工具偏好</h3>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 200" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="入桩工具偏好">
+          <defs>
+            <style>
+              .i-best { fill: var(--green-soft); stroke: var(--green); stroke-width: 2; }
+              .i-mid  { fill: var(--amber-soft); stroke: var(--amber); stroke-width: 2; }
+              .i-bad  { fill: var(--red-soft); stroke: var(--red); stroke-width: 2; }
+              .i-num { font: 700 22px sans-serif; }
+              .i-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .i-sub { font: 10px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#2d5f8a">入桩工具偏好</text>
+
+          <g transform="translate(40,50)">
+            <rect class="i-best" x="0" y="0" width="380" height="60" rx="8"/>
+            <text x="20" y="22" class="i-num" fill="#15803d">1</text>
+            <text x="200" y="26" class="i-lbl">Debugger / REPL</text>
+            <text x="200" y="46" class="i-sub">一个断点 > 十条日志</text>
+          </g>
+
+          <g transform="translate(450,50)">
+            <rect class="i-mid" x="0" y="0" width="390" height="60" rx="8"/>
+            <text x="20" y="22" class="i-num" fill="#d97706">2</text>
+            <text x="210" y="26" class="i-lbl">Targeted logs</text>
+            <text x="210" y="46" class="i-sub">打在能区分假设的边界</text>
+          </g>
+
+          <g transform="translate(40,130)">
+            <rect class="i-bad" x="0" y="0" width="800" height="50" rx="8"/>
+            <text x="20" y="20" class="i-num" fill="#b91c1c">✗</text>
+            <text x="400" y="22" class="i-lbl">"log everything and grep"</text>
+            <text x="400" y="42" class="i-sub">噪音淹没信号 — 严禁</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">图 7 · debugger 优先；targeted log 兜底；"全打" 是反模式</div>
+      </div>
+
+      <h3>日志必须带独特前缀</h3>
+
+      <p>用 <code>[DEBUG-a4f2]</code> 之类。完工清理 = 一次 grep。带前缀的会死，不带前缀的会活下来。</p>
+
+      <h3>性能分支</h3>
+
+      <p>性能回归时日志通常没用。改做：</p>
+      <ol>
+        <li>建立基线（<code>performance.now()</code> / profiler / query plan）</li>
+        <li>二分定位</li>
+        <li><strong>先测后改</strong></li>
+      </ol>
+    </section>
+
+    <section id="phase-5">
+      <h2>Phase 5 · Fix + Regression Test</h2>
+
+      <p><strong>先于修复</strong>写回归测试 —— 但<strong>只有在有正确 seam 时</strong>。</p>
+
+      <div class="callout">
+        <strong>正确的 seam</strong> = 测试在真实调用点上走的是<strong>真实 bug 模式</strong>。<br>
+        只有浅 seam 时 → 那个测试给假信心。<strong>没正确 seam = 这本身是发现</strong>：代码库架构正在阻止 bug 被锁死。
+      </div>
+
+      <p>有正确 seam 时：</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 100" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Phase 5 五步顺序">
+          <defs>
+            <style>
+              .s5-box { fill: #fff; stroke: #c8c4bc; stroke-width: 1.4; }
+              .s5-arrow { stroke: var(--accent); stroke-width: 1.6; fill: none; }
+              .s5-lbl { font: 700 11px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .s5-sub { font: 9px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+            </style>
+          </defs>
+
+          <g transform="translate(20,30)">
+            <rect class="s5-box" x="0" y="0" width="150" height="50" rx="6"/>
+            <text x="75" y="22" class="s5-lbl">1 · 失败测试</text>
+            <text x="75" y="38" class="s5-sub">最小化 repro → seam</text>
+          </g>
+          <g transform="translate(190,30)">
+            <rect class="s5-box" x="0" y="0" width="150" height="50" rx="6"/>
+            <text x="75" y="22" class="s5-lbl">2 · 看它失败</text>
+            <text x="75" y="38" class="s5-sub">确认红</text>
+          </g>
+          <g transform="translate(360,30)">
+            <rect class="s5-box" x="0" y="0" width="150" height="50" rx="6"/>
+            <text x="75" y="22" class="s5-lbl">3 · 应用修复</text>
+            <text x="75" y="38" class="s5-sub">只改必要的</text>
+          </g>
+          <g transform="translate(530,30)">
+            <rect class="s5-box" x="0" y="0" width="150" height="50" rx="6"/>
+            <text x="75" y="22" class="s5-lbl">4 · 看它通过</text>
+            <text x="75" y="38" class="s5-sub">确认绿</text>
+          </g>
+          <g transform="translate(700,30)">
+            <rect class="s5-box" x="0" y="0" width="160" height="50" rx="6"/>
+            <text x="80" y="22" class="s5-lbl">5 · 重跑原 loop</text>
+            <text x="80" y="38" class="s5-sub">原始（非最小化）场景</text>
+          </g>
+
+          <path class="s5-arrow" d="M 170 55 L 190 55" marker-end="url(#db-arr)"/>
+          <path class="s5-arrow" d="M 340 55 L 360 55" marker-end="url(#db-arr)"/>
+          <path class="s5-arrow" d="M 510 55 L 530 55" marker-end="url(#db-arr)"/>
+          <path class="s5-arrow" d="M 680 55 L 700 55" marker-end="url(#db-arr)"/>
+        </svg>
+        <div class="diagram-caption">图 8 · 顺序固定 — 1→5 不能跳过</div>
+      </div>
+    </section>
+
+    <section id="phase-6">
+      <h2>Phase 6 · Cleanup</h2>
+
+      <p>交付前的硬清单：</p>
+
+      <div class="callout-good">
+        <ul style="margin: 0; padding-left: 22px;">
+          <li><strong>原始 repro 不再复现</strong>（重跑 Phase 1 loop）</li>
+          <li><strong>回归测试通过</strong>（或已记录"无 seam"）</li>
+          <li><strong>所有 <code>[DEBUG-...]</code> 入桩删干净</strong>（grep 前缀确认 0 命中）</li>
+          <li><strong>一次性原型删掉</strong>（或放进清晰标注的 debug 区）</li>
+          <li><strong>提交/PR 描述指认被证实的假设</strong> —— 让后来人能学</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="gates">
+      <h2>阶段门控</h2>
+
+      <p>不是可选清单 —— 是<strong>硬门槛</strong>：</p>
+
+      <table>
+        <thead>
+          <tr><th>转移</th><th>必须满足</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Phase 1 → 2</td><td>已命名 + 已跑过 + 展示了输出 + 它能因这个 bug 变红</td></tr>
+          <tr><td>Phase 2 → 3</td><td>复现 + 最小化已完成，每个剩余元素都承重</td></tr>
+          <tr><td>Phase 3 → 4</td><td>3–5 个排序后的可证伪假设，先展示再测</td></tr>
+          <tr><td>Phase 4 → 5</td><td>每个探针测一个预测 + 一个变量，日志带前缀可移除</td></tr>
+          <tr><td>完成</td><td>原始 repro 通过 + 入桩清干净 + 提交点名正确的假设</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout-warn">
+        <strong>单一最常见的失败</strong>：在没有红命令之前就开始读代码建理论 —— 那正是这个 skill 要阻止的失败模式。<strong>没红命令 → 没 Phase 2</strong>。
+      </div>
+    </section>
+
+    <section id="signs">
+      <h2>生效标志</h2>
+
+      <p>操作正确时能看到这些迹象：</p>
+
+      <ol>
+        <li><strong>在任何理论之前</strong>先出现一条红命令 + 输出</li>
+        <li>复现的失败<strong>匹配报告的症状</strong>（不是另一个在附近的错）</li>
+        <li>复现已最小化，每个保留的组件有理由</li>
+        <li>测之前先有 3–5 条<strong>排序假设 + 可证伪预测</strong></li>
+        <li>临时日志带<strong>唯一前缀</strong>（如 <code>[DEBUG-a4f2]</code>）</li>
+        <li>完工后 grep 该前缀 <strong>0 命中</strong></li>
+        <li>提交/PR 正确指认了假设</li>
+        <li>没有合适接缝时<strong>拒绝</strong>写浅回归测试</li>
+      </ol>
+    </section>
+
+    <section id="relationships">
+      <h2>与其他 skill</h2>
+
+      <table>
+        <thead>
+          <tr><th>Skill</th><th>关系</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>ask-matt</code></td><td>把"东西坏了"的报告路由过来</td></tr>
+          <tr><td><code>triage</code></td><td>可前置 —— 对第三方原始 bug 报告做浅层评估；常会重做初期复现（页面之间不互引）</td></tr>
+          <tr><td><code>retro</code></td><td>紧随其后做复盘（<strong>用户主动触发</strong>，不自动）</td></tr>
+          <tr><td><code>prototype</code></td><td>快速验一个设计问题 → 回头用本 skill 修正式问题</td></tr>
+          <tr><td><code>tdd</code></td><td>管"好测试长什么样" —— Phase 5 写回归测试时引用</td></tr>
+          <tr><td><code>improve-codebase-architecture</code></td><td>找不到合适 seam 时 → 先用它深化 seam</td></tr>
+          <tr><td><code>codebase-design</code></td><td>seam 词汇来源（参考层）</td></tr>
+        </tbody>
+      </table>
+
+      <div class="diagram">
+        <svg viewBox="0 0 880 220" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="diagnosing-bugs 与周边 skill 的关系">
+          <defs>
+            <style>
+              .rs-self { fill: var(--onramp-soft); stroke: var(--onramp-color); stroke-width: 2.5; }
+              .rs-on { fill: var(--onramp-soft); stroke: var(--onramp-color); stroke-width: 1.4; }
+              .rs-main { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.4; }
+              .rs-code { fill: #dceddb; stroke: #1f5d4a; stroke-width: 1.4; }
+              .rs-voc { fill: var(--onramp-soft); stroke: var(--onramp-color); stroke-width: 1.2; stroke-dasharray: 4 3; }
+              .rs-lbl { font: 700 12px sans-serif; fill: #1a1a1a; text-anchor: middle; }
+              .rs-sub { font: 9px sans-serif; fill: #6b6b6b; text-anchor: middle; }
+              .rs-arrow { stroke: #6b6b6b; stroke-width: 1.2; fill: none; }
+              .rs-arrow-dash { stroke: #6b6b6b; stroke-width: 1.2; fill: none; stroke-dasharray: 3 2; }
+            </style>
+          </defs>
+
+          <text x="20" y="22" font="700 13px sans-serif" fill="#6b21a8">关系图 · on-ramps 入口 → 可选前置 / 后置 / reference</text>
+
+          <!-- self -->
+          <g transform="translate(340,80)">
+            <rect class="rs-self" x="0" y="0" width="200" height="60" rx="8"/>
+            <text x="100" y="22" class="rs-lbl">diagnosing-bugs</text>
+            <text x="100" y="42" class="rs-sub">stand-alone · state-less</text>
+          </g>
+
+          <!-- on-ramps siblings -->
+          <g transform="translate(40,80)">
+            <rect class="rs-on" x="0" y="0" width="160" height="60" rx="8"/>
+            <text x="80" y="22" class="rs-lbl">triage</text>
+            <text x="80" y="42" class="rs-sub">前置 · 浅层评估</text>
+          </g>
+          <path class="rs-arrow" d="M 200 110 L 340 110" marker-end="url(#db-arr)"/>
+
+          <!-- main flow return -->
+          <g transform="translate(580,80)">
+            <rect class="rs-main" x="0" y="0" width="260" height="60" rx="8"/>
+            <text x="130" y="22" class="rs-lbl">main flow (to-spec → ...)</text>
+            <text x="130" y="42" class="rs-sub">修完 → 回主流程</text>
+          </g>
+          <path class="rs-arrow" d="M 540 110 L 580 110" marker-end="url(#db-arr)"/>
+
+          <!-- retro / tdd below -->
+          <g transform="translate(40,170)">
+            <rect class="rs-on" x="0" y="0" width="160" height="40" rx="6"/>
+            <text x="80" y="18" class="rs-lbl">retro</text>
+            <text x="80" y="32" class="rs-sub">后置 · 用户触发</text>
+          </g>
+          <path class="rs-arrow" d="M 130 170 L 130 140" marker-end="url(#db-arr)"/>
+
+          <g transform="translate(220,170)">
+            <rect class="rs-code" x="0" y="0" width="160" height="40" rx="6"/>
+            <text x="80" y="18" class="rs-lbl">tdd</text>
+            <text x="80" y="32" class="rs-sub">Phase 5 引用 · 测试长什么样</text>
+          </g>
+          <path class="rs-arrow-dash" d="M 300 170 L 380 140" marker-end="url(#db-arr)"/>
+
+          <g transform="translate(400,170)">
+            <rect class="rs-voc" x="0" y="0" width="200" height="40" rx="6"/>
+            <text x="100" y="18" class="rs-lbl">codebase-design / architecture</text>
+            <text x="100" y="32" class="rs-sub">seam 词汇 / 无 seam 时前置</text>
+          </g>
+          <path class="rs-arrow-dash" d="M 500 170 L 480 140" marker-end="url(#db-arr)"/>
+
+          <text x="700" y="194" font="10px sans-serif" fill="#6b6b6b"
+                font-style="italic">dashed = consult, not drive</text>
+        </svg>
+        <div class="diagram-caption">图 9 · 实线 = 路由 / 触发；虚线 = consult reference</div>
+      </div>
+    </section>
+
+    <section id="when">
+      <h2>何时用 / 不用</h2>
+
+      <h3>用 /diagnosing-bugs</h3>
+      <ul>
+        <li>具体的 bug / 症状报告（来自用户或日志）</li>
+        <li>已确认是某个 endpoint / 操作变慢，有 before / after</li>
+        <li>回归 / 间歇性失败 / 难一眼看出的 bug</li>
+      </ul>
+
+      <h3>不用 /diagnosing-bugs</h3>
+      <ul>
+        <li>广义的"找瓶颈" —— 它<strong>不审计代码库</strong>，只诊断已知故障</li>
+        <li>未经确认的第三方报告 —— 先用 <code>triage</code></li>
+        <li>只是想验设计 —— 用 <code>prototype</code></li>
+        <li>已经规划好 TDD 的行为 —— 用 <code>tdd</code></li>
+        <li>没合适 seam —— 先用 <code>improve-codebase-architecture</code></li>
+      </ul>
+
+      <h3>已知陷阱</h3>
+      <div class="callout-amber">
+        <ul style="margin: 0; padding-left: 22px;">
+          <li><strong>过度触发</strong> —— 最常见投诉。Workaround：明确说"只要答案不要诊断"，或在 harness 关掉自动触发</li>
+          <li><strong>过度入桩</strong> —— 不是所有变量都改；一次一个</li>
+          <li><strong>secret 暴露</strong> —— 流程会显示命令输出/HAR/token；脱敏是用户责任</li>
+          <li><strong>安全扫描器误报</strong> —— 模板脚本是约 30 行 <code>read -r -p</code> 的 prompt，非恶意</li>
+          <li><strong>旧名</strong> —— v1.0.0 改名前是 <code>/diagnose</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="skill-source">
+      <h2>SKILL.md 全文</h2>
+
+      <div class="skill-source">
+<pre><code>---
+name: diagnosing-bugs
+description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow.
+---
+
+# Diagnosing Bugs
+
+A discipline for hard bugs. Skip phases only when explicitly justified.
+
+When exploring the codebase, read `CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
+
+## Redact
+
+This skill has you show commands, outputs and captured artifacts. **Redact every secret first**: write `&lt;REDACTED&gt;` in its place. Build loops against env vars, so the credential stays in the environment rather than in what you show. Captured artifacts carry auth headers: quote only the lines that carry the signal.
+
+If the redacted output is not enough to diagnose the bug, say so and ask the user.
+
+## Phase 1: Build a feedback loop
+
+**This is the skill.** Everything else is mechanical. If you have a **tight** pass/fail signal for the bug (one that goes red on _this_ bug), you will find the cause; bisection, hypothesis-testing, and instrumentation all just consume it. If you don't have one, no amount of staring at code will save you.
+
+Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give up.**
+
+### Ways to construct one, in roughly this order
+
+1. **Failing test** at whatever seam reaches the bug: unit, integration, e2e.
+2. **Curl / HTTP script** against a running dev server.
+3. **CLI invocation** with a fixture input, diffing stdout against a known-good snapshot.
+4. **Headless browser script** (Playwright / Puppeteer) that drives the UI and asserts on DOM/console/network.
+5. **Replay a captured trace.** Save a real network request / payload / event log to disk; replay it through the code path in isolation.
+6. **Throwaway harness.** Spin up a minimal subset of the system (one service, mocked deps) that exercises the bug code path with a single function call.
+7. **Property / fuzz loop.** If the bug is "sometimes wrong output", run 1000 random inputs and look for the failure mode.
+8. **Bisection harness.** If the bug appeared between two known states (commit, dataset, version), automate "boot at state X, check, repeat" so you can `git bisect run` it.
+9. **Differential loop.** Run the same input through old-version vs new-version (or two configs) and diff outputs.
+10. **HITL bash script.** Last resort. If a human must click, drive _them_ with `scripts/hitl-loop.template.sh` so the loop is still structured. Captured output feeds back to you.
+
+Build the right feedback loop, and the bug is 90% fixed.
+
+### Tighten the loop
+
+Treat the loop as a product. Once you have _a_ loop, **tighten** it:
+
+- Can I make it faster? (Cache setup, skip unrelated init, narrow the test scope.)
+- Can I make the signal sharper? (Assert on the specific symptom, not "didn't crash".)
+- Can I make it more deterministic? (Pin time, seed RNG, isolate filesystem, freeze network.)
+
+A 30-second flaky loop is barely better than no loop; a 2-second deterministic one is tight, a debugging superpower.
+
+### Non-deterministic bugs
+
+The goal is not a clean repro but a **higher reproduction rate**. Loop the trigger 100×, parallelise, add stress, narrow timing windows, inject sleeps. A 50%-flake bug is debuggable; 1% is not, so keep raising the rate until it's debuggable.
+
+### When you genuinely cannot build a loop
+
+Stop and say so explicitly. List what you tried. Ask the user for: (a) access to whatever environment reproduces it, (b) a redacted captured artifact (HAR file, log dump, core dump, screen recording with timestamps), or (c) permission to add temporary production instrumentation. Do **not** proceed to hypothesise without a loop.
+
+### Completion criterion: a tight loop that goes red
+
+Phase 1 is done when the loop is **tight** and **red-capable**: you can name **one command** (a script path, a test invocation, a curl) that you have **already run at least once** (show the invocation and its output, redacted), and that is:
+
+- [ ] **Red-capable**: it drives the actual bug code path and asserts the **user's exact symptom**, so it can go red on this bug and green once fixed. Not "runs without erroring"; it must be able to _catch this specific bug_.
+- [ ] **Deterministic**: same verdict every run (flaky bugs: a pinned, high reproduction rate, per above).
+- [ ] **Fast**: seconds, not minutes.
+- [ ] **Agent-runnable**: you can run it unattended; a human in the loop only via `scripts/hitl-loop.template.sh`.
+
+If you catch yourself reading code to build a theory before this command exists, **stop: jumping straight to a hypothesis is the exact failure this skill prevents.** No red-capable command, no Phase 2.
+
+## Phase 2: Reproduce + minimise
+
+Run the loop. Watch it go red as the bug appears.
+
+Confirm:
+
+- [ ] The loop produces the failure mode the **user** described, not a different failure that happens to be nearby. Wrong bug = wrong fix.
+- [ ] The failure is reproducible across multiple runs (or, for non-deterministic bugs, reproducible at a high enough rate to debug against).
+- [ ] You have captured the exact symptom (error message, wrong output, slow timing) so later phases can verify the fix actually addresses it.
+
+### Minimise
+
+Once it's red, shrink the repro to the **smallest scenario that still goes red**. Cut inputs, callers, config, data, and steps **one at a time**, re-running the loop after each cut, and keep only what's load-bearing for the failure.
+
+Why bother: a minimal repro shrinks the hypothesis space in Phase 3 (fewer moving parts left to suspect) and becomes the clean regression test in Phase 5.
+
+Done when **every remaining element is load-bearing**: removing any one of them makes the loop go green.
+
+Do not proceed until you have reproduced **and** minimised.
+
+## Phase 3: Hypothesise
+
+Generate **3–5 ranked hypotheses** before testing any of them. Single-hypothesis generation anchors on the first plausible idea.
+
+Each hypothesis must be **falsifiable**: state the prediction it makes.
+
+&gt; Format: "If &lt;X&gt; is the cause, then &lt;changing Y&gt; will make the bug disappear / &lt;changing Z&gt; will make it worse."
+
+If you cannot state the prediction, the hypothesis is a vibe: discard or sharpen it.
+
+**Show the ranked list to the user before testing.** They often have domain knowledge that re-ranks instantly ("we just deployed a change to #3"), or know hypotheses they've already ruled out. Cheap checkpoint, big time saver. Don't block on it; proceed with your ranking if the user is AFK.
+
+## Phase 4: Instrument
+
+Each probe must map to a specific prediction from Phase 3. **Change one variable at a time.**
+
+Tool preference:
+
+1. **Debugger / REPL inspection** if the env supports it. One breakpoint beats ten logs.
+2. **Targeted logs** at the boundaries that distinguish hypotheses.
+3. Never "log everything and grep".
+
+**Tag every debug log** with a unique prefix, e.g. `[DEBUG-a4f2]`. Cleanup at the end becomes a single grep. Untagged logs survive; tagged logs die.
+
+**Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second.
+
+## Phase 5: Fix + regression test
+
+Write the regression test **before the fix**, but only if there is a **correct seam** for it.
+
+A correct seam is one where the test exercises the **real bug pattern** as it occurs at the call site. If the only available seam is too shallow (single-caller test when the bug needs multiple callers, unit test that can't replicate the chain that triggered the bug), a regression test there gives false confidence.
+
+**If no correct seam exists, that itself is the finding.** Note it. The codebase architecture is preventing the bug from being locked down. Flag this for the next phase.
+
+If a correct seam exists:
+
+1. Turn the minimised repro into a failing test at that seam.
+2. Watch it fail.
+3. Apply the fix.
+4. Watch it pass.
+5. Re-run the Phase 1 feedback loop against the original (un-minimised) scenario.
+
+## Phase 6: Cleanup
+
+Required before declaring done:
+
+- [ ] Original repro no longer reproduces (re-run the Phase 1 loop)
+- [ ] Regression test passes (or absence of seam is documented)
+- [ ] All `[DEBUG-...]` instrumentation removed (`grep` the prefix)
+- [ ] Throwaway prototypes deleted (or moved to a clearly-marked debug location)
+- [ ] The hypothesis that turned out correct is stated in the commit / PR message, so the next debugger learns</code></pre>
+      </div>
+    </section>
+
+    <section id="hitl-source">
+      <h2>hitl-loop.template.sh 全文</h2>
+
+      <p>第 10 项兜底：人必须点鼠标时，用这个脚本驱动人。复制 → 改步骤 → 跑。</p>
+
+      <div class="skill-source">
+<pre><code>#!/usr/bin/env bash
+# Human-in-the-loop reproduction loop.
+# Copy this file, edit the steps below, and run it.
+# The agent runs the script; the user follows prompts in their terminal.
+#
+# Usage:
+#   bash hitl-loop.template.sh
+#
+# Two helpers:
+#   step "&lt;instruction&gt;"          → show instruction, wait for Enter
+#   capture VAR "&lt;question&gt;"      → show question, read response into VAR
+#
+# At the end, captured values are printed as KEY=VALUE for the agent to parse.
+#
+# `capture` prints its value back to the terminal, where the agent reads it,
+# so capture observations, and leave signing in to the user as a `step`.
+
+set -euo pipefail
+
+step() {
+  printf '\n&gt;&gt;&gt; %s\n' "$1"
+  read -r -p "    [Enter when done] " _
+}
+
+capture() {
+  local var="$1" question="$2" answer
+  printf '\n&gt;&gt;&gt; %s\n' "$question"
+  read -r -p "    &gt; " answer
+  printf -v "$var" '%s' "$answer"
+}
+
+# --- edit below ---------------------------------------------------------
+
+step "Open the app at http://localhost:3000 and sign in."
+
+capture ERRORED "Click the 'Export' button. Did it throw an error? (y/n)"
+
+capture ERROR_MSG "Paste the error message (or 'none'):"
+
+# --- edit above ---------------------------------------------------------
+
+printf '\n--- Captured ---\n'
+printf 'ERRORED=%s\n' "$ERRORED"
+printf 'ERROR_MSG=%s\n' "$ERROR_MSG"</code></pre>
+      </div>
+
+      <p style="font-size: 13px; color: var(--muted);">
+        <strong>用法要点</strong>：<code>capture</code> 用来收集<strong>观察</strong>（错误信息、行为描述），把<strong>登录这种敏感交互</strong>留给 <code>step</code>，<strong>不要用 capture 收集凭证</strong>（避免落到任何上下文里）。
+      </p>
+    </section>
+
+    <section id="reference">
+      <h2>参考</h2>
+      <ul>
+        <li>Skill 源文件：<code>~/.claude/skills/diagnosing-bugs/SKILL.md</code>（138 行）</li>
+        <li>HITL 模板：<code>~/.claude/skills/diagnosing-bugs/scripts/hitl-loop.template.sh</code></li>
+        <li>注册元数据：<code>~/.claude/skills/diagnosing-bugs/agents/openai.yaml</code></li>
+        <li>原始方法论：<a href="https://www.aihero.dev/skills-diagnosing-bugs" target="_blank" rel="noopener">aihero.dev / diagnosing-bugs</a></li>
+        <li>同组 on-ramps：<code>triage</code>（前置浅层评估）· <code>wayfinder</code>（foggy effort）· <code>research</code>（primary sources）</li>
+        <li>配对 reference：<a href="tdd.html">tdd</a>（Phase 5 测试长什么样）· <a href="codebase-design.html">codebase-design</a>（seam 词汇）</li>
+        <li>前置（架构层）：<a href="improve-codebase-architecture.html">improve-codebase-architecture</a>（无 seam 时）</li>
+        <li>后置：<code>retro</code>（用户主动触发 · 复盘）</li>
+      </ul>
+    </section>
+
+    <footer>
+      Generated for <code>diagnosing-bugs</code> · 138 行 SKILL.md + hitl-loop 模板 · red-capable loop · 6 阶段 · 单文件自包含
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // ============ 顶部：文档目录下拉 ============
+  (function () {
+    const trigger = document.querySelector('.doc-trigger');
+    const panel = document.getElementById('doc-panel');
+    if (!trigger || !panel) return;
+    function close() { panel.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+    function open() { panel.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.contains('open') ? close() : open();
+    });
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && !trigger.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => close()));
+  })();
+
+  // ============ 侧栏：滚动联动高亮 ============
+  (function () {
+    const links = document.querySelectorAll('.sidebar a[href^="#"]');
+    const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')))
+                              .filter(Boolean);
+    if (!sections.length) return;
+    const map = new Map();
+    links.forEach((a, i) => map.set(sections[i].id, a));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => obs.observe(s));
+  })();
+</script>
+
+</body>
+</html>
