@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>言语理解类题型解题技巧讲义</title>
+<meta name="description" content="言语理解类题型解题技巧讲义">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b4232a'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle' fill='white' font-family='sans-serif'%3E语%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --fg:#1f2328; --muted:#6b7280;
+  --border:#e3e6ea; --accent:#b4232a; --accent-soft:#fdf0f0;
+  --hl:#ffe08a; --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+  --sidebar-w:320px; --serif:"Songti SC","SimSun","Noto Serif CJK SC",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC",sans-serif;
+  --body-size:16.5px; --lh:1.95;
+}
+html[data-theme="dark"]{
+  --bg:#14161a; --panel:#1c1f25; --fg:#d9dde3; --muted:#8b949e;
+  --border:#2b3038; --accent:#ff6b6b; --accent-soft:#2a1d1f;
+  --hl:#5a4a12; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--fg); font-family:var(--sans);
+  font-size:var(--body-size); line-height:var(--lh);
+  -webkit-font-smoothing:antialiased;
+}
+body[data-font="serif"] .doc{font-family:var(--serif)}
+a{color:inherit;text-decoration:none}
+
+/* ---------- 顶栏 ---------- */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:56px;z-index:40;
+  display:flex;align-items:center;gap:12px;padding:0 16px;
+  background:color-mix(in srgb,var(--panel) 88%,transparent);
+  backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.topbar .brand{font-weight:700;font-size:15px;letter-spacing:.3px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+.topbar .spacer{flex:1}
+.search{position:relative;display:flex;align-items:center}
+.search input{
+  width:230px;padding:7px 30px 7px 32px;border-radius:8px;font-size:13.5px;
+  border:1px solid var(--border);background:var(--bg);color:var(--fg);
+  outline:none;transition:.18s;font-family:inherit;
+}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);width:290px}
+.search .ico{position:absolute;left:10px;font-size:13px;color:var(--muted);pointer-events:none}
+.search .cnt{position:absolute;right:9px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.btn{
+  border:1px solid var(--border);background:var(--panel);color:var(--fg);
+  padding:7px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;
+  display:inline-flex;align-items:center;gap:5px;transition:.15s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.icon{padding:7px 9px;font-size:14px}
+#menuBtn{display:none}
+
+/* ---------- 侧边目录 ---------- */
+.sidebar{
+  position:fixed;top:56px;left:0;bottom:0;width:var(--sidebar-w);z-index:30;
+  background:var(--panel);border-right:1px solid var(--border);
+  overflow-y:auto;overscroll-behavior:contain;padding:14px 8px 60px;
+}
+.sidebar::-webkit-scrollbar{width:9px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:9px}
+.side-title{
+  font-size:11.5px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;
+  padding:4px 12px 10px;font-weight:700;
+}
+.toc-list{list-style:none;margin:0;padding:0}
+.toc-list ul{list-style:none;margin:0;padding:0}
+.toc-list ul.kids{padding-left:13px}
+.toc-list .lv1{margin-top:14px}
+.toc-list .lv1:first-child{margin-top:2px}
+.toc-list a{
+  display:flex;align-items:baseline;gap:8px;padding:5px 10px;border-radius:7px;
+  font-size:13.5px;line-height:1.5;color:var(--fg);
+  border-left:2px solid transparent;transition:.12s;
+}
+.toc-list a .t{flex:1 1 auto;min-width:0}
+.toc-list .lv1 a{font-weight:700;font-size:14.5px;margin-top:4px}
+.toc-list .lv2 a{font-weight:600;color:var(--fg)}
+.toc-list .lv3 a{color:var(--muted)}
+.toc-list .lv4 a,.toc-list .sub-item a{font-size:12.8px;color:var(--muted)}
+.toc-list a:hover{background:var(--accent-soft);color:var(--accent)}
+.toc-list a.active{
+  background:var(--accent-soft);color:var(--accent);border-left-color:var(--accent);
+  font-weight:600;
+}
+.toc-pg{margin-left:auto;font-size:10.5px;color:var(--muted);opacity:.55;
+  font-variant-numeric:tabular-nums;flex:none}
+.caret{
+  width:16px;height:16px;flex:none;align-self:center;cursor:pointer;
+  position:relative;border-radius:4px;transition:.15s;
+}
+.caret::before{
+  content:"";position:absolute;left:5px;top:4px;width:0;height:0;
+  border-left:4px solid var(--muted);border-top:3.5px solid transparent;
+  border-bottom:3.5px solid transparent;transition:transform .18s;
+}
+li.open > .caret::before{transform:rotate(90deg) translateX(-1px)}
+.toc-list ul.fold{max-height:0;overflow:hidden;transition:max-height .28s ease}
+li.open > ul.fold{max-height:2400px}
+li.open > ul.fold a{border-left:1px solid var(--border);margin-left:16px}
+.toc-match a{box-shadow:inset 0 0 0 1px var(--accent)}
+.toc-hidden{display:none}
+
+/* ---------- 正文 ---------- */
+.main{margin-left:var(--sidebar-w);padding:56px 0 0}
+.doc{
+  max-width:860px;margin:0 auto;padding:40px 40px 120px;
+}
+.cover{
+  border:1px solid var(--border);border-radius:14px;background:var(--panel);
+  padding:34px 34px 26px;box-shadow:var(--shadow);margin-bottom:38px;
+}
+.cover h1{
+  font-size:27px;line-height:1.45;margin:0 0 6px;font-weight:800;
+  letter-spacing:.5px;
+}
+.cover .sub{color:var(--muted);font-size:12.5px;margin-bottom:18px;letter-spacing:.4px}
+.cover .disc{border-top:1px dashed var(--border);padding-top:16px}
+.cover .disc p{font-size:13px;line-height:1.85;margin:0 0 8px;text-align:left}
+
+.blk{position:relative}
+p.p{margin:0 0 13px;text-align:justify;text-justify:inter-ideograph}
+.h1{
+  font-size:23px;font-weight:800;margin:52px 0 18px;padding-bottom:10px;
+  border-bottom:2px solid var(--accent);letter-spacing:.4px;scroll-margin-top:76px;
+}
+.h2{
+  font-size:19px;font-weight:750;margin:38px 0 14px;color:var(--fg);
+  padding-left:11px;border-left:4px solid var(--accent);scroll-margin-top:76px;
+}
+.h3{
+  font-size:16.5px;font-weight:700;margin:28px 0 11px;color:var(--fg);
+  scroll-margin-top:76px;
+}
+.h4{
+  font-size:15px;font-weight:700;margin:22px 0 9px;color:var(--accent);
+  scroll-margin-top:76px;
+}
+.pg{
+  font-size:10.5px;color:var(--muted);opacity:.5;margin-left:10px;font-weight:400;
+  vertical-align:middle;font-variant-numeric:tabular-nums;user-select:none;
+}
+.anchor{
+  opacity:0;margin-left:8px;font-weight:400;color:var(--muted);font-size:13px;
+  transition:.15s;
+}
+.blk:hover .anchor{opacity:.55}
+.anchor:hover{opacity:1;color:var(--accent)}
+
+.red{color:var(--accent)}
+.blue{color:#1a6fd4}
+html[data-theme="dark"] .blue{color:#6cb6ff}
+.b{font-weight:700}
+.blank{
+  display:inline-block;border-bottom:1.4px solid currentColor;vertical-align:-.22em;
+  margin:0 .18em;min-width:1em;height:1.05em;
+}
+mark{background:var(--hl);color:#1f2328;border-radius:3px;padding:0 1px}
+.dimmed{opacity:.25}
+.backmatter{
+  margin-top:56px;padding:24px 26px;border:1px solid var(--border);border-radius:12px;
+  background:var(--panel);
+}
+.backmatter h3{
+  font-size:14px;color:var(--muted);font-weight:700;letter-spacing:.6px;
+  margin:0 0 12px;text-transform:uppercase;
+}
+.backmatter p{font-size:12.5px;line-height:1.85;margin:0 0 8px}
+
+#toTop{
+  position:fixed;right:22px;bottom:22px;width:40px;height:40px;border-radius:50%;
+  background:var(--panel);border:1px solid var(--border);box-shadow:var(--shadow);
+  cursor:pointer;font-size:16px;color:var(--muted);z-index:35;opacity:0;
+  pointer-events:none;transition:.25s;
+}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{color:var(--accent);border-color:var(--accent)}
+
+#scrim{
+  position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.35);z-index:25;
+  display:none;
+}
+
+@media (max-width:900px){
+  :root{--sidebar-w:290px}
+  #menuBtn{display:inline-flex}
+  .sidebar{transform:translateX(-100%);transition:transform .25s ease}
+  .sidebar.open{transform:none;box-shadow:var(--shadow)}
+  #scrim.show{display:block}
+  .main{margin-left:0}
+  .doc{padding:26px 18px 100px}
+  .search input{width:150px}
+  .search input:focus{width:190px}
+  .topbar .brand{max-width:26vw}
+  .cover{padding:22px 20px 18px}
+  .cover h1{font-size:21px}
+}
+@media print{
+  .topbar,.sidebar,#toTop,#scrim{display:none!important}
+  .main{margin:0;padding:0}
+  .doc{max-width:none;padding:0}
+  .h1,.h2,.h3,.h4{break-after:avoid}
+  p.p{orphans:3;widows:3}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="btn icon" id="menuBtn" title="目录" aria-label="切换目录">☰</button>
+  <div class="brand">言语理解类题型解题技巧讲义</div>
+  <div class="spacer"></div>
+  <div class="search">
+    <span class="ico">🔍</span>
+    <input id="q" type="search" placeholder="搜索内容…  ( / )" autocomplete="off" spellcheck="false">
+    <span class="cnt" id="cnt"></span>
+  </div>
+  <button class="btn" id="fontBtn" title="切换字体">宋</button>
+  <button class="btn icon" id="themeBtn" title="切换主题">☾</button>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <div class="side-title">目 录</div>
+  <ul class="toc-list"><li class="lv1"><a href="#s1"><span class="t">第一部分：词语填空</span><span class="toc-pg">2</span></a><ul class="kids"><li class="lv2"><a href="#s2"><span class="t">第一章：词义辨析概述</span><span class="toc-pg">2</span></a><ul class="kids"><li class="lv3"><a href="#s3"><span class="t">第一节 概述</span><span class="toc-pg">2</span></a></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s4"><span class="t">第二节 答题方法</span><span class="toc-pg">2</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s5"><span class="t">表达风格</span><span class="toc-pg">3</span></a></li></ul></li></ul></li><li class="lv2"><a href="#s6"><span class="t">第二章：实词辨析</span><span class="toc-pg">3</span></a><ul class="kids"><li class="lv3"><a href="#s7"><span class="t">第一节：对象搭配</span><span class="toc-pg">3</span></a></li><li class="lv3"><a href="#s8"><span class="t">第二节：语义轻重</span><span class="toc-pg">3</span></a></li><li class="lv3"><a href="#s9"><span class="t">第三节：感情色彩</span><span class="toc-pg">3</span></a></li><li class="lv3"><a href="#s10"><span class="t">第四节：词义侧重</span><span class="toc-pg">3</span></a></li><li class="lv3"><a href="#s11"><span class="t">第五节：语体色彩</span><span class="toc-pg">4</span></a></li><li class="lv3"><a href="#s12"><span class="t">第六节：形象色彩</span><span class="toc-pg">4</span></a></li><li class="lv3"><a href="#s13"><span class="t">第七节：词义范围</span><span class="toc-pg">4</span></a></li><li class="lv3"><a href="#s14"><span class="t">第八节：词性功能</span><span class="toc-pg">4</span></a></li></ul></li><li class="lv2"><a href="#s15"><span class="t">第三章：成语辨析</span><span class="toc-pg">4</span></a><ul class="kids"><li class="lv3"><a href="#s16"><span class="t">第一节：望文生义</span><span class="toc-pg">4</span></a></li><li class="lv3"><a href="#s17"><span class="t">第二节：用错对象</span><span class="toc-pg">5</span></a></li><li class="lv3"><a href="#s18"><span class="t">第三节：褒贬误用</span><span class="toc-pg">5</span></a></li><li class="lv3"><a href="#s19"><span class="t">第四节：用错语境</span><span class="toc-pg">5</span></a></li><li class="lv3"><a href="#s20"><span class="t">第五节：语义重复</span><span class="toc-pg">5</span></a></li><li class="lv3"><a href="#s21"><span class="t">第六节：不合逻辑</span><span class="toc-pg">5</span></a></li></ul></li><li class="lv2"><a href="#s22"><span class="t">第四章：虚词辨析</span><span class="toc-pg">5</span></a></li><li class="lv2"><a href="#s23"><span class="t">第五章：语境辨析</span><span class="toc-pg">6</span></a><ul class="kids"><li class="lv3"><a href="#s24"><span class="t">第一节：解释关系</span><span class="toc-pg">6</span></a></li><li class="lv3"><a href="#s25"><span class="t">第二节：递进关系</span><span class="toc-pg">6</span></a></li><li class="lv3"><a href="#s26"><span class="t">第三节：并列关系</span><span class="toc-pg">7</span></a></li><li class="lv3"><a href="#s27"><span class="t">第四节：相反关系</span><span class="toc-pg">7</span></a></li><li class="lv3"><a href="#s28"><span class="t">第五节：照应关系</span><span class="toc-pg">7</span></a></li></ul></li><li class="lv2"><a href="#s29"><span class="t">第六章 高频词汇积累</span><span class="toc-pg">8</span></a><ul class="kids"><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s30"><span class="t">第一节 高频实词积累</span><span class="toc-pg">8</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s31"><span class="t">分辨 VS 分辩</span><span class="toc-pg">8</span></a></li><li class="lv4 sub-item"><a href="#s32"><span class="t">法制 VS 法治</span><span class="toc-pg">8</span></a></li><li class="lv4 sub-item"><a href="#s33"><span class="t">简洁 VS 简捷</span><span class="toc-pg">8</span></a></li><li class="lv4 sub-item"><a href="#s34"><span class="t">鉴赏 VS 鉴别</span><span class="toc-pg">8</span></a></li><li class="lv4 sub-item"><a href="#s35"><span class="t">截止 VS 截至</span><span class="toc-pg">8</span></a></li><li class="lv4 sub-item"><a href="#s36"><span class="t">滥用 VS 乱用</span><span class="toc-pg">8</span></a></li><li class="lv4 sub-item"><a href="#s37"><span class="t">休养 VS 修养</span><span class="toc-pg">9</span></a></li><li class="lv4 sub-item"><a href="#s38"><span class="t">满意 VS 满足</span><span class="toc-pg">9</span></a></li><li class="lv4 sub-item"><a href="#s39"><span class="t">权利 VS 权力</span><span class="toc-pg">9</span></a></li><li class="lv4 sub-item"><a href="#s40"><span class="t">涉猎 VS 猎取</span><span class="toc-pg">9</span></a></li><li class="lv4 sub-item"><a href="#s41"><span class="t">神志 VS 神智</span><span class="toc-pg">9</span></a></li><li class="lv4 sub-item"><a href="#s42"><span class="t">审定 VS 审订</span><span class="toc-pg">9</span></a></li><li class="lv4 sub-item"><a href="#s43"><span class="t">胜地 VS圣地</span><span class="toc-pg">10</span></a></li><li class="lv4 sub-item"><a href="#s44"><span class="t">声明 vs申明</span><span class="toc-pg">10</span></a></li><li class="lv4 sub-item"><a href="#s45"><span class="t">时事 VS 时势</span><span class="toc-pg">10</span></a></li><li class="lv4 sub-item"><a href="#s46"><span class="t">授权 VS 受权</span><span class="toc-pg">10</span></a></li><li class="lv4 sub-item"><a href="#s47"><span class="t">提名 VS 题名</span><span class="toc-pg">10</span></a></li><li class="lv4 sub-item"><a href="#s48"><span class="t">推脱 VS 推托</span><span class="toc-pg">10</span></a></li><li class="lv4 sub-item"><a href="#s49"><span class="t">辛酸 VS 心酸</span><span class="toc-pg">10</span></a></li><li class="lv4 sub-item"><a href="#s50"><span class="t">学历 VS 学力</span><span class="toc-pg">11</span></a></li><li class="lv4 sub-item"><a href="#s51"><span class="t">沿用 VS 延用</span><span class="toc-pg">11</span></a></li><li class="lv4 sub-item"><a href="#s52"><span class="t">首先 VS 首要</span><span class="toc-pg">11</span></a></li><li class="lv4 sub-item"><a href="#s53"><span class="t">蓄意 VS 蓄谋</span><span class="toc-pg">11</span></a></li><li class="lv4 sub-item"><a href="#s54"><span class="t">误解 VS 曲解</span><span class="toc-pg">11</span></a></li><li class="lv4 sub-item"><a href="#s55"><span class="t">退化 VS 蜕化</span><span class="toc-pg">11</span></a></li><li class="lv4 sub-item"><a href="#s56"><span class="t">遴选 VS 挑选</span><span class="toc-pg">12</span></a></li><li class="lv4 sub-item"><a href="#s57"><span class="t">变革 VS 改革</span><span class="toc-pg">12</span></a></li><li class="lv4 sub-item"><a href="#s58"><span class="t">不耻 VS 不齿</span><span class="toc-pg">12</span></a></li><li class="lv4 sub-item"><a href="#s59"><span class="t">沟通 VS 勾通</span><span class="toc-pg">12</span></a></li><li class="lv4 sub-item"><a href="#s60"><span class="t">谋取 VS 牟取</span><span class="toc-pg">12</span></a></li><li class="lv4 sub-item"><a href="#s61"><span class="t">徘徊 VS 徜徉？</span><span class="toc-pg">12</span></a></li><li class="lv4 sub-item"><a href="#s62"><span class="t">培养 VS 培植</span><span class="toc-pg">13</span></a></li><li class="lv4 sub-item"><a href="#s63"><span class="t">以至 VS 以致</span><span class="toc-pg">13</span></a></li><li class="lv4 sub-item"><a href="#s64"><span class="t">调解VS 斡旋</span><span class="toc-pg">13</span></a></li><li class="lv4 sub-item"><a href="#s65"><span class="t">凋敝 VS 凋零</span><span class="toc-pg">13</span></a></li><li class="lv4 sub-item"><a href="#s66"><span class="t">篡改 VS 窜改</span><span class="toc-pg">13</span></a></li><li class="lv4 sub-item"><a href="#s67"><span class="t">管制 VS 控制？</span><span class="toc-pg">13</span></a></li><li class="lv4 sub-item"><a href="#s68"><span class="t">忽视 VS 轻视？</span><span class="toc-pg">14</span></a></li><li class="lv4 sub-item"><a href="#s69"><span class="t">接受 VS 接收？</span><span class="toc-pg">14</span></a></li><li class="lv4 sub-item"><a href="#s70"><span class="t">驱除 VS 祛除？</span><span class="toc-pg">14</span></a></li><li class="lv4 sub-item"><a href="#s71"><span class="t">范围 VS 范畴</span><span class="toc-pg">14</span></a></li><li class="lv4 sub-item"><a href="#s72"><span class="t">矗立 VS 屹立</span><span class="toc-pg">14</span></a></li><li class="lv4 sub-item"><a href="#s73"><span class="t">潜心 VS 悉心？</span><span class="toc-pg">14</span></a></li><li class="lv4 sub-item"><a href="#s74"><span class="t">度过 VS 渡过</span><span class="toc-pg">15</span></a></li><li class="lv4 sub-item"><a href="#s75"><span class="t">暴发 VS 爆发</span><span class="toc-pg">15</span></a></li><li class="lv4 sub-item"><a href="#s76"><span class="t">聆听 VS 倾听</span><span class="toc-pg">15</span></a></li><li class="lv4 sub-item"><a href="#s77"><span class="t">抚养 VS 扶养？</span><span class="toc-pg">15</span></a></li><li class="lv4 sub-item"><a href="#s78"><span class="t">伺候 VS侍候？</span><span class="toc-pg">15</span></a></li></ul></li><li class="lv3"><a href="#s79"><span class="t">第二节 高频成语积累</span><span class="toc-pg">15</span></a></li></ul></li></ul></li><li class="lv1"><a href="#s80"><span class="t">第二部分：片段阅读</span><span class="toc-pg">17</span></a><ul class="kids"><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s81"><span class="t">第一节：主旨理解题</span><span class="toc-pg">17</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s82"><span class="t">主旨理解题题型分类和解题原则</span><span class="toc-pg">17</span></a></li><li class="lv4 sub-item"><a href="#s83"><span class="t">主旨理解题之分总结构分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s84"><span class="t">主旨理解题分总结构分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s85"><span class="t">主旨理解题总分总结构分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s86"><span class="t">主旨理解题分总分结构分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s87"><span class="t">主旨理解题分分结构分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s88"><span class="t">主旨理解题之总结关系分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s89"><span class="t">主旨概括题之条件关系分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s90"><span class="t">主旨理解题之单主体分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s91"><span class="t">主旨理解题之双主体分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s92"><span class="t">主旨理解题之多主体分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s93"><span class="t">主旨理解题之递进关系分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s94"><span class="t">主旨理解题之转折关系分析</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s95"><span class="t">主旨理解题之并列关系分析</span><span class="toc-pg">19</span></a></li><li class="lv4 sub-item"><a href="#s96"><span class="t">主旨理解题之杂糅主旨</span><span class="toc-pg">19</span></a></li></ul></li><li class="lv3"><a href="#s97"><span class="t">第二节 态度理解题</span><span class="toc-pg">19</span></a></li><li class="lv3"><a href="#s98"><span class="t">第三节 标题填入题</span><span class="toc-pg">19</span></a></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s99"><span class="t">第四节 意图推断主旨题</span><span class="toc-pg">19</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s100"><span class="t">一、提问方式：</span><span class="toc-pg">19</span></a></li><li class="lv4 sub-item"><a href="#s101"><span class="t">二、题型分类：</span><span class="toc-pg">19</span></a></li><li class="lv4 sub-item"><a href="#s102"><span class="t">三、理论要点：</span><span class="toc-pg">20</span></a></li><li class="lv4 sub-item"><a href="#s103"><span class="t">按主旨概括题的方法来做言内意图的题目</span><span class="toc-pg">20</span></a></li><li class="lv4 sub-item"><a href="#s104"><span class="t">意图推断主旨题结构分析法</span><span class="toc-pg">21</span></a></li><li class="lv4 sub-item"><a href="#s105"><span class="t">意图推断主旨题之关联分析法</span><span class="toc-pg">21</span></a></li><li class="lv4 sub-item"><a href="#s106"><span class="t">意图推断主旨题之主体分析</span><span class="toc-pg">21</span></a></li><li class="lv4 sub-item"><a href="#s107"><span class="t">意图推断主旨理解题之故事道理</span><span class="toc-pg">21</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s108"><span class="t">第五节 细节理解题</span><span class="toc-pg">21</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s109"><span class="t">典型细节</span><span class="toc-pg">21</span></a></li><li class="lv4 sub-item"><a href="#s110"><span class="t">具体细节</span><span class="toc-pg">21</span></a></li></ul></li></ul></li><li class="lv1"><a href="#s111"><span class="t">第三部分：语句表达</span><span class="toc-pg">21</span></a><ul class="kids"><li class="lv3"><a href="#s112"><span class="t">第一节 语意理解</span><span class="toc-pg">21</span></a></li><li class="lv3"><a href="#s113"><span class="t">第二节 词语指代</span><span class="toc-pg">22</span></a></li><li class="lv3"><a href="#s114"><span class="t">第三节 语句填空</span><span class="toc-pg">22</span></a></li><li class="lv3"><a href="#s115"><span class="t">第四节 接语选择题</span><span class="toc-pg">22</span></a></li><li class="lv3"><a href="#s116"><span class="t">第五节 排序填空</span><span class="toc-pg">22</span></a></li><li class="lv3"><a href="#s117"><span class="t">第六节 病句辨析</span><span class="toc-pg">22</span></a></li><li class="lv3"><a href="#s118"><span class="t">第七节 歧义辨析</span><span class="toc-pg">22</span></a></li></ul></li></ul>
+</nav>
+<div id="scrim"></div>
+
+<main class="main">
+  <article class="doc">
+    <div class="cover">
+<h1>言语理解类题型解题技巧讲义</h1>
+<div class="sub">讲义正文 · 23 页 · 点击左侧目录跳转，按 “/” 搜索</div>
+<div class="disc">
+<p><span class="b">-—---本资料</span><span class="b blue">属www.wuyouqiuzhi.com</span><span class="b">及旗下天天向上求职工作室&amp;职场精英工作室独家所有，仅限购买者个人使用，不得分享/转赠/转卖；版权所有，盗版可耻</span></p>
+<p><span class="b">——-整套资料包括</span><span class="b red">历年真题套题，复习讲义，在线考试系统（电脑版网址为 www.wuyouqiuzhi.com），移动端APP（名称为：笔试通，苹果商店及安卓各大市场搜索即可下载安装</span><span class="b">）</span><span class="b red">，在线考试模拟和移动端APP刷题具有倒计时答题/错题本/做题记录/分数排名等功能，电脑/手机/平板均可学习＋做题</span></p>
+<p><span class="b">——-—</span><span class="b red">-正版地址：官网 www.wuyouqiuzhi.com </span><span class="b">或者</span><span class="b red">移动端 APP（名称为：笔试通）；旗下淘宝店：天天向上求职工作室（唯一客服：galerjim）或职场精英工作室（唯一客服：蔚蓝小小天使）亦可购买学习</span></p>
+<p><span class="b">--—-除上述渠道外，绝对没有通过其他任何渠道出售资料，任何其他渠道获取本资料的均为无良盗版，</span><span class="b red">请从正版处购买，惟有正版资料会</span><span class="b">根据考试情况不定时调整更新内容，</span><span class="b red">为保证您的复习效果，请务必通过网站</span><span class="b blue">www.wuyouqiuzhi.com 或</span><span class="b red"> APP【笔试通】及</span><span class="b">旗下天天向上求职工作室 or 职场精英工作室 </span><span class="b red">购买学习</span></p>
+</div></div>
+    <h1 class="blk h1" id="s1">第一部分：词语填空<span class="pg">P2</span><a class="anchor" href="#s1" aria-label="链接到此节">#</a></h1>
+<h2 class="blk h2" id="s2">第一章：词义辨析概述<span class="pg">P2</span><a class="anchor" href="#s2" aria-label="链接到此节">#</a></h2>
+<h3 class="blk h3" id="s3">第一节 概述<span class="pg">P2</span><a class="anchor" href="#s3" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p3">词义辨析的方法，可以从几个角度来综合考虑：其一，语素拆分；其二，造句分析；其三，反义推究。</p>
+<p class="blk p" id="p4">1.语素拆分法是指抓住实词或成语的相异语素，通过组词或是字义来分析其意义差异，辨别近义词在意义、色彩、用法等方面的差别。</p>
+<p class="blk p" id="p5">比如：“留传“和“流传”</p>
+<p class="blk p" id="p6">考察不同的语素，会发现“留”与“留给”相关，与之搭配的对象一定是具体的物品，如房产、田地、秘方、器物等；“流”可以组成“流水”、“流淌”等词，所接对象比较抽象，诸如对象是神话传说、故事、消息等。</p>
+<p class="blk p" id="p7">[例句 1]“这本笔试‘圣经’，凝聚了章老师多年的心血，是他多年研究的成果，它必将经得起时代检验<span class="blank" style="width:2.60em"></span>多年。”横线处选填“留传”；</p>
+<p class="blk p" id="p8">[例句 2]“一辈子很短的，将错就错吧，何须指望我们的爱情故事会永远<span class="blank" style="width:2.60em"></span>？”横线处选填“流传”。</p>
+<p class="blk p" id="p9">2.造句分析法除了适合字音相同、音同字不同的近义词之外，还适合音字皆不同的近义词，甚至非近义词，比如“启用”和“起用”、“日常”和“简单”等。</p>
+<p class="blk p" id="p10">比如：“起用”和“启用”</p>
+<p class="blk p" id="p11">这组词的辨析，除了异字考察外，也可以放在不同的句子中予以理解。</p>
+<p class="blk p" id="p12">[例如 1]“为了增强企业活力，该公司决定大胆起用一批年轻人。”此句“起用”使用正确，根据语境可知是“提拔用”的意思；</p>
+<p class="blk p" id="p13">[例句 2]“2022 就业压力很大，但是绝大多数应届毕业生还是被不同的企业所启用。”一句中“启用”使用无误，是“开始用”的意思；</p>
+<p class="blk p" id="p14">[例句 3]“面临严峻的竞争形势，该公司决定起用那些退居二线的老专家。”一句中“起用”使用无误，是“重新用”的意思。</p>
+<p class="blk p" id="p15">根据几个不同的句子，可以得知“起用”的意思是提拔用或重新用；“启用”意思是开始用。二者使用要结合语境。</p>
+<p class="blk p" id="p16">3.反义推究法是指，可以通过词语各自相应的反义词的不同来探究它们之间的差别。</p>
+<p class="blk p" id="p17">比如：“虚假”和“虚伪”</p>
+<p class="blk p" id="p18">这组词就可以反义推究辨析差异。“虚假”与“真实”构成反义词，故其着重于“假”，指情况与实际不相符合，多用以形容事物的内容、证据、情况、情节、因素、成分、成绩等较抽象的事物，有时也用于人的言行；而“虚伪”与“诚实”构成反义词，故着重于“伪”，用于形容故意作假，不诚实，多指言语、行为、作风、态度、道德、品质等有关人的言行表现。</p>
+<p class="blk p" id="p19">[例句 1]“敌人的退却是<span class="blank" style="width:2.60em"></span>的，要引我们上钩才是它们真正的企图。”横线处选填“虚假”。</p>
+<p class="blk p" id="p20">[例句 2]“极富虚荣心，不是太自强就是太<span class="blank" style="width:2.60em"></span>；而没有虚荣心，不是超脱了就是沦落了。”横线处选填“虚伪”。</p>
+<h3 class="blk h3" id="s4">第二节 答题方法<span class="pg">P2</span><a class="anchor" href="#s4" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p22">先排除，后确认。</p>
+<p class="blk p" id="p23"><span class="red">感情色彩：</span>褒义/贬义；倾向性（积极/消极）</p>
+<p class="blk p" id="p24">后果，成果尝试</p>
+<p class="blk p" id="p25">冒险徘徊，徜徉……</p>
+<p class="blk p" id="p26">却，（根据“却”和全文机构决定感情色彩）……</p>
+<p class="blk p" id="p27"><span class="red">语意轻重：</span>（轻/重）</p>
+<p class="blk p" id="p28">批评/批判（批评语义较轻，批判语义较重且正式）</p>
+<p class="blk p" id="p29">破坏/损坏（地震破坏了•；损坏公物.⋯.）</p>
+<h4 class="blk h4" id="s5">表达风格<span class="pg">P3</span><a class="anchor" href="#s5" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p31"><span class="red">语体风格：</span>（口语/正式）</p>
+<p class="blk p" id="p32">商量/商榷</p>
+<p class="blk p" id="p33"><span class="red">文体风格：</span>与作者说话方式，文体内容相匹配</p>
+<p class="blk p" id="p34">搭配范围：（地位等级、接人、接物）寻找文中提示性信息，从确定性选项入手</p>
+<p class="blk p" id="p35">爱戴（上级，师长，长辈）/爱护（下级，晚辈，小孩）</p>
+<p class="blk p" id="p36">希望（泛用）/期望（<span class="blue">上</span>对下：领导期望下属）</p>
+<p class="blk p" id="p37">抚养（自己的孩子）/扶养（帮扶别人）</p>
+<p class="blk p" id="p38"><span class="red">语素差异：</span>针对近义词辨析，提炼词中不同的汉字，对比其含义</p>
+<p class="blk p" id="p39">鉴赏/鉴别（前者欣赏，后者区别）</p>
+<p class="blk p" id="p40">推脱/推托（前者推卸，脱掉。后者托词，婉言拒绝）</p>
+<h2 class="blk h2" id="s6">第二章：实词辨析<span class="pg">P3</span><a class="anchor" href="#s6" aria-label="链接到此节">#</a></h2>
+<h3 class="blk h3" id="s7">第一节：对象搭配<span class="pg">P3</span><a class="anchor" href="#s7" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p43">不同的近义词，由于语言习惯的问题，其使用对象和搭配关系往往存在一定的差异。有些近义词所表示的概念相同，但适用对象不同，有上下、内外等之分。有些近义词基本义相同，但搭配有别，不能混用。</p>
+<p class="blk p" id="p44">比如：“浮浅”和“肤浅”</p>
+<p class="blk p" id="p45">前者常用来形容人的思想品德，而后者常用来形容学识或理解程度，二者适用对象不同。</p>
+<p class="blk p" id="p46">[例句 1]“很多考生对言语理解与表达的命题思路的了解很<span class="blank" style="width:4.30em"></span>。”</p>
+<p class="blk p" id="p47">横线处选用<span class="blue">“</span>肤浅”；</p>
+<p class="blk p" id="p48">[例句 2]“我仿佛看到鲁迅先生丰富的精神世界，感受到他所具有的道德力量，相比之下，越发显出我自己的<span class="blank" style="width:4.30em"></span>。”</p>
+<p class="blk p" id="p49">横线处选用“浮浅”。</p>
+<h3 class="blk h3" id="s8">第二节：语义轻重<span class="pg">P3</span><a class="anchor" href="#s8" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p51">近义词之间基本意义相近，但是词义的轻重有所不同，否则就是同义词<span class="blue">了</span>。一般来说，词义的轻重主要是意义相近的动词、形容词表现出来的差别，有的词语适用于比较重大的事物，有的则适用于一般性的事物；有的表示的程度深、性质重，有的则表示的程度浅、性质轻，这就是词义的轻重，辨析时需要抓住这些词的轻重意义，做到准确、最佳表达。</p>
+<p class="blk p" id="p52">比如：“搜集”和“收集”二词</p>
+<p class="blk p" id="p53">“搜集”强调花费的时间多、精力大，词义比“收集”重。因此，当语境意思较重的时候用“搜集”，反之用“收集”。</p>
+<p class="blk p" id="p54">[例句]“有一个变形金刚迷，花了十多年的心血和积蓄，<span class="blank" style="width:1.75em"></span>到来自世界各地的几百种变形金刚模型。”</p>
+<p class="blk p" id="p55">横线处选用“搜集”更合适。</p>
+<h3 class="blk h3" id="s9">第三节：感情色彩<span class="pg">P3</span><a class="anchor" href="#s9" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p57">现代汉语中，有些词语附加有说话者的主观感情，有些词语又不带有说话者的主观感情，感情上的某种倾向、情调不同，比如，褒义、贬义和中性。使用这些词语要注意这种附加的感情倾向。</p>
+<p class="blk p" id="p58">比如：“敦促”和“督促”</p>
+<p class="blk p" id="p59">前者是诚恳的催促，属褒义词，后者是“监督，促使”，为中性词。</p>
+<p class="blk p" id="p60">[例句]中国外交部发言人发表谈话，朝韩保持克制态度，尽快回到谈判桌上来。</p>
+<p class="blk p" id="p61">横线处选填“敦促”</p>
+<p class="blk p" id="p62">[例句]很多学生自主学习能力较差，要老师和家长经常<span class="blank" style="width:1.75em"></span> 才行。</p>
+<p class="blk p" id="p63">横线处选填“督促”</p>
+<h3 class="blk h3" id="s10">第四节：词义侧重<span class="pg">P3</span><a class="anchor" href="#s10" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p65">词义相近的词语，未必完全相同，一般而言其意思侧重点不一样，表达的角度或意义方向有些差异，辨析它们就得抓住词义侧重点进行仔细分析。</p>
+<p class="blk p" id="p66">比如：“差异”和“差距”</p>
+<p class="blk p" id="p67">“差异”相当于差别，“差距”指事物之间的差别程度，也指与某种标准或要求的距离大小，例如“学英雄，找差距”。前者重在定性，后者重在定量。差异研究的是两方或多方的“不同”，不宜或不易量化；差距研究的是一方“不及”另一方，可以或应该量化。</p>
+<p class="blk p" id="p68">[例句]提高国民收入要防止群体间<span class="blank" style="width:2.60em"></span>过大。</p>
+<p class="blk p" id="p69">横线处应该选择“差距”，而非“差异”</p>
+<h3 class="blk h3" id="s11">第五节：语体色彩<span class="pg">P4</span><a class="anchor" href="#s11" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p71">语体色彩是指说某个领域里使用的语言的特点，一般分书面语色彩和口语色彩两大类。常用于书面语写作，用于学术性、政治性的演讲文的，这种词有书面语色彩；常用于日常生活的谈话中的词，就带有口语色彩。</p>
+<p class="blk p" id="p72">一般来说，口语具有通俗朴实、生动、直露的风格，在对话、文艺作品中常常使用口语；而书面语则具有文雅、庄重、含蓄的风格，多用于郑重的场合、理论性强的文章等。书面用词和口语词语区别比较明确的，往往不能通用。</p>
+<p class="blk p" id="p73">比如：“国是”和“国事”</p>
+<p class="blk p" id="p74">“国是”指国家大计，多用于书面语中，有庄重、严肃的风格色彩。“国事”指国家大事，也可泛指一切跟国家有关的事情，书面语和口语中都常用。“国是”与“国事”意义相近，但不是一个词的两种写法，而是两个不同的词，不能用“国事”替代“国是”。</p>
+<p class="blk p" id="p75">[例句 1]“两会期间，很多人民代表聚集在一起共商—。”横线处选填“国是”。</p>
+<p class="blk p" id="p76">[例句 2]“不关心<span class="blank" style="width:1.75em"></span>，只关心家事，不是大丈夫！”横线处选填“国事”。</p>
+<h3 class="blk h3" id="s12">第六节：形象色彩<span class="pg">P4</span><a class="anchor" href="#s12" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p78">现代汉语中，实词除了具有一般的意义，附着感情、语体色彩之外，还可能附有一种形象色彩。就是说，某些词语往往表现出事物行为、状态、颜色的形象特征，给读者非常形象的感觉，生动、具体、亲切，让人浮想联翩，它可能是触觉、味觉、视觉、嗅觉、听觉的感受，这种词语就具有形象色彩。</p>
+<p class="blk p" id="p79">比如：味觉上的实词，如“甜丝丝”带来让人享受到甜味的美好感觉；“淡巴巴”又使人处于一种索然无味的状态；“辣乎乎”让人心头产生难以形容的灼热之感。</p>
+<h3 class="blk h3" id="s13">第七节：词义范围<span class="pg">P4</span><a class="anchor" href="#s13" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p81">意思相近的一些词语，意义范围有的大，有的小，不要小词大用或大词小用。</p>
+<p class="blk p" id="p82">比如：“船”和“船只”</p>
+<p class="blk p" id="p83">二者都是指水上的一种主要交通运输工具，但前者的意义是个体性具体的概念，可以指称某一艘具体的船，后者则是集合性概括的概念，不能指称某一具体的船。范围而言，后者较广。</p>
+<p class="blk p" id="p84">[例句]“运河的码头停靠的<span class="blank" style="width:2.60em"></span>很多，密密麻麻，簇拥在一起。其中，有一只<span class="blank" style="width:2.60em"></span>的外形就像一条龙，煞是好看！”前一空格选用“船只”，后一个选用“船”。</p>
+<h3 class="blk h3" id="s14">第八节：词性功能<span class="pg">P4</span><a class="anchor" href="#s14" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p86">词性是指划分词语类别的根据，名词、代词、形容词、代词、数词、量词都属于实词。不同词性的词语在语法上往往有特定的语法功能，比如名词多作宾语和主语：动词多作谓语：形容词多作定语和谓语：虚词中的副词多作状语。有些词是主动用法，有些词有被动意思，所在的语境有所区别。很多同音词或近义词，其词性和语法功能存在一定的差异，在解答实词填空的时候，就需要注意材料语法结构，掌握实词用法。</p>
+<p class="blk p" id="p87">比如：“给子”和“给以”</p>
+<p class="blk p" id="p88">二者都是指给，前者是动词，可以直接接宾语，多出现所接受的人；后者也是动词，只说所给的事物（并且多为抽象事物），不说所接受的人。</p>
+<p class="blk p" id="p89">[例句]“故乡的茅草屋永远在我的心中，静静地坐落着，<span class="blank" style="width:1.75em"></span>我精神的抚慰。”横线处选用“给予”。</p>
+<h2 class="blk h2" id="s15">第三章：成语辨析<span class="pg">P4</span><a class="anchor" href="#s15" aria-label="链接到此节">#</a></h2>
+<h3 class="blk h3" id="s16">第一节：望文生义<span class="pg">P4</span><a class="anchor" href="#s16" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p92">成语的意义是整体的，而不是它的组成部分意义的简单相加，因此不能只按照字面意思去牵强附会，而应要弄清成语的来源及其故事的内容，理解成语的本义，辨明成语的细微差异，避免望文生义。</p>
+<p class="blk p" id="p93">如：（1）“一些人对中国的茶有偏见，以为茶只是下里巴人解渴的东西，档次不如进口饮料。”</p>
+<p class="blk p" id="p94">[分析]“下里巴人”指古代楚国的一种较通俗的歌曲，泛指通俗的文艺作品，这里错解为普通的乡下人。</p>
+<p class="blk p" id="p95">（2）“春运期间，对于我来说，买张火车票回家过年是当前首当其冲的大事。”</p>
+<p class="blk p" id="p96">[分析]“首当其冲”不是“首要的”的意思，<span class="blue">而</span>是比喻最先受到冲击、压力、攻击。</p>
+<h3 class="blk h3" id="s17">第二节：用错对象<span class="pg">P5</span><a class="anchor" href="#s17" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p98">成语适用对象和范围一般是比较固定的，具有很强的单一性，如果对成语所表达的习惯对象或范围缺乏了解，便会使陈述和被陈述之间出现张冠李戴的现象，造成误用。</p>
+<p class="blk p" id="p99">如：（1）“他们到底扶持起了多少畜牧企业没有人记得清，只记得他们所到之处，大量畜牧企业脱颖而出。”</p>
+<p class="blk p" id="p100">[分析]“脱颖而出<span class="blue">”</span>比喻人的才能全部显现出来，不用于物。</p>
+<p class="blk p" id="p101">（2） “桂林的山水黄山的松，真是巧夺天工。”</p>
+<p class="blk p" id="p102">[分析]“巧夺天工”意为“精巧的人工胜过天然”，其对象是人工的，而“桂林的山水黄山的松”本身就是天然，不在“人工”之列。</p>
+<h3 class="blk h3" id="s18">第三节：褒贬误用<span class="pg">P5</span><a class="anchor" href="#s18" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p104">成语中相当一部分是具有明显的色彩的，使用时如果不加以区别，就会导致误用。不辨色彩主要表现在褒贬误用、语体色彩不当等方面。</p>
+<p class="blk p" id="p105">如：（1）“经过半年的见习，不安心的大学生也树立了热爱本职、好为人师、献身事业的思想观念。”</p>
+<p class="blk p" id="p106">[分析]句中的“好为人师”的意思是喜好充当别人的老师，一般用来形容不懂得谦虚，自以是，贬义，用在此句中不当。</p>
+<p class="blk p" id="p107">（2）“他出狱后，仍不思悔改，和一个诈骗犯同心同德，利用我老婆回家心切的心理，通过电话订票方式诈骗钱财。”</p>
+<p class="blk p" id="p108">[分析]“同心同德” 指为同一个心愿，同一目的而努力，属于褒义，不要贬用。</p>
+<h3 class="blk h3" id="s19">第四节：用错语境<span class="pg">P5</span><a class="anchor" href="#s19" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p110">有些成语在运用中，从意义表面上看符合句意，似乎没有错误，但结合上下文的整体意思来看，或从逻辑推理角度来看，可能出现这样或那样的问题，其中包括谦辞和敬辞误用产生尊卑颠倒问题。</p>
+<p class="blk p" id="p111">如：（1）“晓铭老师勤勤恳恳，日理万机，在教坛上默默奉献了多年，帮助很多人走上公务员岗位。”</p>
+<p class="blk p" id="p112">[分析]“日理万机”意思是指一天内要处理上万件事务，一般指君主或国家领导人每天忙于处理繁多的政务。</p>
+<p class="blk p" id="p113">该词词义较重，即使用在优秀老师身上，也犯了“大词小用”的毛病，不合语境。</p>
+<p class="blk p" id="p114">（2）“2008年4月28日胶州铁路火车相撞死亡70多人，2011年7月23日甬温铁路火车相撞死亡40多人，每一次铁道部门都出手不凡，能在最短的时间里迅速通车，神奇的国度总会有太多奇迹！”</p>
+<p class="blk p" id="p115">[分析]“出手不凡” 指开始做某件事时就不同凡响。句子中显然不是“第一次”，而是“历来”如此，显然“出手不凡”不合语境。</p>
+<h3 class="blk h3" id="s20">第五节：语义重复<span class="pg">P5</span><a class="anchor" href="#s20" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p117">成语在运用中相当于一个词，就要和句中其他词语相搭配，虽然成语在句子中的意思是准确的，但还要注意容易出现重复的错误。</p>
+<p class="blk p" id="p118">如：（1）“赛场上，C罗的‘剪刀脚’放倒了自己。此时，坐在我身边的一位美女球迷忍俊不禁，扑哧一声笑了起来。”</p>
+<p class="blk p" id="p119">[分析]句中“忍俊不禁”本已有“忍不住发笑”的意思，与后面“笑了起来”重复。</p>
+<p class="blk p" id="p120">（2） “铁道部门领导应当在出现问题之前就应未雨绸缪，不应在问题出现之后惊慌失措，掩盖真相，欺骗人民。”</p>
+<p class="blk p" id="p121">[分析]句中“出现问题之前”与“未雨绸缪”语意重复。</p>
+<h3 class="blk h3" id="s21">第六节：不合逻辑<span class="pg">P5</span><a class="anchor" href="#s21" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p123">在成语运用中，成语自身意义尽管准确，但它有时与句子其他部分表达的语意不一致，因而造成前后矛盾、不合事实、不合情理等问题。</p>
+<p class="blk p" id="p124">如：（1）“菊花盛开，姹紫嫣红，煞是好看。”</p>
+<p class="blk p" id="p125">[分析]中“姹紫嫣红”形容各种花卉鲜艳娇美，而“菊花”并不代表各种花卉，显然逻辑错误。</p>
+<p class="blk p" id="p126">（2） “他的演说不仅内容充实，而且闪烁其辞，全场观众无不之动容。”</p>
+<p class="blk p" id="p127">[分析]句中“闪烁其辞”形容“说话吞吞吐吐”，同“内容充实”不构成递进关系。</p>
+<h2 class="blk h2" id="s22">第四章：虚词辨析<span class="pg">P5</span><a class="anchor" href="#s22" aria-label="链接到此节">#</a></h2>
+<p class="blk p" id="p129">虚词没有实在意义，一般不能充当句子成分，不能单独回答问题（少数副词如“不”、“也许”、“没有”等可以单独回答问题），只能配合实词造句，表示种种语法关系。虚词包括副词、介词、连词、助词、叹词、拟声词六类。辨析虚词要辨明使用不同，尤其注意关联词的使用。</p>
+<p class="blk p" id="p130">比如：一再一一再三</p>
+<p class="blk p" id="p131">[例句]中美关系-（一再、再三）动荡，不符合双方的根本利益。</p>
+<p class="blk p" id="p132">[分析]二者都是副词，有时可以互换使用。在表示人的主动动作行为的动词前面用“一再”和“再三” 都可以。但在不是表示人的主动动作行动词前面就只能用“一再”，不能用“再三”。该句中“动荡”的主体不是人，是“中美关系”，“动荡”也不是人所主动做出的某种行为动作，所以选取“一再”。</p>
+<p class="blk p" id="p133">又如：虽然—一固然</p>
+<p class="blk p" id="p134">[例句]古今——（固然、虽然）不溶混同，但古人生活中的许多相对真理，也同样包含着绝对真理的因素。</p>
+<p class="blk p" id="p135">[分析]二者都是转折连词，都与“可是、但是、然而、却”等连词配合，但“固然”是先肯定承认某种情况，然后又对该事物提出一种新情况，转入正意；而“虽然”则是对出现的某种状况作让步。该句先肯定“古今不容混同”，然后提出“相对真理”中“包含绝对真理的因素”的新情况，所以选取“固然”。</p>
+<p class="blk p" id="p136">再如：不免一未免一难免</p>
+<p class="blk p" id="p137">[例句]（1）老吴<span class="blank" style="width:1.75em"></span>（未免、不免）太不会讲话了，挺简单的事叫他弄复杂了。</p>
+<p class="blk p" id="p138">（2）没有正确的思想指导，就—（难免、未免）犯错误。</p>
+<p class="blk p" id="p139">[分析]三者都是副词，“不免”意思相当于“免不了，少不了”，表示由于某种原因而自然导致某种结果。这种结果可以是已经出现了，也可以是未实现的。“难免”表示某种原因很可能导致某种结果，只能用于未实现的事。用“难免”的地方可以换成“可能”或“一定”。“未免”表示说话人对于某种行为、举动的否定的态度，含有不赞许，不以为然的意思。虽然意在否定，但口气比较委婉。（1）句中“不会讲话”是对“老吴”</p>
+<p class="blk p" id="p140">的否定态度，有不赞同的意思，所以选取“未免”。（2）句中“没有正确的思想指导”就可能导致“犯错误”，所以选取“难免”。</p>
+<h2 class="blk h2" id="s23">第五章：语境辨析<span class="pg">P6</span><a class="anchor" href="#s23" aria-label="链接到此节">#</a></h2>
+<h3 class="blk h3" id="s24">第一节：解释关系<span class="pg">P6</span><a class="anchor" href="#s24" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p143">解释关系是指针对横线处的语词，其前或后的语境存在解释的语意，可以是“因”、“由于”、“换句话说”、“也就是说”以及冒号、破折号、括号等标志词引导，也可以是举例解释，也可以只是单纯的文字解释。根据解释的意思，就可以得出横线处的词义。</p>
+<p class="blk p" id="p144">【笔试通】例题：当我们在谈论创意的时候，大多会认为这没有什么规律可循，或者说，创意应该是—<span class="blank" style="width:1.75em"></span>的。我们会说：如果给创意制定一个框架的话，可能会束缚创意，让创意变成<span class="blank" style="width:2.60em"></span>的工匠活。</p>
+<p class="blk p" id="p145">依次填入画横线部分最恰当的一项是（）。</p>
+<p class="blk p" id="p146">A. 天马行空 按部就班</p>
+<p class="blk p" id="p147">B. 稍纵即逝 循规蹈矩</p>
+<p class="blk p" id="p148">C.自由自在 循序渐进</p>
+<p class="blk p" id="p149">D. 标新立异熟能生巧</p>
+<p class="blk p" id="p150"><span class="b">【答案】A</span></p>
+<p class="blk p" id="p151">【笔试通】【解析】要填两组词，而且两组词都是成语辨析，有一定的难度。观察第一空前后的语句，会发现“大多会认为创意没有什么规律可循”是在解释第一空的意思，因此排除B项“稍纵即逝”和D项“标新立异”。A项“天马行空”和C项“自由自在”都可以用来形容不遵循规律。观察第二空前后的语句，会发现“给创意制定一个框架，可能会束缚创意”也是对第二空的意思的解释。因此A项“按部就班”符合文意。</p>
+<p class="blk p" id="p152">“按部就班”指按老规矩办事，受条条框框限制，缺乏创新精神。答案为A。</p>
+<h3 class="blk h3" id="s25">第二节：递进关系<span class="pg">P6</span><a class="anchor" href="#s25" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p154">递进关系是指横线处的词语与其前或后的语境语意构成递进关系，若是横线处是对前语境的递进，横线词语就是前面语意的加强；若是横线之后的语境是递进语意部分，那么横线的语意则是后语境语意的减弱。若考感情色彩，往往一致，不能相异。</p>
+<p class="blk p" id="p155">【笔试通】例题：在人类历史上，科技发明和人工工程曾导致不少“出人意料”“始料不及”甚至“</p>
+<p class="blk p" id="p156">的结果。如果想少出一些这样的事，我们就应该对大自然始终保持一份<span class="blank" style="width:1.75em"></span>，在推广新技术、上马新工程之前多一些研究评估，少一些独断专行。</p>
+<p class="blk p" id="p157">依次填入画横线部分最恰当的一项是（）。</p>
+<p class="blk p" id="p158">A.事与愿违 敬畏</p>
+<p class="blk p" id="p159">B. 事倍功半 谨慎</p>
+<p class="blk p" id="p160">C. 针锋相对 尊重</p>
+<p class="blk p" id="p161">D. 南辕北辙 克制</p>
+<p class="blk p" id="p162"><span class="b">【答案】A</span></p>
+<p class="blk p" id="p163">【笔试通】【解析】首先从第二个空入手，第二空的词语需要与“大自然”搭配，只能是“敬畏大自然”或者“尊重大自然”，排除 B、D两项。第一空出现一个表示递进的词语“甚至”，递进前提到“始料不及”，所以第一空处填的词程度比“始料不及”要重，故只有 A 项“事与愿违”符合。C项“针锋相对”多指双方策略、观点及行动等尖锐对立，不符合文意。</p>
+<h3 class="blk h3" id="s26">第三节：并列关系<span class="pg">P7</span><a class="anchor" href="#s26" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p165">并列关系是横线处词语的意思与语境前或后某个词、短语或是小句子具有意思相近、色彩相同，或是语法功能一致的关系，横线处的词义根据并列关系的部分，选择词义与之相近的词语。</p>
+<p class="blk p" id="p166">【笔试通】例题：许多人善意地对某人建言，内容值得一提，但时机不对，反而造成当事人的<span class="blank" style="width:2.60em"></span>与羞愤。有的人讲话内容一，时机也对，但对象不够成熟，讲得再多也—。对不同的对象，要能讲出适合他听的话。</p>
+<p class="blk p" id="p167">依次填入画横线部分最恰当的一项是（）。</p>
+<p class="blk p" id="p168">A.尴尬 精辟 徒劳无益</p>
+<p class="blk p" id="p169">B. 不齿 丰富 白费口舌</p>
+<p class="blk p" id="p170">C. 误解 透彻 无济于事</p>
+<p class="blk p" id="p171">D. 苦恼 鲜明 枉费心机</p>
+<p class="blk p" id="p172"><span class="b">【答案】A</span></p>
+<p class="blk p" id="p173">【笔试通】【解析】观察第一空，有一个引导正向并列的关键字“和”，因此第一空的意思应该和“羞愤”意思相同或相近，A项“尴尬”和C项“误解”符合题意，都能够表示羞愤，又羞又恼；第二空形容“讲话内容”</p>
+<p class="blk p" id="p174">的因此应该用“精辟”，而“透彻”多用来形容“道理透彻”，排除C选项，A项答案带入第三空“讲的再多也徒劳无益”，符合文意。答案为 A。</p>
+<h3 class="blk h3" id="s27">第四节：相反关系<span class="pg">P7</span><a class="anchor" href="#s27" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p176">相反关系是指横线处词语的意义与前或后语境的意思构成相反的关系，利用已知的语境的语意，考选择与其词义相反的词语填入横线处。</p>
+<p class="blk p" id="p177">【笔试通】例题：虽然很多员工觉得很难控制工作中的压力，但是至少当他们回家时是<span class="blank" style="width:2.60em"></span>的。然而，随着工作本质的变化，家也已经不再是曾经的避难所了。</p>
+<p class="blk p" id="p178">填入划橫线部分最恰当的一项（）。</p>
+<p class="blk p" id="p179">A. 愉快 B. 清闲 C.悠闲 D.轻松</p>
+<p class="blk p" id="p180"><span class="b">【答案】D</span></p>
+<p class="blk p" id="p181">【笔试通】【解析】根据“虽然……，但是……”的引导可知，前后两个小句子之间构成相反关系，既然前面谈“压力”，自然后面感觉“轻松”。“愉快”强调开心快乐的心情：“清闲”、“悠闲”都有“闲”的意思，都不是材料强调的关键。所以选择答案D项。</p>
+<h3 class="blk h3" id="s28">第五节：照应关系<span class="pg">P7</span><a class="anchor" href="#s28" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p183">情景照应关系是指横线处与其前或后的语境语意，看不出明显的解释、并列、转折或是递进关系，前或后的语境却有某种特殊的照应，横线处的词义就需要体现出照应的语意，这种照应可能是色彩的框定，也可能就是词义本身的框定，也可能是语法结构的框定。</p>
+<p class="blk p" id="p184">【笔试通】例题：近几年，越来越多的慈善家从组织直接捐助转变到希望通过基金会来发挥杠杆作用，</p>
+<p class="blk p" id="p185">社会的慈善资源。基金会的兴起最重要的意义就是让整个公益界开始形成行业，可以吸引人才，加强管理，使中国的草根公益组织走上<span class="blank" style="width:2.60em"></span>道路。依次填入画横线部分最恰当的一项是（）。</p>
+<p class="blk p" id="p186">A. 撬动 专业</p>
+<p class="blk p" id="p187">B. 整合 职业</p>
+<p class="blk p" id="p188">C. 挖掘 科学</p>
+<p class="blk p" id="p189">D. 吸引 正规</p>
+<p class="blk p" id="p190"><span class="b">【答案】A</span></p>
+<p class="blk p" id="p191">【笔试通】【解析】有两组词语，看第一个空能够很快得到答案，观察第一空前面一句话“既机会来发挥杠杆作用”，既然是“杠杆”，当然就是“撬动”社会的慈善资源，答案为 A。</p>
+<h2 class="blk h2" id="s29">第六章 高频词汇积累<span class="pg">P8</span><a class="anchor" href="#s29" aria-label="链接到此节">#</a></h2>
+<h3 class="blk h3" id="s30">第一节 高频实词积累<span class="pg">P8</span><a class="anchor" href="#s30" aria-label="链接到此节">#</a></h3>
+<h4 class="blk h4" id="s31">分辨 VS 分辩<span class="pg">P8</span><a class="anchor" href="#s31" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p195">分辨：“辨”即辨别。分辨侧重指用眼睛、经验、仪器等进行区分。</p>
+<p class="blk p" id="p196">分辩：“辩”即辩解。分辩侧重指用言语进行辩解、辩白。</p>
+<p class="blk p" id="p197">【误用】如果你觉得我说的话不合理，你可以当场分辨。</p>
+<p class="blk p" id="p198">【纠错】这里的“分辨”应该是“分辩”，表示用言语进行辩解，而不是进行区分。</p>
+<p class="blk p" id="p199">【分辨】妈妈应该教会小孩子怎样分辨好人坏人。</p>
+<p class="blk p" id="p200"><span class="b">【分辨】侧重于区分；</span></p>
+<p class="blk p" id="p201">【明辨】要在区分的基础上更加明确。</p>
+<h4 class="blk h4" id="s32">法制 VS 法治<span class="pg">P8</span><a class="anchor" href="#s32" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p203">法制：“制”即制度。法制侧重指法律制度。</p>
+<p class="blk p" id="p204">法治：“治”即治理。法治侧重指依靠法律来治理国家。</p>
+<p class="blk p" id="p205">【误用】目前我国还处于社会主义初级阶段，法治尚不健全：有待进一步完善。</p>
+<p class="blk p" id="p206">【纠错】句中的不健全所指是制度方面，因此应将“法治”改为“法制”。</p>
+<p class="blk p" id="p207">【法治】民主社会应以实行法治为基础。</p>
+<p class="blk p" id="p208">【法治】是一种准则，原则。</p>
+<p class="blk p" id="p209"><span class="b">【法制】是一种制度。</span></p>
+<h4 class="blk h4" id="s33">简洁 VS 简捷<span class="pg">P8</span><a class="anchor" href="#s33" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p211">简洁：“洁”即干净利索。简洁侧重指说话、行文简明扼要，不罗索，没有多余的内容。</p>
+<p class="blk p" id="p212">简捷：“捷”即快捷。简捷侧重指简便、快捷，直截了当。</p>
+<p class="blk p" id="p213">【误用】他的文章立意很好，行文也简捷流畅。</p>
+<p class="blk p" id="p214">【纠错】这里的“简捷”应该换用为“简洁”。句中要表达“简明扼要”之意，与“快捷”无关。</p>
+<p class="blk p" id="p215">【简捷】我们可以选择一种简捷的方法处理这个问题。</p>
+<p class="blk p" id="p216">a.【简捷】亦可修饰说话，但侧重于直率、爽快，大家可用“快捷”联合记忆：【简洁】修饰说话时侧重于干净，不啰嗦。</p>
+<p class="blk p" id="p217">b.【简捷】/【便捷】：简单/方便</p>
+<h4 class="blk h4" id="s34">鉴赏 VS 鉴别<span class="pg">P8</span><a class="anchor" href="#s34" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p219">鉴赏：“赏”即欣赏。鉴赏侧重指鉴定和欣赏，对象一般是艺术品、文物等。</p>
+<p class="blk p" id="p220">鉴别：“别”指区别。鉴别侧重指鉴定辨别事物的真假好坏，对象是存在真伪的事物。</p>
+<p class="blk p" id="p221">【误用】如果看了时下一些渲染暴力的小说之后，就盲目地去模仿文学作品中某些人物的偏激行为，只能说明这些读者没有足够的鉴赏能力。</p>
+<p class="blk p" id="p222">【纠错】盲目的模仿是因为不能分辨其对错，因此这里要表达的应该是这些读者缺乏分辨是非的能力，应用“鉴别”而不是“鉴赏”。</p>
+<p class="blk p" id="p223">【鉴赏】两位艺术大师经常聚在一起鉴赏古典音乐，体会其中的魅力。</p>
+<p class="blk p" id="p224"><span class="b">【鉴赏】比【欣赏】多一层鉴别之意。</span></p>
+<h4 class="blk h4" id="s35">截止 VS 截至<span class="pg">P8</span><a class="anchor" href="#s35" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p226">截止：“止”即停止。截止侧重指到一定期限停止。</p>
+<p class="blk p" id="p227">截至：“至”即到。截至侧重指截止到某一时候。</p>
+<p class="blk p" id="p228">【误用】截止2000年底， ×大学已经有 52人被评为教授，92人被评为副教授。</p>
+<p class="blk p" id="p229">【纠错】“截止”应改为“截至”。该句中提到了具体年份 2000年底，因此如果用“截止”其后应该加<span class="blue">上</span>“到”一词，否则应该改为“截至”。</p>
+<h4 class="blk h4" id="s36">滥用 VS 乱用<span class="pg">P8</span><a class="anchor" href="#s36" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p231">滥用：“滥”即泛滥。滥用侧重指过多地、无限制地使用。</p>
+<p class="blk p" id="p232">乱用：“乱”即胡乱。乱用侧重指错误地、胡乱地使用。</p>
+<p class="blk p" id="p233">【误用】抗生素药品虽然能够治疗疾病，但是不能乱用，否则会给人体带来副作用，产生依赖性。</p>
+<p class="blk p" id="p234">【纠错】该句想表达不能过分地使用抗生素药品，否则会产生依赖性。因此应“滥用”。</p>
+<p class="blk p" id="p235">【乱用】吃药一定要谨遵医嘱，不能乱用。</p>
+<h4 class="blk h4" id="s37">休养 VS 修养<span class="pg">P9</span><a class="anchor" href="#s37" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p237">休养：“休”即休息，指休息、调养。</p>
+<p class="blk p" id="p238">修养：“修”即修习，意为修身养性；亦常作名词，意指理论知识、艺术思想等方面的造诣与水平。</p>
+<p class="blk p" id="p239">【误用】他最近工作压力过大，身体状况急剧下降，家人都劝他能够修养一段时间。</p>
+<p class="blk p" id="p240">【纠错】句中“修养”应该换为“休养”，由于压力过大身体状况下降，因此应该休息调养，即“休养”的意思。</p>
+<p class="blk p" id="p241">【修养】家庭教育与个人修养的形成有极为密切的关系。</p>
+<h4 class="blk h4" id="s38">满意 VS 满足<span class="pg">P9</span><a class="anchor" href="#s38" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p243">满意：“意”即心意。侧重从心愿的角度描述，指称心如意。</p>
+<p class="blk p" id="p244">满足：“足”即足够。侧重从需求的角度描述，指感到足够。</p>
+<p class="blk p" id="p245">【误用】虽然这次小说评选他获得了金奖，但是他并不满意于已经取得的成绩。</p>
+<p class="blk p" id="p246">【纠错】这句话中的“满意”应该改为“满足”。既然金奖是最高荣誉，那么他对自己的成绩不应该不满意，而 应该是“认为还不够，还要继续努力”的意思，因此该用“满足”来表达。</p>
+<p class="blk p" id="p247">【满意】虽然这次小说评选他获得了银奖，但是他对自己的成绩仍不太满意。</p>
+<p class="blk p" id="p248">【满意】的常用句式是：对……感到满意</p>
+<p class="blk p" id="p249"><span class="b">【满足】的常用句式是：满足于……</span></p>
+<p class="blk p" id="p250"><span class="b">【心满意足】就是既满意又满足</span></p>
+<h4 class="blk h4" id="s39">权利 VS 权力<span class="pg">P9</span><a class="anchor" href="#s39" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p252">权利：“利”即利益。指依照法律和章程应当享有的利益，与“义务”相对。</p>
+<p class="blk p" id="p253">权力：“力”即力量。指政治上的强制力量，也指职责范围内的管理权和指挥权。</p>
+<p class="blk p" id="p254">【误用】文革时期“四人帮”一伙利用篡夺的权利，假公济私，挥金如土，过着穷奢极欲的资产阶级腐朽生活。</p>
+<p class="blk p" id="p255">【纠错】句中的“权利”指的是某种职责范围内的支配力量，因此应改为“权力”。</p>
+<p class="blk p" id="p256">【权利】维护权利、享有权利、权利和义务</p>
+<h4 class="blk h4" id="s40">涉猎 VS 猎取<span class="pg">P9</span><a class="anchor" href="#s40" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p258">涉猎：“涉”即涉及。意为粗略地浏览、阅读或研究。</p>
+<p class="blk p" id="p259">猎取：“取”即取得。意为以……为目标掠夺取得，强调“取得”这一结果。</p>
+<p class="blk p" id="p260">【误用】村里几个地痞看到郭烁家里有钱，便把他当成了涉猎的对象。</p>
+<p class="blk p" id="p261">【纠错】这里的“涉猎”明显属于误用，句子想表达掠夺取得的意思，而并非浏览之义，因此应该改为“猎取”。</p>
+<p class="blk p" id="p262">【涉猎】他涉猎的范围很广，并都取得了辉煌的成就。</p>
+<h4 class="blk h4" id="s41">神志 VS 神智<span class="pg">P9</span><a class="anchor" href="#s41" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p264">神志：“志”即意志。指知觉、意志之意。</p>
+<p class="blk p" id="p265">神智：“智”即智慧。指精神、智慧之意。</p>
+<p class="blk p" id="p266">【误用】发生车祸后病人被送往医院，由于伤情严重，到达医院时己经神智不清、呼吸困难。</p>
+<p class="blk p" id="p267">【纠错】句中的“神智”应该改为“神志”，表示病人快要丧失知觉意志，而并非精神智慧。</p>
+<p class="blk p" id="p268">【神智】神智清醒，不只是有知觉，更强调有意识支配行动，不常用。</p>
+<h4 class="blk h4" id="s42">审定 VS 审订<span class="pg">P9</span><a class="anchor" href="#s42" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p270">审定：“定”即决定，审定侧重指审核之后决定，强调结果。</p>
+<p class="blk p" id="p271">审订：“订”即修订，审订侧重指审核后修订、改动。</p>
+<p class="blk p" id="p272">【误用】我们单位的工作计划已经呈报给上级相关部门，待审订之后即可付诸实施。</p>
+<p class="blk p" id="p273">【解释】根据句中的意思“工作计划”已经呈报给上级，需要上级“决定”后就可以实施，因此应该使用“审定”一词。</p>
+<p class="blk p" id="p274">【审订】这套教材仍在审订中。</p>
+<p class="blk p" id="p275">a. 【制定】/【制订】的区别与这两个是同样的道理哦！</p>
+<p class="blk p" id="p276">b.【审定】/【核定】：【审定】侧重于审查的过程；【核定】侧重于核对的过程。（还是用语素拆分来区分哦！）</p>
+<h4 class="blk h4" id="s43">胜地 VS圣地<span class="pg">P10</span><a class="anchor" href="#s43" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p278">胜地：“胜”即胜出、好的意思。胜地侧重指有名的风景优美的地方。</p>
+<p class="blk p" id="p279">圣地：“圣”即神圣。圣地侧重指宗教或有重大历史意义的地方。</p>
+<p class="blk p" id="p280">【误用】麦加是穆斯林朝拜的胜地。</p>
+<p class="blk p" id="p281">【纠错】麦加之所以成为人们争相前往的地方，不是因为它的风景，而是因为它是全世界穆斯林崇敬的地方，具有宗教的神圣感，因此句中应该将“胜地”改为“圣地”。</p>
+<p class="blk p" id="p282">【胜地】承德真可谓是避暑胜地。胜地本身即包含“有名、著名”的意思，从语法角度看不应再与之连用。</p>
+<h4 class="blk h4" id="s44">声明 vs申明<span class="pg">P10</span><a class="anchor" href="#s44" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p284">声明：“声”即发声；指公开表态或说明事实真相，侧重于公开。？</p>
+<p class="blk p" id="p285">申明：“申”为申诉；指郑重地说明，侧重较为正式、严肃地强调解释说明。</p>
+<p class="blk p" id="p286">【误用】为了避免误解，我需要再一次声明我的意见。</p>
+<p class="blk p" id="p287">【纠错】句中提到“再一次声明”意思是已经表态需要重申，因此应该将“声明”改为“申明”。</p>
+<p class="blk p" id="p288"><span class="b">【声明】他声明此事与他无关。</span></p>
+<h4 class="blk h4" id="s45">时事 VS 时势<span class="pg">P10</span><a class="anchor" href="#s45" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p290">时事：“事”即事情。时事侧重指近期内发生的国内外大事。</p>
+<p class="blk p" id="p291">时势：“势”即趋势。时势侧重指某一段时期内的客观行势，时代潮流与趋势。</p>
+<p class="blk p" id="p292">【误用】时事发展得这样快，我们只有努力学习，加倍工作，才能跟得<span class="blue">上</span>时代的步伐。</p>
+<p class="blk p" id="p293">【纠错】句中的“时事”应该改为“时势”，指的是客观发展的某一趋势、时代潮流，而并非国内外的大事</p>
+<p class="blk p" id="p294"><span class="b">【时事】他每天都要关注各种时事评论。</span></p>
+<h4 class="blk h4" id="s46">授权 VS 受权<span class="pg">P10</span><a class="anchor" href="#s46" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p296">授权：“授”即授予。授权侧重指把权力交给别人。</p>
+<p class="blk p" id="p297">受权：“受”即接受。受权侧重指接受权力做某事。</p>
+<p class="blk p" id="p298">【误用】外交部发言人授权发表声明，就台湾问题阐明了中国政府的立场。</p>
+<p class="blk p" id="p299">【纠错】句中阐明的是“中国政府的立场”而并非这位发言人自己的，显然是接受了权力发表声明，因此应该使用“受权”而不是“授权”。</p>
+<p class="blk p" id="p300">【授权】国务院授权国有资产监督管理委员会履行国有资产出资人职责。</p>
+<h4 class="blk h4" id="s47">提名 VS 题名<span class="pg">P10</span><a class="anchor" href="#s47" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p302">提名：“提”即提出。提名侧重指向会议或有关部门提出可能当选的人员或作品的名字。</p>
+<p class="blk p" id="p303">题名：“题”即题词。题名侧重指为了纪念或表彰而写上姓名、书写名称。</p>
+<p class="blk p" id="p304">【误用】美国总统布什宣布，他正式题名原国家安全事务助理赖斯担任国务卿，接替宣布辞职的鲍威尔。</p>
+<p class="blk p" id="p305">【纠错】句中的意思是提议赖斯担任国务卿，因此应该用“提名”。</p>
+<p class="blk p" id="p306">【题名】作者在书的扉页上亲笔题名。</p>
+<p class="blk p" id="p307"><span class="b">【提词】提示台词；【题词】写的不仅仅是名字。</span></p>
+<h4 class="blk h4" id="s48">推脱 VS 推托<span class="pg">P10</span><a class="anchor" href="#s48" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p309">推脱：“脱”即摆脱、开脱。推脱侧重指将与自己相关的事情或责任推卸，使之与自己无关。</p>
+<p class="blk p" id="p310">推托：“托”即托词，拒绝。推托侧重指婉言谢绝，后面常带有托词或拒绝的原因，多指推托自己不愿意做的事。</p>
+<p class="blk p" id="p311">【误用】按照上级指示我们来你单位领取材料”你们的保管员却相互推托，支吾搪塞，造成我们工作进度的延误，希望这种情况能够及时得到解决。</p>
+<p class="blk p" id="p312">【纠错】该句中的“推托”应该是“推脱”，因为作为“保管员”发放材料是其责任，而并非是他不愿做的事情，因此用“推托”不妥，应该改为“推脱”。</p>
+<p class="blk p" id="p313">【推托】他推托有事，没有来参加会议。</p>
+<p class="blk p" id="p314"><span class="b">【推辞】单指拒绝，常搭配任命、邀请、馈赠。</span></p>
+<p class="blk p" id="p315">【推托】需要找到理由，借故推掉自己不愿做的事。</p>
+<h4 class="blk h4" id="s49">辛酸 VS 心酸<span class="pg">P10</span><a class="anchor" href="#s49" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p317">辛酸：“辛”即辛苦。辛酸侧重指对生活状态及经历的一种描写，经过某种辛劳酸楚的历程。</p>
+<p class="blk p" id="p318">心酸：“心”即心情。侧重指人的内心感受，心中悲痛难过。</p>
+<p class="blk p" id="p319">【误用】作为“房奴”一年到头不得不为各种各样的开销精打细算以支付高额的按揭利息，这些心酸又有谁能够设身处地体会？</p>
+<p class="blk p" id="p320">【纠错】句中的“心酸”改为“辛酸”更妥。句中想表达“房奴”生活状态的艰辛与不易，因此用“辛酸”更为恰当。</p>
+<p class="blk p" id="p321">【心酸】她不愿回想那段令人心酸的往事。</p>
+<p class="blk p" id="p322">心酸往事与辛酸往事都可以解释，但一旦加上“令人”就一定是有心的酸啦！</p>
+<h4 class="blk h4" id="s50">学历 VS 学力<span class="pg">P11</span><a class="anchor" href="#s50" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p324">学历：“历”即经历，学历侧重指曾经在哪些学校毕业或肄业等的学习经历。</p>
+<p class="blk p" id="p325">学力：“力”即能力。学力侧重指学习所达到的能力。</p>
+<p class="blk p" id="p326">【误用】一九五一年秦观属抱着改造沙漠、绿化祖国的思想，以同等学历考入西北农学院林学系，是该届仅有的两名女生之一。</p>
+<p class="blk p" id="p327">【纠错】句中的“学历”应该改为“学力”。因为秦观属并不具有相同的学历，而是具有了相当的学习能力，所 以才考上了西北农学院林学系。</p>
+<p class="blk p" id="p328">【学历】现在“海归”的质量也是参差不齐，不全是高学历人才。</p>
+<p class="blk p" id="p329">【学力】最常见的搭配为同等学力、学力深厚。</p>
+<h4 class="blk h4" id="s51">沿用 VS 延用<span class="pg">P11</span><a class="anchor" href="#s51" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p331">沿用：“沿”即沿袭。沿用侧重指沿袭使用、继续使用（以前的方法、制度、法令等）。</p>
+<p class="blk p" id="p332">延用：“延”即延期、延误。延用侧重指延迟使用，延期使用。这个词平时很少用到。</p>
+<p class="blk p" id="p333">【误用】“造纸术”是我国的四大发明之一，几百年来技工们一直延用这个方法造出大量的纸张。</p>
+<p class="blk p" id="p334">【纠错】句中“造纸术”的方法经历的几百年，表达长期保留下来之意，所以应该将“延用”改为“沿用”。</p>
+<h4 class="blk h4" id="s52">首先 VS 首要<span class="pg">P11</span><a class="anchor" href="#s52" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p336">首先：指第一的意思，多指在顺序上优先，一般不能作定语，常常用于动词前作状语或在句子前作独立成分。</p>
+<p class="blk p" id="p337">首要：除了指优先以外，还侧重“最重要”的意思，因此多用于比较事物的重要性，常常作定语而不作状语，不仅强调了先后顺序，更强调了重要性，语义较重。</p>
+<p class="blk p" id="p338">【误用】作为此次展览会的首先赞助商，贵公司将享有展览会提供的全部资源，这些宝贵的宣传资源无疑将对赞助单位在展会期间树立企业形象、扩大产业和市场影响力产生巨大的效果。</p>
+<p class="blk p" id="p339">【纠错】该句中的“首先”应该改为“首要”，强调不仅，“优先”而且<span class="blue">“</span>重要”，以强调该赞助商的重要性与价值。</p>
+<h4 class="blk h4" id="s53">蓄意 VS 蓄谋<span class="pg">P11</span><a class="anchor" href="#s53" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p341">蓄意：指存心做坏事，如“蓄意闹事儿”等，语义较轻。</p>
+<p class="blk p" id="p342">蓄谋：指对所要做的坏事早有预谋，计划准备的时间长且周密，多指较大的阴谋，语义较重。</p>
+<p class="blk p" id="p343">【误用】台独分子精心策划的“一中一台”实际上已经蓄意很久了。</p>
+<p class="blk p" id="p344">【纠错】句中提出的策划“一中一台”是很大的政治阴谋，而且又提到“很久了”，因此用“蓄意”语义较轻不妥，应该换为“蓄谋”。</p>
+<p class="blk p" id="p345">【蓄意】韩国警方2月19日表示，在大邱市地铁发生火灾被捕的嫌疑人向调查人员承认蓄意纵火。</p>
+<p class="blk p" id="p346"><span class="b">【蓄意】/【故意】相比之下，故意的词义程度更轻。且并无充分准备之意。</span></p>
+<h4 class="blk h4" id="s54">误解 VS 曲解<span class="pg">P11</span><a class="anchor" href="#s54" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p348">误解：指错误的理解，表达一种客观事实，语义较轻。</p>
+<p class="blk p" id="p349">曲解：指歪曲或错误的解释、理解，带有一定主观意味的色彩，语义较重。</p>
+<p class="blk p" id="p350">【误用】你这样误解她的意思，故意气她，对你有什么好处？</p>
+<p class="blk p" id="p351">【纠错】句中既然是“故意气她”，并非陈述客观事实，显然语义较重，用“曲解”更为合适。</p>
+<p class="blk p" id="p352">【误解】他的行为容易引起别人的误解。</p>
+<h4 class="blk h4" id="s55">退化 VS 蜕化<span class="pg">P11</span><a class="anchor" href="#s55" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p354">退化：指生物体的某部分器官在进化过程中全部消失或部分残留，泛指事物由好变坏，由优变劣。</p>
+<p class="blk p" id="p355">蜕化：指昆虫的幼虫经过脱皮以后增大形体，变为另外一种形态，也比喻腐化堕落。</p>
+<p class="blk p" id="p356">【误用】由于环境污染和一些人为的原因，著名的阿尔卑斯白山羊的品质正在逐步蜕化。</p>
+<p class="blk p" id="p357">【纠错】句中说的是山羊的品质由优转劣，而并非蜕皮变化，所以应该用“退化”而不是“蜕化”。</p>
+<p class="blk p" id="p358">【蜕化】由于受到权力金钱的腐蚀，他的思想已经出现严重蜕化。</p>
+<h4 class="blk h4" id="s56">遴选 VS 挑选<span class="pg">P12</span><a class="anchor" href="#s56" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p360">遴选：慎重、严格的挑选。程度较重。</p>
+<p class="blk p" id="p361">挑选：选出符合标准的。程度较轻。</p>
+<p class="blk p" id="p362">【误用】应当建立以职业品德、专业知识、实践经验三位一体的法官培养挑选标准。</p>
+<p class="blk p" id="p363">【纠错】句中“三位一体”的标准体现了慎重、严格之意，故此处应用遴选。</p>
+<p class="blk p" id="p364">【挑选】他女儿精心挑选了生日礼物。</p>
+<p class="blk p" id="p365">【遴选】一词的语体风格比较书面化，常见词还有遴才、遴聘等。</p>
+<h4 class="blk h4" id="s57">变革 VS 改革<span class="pg">P12</span><a class="anchor" href="#s57" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p367">变革：改变事物本质，变旧创新，多指宏观的社会制度方面。</p>
+<p class="blk p" id="p368">改革：改进革新，比变革语气稍轻，可以指在现有基础上加以改进，并不一定改变事物本质。且应用范围较广。</p>
+<p class="blk p" id="p369">【误用】专家们认为，传统的教学方式必须变革，才能适应当前形势的发展需要。</p>
+<p class="blk p" id="p370">【纠错】此句通过“适应当前形势”可知所用词汇应为在现有基础上加以改进之意，因此应用“改革”。</p>
+<p class="blk p" id="p371">“变革”程度过重，且搭配微观的教学方式并不合适。</p>
+<p class="blk p" id="p372">【变革】我国正经历着重大的历史性变革。</p>
+<p class="blk p" id="p373">【改革】的对象一般是具体的客观事物。</p>
+<p class="blk p" id="p374">【改造】的对象既可以是客观事物，也可以是抽象事物。如思想改造。</p>
+<h4 class="blk h4" id="s58">不耻 VS 不齿<span class="pg">P12</span><a class="anchor" href="#s58" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p376">不耻：指不以.……为羞耻，表示积极的感情色彩。</p>
+<p class="blk p" id="p377">不齿：指难以启齿，不愿提到，含鄙视义，表示消极的感情色彩。</p>
+<p class="blk p" id="p378">【误用】那些热衷于个人或小团体的实惠，甚至见利忘义、损人利己的人，不仅为正人君子所不耻，还可能滑向犯罪的深渊。</p>
+<p class="blk p" id="p379">【纠错】根据上下文意，句中所要表达的意义应是消极色彩的，因此应当选用“不齿”一词，而不是“不耻”。</p>
+<p class="blk p" id="p380"><span class="b">【不耻】不耻下问</span></p>
+<h4 class="blk h4" id="s59">沟通 VS 勾通<span class="pg">P12</span><a class="anchor" href="#s59" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p382">沟通：指使彼此通连、相通，如“沟通思想”“文化沟通”等，表示中性的感情色彩。</p>
+<p class="blk p" id="p383">勾通：指相互串通、勾结，多是为了进行某种不正当的活动而暗中串通，带有强烈的消极色彩，如“勾通<span class="blue">士</span>匪”等。</p>
+<p class="blk p" id="p384">【误用】由于各部门之间为了自己的利益互相倾轧，相互之间缺乏勾通，结果导致整个公司最终走向了破产。</p>
+<p class="blk p" id="p385">【纠错】“勾通”一词具有强烈的消极色彩，而句子中并不需要表达这样的色彩，因此应该将“勾通”改为“沟通”。</p>
+<p class="blk p" id="p386">【勾通】恶势力相互勾通，扰乱社会治安。</p>
+<p class="blk p" id="p387">由“勾”组成的词汇多含贬义，如勾结、勾搭、勾当。</p>
+<h4 class="blk h4" id="s60">谋取 VS 牟取<span class="pg">P12</span><a class="anchor" href="#s60" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p389">谋取：指想办法获取，是一个中性词。所以法律条文中常用“谋取”，因为其语言不能具有感情色彩。</p>
+<p class="blk p" id="p390">牟取：多指非法的获取，表达消极的感情色彩。</p>
+<p class="blk p" id="p391">【误用】我国执法机关必须坚决打击不法商人制假贩假谋取暴利的犯罪行为。</p>
+<p class="blk p" id="p392">【纠错】这一句子中的“谋取”显然是错误的，句子表达的意思是非法地获取的意思，应该改为“牟取”。</p>
+<p class="blk p" id="p393">【谋取】政府应为广大人民群众谋取福利。</p>
+<h4 class="blk h4" id="s61">徘徊 VS 徜徉？<span class="pg">P12</span><a class="anchor" href="#s61" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p395">徘徊：指因为有心事来回走动，犹豫不决之意，表达消极的感情色彩。</p>
+<p class="blk p" id="p396">徜徉：指悠游自在地来回行走，表达积极的感情色彩。</p>
+<p class="blk p" id="p397">【误用】现今社会人们对婚姻有了不同的理解，很多被称为“恐婚一族”的年轻人徜徉在围城之外不敢前行。</p>
+<p class="blk p" id="p398">【纠错】句中表达“恐婚一族”的心情是犹豫不决的，因此其感情色彩与“徜徉”不符，应该改为“徘徊”。</p>
+<p class="blk p" id="p399">【徜徉】他徜徉于山水之间，享受着大自然的馈赠。</p>
+<p class="blk p" id="p400"><span class="b">【徘徊】/【踯躅】基本同义词，表犹豫不前。</span></p>
+<h4 class="blk h4" id="s62">培养 VS 培植<span class="pg">P13</span><a class="anchor" href="#s62" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p402">培养：本意是“使繁殖”，多用于微生物或者植物，后引申为“有目的、有计划地进行训练和驾驭，使之 成长壮大”的意思，多用于人或者政党，其引申义多表达积极的感情色彩。</p>
+<p class="blk p" id="p403">培植：本意是栽种并细心地照料植物，后引申指对人或者势力的扶持，其引申义常带有消极的感情色彩。</p>
+<p class="blk p" id="p404">【误用】张国焘在干部政策上实行“任人唯亲”的路线，拉拢私党，组织小派别，千方百计地培养私人势力。</p>
+<p class="blk p" id="p405">【纠错】这里用“培养”不能体现出对张国焘作法的否定色彩，应该换用表达消极色彩的“培植”。</p>
+<p class="blk p" id="p406">【培养】大学的根本任务是培养合格的人才。</p>
+<h4 class="blk h4" id="s63">以至 VS 以致<span class="pg">P13</span><a class="anchor" href="#s63" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p408">以至：“至”意为<span class="blue">“</span>到”，表示上半句所说动作、情况的程度很深而形成的结果，或表示时间、程度、范围上的延伸。其后引导中性的结果。？</p>
+<p class="blk p" id="p409">以致：“致”为导致，引导上半句原因所形成的结果，其后多引导消极的、不好的结果。</p>
+<p class="blk p" id="p410">【误用】他事先没有充分调查研究，以至做出了错误的结论。</p>
+<p class="blk p" id="p411">【纠错】句中表达由于没有充分调查，所以导致做出了错误的结论，是不好的结果，因此应该将“以至”改为“以致”。</p>
+<p class="blk p" id="p412">【以至】熟练的技能是经十次、百次以至上千次的练习才能获得的。？</p>
+<p class="blk p" id="p413">以至表引导结果时，常以“以至于”的形式出现。</p>
+<h4 class="blk h4" id="s64">调解VS 斡旋<span class="pg">P13</span><a class="anchor" href="#s64" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p415">调解：指劝说、使双方消除纠纷，达成和解，语义较轻。</p>
+<p class="blk p" id="p416">斡旋：指解决双方的争端，把弄僵了的局面扭转过来，用于比较重大的事件，语义较重。</p>
+<p class="blk p" id="p417">【误用】在印巴危机一触即发之际，各个国际组织纠纷进行调解。</p>
+<p class="blk p" id="p418">【纠错】“印巴危机”属于较大的国际争端，已经不是“调解”就可以的了，应用“斡旋”。</p>
+<p class="blk p" id="p419">【调解】经过居委会大妈的调解，他们之间的矛盾得到了缓和。</p>
+<p class="blk p" id="p420">a. 斡旋的语体风格比较书面化，调解相对口语化。</p>
+<p class="blk p" id="p421"><span class="b">b.【调解】/【调节】调解矛盾、纠纷、争端；调节温度、市场供应</span></p>
+<p class="blk p" id="p422"><span class="b">c.【斡旋】与【周旋】是完全不同的两回事。【斡旋】为较为正式的调解；【周旋】是应酬，打交道。</span></p>
+<h4 class="blk h4" id="s65">凋敝 VS 凋零<span class="pg">P13</span><a class="anchor" href="#s65" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p424">凋敝：指生活、事业等方面的衰败，搭配对象为较大的事物。</p>
+<p class="blk p" id="p425">凋零：指草木凋谢零落，比喻人或事物衰落，搭配对象相对较小。</p>
+<p class="blk p" id="p426">【误用】旧社会民生凋零、人才凋敝。</p>
+<p class="blk p" id="p427">【纠错】“民生”指人民的生活，应该用“凋敝”，而“人才”衰败缺失应用“凋零”。正解应为旧社会民生凋敝，人才凋零。</p>
+<h4 class="blk h4" id="s66">篡改 VS 窜改<span class="pg">P13</span><a class="anchor" href="#s66" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p429">篡改：指故意改动原文或歪曲事实，一般接较大的事物或事件，如“篡改历史”、“篡改事实”等，侧重指用假的、错误的东西去取代真的、正确的东西。</p>
+<p class="blk p" id="p430">窜改：指改动文字、记录、文件等，如“窜改原文”、“窜改古书”等，侧重指对原来的东西进行错误的改动和变更。</p>
+<p class="blk p" id="p431">【误用】日本政府窜改历史教科书的行为已经引起了周边国家的愤慨。</p>
+<p class="blk p" id="p432">【纠错】这里改动的对象实际上是“历史”，为较大的事件，表达日本用假的东西试图掩盖事实真相之意，因此应该用“篡改”，而不是“窜改”。</p>
+<p class="blk p" id="p433">【窜改】窜改文章、古籍、成语、诗句</p>
+<h4 class="blk h4" id="s67">管制 VS 控制？<span class="pg">P13</span><a class="anchor" href="#s67" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p435">管制：意为强制性管理。搭配对象是人时，只能是敌人或犯人，不能是其他人，也不能是自己。</p>
+<p class="blk p" id="p436">控制：搭配对象比较宽泛，没有限制，无论是敌人还是自己都可以使用。</p>
+<p class="blk p" id="p437">【误用】听到母亲突然离世的消息，他实在管制不住自己放声痛哭起来。</p>
+<p class="blk p" id="p438">【纠错】“管制”的对象不能为“自己”，所以在此句中只能使用“控制”。</p>
+<p class="blk p" id="p439">【管制】？管制，是对罪犯不监禁，交给中国公安部门、人民群众监督，限制此人失去一定的自由的方法。</p>
+<p class="blk p" id="p440">【控制】与【管制】搭配事物时，前者同样比后者范围大。【管制】常见搭配：交通管制；航空管制。</p>
+<h4 class="blk h4" id="s68">忽视 VS 轻视？<span class="pg">P14</span><a class="anchor" href="#s68" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p442">忽视：表示不注意，一般只用于事物，而不用于人。？</p>
+<p class="blk p" id="p443">轻视：表示不重视，可以用于人，也可以用于事物。</p>
+<p class="blk p" id="p444">【误用】过去的时代一度忽视知识分子，现在随着知识改变生产力的速度逐步加快，对知识分子又重新重视起来。</p>
+<p class="blk p" id="p445">【纠错】该句是对“忽视”的误用，“知识分子”不能用于“忽视”的对象，应该把“忽视”改为“轻视。</p>
+<p class="blk p" id="p446">【忽视】过去的时代一度忽视知识分子的作用，现在随着知识改变生产力的速度逐步加快，对知识分子又重新重视起来。</p>
+<h4 class="blk h4" id="s69">接受 VS 接收？<span class="pg">P14</span><a class="anchor" href="#s69" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p448">接受：领受、容纳而不拒绝，搭配范围较为宽泛。</p>
+<p class="blk p" id="p449">接收：收受、接纳，搭配范围较窄，只能是根据法令接管机构、财产、人员或信息。</p>
+<p class="blk p" id="p450">【误用】虚心使人进步，骄傲使人落后，所以我们要虚心地接收别人的批评。</p>
+<p class="blk p" id="p451">【纠错】“批评”是抽象行为，且并非“机构、财产、人员或信息”，因此不能用“接收”与之搭配，而应该换用“接受”。</p>
+<p class="blk p" id="p452">【接收】接收信号；接收情报；接收财产</p>
+<h4 class="blk h4" id="s70">驱除 VS 祛除？<span class="pg">P14</span><a class="anchor" href="#s70" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p454">驱除：赶走，除掉之意，多指蚊虫<span class="red">、</span>敌人等的具体事物。</p>
+<p class="blk p" id="p455">祛除：侧重使去除、去掉之意。多指疾病、恐惧、鬼神等的抽象事物。</p>
+<p class="blk p" id="p456">【误用】经过众多专家的会诊，李师长的头风病终于被驱除了。</p>
+<p class="blk p" id="p457">【纠错】根据句意可知是将疾病治好，因此不应该用“驱除”，而应该用“祛除”与之搭配。？</p>
+<p class="blk p" id="p458">【驱除】经过八年抗战，入侵者终于被彻底驱除。</p>
+<p class="blk p" id="p459">【驱除】常用搭配：驱除害虫；驱除邪念</p>
+<p class="blk p" id="p460">【驱逐】比之多一层“用强力”之意，常见搭配驱逐出境</p>
+<h4 class="blk h4" id="s71">范围 VS 范畴<span class="pg">P14</span><a class="anchor" href="#s71" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p462">范围：指四周的界限，搭配对象通常是比较具体的界限。</p>
+<p class="blk p" id="p463">范畴：哲学名词，指人的思维对客观事物普遍本质的概括和反映，搭配对象比较抽象。</p>
+<p class="blk p" id="p464">【误用】结业考试将近，学生们都特别希望任课老师能说一说这次考试的范畴。</p>
+<p class="blk p" id="p465">【纠错】该句想表达考试所要考查的具体内容，因此应改用“范围”。</p>
+<p class="blk p" id="p466"><span class="b">【范畴】经济学属于社会科学范畴。</span></p>
+<p class="blk p" id="p467">【范畴】/【领域】领域的适用对象既包括具体的区域，如经济活动领域的扩大；也包括抽象概念，如文学领域、经济领域。</p>
+<h4 class="blk h4" id="s72">矗立 VS 屹立<span class="pg">P14</span><a class="anchor" href="#s72" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p469">矗立：高大的物体直而高的立着。一般用于具体事物。</p>
+<p class="blk p" id="p470">屹立：像山峰一样稳固的矗立，比喻坚定不可动摇。多用于比喻人或精神。</p>
+<p class="blk p" id="p471"><span class="b">【误用】英雄们矗立在阵地上。</span></p>
+<p class="blk p" id="p472">【纠错】此处应用“屹立”。因为主语是人，且暗含了一种坚定之意。</p>
+<p class="blk p" id="p473"><span class="b">【矗立】一对华表矗立在金水桥畔。</span></p>
+<p class="blk p" id="p474"><span class="b">【矗立】和【耸立】基本同义词，都意高高的直立。</span></p>
+<h4 class="blk h4" id="s73">潜心 VS 悉心？<span class="pg">P14</span><a class="anchor" href="#s73" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p476">潜心：指用心专而深地做事，搭配对象通常为研究、创作等长期工作。</p>
+<p class="blk p" id="p477">悉心：指用尽全部的心血和精力做事，搭配对象通常指照料、照顾等细小工作。</p>
+<p class="blk p" id="p478">【误用】他悉心于中国古代文化典籍数十年，写出了大量有价值的学术论著，在学界很有声望。</p>
+<p class="blk p" id="p479">【纠错】由于句中提到了“中国古代文化典籍”，这是研究和创作的工作，需要专而深地认真研究，所以适宜用“潜心”。</p>
+<p class="blk p" id="p480">【悉心】他对我的悉心照顾是一般人都无法比拟的。</p>
+<p class="blk p" id="p481">【悉心】也可搭配钻研使用，但没有【潜心】内含的深入之意。</p>
+<h4 class="blk h4" id="s74">度过 VS 渡过<span class="pg">P15</span><a class="anchor" href="#s74" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p483">度过：指过去的意思，多用于表示与时间有关的对象，如“光阴”“童年”等。</p>
+<p class="blk p" id="p484">渡过：指经过与水有关的江、河、湖、海等，也指经过困难、危机等。</p>
+<p class="blk p" id="p485">【误用】经过公司上下一致的努力现在我们终于度过了难关。</p>
+<p class="blk p" id="p486">【纠错】这里的“度过”应该改为“渡过”，该句的宾语是危机、困难，所以应该用“渡过”。</p>
+<p class="blk p" id="p487">【度过】我在农村度过了我愉快的童年。</p>
+<h4 class="blk h4" id="s75">暴发 VS 爆发<span class="pg">P15</span><a class="anchor" href="#s75" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p489">暴发：指突然得势或者发财，也指洪水突然难以控制。使用范围较窄，一般只用于形容洪水、发财、得势等方面。</p>
+<p class="blk p" id="p490">爆发：本意指火山内部岩浆冲破地壳向外喷发，比喻突然发生、突然发作。使用范围较广，可用于火山、雷电、地震、火势以及大事件、大举动、大声音等。</p>
+<p class="blk p" id="p491">【误用】在这一地区曾经一度山洪爆发，造成公路被毁，交通中断。</p>
+<p class="blk p" id="p492">【纠错】这里是用来形容突然发生的洪水的，因此不应该用“爆发”，而要用“暴发”。</p>
+<p class="blk p" id="p493">【爆发】火山爆发；革命爆发；情绪爆发。</p>
+<p class="blk p" id="p494">【暴发】常见搭配为山洪暴发；暴发户。</p>
+<h4 class="blk h4" id="s76">聆听 VS 倾听<span class="pg">P15</span><a class="anchor" href="#s76" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p496">聆听：指虔诚而认真地听取，带有尊敬的色彩，因此一般表示下级听取<span class="blue">上</span>级的意见、报告等。</p>
+<p class="blk p" id="p497">倾听：指细心地听取，表示中性的色彩。</p>
+<p class="blk p" id="p498">【误用】知名作家周国平莅临北京市第二中学，师生们有幸倾听了周国平先生题为“拥有心智生活”的精彩报告。</p>
+<p class="blk p" id="p499">【纠错】师生听周国平先生的报告，应该带有一种尊敬的情感，所以用“聆听”更为合适。？</p>
+<p class="blk p" id="p500">【倾听】政府应广泛倾听人民群众的意见。？UyO</p>
+<h4 class="blk h4" id="s77">抚养 VS 扶养？<span class="pg">P15</span><a class="anchor" href="#s77" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p502">抚养：侧重长辈对晚辈的养育，多指抚养孩子。</p>
+<p class="blk p" id="p503">扶养：是一般性的养活、养育，用于各种“养”的关系的人之间，如“夫妻双方相互扶养”等。</p>
+<p class="blk p" id="p504">【误用】老张在唐山大地震之后抚养了一位失去了子女的老人，收养了两个孤儿。</p>
+<p class="blk p" id="p505">【纠错】文中的“老人”应该是“老张”的平辈或长辈，使用“抚养”是在长晚辈之间，在此使用十分不恰当，应该改为“扶养”。？</p>
+<p class="blk p" id="p506">【抚养】父母抚养我们长大很不容易。</p>
+<p class="blk p" id="p507">【赡养】晚辈对长辈：【扶养】同辈之间；【抚养】长辈对晚辈。</p>
+<h4 class="blk h4" id="s78">伺候 VS侍候？<span class="pg">P15</span><a class="anchor" href="#s78" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p509">伺候：指服侍之意，可用于人（不分地位高低），也可用于牲畜。</p>
+<p class="blk p" id="p510">侍候：指对尊敬的人加以服侍，多用于长辈或地位高的人。</p>
+<p class="blk p" id="p511">【误用】上个月我们家的牛病了，妈妈一直精心侍候着直到它好，村里的人都说妈妈是个好手。</p>
+<p class="blk p" id="p512">【纠错】该句表示照料牲畜之意，搭配对象不能用于“侍候”，只能改为“伺候”。</p>
+<p class="blk p" id="p513">【侍候】他对病人的侍候很周到。</p>
+<p class="blk p" id="p514">【侍奉】的语意比【侍候】更力尊敬。</p>
+<h3 class="blk h3" id="s79">第二节 高频成语积累<span class="pg">P15</span><a class="anchor" href="#s79" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p516">【按部就班】部（班）：门类，次序；就：归于。原指写文章按照内容需要来安排章节、选词、定句。后多指做事按照一定的步骤、顺序进行。也指按老规矩办事，缺乏创新精神。</p>
+<p class="blk p" id="p517">【包罗万象】包罗：包括；万象：宇宙间的一切景象，指各种事物。形容内容丰富，应有尽有。</p>
+<p class="blk p" id="p518">【杯水车薪】用一杯水去救一车着了火的柴草。比喻力量太小，解决不了问题。</p>
+<p class="blk p" id="p519">【比比皆是】比比：一个挨一个。指到处都是，形容极其常见。</p>
+<p class="blk p" id="p520">【变幻莫测】变幻：变化不可测度。变化很多，不能预料。</p>
+<p class="blk p" id="p521">【标新立异】标：用文字或其他事物表明；异：不同的，特别的。通常指提出新的主张、见解或创造出新奇的样式，形容敢于革新、勇于创造的精神，也指为了显示自己，故意另搞一套。</p>
+<p class="blk p" id="p522">【别出心裁】另有一种构思或设计，指想出的办法与众不同。</p>
+<p class="blk p" id="p523">【别具一格】别：另外。另有一种独特的风格。</p>
+<p class="blk p" id="p524">【博大精深】多形容理论、学识、思想、作品等广博丰富，深奥精微。</p>
+<p class="blk p" id="p525">【不可思议】原有神秘奥妙的意思。现多指无法想象，难以理解。</p>
+<p class="blk p" id="p526">【不可一世】一世：一时。认为当代的人都不行。形容目空一切、狂妄自大到了极点。</p>
+<p class="blk p" id="p527">【不谋而合】谋：商量，计议；合：相符，一致。事先没有商量过，意见或行动却完全一致。</p>
+<p class="blk p" id="p528">【不以为然】然：是，对。不认为是对的。表示不同意或否定。</p>
+<p class="blk p" id="p529">【不以为意】不把它放在心上。表示对人、对事抱轻视态度。</p>
+<p class="blk p" id="p530">【不知所措】措：安置，处理。不知道怎么办才好，形容受窘或发急，处境为难或心神慌乱。</p>
+<p class="blk p" id="p531">【沧海一粟】粟：谷子，即小米。大海里的一粒谷子。比喻非常渺小。</p>
+<p class="blk p" id="p532">【层出不穷】层，重复；层出，重复地出现；穷，尽。接连不断地出现，没有穷尽，有时喻指事物变幻之快。</p>
+<p class="blk p" id="p533">【姹紫嫣红】姹、嫣：娇艳。形容各种花朵娇艳美丽。</p>
+<p class="blk p" id="p534"><span class="b">【触目惊心】看见某种严重情况，心里感到震惊。</span></p>
+<p class="blk p" id="p535">【穿凿附会】穿凿：把讲不通的硬要讲通；附会：把不相干的事拉在一起。把讲不通的或不相干的道理、事情硬扯在一起进行解释。</p>
+<p class="blk p" id="p536">【此消彼长】这个失去了，另外一方面有所长进。</p>
+<p class="blk p" id="p537">【猝不及防】猝：突然，出其不意。事情来得突然，来不及防备。</p>
+<p class="blk p" id="p538">【措手不及 】措手：着手处理。不及：来不及动手应付。指事出意外，一时无法对付。</p>
+<p class="blk p" id="p539">【大吹大擂】许多乐器同时吹打。比喻大肆宣扬。</p>
+<p class="blk p" id="p540">【大相径庭】径：小路；庭：院子；径庭：悬殊，偏激。比喻相差很远，大不相同。</p>
+<p class="blk p" id="p541">【大言不惭】说大话，不感到难为情。</p>
+<p class="blk p" id="p542">【大摇大摆】走路时身子摇摇摆摆。形容自以为了不起的傲慢神态。</p>
+<p class="blk p" id="p543"><span class="b">【殚精竭虑 】殚：竭尽；虑：思虑。形容用尽心思。</span></p>
+<p class="blk p" id="p544">【胆战心惊】战：通“颤”，发抖。形容十分害怕。</p>
+<p class="blk p" id="p545">【得不偿失】偿：抵得上。所得的利益抵偿不了所受的损失。</p>
+<p class="blk p" id="p546">【颠倒黑白 】把黑的说成白的，白的说成黑的。比喻歪曲事实，混淆是非。</p>
+<p class="blk p" id="p547"><span class="b">【独具匠心】【匠心独具】【别具匠心】【匠心独运】指在技巧和艺术方面具有与众不同的巧妙构思。</span></p>
+<p class="blk p" id="p548">【反戈一击】调转矛头，向自己原来的营垒进攻。比喻掉转方向，对自己阵营的坏人坏事进行斗争。</p>
+<p class="blk p" id="p549">【浮光掠影】浮光：水面上的反光；掠影：一闪而过的影子。比喻观察不细致，学习不深入，印象不深刻。</p>
+<p class="blk p" id="p550">【高屋建瓴】建：倒水，泼水：瓴：盛水的瓶子。把瓶子里的水从高层顶上倾倒，比喻居高临下，不可阻遏。</p>
+<p class="blk p" id="p551">【高瞻远瞩】高瞻：站在高处看；瞩：注意地看。指站得高，看得远。比喻眼光远大。</p>
+<p class="blk p" id="p552">【高枕无忧】垫高了枕头睡觉，无忧无虑。比喻平安无事，不用担忧。</p>
+<p class="blk p" id="p553">【画地为牢】在地上画一个圈当做监狱。比喻只许在指定的范围内活动，不得逾越。</p>
+<p class="blk p" id="p554">【浑然不觉】浑然：混同在一起的样子。指毫无察觉。</p>
+<p class="blk p" id="p555">【家喻户晓】喻：明白；晓：知道。家家户户都清楚知道，形容人人皆知。</p>
+<p class="blk p" id="p556"><span class="b">【兼容并蓄】【兼收并蓄】把不同内容、不同性质的东西收下来。</span></p>
+<p class="blk p" id="p557">【见仁见智】对同一个问题，不同的人从不同的立场或角度有不同的看法。</p>
+<p class="blk p" id="p558">【截然不同】【截然相反】截然：很分明地、断然分开的样子。形容两件事物毫无共同之处，完全相反</p>
+<p class="blk p" id="p559">【理所当然】理：道理，情理；当：应当；然：这样。按道理应当这样，含有完全合理、不容怀疑的意思。</p>
+<p class="blk p" id="p560">【历久弥新】经历长久的时间而更加鲜活，或是是指一样东西不因时间而变旧变腐，反而更加有活力，更显价值，比新的还要好。</p>
+<p class="blk p" id="p561">【屡见不鲜】屡，多次；鲜，新奇。多次见到就不觉得新奇了。</p>
+<p class="blk p" id="p562"><span class="b">【门庭冷落】门庭前很清冷，形容人少。</span></p>
+<p class="blk p" id="p563">【门可罗雀】原指门外可张网捕雀。形容十分冷落，宾客稀少。</p>
+<p class="blk p" id="p564">【门庭若市】指门前像市场一样。形容来的人很多，非常热闹。原形容进谏的人很多。现形容来的人很多，非常热闹。</p>
+<p class="blk p" id="p565">【明察秋毫】明察：看清：秋毫：秋天鸟兽身上新长的细毛。原形容人目光敏锐，任何细小的事物都能看得很清楚。后多形容人能洞察事理，明辨是非，有时指视力很好。</p>
+<p class="blk p" id="p566">【名实不符】【名副其实】【名不虚传】名：名称；副：相称，相符合。指名声和实际不相符，空有虚名副，符合，彼此相称。实：实际。指名声或名义和实际相符虚：不真实。名：名声。指传出的好名声与实际相符合，不是虚假的。</p>
+<p class="blk p" id="p567">【墨守成规】成规：现成的或久已通行的规则、方法。指思想保守，守着老规矩不肯改变</p>
+<p class="blk p" id="p568">【莫衷一是】莫：不能；衷：折衷，断定；是：对。不能断定哪个对，哪个不对，形容意见分歧，没有一致的看法。</p>
+<p class="blk p" id="p569">【目不暇接】暇：闲暇；接：接收。形容东西太多，眼睛看不过来，是中性成语。</p>
+<p class="blk p" id="p570">【南辕北辙】想到达南方，车子却向北行。比喻行动和目的正好相反。</p>
+<p class="blk p" id="p571">【平淡无奇】奇：特殊。指平平淡淡，没有什么显著、出色的地方。</p>
+<p class="blk p" id="p572">【扑朔迷离】扑朔：兔脚搔爬；迷离：兔眼半闭。原指难辨兔的雄雌，比喻辨认不清男女。后来形容事情错综复杂，不容易看清真相。</p>
+<p class="blk p" id="p573">【巧夺天工】夺：胜过。指人工的精巧胜过天然生成的，形容技艺十分高超。</p>
+<p class="blk p" id="p574">【人迹罕至】人的足迹很少到达，指荒凉偏僻的地方。</p>
+<p class="blk p" id="p575">【人云亦云】云：说；亦：也。人家怎么说，自己也跟着怎么说，形容只会随声附和，没有自己的主见。。</p>
+<p class="blk p" id="p576">【日新月异】异：不同。白天更新，夜晚改变。形容发展变化快，每天每月都有新变化，不断出现新事物、新气象。</p>
+<p class="blk p" id="p577"><span class="b">【声名鹊起】形容知名度迅速提高。</span></p>
+<p class="blk p" id="p578">【适得其反】适：正，恰好。恰恰得到与预期相反的结果。</p>
+<p class="blk p" id="p579">【首当其冲】比喻最先受到攻击或遭遇灾害。经常被误用为冲锋在前，或首先接受任务、首先应当先做某事。</p>
+<p class="blk p" id="p580">【水到渠成】水流到的地方自然形成一条水道。比喻时机成熟，事情自然会成功，即功到自然成。</p>
+<p class="blk p" id="p581">【顺其自然】顺，顺从，不违背。指听之任之，只让其自身发展。</p>
+<p class="blk p" id="p582">【司空见惯】指对某些事情表现出很常见的样子，不觉得很奇怪。</p>
+<p class="blk p" id="p583">【昙花一现】昙花的开放时间很短，比喻美好的事物或景象出现了一下，很快就消失了。</p>
+<p class="blk p" id="p584">【谈虎色变】原意是说被虎咬过的人才真知虎的厉害。比喻一提到可怕的事就情绪紧张起来，连脸色都变了。</p>
+<p class="blk p" id="p585">【叹为观止】叹：赞叹；止：停止。观止：看到这里就停止，不再看别的了，称赞所看到的事物尽善尽美。指赞美所见到的事物好到了极点。</p>
+<p class="blk p" id="p586">【天马行空】天马奔腾神速，像是腾起在空中飞行一样。比喻诗文气势豪放，不拘一格，流畅自然，也指思维的不同寻常的跳跃，还指不切实际的想法，比喻浮躁不安。</p>
+<p class="blk p" id="p587">【脱颖而出】颖：物体的尖锐部分。指锥芒全体脱出，非只露尖而已。比喻人的本领全部显露出来。</p>
+<p class="blk p" id="p588">【闻名退迩】遐：远；迩：近。形容名声很大，远近都知道。</p>
+<p class="blk p" id="p589">【无济于事】对事情没有什么帮助或益处，比喻解决不了问题。</p>
+<p class="blk p" id="p590">【无人问津】津：渡口；问津：询问渡口。指没人访求，探求，比喻无人过问。</p>
+<p class="blk p" id="p591">【无所适从】适：往；从：跟随。不知听从哪一个好。</p>
+<p class="blk p" id="p592">【鲜为人知】鲜：很少；为：被。很少有人知道。</p>
+<p class="blk p" id="p593">【相辅相成】辅：帮助。指两件事物互相配合，互相辅助，缺一不可。</p>
+<h1 class="blk h1" id="s80">第二部分：片段阅读<span class="pg">P17</span><a class="anchor" href="#s80" aria-label="链接到此节">#</a></h1>
+<h3 class="blk h3" id="s81">第一节：主旨理解题<span class="pg">P17</span><a class="anchor" href="#s81" aria-label="链接到此节">#</a></h3>
+<h4 class="blk h4" id="s82">主旨理解题题型分类和解题原则<span class="pg">P17</span><a class="anchor" href="#s82" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p597">主旨理解题是阅读理解最重要的题型，其包括查找概括和意图推断两种类型。</p>
+<p class="blk p" id="p598">查找概括主旨题主要是如下典型提问：</p>
+<p class="blk p" id="p599">“主要讲述（谈论、强调、说明、阐明、阐述、分析、介绍）的是……”；“这段文字的主旨（议题、话题、关键词、核心意思）是……”；</p>
+<p class="blk p" id="p600">“概括（复述、归纳、总结）最准确的是……”。</p>
+<p class="blk p" id="p601">一般情况下，查找概括主旨题的解原则是选择言内之意，去查找或概括，不要引申。</p>
+<p class="blk p" id="p602">“意在说明（阐明、强调）……”；意图推断主旨题主要有如下典型提问：“想表达的是……”；</p>
+<p class="blk p" id="p603">“意图是……”。</p>
+<p class="blk p" id="p604">一般情况下，意图推断主旨题的解题原则是选择言外之意，在查找或概括主旨的基础上要适当引申。</p>
+<h4 class="blk h4" id="s83">主旨理解题之分总结构分析<span class="pg">P18</span><a class="anchor" href="#s83" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p606">分一总结构</p>
+<p class="blk p" id="p607">分一总的段落有两种：一是作者先列举现象、解释原因、引用别的论断、铺垫背景，之后总结一个观点或是作出评价，在这种段落中，作者强调的后边总结得出的观点或是作出的评价；二是文段先提出问题，最后是谈论解决问题的对策，在这种段落中，作者强调的是解决问题的对策。</p>
+<h4 class="blk h4" id="s84">主旨理解题分总结构分析<span class="pg">P18</span><a class="anchor" href="#s84" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p609">分一总结构</p>
+<p class="blk p" id="p610">分一总的段落有两种：一是作者先列举现象、解释原因、引用别的论断、铺垫背景，之后总结一个观点或是作出评价，在这种段落中，作者强调的后边总结得出的观点或是作出的评价；二是文段先提出问题，最后是谈论解决问题的对策，在这种段落中，作者强调的是解决问题的对策。</p>
+<h4 class="blk h4" id="s85">主旨理解题总分总结构分析<span class="pg">P18</span><a class="anchor" href="#s85" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p612">总-分-总结构</p>
+<p class="blk p" id="p613">总一分一总的段落有两种：一是先提出观点，再论证观点，最后又重申评价观点，在这种段落中，主旨是最后对观点的重申评价；二是文段先提出问题，再分析问题，最后解决问题，主旨是解决问题。</p>
+<h4 class="blk h4" id="s86">主旨理解题分总分结构分析<span class="pg">P18</span><a class="anchor" href="#s86" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p615">分一总-分的段落先是列举例子、解释原因、引用其他言论之后作者得出一个观点，之后作者再对得出的观点进行论证。在这种段落中，查找概括的主旨是中间作者得出的观点，意图推断的主旨要在中间得出观点的基础上合理引申。</p>
+<h4 class="blk h4" id="s87">主旨理解题分分结构分析<span class="pg">P18</span><a class="anchor" href="#s87" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p617">分一分结构的特点是文段前后是语意并列的关系，那么前后的语意在这个段落中地位是相同的，在这样的文段中，主旨需要概括兼顾前后语意，不可片面。</p>
+<h4 class="blk h4" id="s88">主旨理解题之总结关系分析<span class="pg">P18</span><a class="anchor" href="#s88" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p619">总结关系是把前述材料分析研究，或综合各方面的情况做出有策略性或者概括性的结论。表示总结关系的常见标志词主要有“因此、所以、于是、总之、综上所述、概而言之、可见、看来”等。主旨多在总结词之后；</p>
+<p class="blk p" id="p620">若是多重总结最后一重总结是主旨。</p>
+<h4 class="blk h4" id="s89">主旨概括题之条件关系分析<span class="pg">P18</span><a class="anchor" href="#s89" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p622">条件关系是一个句子提出条件，另一个句子谈在这个条件下的结果。能表示必要条件关系的常见标志词主要有“只有、必须、需要、首先要、除非、最缺乏”；能表示充分条件的关联词有“如果、倘若、假如”等。</p>
+<p class="blk p" id="p623">主旨多为条件部分。</p>
+<h4 class="blk h4" id="s90">主旨理解题之单主体分析<span class="pg">P18</span><a class="anchor" href="#s90" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p625">阅读材料紧紧围绕某核心词语展开叙述，此核心词语多是名词性的，是串联材料意思的必备词，这就是主体词。当材料出现一个主体词<span class="blue">，</span>以这个主体词为核心的选项多是主旨的答案，错误选项往往论述其他对象。</p>
+<h4 class="blk h4" id="s91">主旨理解题之双主体分析<span class="pg">P18</span><a class="anchor" href="#s91" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p627">阅读材料紧紧围绕某核心词语展开叙述，此核心词语多是名词性的，是串联材料意思的必备词，这就是主体词。当材料出现两个主体，正确选项也应该出现两个相同主体，并且，二者关系的表述与材料中的关系一致。</p>
+<h4 class="blk h4" id="s92">主旨理解题之多主体分析<span class="pg">P18</span><a class="anchor" href="#s92" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p629">阅读材料紧紧围绕某核心词语展开叙述，此核心词语多是名词性的，是串联材料意思的必备词，这就是主体词。当材料出现三个或以上的主体，一般主旨题考查关键词查找，只需要结合主要对象，排出作答即可。</p>
+<h4 class="blk h4" id="s93">主旨理解题之递进关系分析<span class="pg">P18</span><a class="anchor" href="#s93" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p631">递进关系指后一个语意对前一个加强。表示递进关系的常见标志词主要有“而且、更、甚至、尤其、并且、也、还、重要的是、关键的是、特别是”等。主旨多在递进词之后；若是多重递进最后一重递进部分是主旨。</p>
+<h4 class="blk h4" id="s94">主旨理解题之转折关系分析<span class="pg">P18</span><a class="anchor" href="#s94" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p633">转折关系是在承认前一分句的基础上语意转换。表示转折关系的常见标志词主要有“然而、但是、但、却、相反、可是、不过、实际上、事实上、其实、只是”等。若文段出现转折词，要学会定位转折关系词，转折词之后多为主旨；多重转折出现，最后一重转折是主旨。</p>
+<h4 class="blk h4" id="s95">主旨理解题之并列关系分析<span class="pg">P19</span><a class="anchor" href="#s95" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p635">并列关系是句子同时并举的关系。表示并列关系的常见标志词主要有“此外、另外、一方面……另一方面……有的……有的……、同时、除此之外、与此一致”等。主旨应概括全面，不要片面。</p>
+<h4 class="blk h4" id="s96">主旨理解题之杂糅主旨<span class="pg">P19</span><a class="anchor" href="#s96" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p637">杂糅主旨考点是非典型的查找概括主旨或意图推断，这种题目需要结合提问和材料，合理地把握出题者的用意。杂糅主旨考点主要有两个类型：第一个是意图推断题非引申类，其典型特征是提问方式常出现“意在”</p>
+<p class="blk p" id="p638">“想”、“推出”等标志词，但是选项没有正确的意图主旨的答案，此时选择不引申的正确主旨。第二个是查找概括主引申类，其典型特征是提问方式是“主要”、“核心”、“中心”、“主旨”等标志词，但是依据材料意思却是让选择意图推断的答案。</p>
+<h3 class="blk h3" id="s97">第二节 态度理解题<span class="pg">P19</span><a class="anchor" href="#s97" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p640">态度理解题主要是通过阅读一段文字去判断作者的态度、立场、倾向或者对某事的评价。其提问方式主要有：“通过这段话可知作者的态度是……”、</p>
+<p class="blk p" id="p641">“作者是否同意……”、</p>
+<p class="blk p" id="p642">“作者认为上述有无道理⋯…”、</p>
+<p class="blk p" id="p643">“作者对 XXX 的看法是……”。</p>
+<p class="blk p" id="p644">解答态度理解题，要立足作者的立场去判断，根据材料中否定词、情态词<span class="blue">、</span>转折词、援引词等来判断作者有无态度，或是具体态度是什么。</p>
+<h3 class="blk h3" id="s98">第三节 标题填入题<span class="pg">P19</span><a class="anchor" href="#s98" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p646">标题的作用可以是统领全文，可以是点明或暗示主题，可以是含蓄地表明写作目的，可以是委婉地表达作者的情感，可以是引导读者关注、思考、认同。</p>
+<p class="blk p" id="p647">标题选择的题目的提问中都会有“标题”、“题目”等比较明显的字眼，常见的提问方式有：</p>
+<p class="blk p" id="p648">“最适合做本段文字标题的是”、</p>
+<p class="blk p" id="p649">“该段文字作为一则报纸上的新闻，最适合做该段文字题目的是”等。</p>
+<p class="blk p" id="p650">解答标题选择题要立足于文段的语意，根据体裁的不同，概括主旨意思，要简洁精练不冗长；好的标题在主旨意的基础上具有一定的吸引力。</p>
+<h3 class="blk h3" id="s99">第四节 意图推断主旨题<span class="pg">P19</span><a class="anchor" href="#s99" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p652">意图推断主旨题是主旨概括题是非常相像的一类题型。意图判断题几乎占到片段阅读的50%以上，所以这类题的考查力度是非常大的。从生活和工作的角度来说，有时候人说话会比较含蓄，特别是中国人说话更为含蓄一些，这时候就需要我们去推断说话者的真正意图。</p>
+<h4 class="blk h4" id="s100">一、提问方式：<span class="pg">P19</span><a class="anchor" href="#s100" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p654">这段文字意在说明。。。</p>
+<p class="blk p" id="p655">这段文字意在阐释。。。</p>
+<p class="blk p" id="p656">这段文字主要想表达的是。。。</p>
+<p class="blk p" id="p657">这段文字想告诉我们。。。</p>
+<h4 class="blk h4" id="s101">二、题型分类：<span class="pg">P19</span><a class="anchor" href="#s101" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p659">1.言外意图：作者的意图没有明显表现出来，这时要从文段找到作者的言外之意，引申出作者的意图和态度。</p>
+<p class="blk p" id="p660">如：你的朋友对你说：“哥们儿，我最近手头有点紧。”</p>
+<p class="blk p" id="p661">（他的意图是想借钱，但是没有明确表现出来，属于言外意图）</p>
+<p class="blk p" id="p662">2. 言内意图：作者的意图明显地表现在文段中了，这时找到文段的重点就能找到作者的意图，找到文段的重点就是找到文段的主旨，按主旨的方法来做。如：你的朋友对你说：“哥们儿，我最近手头有点紧，借我点钱吧。”</p>
+<p class="blk p" id="p663">（他的意图是想借钱，也明确表现出来了，属于言内意图</p>
+<h4 class="blk h4" id="s102">三、理论要点：<span class="pg">P20</span><a class="anchor" href="#s102" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p665">总体原则：意图题需要观察选项</p>
+<p class="blk p" id="p666">有正确的引申项，优选引申项；</p>
+<p class="blk p" id="p667">没有引申项，选主旨项。</p>
+<p class="blk p" id="p668">言外意图—社会问题类：</p>
+<p class="blk p" id="p669">社会问题类的文段，需要我们根据文段所描述社会问题分析作者的观点。而这个文段描述的社会问题一般为负面的、不好的社会问题。</p>
+<p class="blk p" id="p670">作者的意图是想我们给出解决这个问题的对策。</p>
+<p class="blk p" id="p671"><span class="b">【例 1】</span></p>
+<p class="blk p" id="p672">亚洲国家躲过了近年来的全球大萧条，其中最主要的原因是它未被卷入2008年金融危机。然而近日一项调查显示，亚洲的债务水平正在以可怕的速度增长。从某些方面来说，这有部分合理理由。许多国家的超低息政策鼓励贷款，债务增长是财富增长的自然产物。但值得警惕的是，亚洲国家需要借助更大的债务规模来保持经济增长。这个信号表明，亚洲经济健康状况不像GDP增长速度反映的那样良好。亚洲目前的债务水乎总体来说低于欧洲，还处在安全范围内，但债务的迅速增长会让经济体更容易遭受冲击。</p>
+<p class="blk p" id="p673">这段文字意在说明（）。</p>
+<p class="blk p" id="p674">A. 亚洲国家经济增长缺乏后劲</p>
+<p class="blk p" id="p675"><span class="b">B. 亚洲国家需警惕陷入债务危机</span></p>
+<p class="blk p" id="p676">C.盲目追求GDP 增长速度后患无穷</p>
+<p class="blk p" id="p677">D. 要全面认识超低息贷款政策的利弊</p>
+<p class="blk p" id="p678"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p679">【题型识别】通过提问方式“意在”，判断为一道意图判断题。</p>
+<p class="blk p" id="p680">【指点迷津】通过提问方式“意在说明”，判断为一道意图判断题，社会现象类。读完整个文段，会发现文段在阐述一个负面的、不好的社会问题，即文段第一句话铺垫背景，亚洲躲过了经济危机，可是债务水平却在增长。</p>
+<p class="blk p" id="p681">后文具体论述亚洲债务水平提高有其合理的原因，是财富增长的自然产物，而后文通过转折词“但值得警惕的是”提出了重点，亚洲国家需要借助更大的债务规模来保持经济增长，因此很容易遭受债务危机的冲击。所以整个文段意在强调亚洲国家要警惕债务危机的产生。这就是一个解决债务危机的有效对策，答案为B。</p>
+<h4 class="blk h4" id="s103">按主旨概括题的方法来做言内意图的题目<span class="pg">P20</span><a class="anchor" href="#s103" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p683">1.关联词：利用递进、转折、因果、必要条件、并列复句来找到文段重点从而找到作者的意图。</p>
+<p class="blk p" id="p684">2. 行文脉络：利用文段的层次结构来解题，主要包括总一分一总、总一分、分一总、分一分来找到文段的重点，从而找到作者的意图。</p>
+<p class="blk p" id="p685"><span class="b">【例2】</span></p>
+<p class="blk p" id="p686">文明和文化是不同的。文明使所有的地方所有的民族越来越相似，按照德国人埃利亚斯《文明的进程》的说法，文明是一个群体社会中大家按照同一规则生活，就好像按照一个节拍跳舞，不至于踩到脚一样；而文化使一个民族与别的民族不同，它是与生俱来的，不是规则而是习惯。其实城市化也可以这样看：城市迅速发展，摩天大楼变成城市象征，这其实是现代文明在世界各个角落强势发展的结果。但是，我们又希望文明不要压倒文化，“同一”不要消灭“差异”</p>
+<p class="blk p" id="p687">这段文字意在说明（）。</p>
+<p class="blk p" id="p688">A. 质疑现代文明忽略民族个性的趋势</p>
+<p class="blk p" id="p689">B.探究城市化进程与文明发展的关系</p>
+<p class="blk p" id="p690">C.强调城市化进程中保存文化的必要性</p>
+<p class="blk p" id="p691">D. 比较文明与文化对人类发展的不同影响</p>
+<p class="blk p" id="p692"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p693">【题型识别】通过提问方式“意在”，判断为一道意图判断题。</p>
+<p class="blk p" id="p694">【指点迷津】意在文内。文段首句引入两个话题词“文明”和“文化”，第二句话描述文明是大家越来越相似，即文明使大家变得同一；文化是民族与别的民族不同，即文化使大家变得不同。第三句话通过转折词“其实”引出文段的重点，“其实”后还有一个“但是”，因此转折后的文段意思是作者的意图所在，即在城市化的进程中，文化对于我们来说是很重要也是很必要的，答案为C。</p>
+<h4 class="blk h4" id="s104">意图推断主旨题结构分析法<span class="pg">P21</span><a class="anchor" href="#s104" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p696">结构分析解答意图推断的主旨题，是通过分析文段的语意结构，根据材料的重点语意推断背后的引申义。结构分析可以分为总一分、分一总、总一分一总、分一总一分、分一分五种主要类型。考生需要通过结构来查找或概括出“总”，之后再适度引申得到意图的答案。</p>
+<h4 class="blk h4" id="s105">意图推断主旨题之关联分析法<span class="pg">P21</span><a class="anchor" href="#s105" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p698">意图推断的主旨题使用关联分析法，要求考生判断文段中能够指向主要语意的关联引导词<span class="blue">，</span>之后，通过语意的把握进行合理的引申，得到材料的隐含信息。考生需要重点掌握转折、总结、递进、并列、条件等关系词引导的意图推断主旨题。</p>
+<h4 class="blk h4" id="s106">意图推断主旨题之主体分析<span class="pg">P21</span><a class="anchor" href="#s106" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p700">文段为了突出相对集中的语意，作者往往会围绕一个或两个、甚至两个以上核心词语来组织材料。这种情况下，所围绕的核心词语我们可以称之为“主体词”。推断意图的主旨可以先判断出主体词。当整个文段紧紧围绕一个核心词语展开叙述，意图的答案需要把其提炼出来；当阅读材料围绕两个主要对象展开叙述，意图要指向的是两个主体之间的特定关系。</p>
+<h4 class="blk h4" id="s107">意图推断主旨理解题之故事道理<span class="pg">P21</span><a class="anchor" href="#s107" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p702">意图推断主旨的故事道理是指文段是寓言、童话、典故、名人轶事、典型案例、格言警句等，其提问可能是“意在”、“想”、“推出”等主旨标志词外，还有“启示”、“道理”、“寓意”等独特的标志词。解答这类题的主旨不能选择表面意思，需要适度引申。</p>
+<h3 class="blk h3" id="s108">第五节 细节理解题<span class="pg">P21</span><a class="anchor" href="#s108" aria-label="链接到此节">#</a></h3>
+<h4 class="blk h4" id="s109">典型细节<span class="pg">P21</span><a class="anchor" href="#s109" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p705">细节理解题主要考查迅速辨别文段主要信息与重要细节的能力。这种题型要求考生通过阅读文段判断四个选项的说法与原文是否相符，选项内容涉及文段的各个方面位于各个角落，涵盖范围较广，辨别时会耗费很长的时间。</p>
+<p class="blk p" id="p706">典型细节主要提问如下：</p>
+<p class="blk p" id="p707">下列说法正确的/不正确的一项是？</p>
+<p class="blk p" id="p708">下列选项符合/不符合文意的一项是？</p>
+<p class="blk p" id="p709">下列选项表达最准确的一项是？</p>
+<p class="blk p" id="p710">下列选项从文中可以推出/不可以推出的是？</p>
+<p class="blk p" id="p711">典型细节的命题者通常会把原文中的某些内容偷换成另外的内容或者设置原文中没有提到的内容来干扰你，所以这种题型的解题思路是大致浏览原文，迅速回到选项，将选项代到原文一一比对。主要看程度、范围、对象、时态、逻辑关系等是否发生改变。</p>
+<h4 class="blk h4" id="s110">具体细节<span class="pg">P21</span><a class="anchor" href="#s110" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p713">具体细节主要提问如下：</p>
+<p class="blk p" id="p714">……的（根本）原因是；</p>
+<p class="blk p" id="p715">（不）属于……的特点的是；</p>
+<p class="blk p" id="p716">……的区别是；</p>
+<p class="blk p" id="p717">……的关键是。</p>
+<p class="blk p" id="p718">解答具体细节题，需要根据提问考查要素回到材料相应出处，快速比较分析，找到提问针对性答案。</p>
+<h1 class="blk h1" id="s111">第三部分：语句表达<span class="pg">P21</span><a class="anchor" href="#s111" aria-label="链接到此节">#</a></h1>
+<h3 class="blk h3" id="s112">第一节 语意理解<span class="pg">P21</span><a class="anchor" href="#s112" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p721">词句理解题还涉及考查词语或是句子的意思理解，这种题型的提问方式主要有：</p>
+<p class="blk p" id="p722">“XXXX”理解正确的一项是？</p>
+<p class="blk p" id="p723">“XXXX”可以理解为？</p>
+<p class="blk p" id="p724">“XXXX”意思指的是？</p>
+<p class="blk p" id="p725">解答语意理解题，需要结合文段语境进行分析。所谓“结合语境”，即做这类题目时，要注意“瞻前顾后”，观察与该词语有意义依存关系的前后句，寻找蛛丝马迹。一般多考查并列、相反、因果解释、递进等逻辑关系。</p>
+<p class="blk p" id="p726">一般不考词语的字面意思。</p>
+<h3 class="blk h3" id="s113">第二节 词语指代<span class="pg">P22</span><a class="anchor" href="#s113" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p728">词语指代包括代词指代和非代词指代两种形式。代词指代的考点，其提问的方式通常有：“上文中‘这’指的是……”、</p>
+<p class="blk p" id="p729">“上文中‘此’指代的是……”、</p>
+<p class="blk p" id="p730">“文中“他们’指……”、</p>
+<p class="blk p" id="p731">“文中‘那些’指代的是……”、</p>
+<p class="blk p" id="p732">“这段文字中“前者’是指……”等。</p>
+<p class="blk p" id="p733">非代词指代是借助其它的实词来考查其所指，方法上与代词指代是相同的，常见提问方式是：</p>
+<p class="blk p" id="p734">“文中‘XXX’指的是……”。</p>
+<p class="blk p" id="p735">解答词语指代题要落实到语境，判断语境前后与所问词语的关联度，从形式上来考虑，往往需要运用“就近原则”，所谓“就近原则”，即代词一般指代它前面附近的句子中的某个意思。从阅读材料的语法构成来考虑，一定注意主语、话题一致的原则。从语境的设定来看，有时需要结合语意引导来分析。</p>
+<h3 class="blk h3" id="s114">第三节 语句填空<span class="pg">P22</span><a class="anchor" href="#s114" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p737">当提问方式是“填入横线处最恰当的是……”、选项为句子的时候，此题就是语句填空题。不完整的文段中，横线的位置可能在中间，也可能是最后，也有可能在材料开头。</p>
+<p class="blk p" id="p738">解答语句填空题，需要快速定位横线前后的语境，分析前后逻辑语义的关系，根据语意的前后关系，断定横线处语意可能性。横线与其前后语境关系的构成，常常有相反关系、并列关系、因果关系、递进关系、顺承关系等。考试解题除了考虑语意，还需要注意逻辑连贯性。特殊题目的时候，需要根据备选答案考虑主语、情景、句式的一致，考虑整体语境的充分协调。</p>
+<h3 class="blk h3" id="s115">第四节 接语选择题<span class="pg">P22</span><a class="anchor" href="#s115" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p740">接语选择题是要求推断下文语意的题目。其提问方式主要有：</p>
+<p class="blk p" id="p741">“以上材料是某篇文章的引言，作者接下来最有可能主要介绍的是……”、</p>
+<p class="blk p" id="p742">“由此可推知下文将要论述的是……”、</p>
+<p class="blk p" id="p743">“下文最不可能介绍的是”等。</p>
+<p class="blk p" id="p744">解答这种题目要学会定位文段的最后一句话的过渡意思，其起到承上启下，提示下文的作用。所有要把握其中所谈的概念、关系、对象、话题，就可以选出正确答案。而错误选项的设置往往是最后一句前面谈过的内容，可以用排除法将其排除，提高效率。</p>
+<h3 class="blk h3" id="s116">第五节 排序填空<span class="pg">P22</span><a class="anchor" href="#s116" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p746">当提问方式为“将几个句子重新排序，依次填在横线上，最恰当的一组是……”的时候，此考点便是语句排序填空。顾名思义，是既要排序又要把排好的几个句子填入横线处，它是语句填空和语句排序的结合。</p>
+<p class="blk p" id="p747">解答排序填空题需要综合使用这二者的答题技巧。总体来说有几点注意：一是结合语句排序，把几个句子连缀排序。首先对需要排序的各句进行分析，依照语意连贯、话题一致、句式一致、关联词、代词、时空顺序、事理逻辑等进行合理排序。之后带入不完整的文段，判断整体语境，是否语意整体连贯协调。</p>
+<h3 class="blk h3" id="s117">第六节 病句辨析<span class="pg">P22</span><a class="anchor" href="#s117" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p749">病句是指在语法或逻辑上有问题的句子。当提问方式出现“下列各句中，（没）有语病的一句是……”时就是病句辨析题目。</p>
+<p class="blk p" id="p750">考试中只需要考生断定有无病句，而无需修改，因此，培养辨析的能力和感觉比较重要。应试者可以从病因来分析，学会辨析病句的方法。病因主要有搭配不当、成分残缺或赘余、语序不当、句式杂糅、不合逻辑几种。具体分析上，主要应试者可以通过句子“主干”、“枝叶”构成，判断词“是”、两面词、否定词、并列词及并列短语、关联词、介词及介词短语、副词、数量短语来的使用来分析。</p>
+<p class="blk p" id="p751">从难度上来说，对许多应试者来说，病句辨析并不复杂，但是由于受定向思维影响，受语言地域限制，有不少应试者却感觉病句辨析相当有难度。</p>
+<h3 class="blk h3" id="s118">第七节 歧义辨析<span class="pg">P22</span><a class="anchor" href="#s118" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p753">歧义，顾名思义就是表意不明，有两种或两种以上意思，它本身不符合语言表达“准确得体”这一项要求。</p>
+<p class="blk p" id="p754">严格来讲歧义属于病句的一种，只是在考试中命题者往往把它单独作为考查的一个知识点。辨析歧义，本身并不简单，一个原因是产生歧义的原因繁多，另一个原因是考生的思维习惯有固定倾向。</p>
+<p class="blk p" id="p755">当提问方式为“下列各句中，（没）有歧义的一句是……”的时候，此题就是歧义辨析考点题。</p>
+<p class="blk p" id="p756">解答歧义辨析这类题目，应试者可以从两点入手：一是分清歧义类别<span class="blue">，</span>即找出歧义现象产生的原因，主要包括词汇多义、指代不明、修饰不定、关系含糊、语音停顿不同等导致的歧义。二是培养辨析歧义的语感，通过语境联想、扩展填充、语序词汇变换、结构调整、标点增改等方法练习快速识别歧义的直观感受。</p>
+    <div class="backmatter"><h3>声明与版权信息</h3>
+<p><span class="b red">鉴于本资料不断发现被转卖/倒卖/分享/转赠。这是对我们劳动成果的亵渎，因此我们极不愿意却不得不做恶毒的声明以保护我们资料的价值；保证从我们处购买该资料的权益（付出的价格）</span></p>
+<p><span class="b red">声明</span></p>
+<p><span class="b red">本资料由</span><span class="b blue"> www.wuyouqiuzhi.com及</span><span class="b red">旗下淘宝店：天天向上求职工作室（唯一客服：</span><span class="b">g</span><span class="b red">alerjim）或职场精英工作室（唯一客服：蔚蓝小小天使）提供</span><span class="b">，或者下载</span><span class="b red">移动端刷题软件（名称为：笔试通）亦可购买；若发现你的资料不是以上渠道获得，请前往以上渠道购买</span></p>
+<p><span class="b red">祝所有从该处购买资料的用户顺利通过各个公司招聘笔试面试取得心仪 offer，一堆 offer。祝所有从别处购买/分享获得/获赠该资料却仍然不通过上述渠道购买的用户笔试面试统统挂掉，祝所有转卖/倒卖/分享/转赠我们资料的商家/机构/个人的全家人灭绝，户口销户</span></p>
+</div>
+  </article>
+</main>
+
+<button id="toTop" title="回到顶部" aria-label="回到顶部">↑</button>
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var body=document.body, html=document.documentElement;
+
+  /* ---------- 主题 ---------- */
+  var saved=localStorage.getItem('thm');
+  if(saved){html.setAttribute('data-theme',saved)}
+  $('#themeBtn').addEventListener('click',function(){
+    var cur=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',cur);localStorage.setItem('thm',cur);
+    this.textContent=cur==='dark'?'☀':'☾';
+  });
+  $('#themeBtn').textContent=html.getAttribute('data-theme')==='dark'?'☀':'☾';
+
+  /* ---------- 字体 ---------- */
+  var fs=localStorage.getItem('fnt')||'sans';
+  body.setAttribute('data-font',fs);
+  $('#fontBtn').addEventListener('click',function(){
+    fs=fs==='sans'?'serif':'sans';
+    body.setAttribute('data-font',fs);localStorage.setItem('fnt',fs);
+    this.textContent=fs==='sans'?'宋':'黑';
+  });
+  $('#fontBtn').textContent=fs==='sans'?'宋':'黑';
+
+  /* ---------- 字号 ---------- */
+  var fsz=parseInt(localStorage.getItem('fsz')||'0',10);
+  if(fsz){html.style.setProperty('--body-size',fsz+'px')}
+
+  /* ---------- 移动端目录 ---------- */
+  var side=$('#sidebar'), scrim=$('#scrim');
+  function closeSide(){side.classList.remove('open');scrim.classList.remove('show')}
+  $('#menuBtn').addEventListener('click',function(){
+    side.classList.toggle('open');
+    scrim.classList.toggle('show',side.classList.contains('open'));
+  });
+  scrim.addEventListener('click',closeSide);
+
+  /* ---------- 折叠子目录 ---------- */
+  $$('.caret').forEach(function(c){
+    c.addEventListener('click',function(e){
+      e.preventDefault();e.stopPropagation();
+      c.parentNode.parentNode.classList.toggle('open');
+    });
+  });
+  /* 默认展开含词条的分组 */
+  $$('.toc-list li').forEach(function(li){
+    if(li.querySelector(':scope > ul.fold')) li.classList.add('open');
+  });
+
+  /* ---------- 目录跳转 ---------- */
+  var links={};
+  $$('#sidebar a[href^="#"]').forEach(function(a){
+    links[a.getAttribute('href').slice(1)]=a;
+  });
+  $$('#sidebar a[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var id=a.getAttribute('href').slice(1);
+      var el=document.getElementById(id);
+      if(!el)return;
+      e.preventDefault();
+      var y=el.getBoundingClientRect().top+window.pageYOffset-72;
+      window.scrollTo({top:y,behavior:'smooth'});
+      history.replaceState(null,'','#'+id);
+      closeSide();
+    });
+  });
+
+  /* ---------- 滚动高亮 ---------- */
+  var heads=$$('.doc .blk.h1,.doc .blk.h2,.doc .blk.h3,.doc .blk.h4');
+  var cur=null;
+  function setActive(id){
+    if(id===cur)return;cur=id;
+    $$('#sidebar a.active').forEach(function(a){a.classList.remove('active')});
+    var a=links[id];
+    if(a){
+      a.classList.add('active');
+      if(!side.classList.contains('open')){
+        var r=a.getBoundingClientRect(), sr=side.getBoundingClientRect();
+        if(r.top<sr.top+40||r.bottom>sr.bottom-40){
+          side.scrollTop += (r.top - sr.top) - sr.height/2;
+        }
+      }
+      var p=a.closest('li');
+      while(p){ if(p.querySelector(':scope > ul.fold')) p.classList.add('open'); p=p.parentElement; }
+    }
+  }
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting) setActive(e.target.id); });
+  },{rootMargin:'-70px 0px -72% 0px',threshold:0});
+  heads.forEach(function(h){io.observe(h)});
+
+  /* ---------- 回到顶部 ---------- */
+  var top=$('#toTop');
+  top.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+  window.addEventListener('scroll',function(){
+    top.classList.toggle('show',window.pageYOffset>500);
+  },{passive:true});
+
+  /* ---------- 搜索 ---------- */
+  var input=$('#q'), cnt=$('#cnt');
+  var marks=[];
+  function clearMarks(){
+    marks.forEach(function(m){var p=m.parentNode;p.replaceChild(document.createTextNode(m.textContent),m);p.normalize()});
+    marks=[];
+  }
+  function doSearch(){
+    clearMarks();
+    var q=input.value.trim().toLowerCase();
+    var items=$$('#sidebar .toc-list a');
+    if(!q){
+      cnt.textContent='';
+      items.forEach(function(a){a.parentNode.classList.remove('toc-hidden');a.classList.remove('toc-match')});
+      $$('.doc .blk').forEach(function(b){b.classList.remove('dimmed')});
+      return;
+    }
+    var n=0, nocc=0, first=null;
+    $$('.doc .blk').forEach(function(b){
+      var hit=b.textContent.toLowerCase().indexOf(q)>=0;
+      b.classList.toggle('dimmed',!hit);
+      if(hit){
+        n++;
+        if(!first)first=b;
+        /* 高亮 */
+        var walker=document.createTreeWalker(b,NodeFilter.SHOW_TEXT,null);
+        var nodes=[],nw;
+        while((nw=walker.nextNode())){nodes.push(nw)}
+        nodes.forEach(function(node){
+          var s=node.nodeValue, low=s.toLowerCase(), idx=low.indexOf(q);
+          if(idx<0)return;
+          var frag=document.createDocumentFragment();
+          var last=0,pos;
+          while((pos=low.indexOf(q,last))>=0){
+            if(pos>last)frag.appendChild(document.createTextNode(s.slice(last,pos)));
+            var m=document.createElement('mark');m.textContent=s.slice(pos,pos+q.length);
+            marks.push(m);frag.appendChild(m);nocc++;
+            last=pos+q.length;
+          }
+          if(last<s.length)frag.appendChild(document.createTextNode(s.slice(last)));
+          node.parentNode.replaceChild(frag,node);
+        });
+      }
+    });
+    cnt.textContent=nocc+' 处';
+    /* 目录过滤 */
+    items.forEach(function(a){
+      var tt=a.querySelector('.t');
+      var txt=(tt?tt.textContent:a.textContent).toLowerCase();
+      var m=txt.indexOf(q)>=0;
+      a.classList.toggle('toc-match',m);
+      var li=a.parentNode;
+      var keep=m;
+      if(!keep){ /* 祖先命中则保留 */
+        var p=li.parentNode;
+        while(p&&p.id!=='sidebar'){
+          var pl=p.querySelector(':scope > a > .t');
+          if(pl&&pl.textContent.toLowerCase().indexOf(q)>=0){keep=true;break}
+          p=p.parentNode;
+        }
+      }
+      li.classList.toggle('toc-hidden',!keep);
+    });
+    $$('#sidebar ul.fold').forEach(function(ul){
+      var any=ul.querySelector('li:not(.toc-hidden)');
+      ul.parentNode.classList.toggle('open',!!any);
+    });
+    if(first){
+      var y=first.getBoundingClientRect().top+window.pageYOffset-90;
+      window.scrollTo({top:y,behavior:'smooth'});
+    }
+  }
+  var timer=null;
+  input.addEventListener('input',function(){clearTimeout(timer);timer=setTimeout(doSearch,180)});
+  input.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){input.value='';doSearch();input.blur()}
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='/'&&document.activeElement!==input){e.preventDefault();input.focus()}
+  });
+})();
+</script>
+</body>
+</html>

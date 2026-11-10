@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>富滇银行行情考点 · 笔试专项与系列总索引</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --ink:#1d2129; --ink-2:#4a5158; --ink-3:#828a94;
+  --line:#e3e6ea; --line-2:#eef0f3; --accent:#b3261e; --accent-2:#1a56a8;
+  --red:#c62828; --red-bg:#fff5f5; --sidebar:300px;
+  --font-serif:"Songti SC","STSong","SimSun","Source Han Serif SC",serif;
+  --font-sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-serif);font-size:16.5px;line-height:1.95;-webkit-font-smoothing:antialiased;}
+
+/* ---------- sidebar ---------- */
+#sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:var(--panel);
+  border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40}
+.sb-head{padding:18px 20px 12px;border-bottom:1px solid var(--line-2)}
+.sb-title{font-family:var(--font-sans);font-size:15px;font-weight:700;line-height:1.5;color:var(--ink)}
+.sb-sub{font-family:var(--font-sans);font-size:11.5px;color:var(--ink-3);margin-top:5px;letter-spacing:.3px}
+.sb-search{padding:12px 16px 10px}
+.sb-search input{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:6px;
+  font-family:var(--font-sans);font-size:12.5px;background:#fbfcfd;color:var(--ink);outline:none}
+.sb-search input:focus{border-color:#b9c6d6;background:#fff}
+#toc{flex:1;overflow-y:auto;padding:6px 10px 60px;scrollbar-width:thin}
+#toc a{display:block;font-family:var(--font-sans);text-decoration:none;color:var(--ink-2);
+  border-radius:5px;padding:5px 10px;line-height:1.5;border-left:2px solid transparent;transition:.14s}
+#toc a:hover{background:#f2f4f7;color:var(--ink)}
+.toc-l1{font-size:13.5px;font-weight:700;color:var(--ink);margin-top:12px;padding-top:7px!important}
+.toc-l2{font-size:12.5px;color:#384049;margin-left:10px}
+.toc-l3{font-size:12px;color:var(--ink-3);margin-left:22px;padding-top:3px!important;padding-bottom:3px!important}
+#toc a.active{background:#eaf1fb;color:var(--accent-2);border-left-color:var(--accent-2);font-weight:600}
+.toc-l1.active{color:var(--accent-2)}
+.sb-foot{padding:10px 16px;border-top:1px solid var(--line-2);font-family:var(--font-sans);
+  font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;align-items:center}
+.sb-foot button{font-family:var(--font-sans);font-size:11px;border:1px solid var(--line);
+  background:#fff;border-radius:5px;padding:3px 8px;cursor:pointer;color:var(--ink-2)}
+.sb-foot button:hover{background:#f2f4f7}
+
+/* ---------- main ---------- */
+#main{margin-left:var(--sidebar);min-height:100vh}
+#progress{position:fixed;top:0;left:var(--sidebar);right:0;height:2px;background:transparent;z-index:45}
+#progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2f6fd0,#b3261e)}
+#content{max-width:900px;margin:0 auto;padding:34px 46px 120px}
+
+/* cover */
+.cover{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:46px 48px 38px;margin-bottom:26px}
+.cover h1{font-family:var(--font-sans);font-size:31px;font-weight:800;margin:0 0 10px;letter-spacing:.5px}
+.cover .cv-sub{font-family:var(--font-sans);font-size:14px;color:var(--ink-3);margin-bottom:22px}
+.cv-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.cv-meta span{font-family:var(--font-sans);font-size:12px;background:#f2f4f7;color:var(--ink-2);
+  border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+.cv-note{font-family:var(--font-sans);font-size:12.5px;line-height:1.85;color:var(--ink-3);
+  border-top:1px dashed var(--line);padding-top:16px}
+.cv-note b{color:var(--ink-2)}
+
+/* headings */
+h1,h2,h3,h4,h5,h6{font-family:var(--font-sans);scroll-margin-top:14px}
+.c-h1{font-size:25px;font-weight:800;margin:52px 0 20px;padding:14px 18px;color:#fff;
+  background:linear-gradient(100deg,#1f3f6d,#2f6fd0);border-radius:8px;letter-spacing:.5px}
+.c-h2{font-size:20px;font-weight:700;margin:40px 0 16px;padding:9px 0 9px 14px;
+  border-left:5px solid var(--accent-2);color:#123;line-height:1.5}
+.c-h3{font-size:17px;font-weight:700;margin:32px 0 13px;padding:7px 12px;background:#eef3fb;
+  color:#173f75;border-radius:6px;border:1px solid #dde7f6}
+.c-h4{font-size:16px;font-weight:700;margin:24px 0 10px;color:#1d2129}
+.c-h5{font-size:15.5px;font-weight:600;margin:18px 0 8px;color:#2b3138}
+.c-h6{font-size:15px;font-weight:600;margin:14px 0 6px;color:var(--ink-2)}
+
+p{margin:0 0 12px;text-align:justify}
+p.li{margin:0 0 7px;padding-left:1.5em;text-indent:-1.5em}
+.r{color:var(--red);font-weight:600}
+u{text-decoration-color:#c96;font-weight:600;text-underline-offset:3px}
+
+/* callout */
+.callout{background:var(--red-bg);border:1px solid #f3d3d3;border-left:4px solid var(--red);
+  border-radius:6px;padding:11px 16px;margin:14px 0}
+.callout .co-tag{font-family:var(--font-sans);font-weight:700;color:var(--red);margin-bottom:2px}
+.callout p{margin:4px 0}
+p.co-lead{margin:13px 0 7px}
+
+/* tables */
+.tw{overflow-x:auto;margin:16px 0 22px;border:1px solid var(--line);border-radius:8px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:15px;table-layout:fixed}
+td{border:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.85}
+tr:first-child td{background:#f7f9fc}
+td p{margin:0 0 6px}
+td p:last-child{margin-bottom:0}
+td:empty{background:#fafbfc}
+
+/* figures */
+figure.fig{margin:20px 0 24px;padding:14px 16px 10px;border:1px solid var(--line);
+  border-radius:10px;background:#fff;text-align:center}
+figure.fig img{max-width:100%;height:auto;display:block;margin:0 auto;
+  image-rendering:-webkit-optimize-contrast}
+figure.fig figcaption{font-family:var(--font-sans);font-size:13px;color:var(--ink-2);
+  margin-top:10px;letter-spacing:.3px}
+figure.fig .figtext{text-align:left;border-top:1px dashed var(--line);margin-top:10px;
+  padding-top:8px}
+figure.fig .figtext p{margin:4px 0;font-size:14.5px;color:var(--ink-2)}
+figure.fig .figtext h1,figure.fig .figtext h2,figure.fig .figtext h3,
+figure.fig .figtext h4,figure.fig .figtext h5,figure.fig .figtext h6{
+  font-size:15px;margin:6px 0 2px}
+
+/* page marker */
+.pagebreak{position:relative;height:0;margin:0}
+.pg-mark{position:absolute;right:4px;top:-14px;font-family:var(--font-sans);font-size:10.5px;
+  color:#b9c0c8;background:var(--bg);padding:0 6px;letter-spacing:.5px}
+/* tools */
+#totop{position:fixed;right:26px;bottom:26px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;font-size:17px;color:var(--ink-2);display:none;z-index:50}
+#totop:hover{color:var(--accent-2);border-color:#b9c6d6}
+#menubtn{display:none;position:fixed;left:14px;top:12px;z-index:60;width:38px;height:34px;
+  border:1px solid var(--line);background:#fff;border-radius:6px;font-size:16px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(20,30,50,.1)}
+#mask{display:none;position:fixed;inset:0;background:rgba(20,28,40,.35);z-index:35}
+
+@media (max-width:900px){
+  :root{--sidebar:280px}
+  #menubtn{display:block}
+  #sidebar{transform:translateX(-100%);transition:transform .22s ease}
+  #sidebar.open{transform:none}
+  #main{margin-left:0}
+  #content{padding:22px 18px 90px}
+  .cover{padding:30px 24px 26px}
+  .cover h1{font-size:24px}
+  #progress{left:0}
+  #toc a.toc-l3{font-size:11.5px}
+}
+@media print{
+  #sidebar,#totop,#menubtn,#mask,#progress{display:none!important}
+  #main{margin:0}
+  #content{max-width:none;padding:0}
+  body{background:#fff;font-size:11pt}
+  .cover,.tw{break-inside:avoid}
+  .c-h1{background:#1f3f6d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .r,.callout .co-tag{color:var(--red)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<button id="menubtn" aria-label="目录">☰</button>
+<div id="mask"></div>
+<div id="progress"><i></i></div>
+
+<aside id="sidebar">
+  <div class="sb-head">
+    <div class="sb-title">富滇银行行情考点</div>
+    <div class="sb-sub">笔试专项 · 0-0 行情与系列总索引</div>
+  </div>
+  <div class="sb-search"><input id="q" type="search" placeholder="筛选目录关键词…"></div>
+  <nav id="toc">
+<a class="toc-l1" href="#s-第一节考情总览与系列索引" data-toc="0">第一节 考情总览与系列索引</a>
+<a class="toc-l2" href="#s-笔试模块与时间分配" data-toc="1">笔试模块与时间分配</a>
+<a class="toc-l2" href="#s-招聘流程与特殊政策" data-toc="2">招聘流程与特殊政策</a>
+<a class="toc-l2" href="#s-行情题的考法与拿分策略" data-toc="3">行情题的考法与拿分策略</a>
+<a class="toc-l2" href="#s-系列资料总索引" data-toc="4">系列资料总索引</a>
+<a class="toc-l1" href="#s-第二节行情速记卡必背" data-toc="5">第二节 行情速记卡（必背）</a>
+<a class="toc-l2" href="#s-行情必背速查表" data-toc="6">行情必背速查表</a>
+<a class="toc-l2" href="#s-数字年份与时间轴记忆法" data-toc="7">数字、年份与时间轴记忆法</a>
+<a class="toc-l1" href="#s-第三节银行百年行史" data-toc="8">第三节 银行百年行史</a>
+<a class="toc-l2" href="#s-旧富滇银行19121932" data-toc="9">旧富滇银行（1912—1932）</a>
+<a class="toc-l2" href="#s-富滇新银行19321950" data-toc="10">富滇新银行（1932—1950）</a>
+<a class="toc-l2" href="#s-行名由来与品牌传承" data-toc="11">行名由来与品牌传承</a>
+<a class="toc-l2" href="#s-新时代重组成立2007" data-toc="12">新时代重组成立（2007—）</a>
+<a class="toc-l3" href="#s-重组后大事记" data-toc="13">重组后大事记</a>
+<a class="toc-l1" href="#s-第四节治理高管与机构" data-toc="14">第四节 治理、高管与机构</a>
+<a class="toc-l2" href="#s-银行属性注册资本与股权结构" data-toc="15">银行属性、注册资本与股权结构</a>
+<a class="toc-l2" href="#s-高管班子截至2026" data-toc="16">高管班子（截至 2026）</a>
+<a class="toc-l2" href="#s-机构设置与经营布局" data-toc="17">机构设置与经营布局</a>
+<a class="toc-l1" href="#s-第五节经营数据与行业地位" data-toc="18">第五节 经营数据与行业地位</a>
+<a class="toc-l2" href="#s-资产负债规模" data-toc="19">资产负债规模</a>
+<a class="toc-l2" href="#s-资产质量盈利与资本" data-toc="20">资产质量、盈利与资本</a>
+<a class="toc-l2" href="#s-外部评级与全球排名" data-toc="21">外部评级与全球排名</a>
+<a class="toc-l2" href="#s-员工队伍" data-toc="22">员工队伍</a>
+<a class="toc-l1" href="#s-第六节战略与企业文化" data-toc="23">第六节 战略与企业文化</a>
+<a class="toc-l2" href="#s-战略定位与1234战略规划体系" data-toc="24">战略定位与"1234"战略规划体系</a>
+<a class="toc-l2" href="#s-常配套考察的云南时政表述" data-toc="25">常配套考察的云南时政表述</a>
+<a class="toc-l2" href="#s-企业文化表述一览必背" data-toc="26">企业文化表述一览（必背）</a>
+<a class="toc-l2" href="#s-标志行徽释义" data-toc="27">标志（行徽）释义</a>
+<a class="toc-l1" href="#s-第七节业务特色与招牌产品" data-toc="28">第七节 业务特色与招牌产品</a>
+<a class="toc-l2" href="#s-跨境金融最具差异化考点" data-toc="29">跨境金融（最具差异化考点）</a>
+<a class="toc-l2" href="#s-绿色金融文旅金融与普惠金融" data-toc="30">绿色金融、文旅金融与普惠金融</a>
+<a class="toc-l3" href="#s-招牌产品与服务" data-toc="31">招牌产品与服务</a>
+<a class="toc-l1" href="#s-第八节行情模拟试题" data-toc="32">第八节 行情模拟试题</a>
+<a class="toc-l2" href="#s-题目20道单选" data-toc="33">题目（20 道单选）</a>
+<a class="toc-l2" href="#s-答案与解析" data-toc="34">答案与解析</a>
+<a class="toc-l1" href="#s-附录信息来源与时效" data-toc="35">附录 · 信息来源与时效</a>
+<a class="toc-l2" href="#s-主要信息来源" data-toc="36">主要信息来源</a>
+<a class="toc-l2" href="#s-时效与使用提醒" data-toc="37">时效与使用提醒</a>
+  </nav>
+  <div class="sb-foot">
+    <span id="counter">—</span>
+    <button id="expand">展开全部</button>
+  </div>
+</aside>
+
+<main id="main">
+<div id="content">
+  <section class="cover">
+    <h1>富滇银行行情考点</h1>
+    <div class="cv-sub">富滇银行招聘笔试 · 本行情（行史、战略、文化、数据）专项 · 兼作本系列总索引</div>
+    <div class="cv-meta">
+      <span>共 8 节 + 附录</span><span>行情必背 60+ 条</span><span>模拟题 20 道（带解析）</span><span>官网 · 年报 · 公开报道整理</span><span>检索截至 2026-11</span><span>文字可复制</span>
+    </div>
+    <div class="cv-note">
+      <b>说明：</b>本册与其他几册（OCR 讲义）不同，系围绕<b>富滇银行本行情</b>这一笔试板块，依据富滇银行官网（www.fudian-bank.com）"走进富滇"栏目（简介、文化、标志、大事记）、历年公开招聘公告、年报及第三方评级／排名公开报道自行整理，全部信息源列于文末附录。
+      红色标注均为<b>高频行情考点</b>。<br>
+      <b>重要提醒：</b>行情类数据（资产规模、排名、高管、股东）逐年更新，考前请以官网与最新年报口径复核一遍（见附录"时效与使用提醒"）。
+    </div>
+  </section>
+
+<h1 id="s-第一节考情总览与系列索引" class="c-h1">第一节 考情总览与系列索引</h1>
+
+<div class="callout"><div class="co-tag"><span class="r">【为什么要单独准备"行情"】</span></div><p>富滇银行笔试的综合知识部分除经济、金融、会计、法律、管理等通用知识外，会考查<u><span class="r">本行基本信息（行情）</span></u>：创立年份、重组时间、银行定位、战略体系、企业文化口号、经营数据、跨境特色等。这类题<u><span class="r">全部是客观题、答案唯一、背了就是分</span></u>，是性价比最高的拿分区。</p></div>
+
+<h2 id="s-笔试模块与时间分配" class="c-h2">笔试模块与时间分配</h2>
+<div class="tw"><table><colgroup><col style="width:20%"><col style="width:44%"><col style="width:36%"></colgroup>
+<tr><td><p>模块</p></td><td><p>内容</p></td><td><p>说明</p></td></tr>
+<tr><td><p><u><span class="r">行测（EPI）</span></u></p></td><td><p>言语理解、数量关系、判断推理、资料分析</p></td><td><p>难度<u><span class="r">低于国考</span></u>，题量较大、拼速度</p></td></tr>
+<tr><td><p><u><span class="r">综合知识</span></u></p></td><td><p>经济学、金融学、会计、法律、管理、市场营销、时政，<b>以及富滇银行行情（本册内容）</b></p></td><td><p>行情题集中在本模块，见第三节至第七节</p></td></tr>
+<tr><td><p>英语</p></td><td><p>词汇、阅读理解等</p></td><td><p>难度约相当于大学英语四级以下</p></td></tr>
+<tr><td><p>性格测试</p></td><td><p>职业性格／心理测评</p></td><td><p><u><span class="r">不计入总分</span></u>，如实作答、前后一致即可</p></td></tr>
+</table></div>
+<p class="li">· 笔试总时长约 <u><span class="r">120 分钟</span></u>，题型以<u><span class="r">全客观题（单选为主）</span></u>呈现。以上模块划分与时长为历届考生回忆口径，各年度、各岗位（校招／社招、总行／分支行）可能有差异，<b>以当届准考证与公告为准</b>。</p>
+
+<h2 id="s-招聘流程与特殊政策" class="c-h2">招聘流程与特殊政策</h2>
+<p class="li">· <u><span class="r">校园招聘</span></u>常见流程：网申 → 笔试 → 面试 → 体检／背调 → 录用。2024 届校招公告明确：<u><span class="r">博士研究生可免笔试直接进入面试</span></u>。</p>
+<p class="li">· <u><span class="r">社会招聘</span></u>（2025 年公开招聘公告口径）流程：<u><span class="r">综合能力素质测评（笔试 + 初面）→ 性格测试 → 半结构化面试</span></u>，另有体检考察等环节。</p>
+<p class="li">· 招聘公告本身就是<b>行情题的直接题源</b>——官方公告里对富滇银行的"自我介绍"段（创立年份、唯一省属城商行、首家境外合资银行城商行、全球第六大华资银行等表述）几乎每年都被改写成考题。</p>
+
+<h2 id="s-行情题的考法与拿分策略" class="c-h2">行情题的考法与拿分策略</h2>
+<p class="li">· 常见命题方式：<b>年代排序／填空</b>（1912、2007、2014……）、<b>数字单选</b>（资产规模、网点数、排名、注册资本、持股比例）、<b>口号匹配</b>（企业精神／品牌价值／形象用语／愿景 四组互扰）、<b>"唯一／第一／最" 类定位判断</b>、<b>标志释义挑错</b>。</p>
+<p class="li">· 干扰项规律：年份题混入 1908／1911／1932／1950／2008；口号题把四组企业文化表述互换；排名题混入旧年度数据；股东题拿"云南省财政厅"当干扰项（<u><span class="r">第一大股东实为云南省投资控股集团有限公司</span></u>）。</p>
+<p class="li">· 拿分策略：先把第二节"速查表"整表背下，再读第三至七节补细节；最后刷第八节 20 道模拟题自测，错题回查对应小节。</p>
+
+<h2 id="s-系列资料总索引" class="c-h2">系列资料总索引</h2>
+<div class="tw"><table><colgroup><col style="width:16%"><col style="width:44%"><col style="width:40%"></colgroup>
+<tr><td><p>编号</p></td><td><p>文档</p></td><td><p>覆盖内容</p></td></tr>
+<tr><td><p><b>0-0（本册）</b></p></td><td><p><a href="0-0-富滇银行行情考点与系列索引.html">富滇银行行情考点与系列索引</a></p></td><td><p>富滇银行本行情 + 考情总览 + 本系列索引</p></td></tr>
+<tr><td><p>3-1</p></td><td><p><a href="3-1-货币与金融知识高频考点-基础.html">货币与金融知识高频考点（基础）</a></p></td><td><p>货币、信用、利率、金融机构与市场等基础知识</p></td></tr>
+<tr><td><p>3-2</p></td><td><p><a href="3-2-金融知识考点-高阶.html">金融知识考点（高阶）</a></p></td><td><p>货币制度、货币政策、金融监管等进阶考点</p></td></tr>
+<tr><td><p>3-3</p></td><td><p><a href="3-3-商业银行高频考点.html">商业银行高频考点</a></p></td><td><p>商业银行经营与管理、业务运营、市场营销、绩效等</p></td></tr>
+<tr><td><p>3-8</p></td><td><p><a href="3-8-经济-金融高频考点.html">经济·金融高频考点</a></p></td><td><p>经济学与金融学综合高频考点</p></td></tr>
+</table></div>
+<p class="li">· 备考顺序建议：<u><span class="r">本册（行情）</span></u> → 3-3（商业银行）→ 3-1 / 3-2 / 3-8（经济金融基础与进阶），行测试卷靠刷题提速，不依赖本系列。</p>
+
+<h1 id="s-第二节行情速记卡必背" class="c-h1">第二节 行情速记卡（必背）</h1>
+
+<h2 id="s-行情必背速查表" class="c-h2">行情必背速查表</h2>
+<div class="tw"><table><colgroup><col style="width:24%"><col style="width:44%"><col style="width:32%"></colgroup>
+<tr><td><p>维度</p></td><td><p>官方口径</p></td><td><p>备注／防坑</p></td></tr>
+<tr><td><p>品牌创立</p></td><td><p><u><span class="r">1912 年</span></u>（创<em>立</em>富滇银行，百年老字号）</p></td><td><p>1911 年 11 月前身"云南公钱局"成立，勿混</p></td></tr>
+<tr><td><p>现时点成立</p></td><td><p><u><span class="r">2007 年 12 月</span></u>，在原<u><span class="r">昆明市商业银行</span></u>基础上重组更名成立</p></td><td><p>批文：银监复〔2007〕622 号；成立大会 2007-12-30</p></td></tr>
+<tr><td><p>银行定位</p></td><td><p><u><span class="r">云南省唯一的省属城市商业银行</span></u>；云南省首家省级地方性股份制商业银行；<u><span class="r">"云南人民自己的银行"</span></u></p></td><td><p>"首家"讲时间、"唯一"讲现状，两句都是官方原文</p></td></tr>
+<tr><td><p>资产规模</p></td><td><p>截至 2025 年 12 月末，资产总额约 <u><span class="r">4300 亿元</span></u></p></td><td><p>官网简介口径；2024 年末为 4064.58 亿元</p></td></tr>
+<tr><td><p>机构网点</p></td><td><p><u><span class="r">193 家营业机构</span></u>，遍布<u><span class="r">云南省和重庆市</span></u></p></td><td><p>重庆是省外唯一设立分行的地区</p></td></tr>
+<tr><td><p>跨境第一</p></td><td><p>与老挝外贸大众银行合资设立<u><span class="r">老中银行</span></u>——<u><span class="r">全国第一家在境外设立合资银行的城商行</span></u></p></td><td><p>2014 年 1 月 22 日于万象开业</p></td></tr>
+<tr><td><p>历史地位</p></td><td><p>曾为<u><span class="r">全球第六大华资银行</span></u>（招聘公告原文）；历史上发行滇币、调控云南金融</p></td><td><p>"第六大"对应的是老富滇／富滇新银行时期</p></td></tr>
+<tr><td><p>信用评级</p></td><td><p><u><span class="r">云南省唯一外部主体信用评级 AAA 的地方法人银行</span></u></p></td><td><p>注意限定词"云南省内、地方法人"</p></td></tr>
+<tr><td><p>全球排名</p></td><td><p>《银行家》2025 年度"全球银行 1000 强"第 <u><span class="r">373 位</span></u>（2024 年度榜第 375 位，升 2 位、<u><span class="r">创历史新高</span></u>）</p></td><td><p>2024 年度榜较上年跃升 15 位；以当届口径为准</p></td></tr>
+<tr><td><p>注册资本</p></td><td><p><u><span class="r">66.80 亿元</span></u></p></td><td><p>年报口径；2019 年增资扩股募集 15 亿股</p></td></tr>
+<tr><td><p>第一大股东</p></td><td><p><u><span class="r">云南省投资控股集团有限公司，持股 14.97%</span></u>（实际控制人为云南省国资委）</p></td><td><p>年报称<b>无控股股东及实际控制人</b>；省财政厅≠第一大股东</p></td></tr>
+<tr><td><p>现任党政主官</p></td><td><p>党委书记、董事长<u><span class="r">代军</span></u>；行长<u><span class="r">曾晓松</span></u>（2025 年 6 月 20 日就任）</p></td><td><p>高管以官网"领导班子"页考前复核</p></td></tr>
+<tr><td><p>总行地址</p></td><td><p><u><span class="r">昆明市西山区西园路 1912 号</span></u></p></td><td><p>门牌号"1912"即致敬创立年份，常考</p></td></tr>
+<tr><td><p>客服热线</p></td><td><p><u><span class="r">96533</span></u>（0871-96533；境外／手机渠道 400-88-96533）</p></td><td><p>勿与 95533（建行）等混淆</p></td></tr>
+<tr><td><p>企业精神</p></td><td><p><u><span class="r">富民兴滇 · 朴实卓越</span></u></p></td><td rowspan="3"><p>三组口号最易互扰，务必对号入座</p></td></tr>
+<tr><td><p>品牌价值</p></td><td><p><u><span class="r">心以致远 · 行于维新</span></u></p></td></tr>
+<tr><td><p>形象用语</p></td><td><p><u><span class="r">更亲 · 更近 · 更可靠</span></u></p></td></tr>
+<tr><td><p>发展愿景</p></td><td><p><u><span class="r">立足云南、服务西南、面向全国、辐射南亚东南亚</span></u>的现代化、国际化、公众化的新型股份制商业银行</p></td><td><p>四个地理短语序 + 三个"化"，两个都要背全</p></td></tr>
+<tr><td><p>经营理念</p></td><td><p>以<u><span class="r">战略规划</span></u>为先导、<u><span class="r">风险控制</span></u>为基础、<u><span class="r">服务客户</span></u>为中心、<u><span class="r">规范管理</span></u>为手段、<u><span class="r">金融创新</span></u>为动力</p></td><td><p>五组"以…为…"，顺序关键词：先导/基础/中心/手段/动力</p></td></tr>
+<tr><td><p>战略体系</p></td><td><p>"<u><span class="r">1234</span></u>"战略规划体系（详见第六节）</p></td><td><p>基石＝零售；两翼＝产业＋普惠；三特色＝绿色＋文旅＋跨境；四支撑＝风控科技人才客户</p></td></tr>
+<tr><td><p>字号之妙</p></td><td><p>"富滇"之<u><span class="r">"滇"读 diān</span></u>；行名字号中"行"取 <u><span class="r">xíng／háng 双音之妙</span></u>（官方标志释义引申）</p></td><td><p>官网品牌文章爱考"其命维新"出处（《诗经》），品牌价值语源</p></td></tr>
+</table></div>
+
+<h2 id="s-数字年份与时间轴记忆法" class="c-h2">数字、年份与时间轴记忆法</h2>
+<p class="li">· 年份串记：<u><span class="r">1910</span></u>（大清银行入滇）→ <u><span class="r">1911.11</span></u>（云南公钱局）→ <u><span class="r">1912.2</span></u>(定名富滇银行) → <u><span class="r">1932.6.13</span></u>（旧行停业清理）→ <u><span class="r">1932.8.31</span></u>（富滇新银行成立）→ <u><span class="r">1950.3.8</span></u>（军管会接管）→ <u><span class="r">2007.12</span></u>（昆明市商业银行重组更名）→ <u><span class="r">2011.1.13</span></u>（泛亚卡首发）→ <u><span class="r">2014.1.22</span></u>（老中银行开业）→ <u><span class="r">2019</span></u>（增资 15 亿股）。</p>
+<p class="li">· 数字串记：<u><span class="r">193</span></u> 家网点、<u><span class="r">4300</span></u> 亿资产、<u><span class="r">373</span></u> 位、<u><span class="r">66.8</span></u> 亿注册资本、<u><span class="r">14.97%</span></u> 云投持股、<u><span class="r">AAA</span></u> 评级、<u><span class="r">96533</span></u> 客服、西园路<u><span class="r">1912</span></u> 号。口诀：<b>"一九一二开门，两零零七转身；一九三、四三零零、三七八联排（373/193/4300），六七两投（66.8 亿、14.97%）要 AAA。"</b></p>
+
+<h1 id="s-第三节银行百年行史" class="c-h1">第三节 银行百年行史</h1>
+<div class="callout"><div class="co-tag"><span class="r">【注】</span></div><p>富滇银行历史分<u><span class="r">三段</span></u>：旧富滇银行（1912—1932）→ 富滇新银行（1932—1950）→ 新时代富滇银行（2007— ）。"富滇银行"品牌一脉相承，但法律上是先后不同的主体；考试常在三段之间设置年份／事件错配干扰项。</p></div>
+
+<h2 id="s-旧富滇银行19121932" class="c-h2">旧富滇银行（1912—1932）</h2>
+<p class="li">· 1910 年（宣统二年），清廷派<u><span class="r">于子清</span></u>入滇筹办<u><span class="r">大清银行云南分行</span></u>，开滇省现代银行业先声。</p>
+<p class="li">· 辛亥革命光复后，1911 年 11 月云南军都督府组建<u><span class="r">云南公钱局</span></u>，承担金融与军政经费周转。</p>
+<p class="li">· <u><span class="r">1912 年 2 月</span></u>，云南公钱局改组定名为"<u><span class="r">富滇银行</span></u>"（曾拟名"<u><span class="r">富国银行</span></u>"，因须办"云南人民自己的银行"定名富滇），首任总理<u><span class="r">黄凤祥</span></u>、协理解永嘉；总行设于<u><span class="r">昆明威远街西口</span></u>，职工 79 人；资本总额原定 100 万元，实拨<u><span class="r">银元 8 万、纸币 26 万</span></u>。</p>
+<p class="li">· 旧行兼具<u><span class="r">发钞银行与代理省金库职能</span></u>，被称为"<u><span class="r">滇省金融机关之中心</span></u>"，历次发行滇币、调控云南金融，支撑辛亥革命后云南的军政与建设。</p>
+<p class="li">· 因滥发纸币、通货膨胀，1932 年 6 月 13 日旧富滇银行<u><span class="r">停业清理</span></u>——自 1912 年开办，历时<u><span class="r">20 年零 4 个月</span></u>。</p>
+
+<h2 id="s-富滇新银行19321950" class="c-h2">富滇新银行（1932—1950）</h2>
+<p class="li">· 1930 年龙云主政后设立<u><span class="r">"整理金融委员会"</span></u>筹设新行；<u><span class="r">1932 年 8 月 31 日富滇新银行成立</span></u>，9 月 1 日对外营业。号称资本<u><span class="r">半开银币 2000 万元，实有 1600 万元</span></u>。</p>
+<p class="li">· 李培炎、缪嘉铭、张至宝、徐绳祖等先后任总理／行长。其中<u><span class="r">缪嘉铭（贡庭）</span></u>主持整顿：实行<u><span class="r">外汇管制</span></u>、开办<u><span class="r">跟单押汇</span></u>、发行<u><span class="r">新滇币并划一币制</span></u>、停止越南纸币（越币）与法币在本省流通，与法国东方汇理银行在滇金融势力抗争——近代云南维护金融自主的代表事件。</p>
+<p class="li">· 抗战时期富滇新银行支持滇缅公路、云南大后方建设，滇币信誉随国局起落。<u><span class="r">1950 年 3 月 8 日</span></u>，昆明市军管会接管富滇新银行（其时债权大于债务）；相关职能并入人民银行体系，旧时代行史落幕。</p>
+
+<h2 id="s-行名由来与品牌传承" class="c-h2">行名由来与品牌传承</h2>
+<p class="li">· "富滇"二字取<u><span class="r">"富民兴滇"</span></u>之意，与今日企业精神"富民兴滇、朴实卓越"首尾呼应。</p>
+<p class="li">· 官方品牌释义引<u><span class="r">"周虽旧邦，其命维新"</span></u>（《诗经·大雅》）解释"心以致远、<u><span class="r">行于维新</span></u>"的品牌价值——百年老字号 + 持续创新，是品牌类简答题／单选题的标准口径。</p>
+<p class="li">· 2023 年启用的新总行办公地址门牌为<u><span class="r">西园路 1912 号</span></u>，以创立年份作门牌，属官网宣传点名的"品牌彩蛋"。</p>
+<p class="li">· 官方口径：历史上富滇（系）银行曾为<u><span class="r">全球第六大华资银行</span></u>（2025 年公开招聘公告原文）；近代发行滇币调控云南金融是其历史主线。</p>
+
+<h2 id="s-新时代重组成立2007" class="c-h2">新时代重组成立（2007— ）</h2>
+<p class="li">· 2007 年，云南省委、省政府决定以<u><span class="r">昆明市商业银行为基础</span></u>重组设立新的省属股份制商业银行。2007 年 12 月，原中国银监会作出<u><span class="r">《关于昆明市商业银行更名的批复》（银监复〔2007〕622 号）</span></u>，昆明市商业银行更名为<u><span class="r">富滇银行</span></u>；<u><span class="r">2007 年 12 月 30 日</span></u>举行成立大会——承继百年"富滇"老字号，成为<u><span class="r">云南省首家省级地方性股份制商业银行</span></u>，此后长期为<u><span class="r">云南省唯一的省属城市商业银行</span></u>。</p>
+<p class="li">· 重组后的定性：云南省属金融机构、独立法人城市商业银行，定位"<u><span class="r">云南人民自己的银行</span></u>"，立足云南、面向南亚东南亚辐射中心建设。</p>
+
+<h3 id="s-重组后大事记" class="c-h3">重组后大事记</h3>
+<div class="tw"><table><colgroup><col style="width:18%"><col style="width:82%"></colgroup>
+<tr><td><p>时间</p></td><td><p>事件</p></td></tr>
+<tr><td><p>2007.12.30</p></td><td><p><u><span class="r">昆明市商业银行更名富滇银行并举行成立大会</span></u></p></td></tr>
+<tr><td><p>2011.1.13</p></td><td><p><u><span class="r">泛亚卡首发</span></u>（西双版纳分行）——面向南亚东南亚的银联标准国际借记卡</p></td></tr>
+<tr><td><p>2014.1.22</p></td><td><p>与老挝外贸大众银行合资的<u><span class="r">老中银行在万象开业</span></u>——<u><span class="r">全国第一家在境外设立合资银行的城商行</span></u></p></td></tr>
+<tr><td><p>2019</p></td><td><p>增资扩股募集<u><span class="r">15 亿股</span></u>，补充核心资本近 45 亿元</p></td></tr>
+<tr><td><p>2022—</p></td><td><p>锚定云南省委"3815"战略发展目标，推进"1234"战略规划体系；落地"三大经济"、五篇大文章相关金融服务</p></td></tr>
+<tr><td><p>2025</p></td><td><p>《银行家》全球银行 1000 强升至<u><span class="r">第 373 位创历史新高</span></u>（2025 年度榜口径）</p></td></tr>
+</table></div>
+
+<h1 id="s-第四节治理高管与机构" class="c-h1">第四节 治理、高管与机构</h1>
+
+<h2 id="s-银行属性注册资本与股权结构" class="c-h2">银行属性、注册资本与股权结构</h2>
+<p class="li">· 性质：<u><span class="r">云南省属金融机构</span></u>（省属国有企业控股的地方法人银行）；法律形式为<u><span class="r">股份制城市商业银行</span></u>。</p>
+<p class="li">· <u><span class="r">注册资本 66.80 亿元</span></u>。2024 年末股东约 <u><span class="r">7701 名</span></u>（年报口径）；<u><span class="r">无控股股东及实际控制人</span></u>（年报明确表述，常考"是否国有控股/谁控股"的判断题）。</p>
+<p class="li">· 前几大持股（2024 年报口径）：<u><span class="r">云南省投资控股集团有限公司 14.97%（第一大股东）</span></u>；中国大唐集团财务有限公司 13.47%；昆明发展投资集团有限公司 8.49%；冠城大通 7.79%。云投集团实际控制人为<u><span class="r">云南省国资委</span></u>。</p>
+<div class="callout"><div class="co-tag"><span class="r">【易错】</span></div><p>问"第一大股东"：答<u><span class="r">云南省投资控股集团有限公司（云投集团）</span></u>，<b>不是</b>云南省财政厅；问"实际控制人"：严格口径是<b>无控股股东及实际控制人</b>（股权分散），但日常表述中"云南省国资委控制的省属城商行"成立——选项里两个都对时，按"官方公告原文"选。</p></div>
+
+<h2 id="s-高管班子截至2026" class="c-h2">高管班子（截至 2026）</h2>
+<div class="tw"><table><colgroup><col style="width:24%"><col style="width:30%"><col style="width:46%"></colgroup>
+<tr><td><p>职务</p></td><td><p>姓名</p></td><td><p>备注</p></td></tr>
+<tr><td><p>党委书记、董事长</p></td><td><p><u><span class="r">代军</span></u></p></td><td><p>官网"领导班子"页口径</p></td></tr>
+<tr><td><p>行长</p></td><td><p><u><span class="r">曾晓松</span></u></p></td><td><p>第六届董事会第十次临时会议聘任，<u><span class="r">2025 年 6 月 20 日就任</span></u>；有建设银行系统工作经历；2025 年 5 月／7 月监管批复其执行董事任职资格</p></td></tr>
+<tr><td><p>前任行长</p></td><td><p>刘寅</p></td><td><p>2023 年 7 月任行长，2024 年 12 月卸任——干扰项常拿前任当现任</p></td></tr>
+<tr><td><p>副行长（近年公开报道）</p></td><td><p>曹艳莉、董灵、那然、王克强、白建龙等</p></td><td><p>班子会调整，<b>考前务必以官网领导班子页为准</b></p></td></tr>
+</table></div>
+<p class="li">· 首任董事长夏蜀已于 2025 年 8 月通报被查（背景信息，一般不入题，了解即可）。</p>
+
+<h2 id="s-机构设置与经营布局" class="c-h2">机构设置与经营布局</h2>
+<p class="li">· 全行设<u><span class="r">总行 + 省内外分行</span></u>体系：省内覆盖昆明及主要州（市）分行；省外设有<u><span class="r">重庆分行（唯一省外分行）</span></u>。截至 2025 年 12 月末全行营业机构<u><span class="r">193 家</span></u>，遍布<u><span class="r">云南省和重庆市</span></u>。</p>
+<p class="li">· 总行驻地：<u><span class="r">昆明市西山区西园路 1912 号</span></u>，邮编 650100；官方客服：<u><span class="r">96533</span></u>（座机区号口径 0871-96533，另有 400-88-96533）。</p>
+<p class="li">· 分支机构<u><span class="r">不具有法人资格</span></u>，在总行授权范围内开展经营、承担民事责任由总行承担（与 3-3《商业银行高频考点》法人分支行知识点衔接考）。</p>
+<p class="li">· 集团成员：控股<u><span class="r">老中银行</span></u>（老挝）；曾发起设立村镇银行（富系滇源村镇银行类）——以年报"参股／控股子行"口径为准。</p>
+
+<h1 id="s-第五节经营数据与行业地位" class="c-h1">第五节 经营数据与行业地位</h1>
+<div class="callout"><div class="co-tag"><span class="r">【注】</span></div><p>数据类考题只考<u><span class="r">量级与位次</span></u>（多少亿、第几位、什么评级），不要求精确到小数。记<b>带下划线的整数口径</b>即可；表中不同年度数据互为干扰项，务必连时间一起记。</p></div>
+
+<h2 id="s-资产负债规模" class="c-h2">资产负债规模</h2>
+<div class="tw"><table><colgroup><col style="width:30%"><col style="width:24%"><col style="width:24%"><col style="width:22%"></colgroup>
+<tr><td><p>指标</p></td><td><p>2023 年末</p></td><td><p>2024 年末</p></td><td><p>2025 年末</p></td></tr>
+<tr><td><p>资产总额</p></td><td><p>约 3740 亿元</p></td><td><p><u><span class="r">4064.58 亿元（+8.51%）</span></u></p></td><td><p><u><span class="r">约 4300 亿元（官网简介）</span></u></p></td></tr>
+<tr><td><p>存款余额</p></td><td><p>约 2504 亿元</p></td><td><p>约 2797 亿元</p></td><td><p>约 2952 亿元</p></td></tr>
+<tr><td><p>贷款余额</p></td><td><p>约 2132 亿元</p></td><td><p>约 2260.8 亿元</p></td><td><p>约 2349 亿元</p></td></tr>
+<tr><td><p>营业机构</p></td><td><p>—</p></td><td><p>—</p></td><td><p><u><span class="r">193 家（云南 + 重庆）</span></u></p></td></tr>
+</table></div>
+<p class="li">· 存款为立行之本、贷款投向侧重服务云南<u><span class="r">"三大经济"</span></u>（资源经济、园区经济、口岸经济）与地方重大项目（口径见第六节）。</p>
+
+<h2 id="s-资产质量盈利与资本" class="c-h2">资产质量、盈利与资本</h2>
+<div class="tw"><table><colgroup><col style="width:40%"><col style="width:28%"><col style="width:32%"></colgroup>
+<tr><td><p>指标</p></td><td><p>2024 年末</p></td><td><p>2025 年末（媒体引述年报）</p></td></tr>
+<tr><td><p>不良贷款率</p></td><td><p>1.97%</p></td><td><p><u><span class="r">1.64%（连续改善）</span></u></p></td></tr>
+<tr><td><p>拨备覆盖率</p></td><td><p>202.33%</p></td><td><p><u><span class="r">228.55%</span></u></p></td></tr>
+<tr><td><p>净息差</p></td><td><p>1.58%</p></td><td><p>1.32%（行业性收窄）</p></td></tr>
+<tr><td><p>核心一级资本充足率</p></td><td><p>8.15%</p></td><td><p>8.04%</p></td></tr>
+</table></div>
+<p class="li">· 监管指标记忆重点：不良率<u><span class="r">低于 2% 且逐年下降</span></u>、拨备覆盖率<u><span class="r">站上 200%</span></u>——材料类客观题爱拿"不良率上升／拨备不足 150%"做错误选项。</p>
+
+<h2 id="s-外部评级与全球排名" class="c-h2">外部评级与全球排名</h2>
+<p class="li">· 外部主体信用评级：<u><span class="r">AAA</span></u>，为<u><span class="r">云南省唯一获 AAA 外部主体评级的地方法人银行</span></u>（评级展望稳定，以当期评级报告为准）。</p>
+<p class="li">· 英国《银行家》（The Banker）"全球银行 1000 强"：<u><span class="r">2025 年度榜第 373 位</span></u>，较上年（第 375 位）上升 2 位、<u><span class="r">跻身历史新高</span></u>；2024 年度榜较此前跃升 15 位（第 375 位）；2026 年发布的最新一榜位次回落（媒体口径下跌约 30 位）——若考题用最新榜，以当届公告／官网为准，本册按<b>官方招聘公告引用的 373 位</b>为备考口径。</p>
+<p class="li">· 监管评级居全国城商行<u><span class="r">较好的档位</span></u>（历年口径"城商行监管评级前列"，具体级差不作硬考点）。</p>
+<p class="li">· 此类"排名 + 位数"最考搭配：<b>榜名（《银行家》全球银行 1000 强）× 年度 × 位次</b>三要素对齐，单选只考其一。</p>
+
+<h2 id="s-员工队伍" class="c-h2">员工队伍</h2>
+<p class="li">· 2024 年报口径：全行<u><span class="r">正式在职员工 4231 人</span></u>，另劳务派遣 237 人、离退休 414 人。员工总数为百位量级题，记 <u><span class="r">"四千二百余人"</span></u>即可。</p>
+<p class="li">· 招聘常态化规模每年数百人（校招 + 社招），公告发布渠道：官网"诚聘英才"专栏与云南省属企业招聘统一渠道。</p>
+
+<h1 id="s-第六节战略与企业文化" class="c-h1">第六节 战略与企业文化</h1>
+<div class="callout"><div class="co-tag"><span class="r">【最高频】</span></div><p>本册<b>口号、战略类表述是历年行情题出题密度最高区</b>，务必做到"给前半句能接后半句、给口号能说出类别（精神／价值观／用语／愿景）"。</p></div>
+
+<h2 id="s-战略定位与1234战略规划体系" class="c-h2">战略定位与"1234"战略规划体系</h2>
+<p class="li">· 战略总定位：坚持"<u><span class="r">云南人民自己的银行</span></u>"，服务云南经济社会发展大局，主动融入<u><span class="r">面向南亚东南亚辐射中心</span></u>建设。</p>
+<p class="li">· <u><span class="r">"1234"战略规划体系</span></u>（2025 年公开招聘公告原文表述，必须整段背）：</p>
+<div class="tw"><table><colgroup><col style="width:12%"><col style="width:30%"><col style="width:58%"></colgroup>
+<tr><td><p>数字</p></td><td><p>名称</p></td><td><p>内容</p></td></tr>
+<tr><td><p><u><span class="r">1</span></u></p></td><td><p>一个基石</p></td><td><p><u><span class="r">零售业务</span></u>是立行基石</p></td></tr>
+<tr><td><p><u><span class="r">2</span></u></p></td><td><p>两翼</p></td><td><p><u><span class="r">产业金融、普惠金融</span></u>两翼并进</p></td></tr>
+<tr><td><p><u><span class="r">3</span></u></p></td><td><p>三大特色</p></td><td><p><u><span class="r">绿色金融、文旅金融、跨境金融</span></u>差异化发展</p></td></tr>
+<tr><td><p><u><span class="r">4</span></u></p></td><td><p>四大支撑</p></td><td><p><u><span class="r">风控、科技、人才、客户</span></u>四大支撑体系</p></td></tr>
+</table></div>
+<p class="li">· 公告同时提及培育"<u><span class="r">5+2</span></u>"特色领域：官方公开资料未逐项定义其内容，<b>考试若考，直接引用公告原文即可，切勿自行编造五项</b>（旧宣传口径曾有"绿色、旅游、跨境、普惠、数字"五大特色板块，可作背景理解）。</p>
+
+<h2 id="s-常配套考察的云南时政表述" class="c-h2">常配套考察的云南时政表述</h2>
+<p class="li">· 金融"五篇大文章"（2023 年中央金融工作会议提出，富滇年报／公告高频引用）：<u><span class="r">科技金融、绿色金融、普惠金融、养老金融、数字金融</span></u>。</p>
+<p class="li">· 云南省"三大经济"（省委经济工作主线，富滇服务大局的落点）：<u><span class="r">资源经济、园区经济、口岸经济</span></u>。干扰项常用"数字经济、文旅经济、边民经济"充数。</p>
+<p class="li">· 云南省委"<u><span class="r">3815</span></u>"战略发展目标（省委十一届三次全会 2022 年 11 月决定）：<u><span class="r">三年上台阶（2023—2025）、八年大发展（2023—2030）、十五年大跨越（2021—2035）</span></u>，确保与全国同步基本实现社会主义现代化。富滇公告明确"锚定'3815'战略发展目标"。</p>
+
+<h2 id="s-企业文化表述一览必背" class="c-h2">企业文化表述一览（必背）</h2>
+<div class="tw"><table><colgroup><col style="width:22%"><col style="width:52%"><col style="width:26%"></colgroup>
+<tr><td><p>类别</p></td><td><p>标准表述</p></td><td><p>记忆点</p></td></tr>
+<tr><td><p>发展愿景</p></td><td><p><u><span class="r">立足云南、服务西南、面向全国、辐射南亚东南亚的现代化、国际化、公众化的新型股份制商业银行</span></u></p></td><td><p>四地理 + 三"化"</p></td></tr>
+<tr><td><p>企业精神</p></td><td><p><u><span class="r">富民兴滇 · 朴实卓越</span></u></p></td><td><p>嵌"富、滇"二字</p></td></tr>
+<tr><td><p>品牌价值</p></td><td><p><u><span class="r">心以致远 · 行于维新</span></u></p></td><td><p>语出"其命维新"</p></td></tr>
+<tr><td><p>形象用语</p></td><td><p><u><span class="r">更亲 · 更近 · 更可靠</span></u></p></td><td><p>三"更"排比</p></td></tr>
+<tr><td><p>经营理念</p></td><td><p>以战略规划为先导、风险控制为基础、服务客户为中心、规范管理为手段、金融创新为动力</p></td><td><p>先导/基础/中心/手段/动力</p></td></tr>
+<tr><td><p>服务／客户观</p></td><td><p><u><span class="r">一切以客户为中心，客户满意是第一标准</span></u></p></td><td><p>新时代文化"服务"条</p></td></tr>
+</table></div>
+<p class="li">· <u><span class="r">新时代文化要素六词</span></u>（官网企业文化页原文归纳）：<u><span class="r">合规</span></u>——从"要我合规"到"我要合规"；<u><span class="r">团结</span></u>——全行一盘棋；<u><span class="r">拼搏</span></u>——敢为人先、咬定青山不放松；<u><span class="r">创新</span></u>——突破定式思维、工作惯性、路径依赖；<u><span class="r">奉献</span></u>；<u><span class="r">服务</span></u>——一切以客户为中心，把客户满意作为第一标准。六词以"社会主义核心价值观在富滇的落地表达"引出，多选题可能整组考。</p>
+
+<h2 id="s-标志行徽释义" class="c-h2">标志（行徽）释义</h2>
+<p class="li">· 行徽以<u><span class="r">"FD"</span></u>（富滇拼音首字母）为骨架，官方释义六点：</p>
+<p class="li">① 取"<u><span class="r">F、D</span></u>"两字母变形，即"富滇"汉语拼音首字母；</p>
+<p class="li">② 造型源出<u><span class="r">中国古钱币——方孔圆钱的局部</span></u>，昭示金融属性与百年老字号传承；</p>
+<p class="li">③ 中部形似<u><span class="r">一只振翅飞鸟</span></u>，寓意腾飞、向上的发展态势；</p>
+<p class="li">④ 线条循环往复、首尾贯通，喻银行业"<u><span class="r">融通</span></u>"本质（资金融通、连绵不绝）；</p>
+<p class="li">⑤ 直线与弧线相合，取"<u><span class="r">天圆地方</span></u>"的中国传统审美；</p>
+<p class="li">⑥ 整体笔画粗壮、重心稳固，传递<u><span class="r">诚信、安全</span></u>的行业品格。</p>
+<p class="li">· 附加官方玩梗点：行名"<b>富滇银行</b>"之"行"暗含 <u><span class="r">xíng（行动）与 háng（行业）双音</span></u>之妙，与"行于维新"呼应——品牌类选择题的"优雅干扰"多出自此类文章。</p>
+<div class="callout"><div class="co-tag"><span class="r">【易错】</span></div><p>标志释义<b>挑非题</b>常见错误选项：茶马古道、孔雀／大象（云南意象但<u><span class="r">官方释义里没有</span></u>）、滇池水波等——只认上述六条。</p></div>
+
+<h1 id="s-第七节业务特色与招牌产品" class="c-h1">第七节 业务特色与招牌产品</h1>
+
+<h2 id="s-跨境金融最具差异化考点" class="c-h2">跨境金融（最具差异化考点）</h2>
+<p class="li">· <u><span class="r">老中银行</span></u>：富滇银行与<u><span class="r">老挝外贸大众银行</span></u>合资，2014 年 1 月 22 日在<u><span class="r">万象</span></u>开业，是<u><span class="r">全国第一家在境外设立合资银行的城商行</span></u>；富滇为控股股东（年报口径持股 60.13%，2025 年增资后媒体报道持股 68.65%——选择题按题干时间点与来源口径选，"控股"二字不会错）。老中银行是"一带一路"在澜湄区域金融合作的标志性成果，也是富滇跨境业务的主平台。</p>
+<p class="li">· 云南省<u><span class="r">唯一与越南、老挝、缅甸三国银行均建立人民币现钞／直接清算合作</span></u>的银行（面向南亚东南亚人民币流通区域性金融中心建设主力行）。</p>
+<p class="li">· <u><span class="r">中老铁路</span></u>沿线布局网点<u><span class="r">18 家（含境外 2 家）</span></u>；与老中银行联动推出"<u><span class="r">跨境通</span></u>"——人民币跨境实时结算，服务边民互市与贸易企业。</p>
+<p class="li">· 全省 <u><span class="r">18 个口岸的边民互市电子结算服务实现全覆盖</span></u>；2026 年上半年边民结算量约 53 亿元（媒体口径，量级考点：记"数十亿元、半年"）。</p>
+<p class="li">· 跨境品牌产品：<u><span class="r">泛亚卡</span></u>（2011 年 1 月 13 日首发）、跨境人民币结算、边贸外汇业务等。</p>
+
+<h2 id="s-绿色金融文旅金融与普惠金融" class="c-h2">绿色金融、文旅金融与普惠金融</h2>
+<p class="li">· 对应"三大特色"战略：绿色金融（服务碳达峰碳中和、绿色信贷品牌"流动绿金"类宣传）、文旅金融（旅游金融特色产品"<u><span class="r">金旅贷</span></u>"，累计投放约 4.98 亿元至 2026 年中——量级考点记"近 5 亿"）、普惠金融（园区金融、支持"三大经济"，设立<u><span class="r">园区经济产业基金 20 亿元</span></u>、出台支持"三大经济"九十二条措施）。</p>
+
+<h3 id="s-招牌产品与服务" class="c-h3">招牌产品与服务</h3>
+<p class="li">· 零售／普惠：<u><span class="r">富滇快贷</span></u>（线上消费信贷）、"富滇银行"手机银行、惠民惠农财政补贴"一卡通"代理等。</p>
+<p class="li">· 对公／产业：园区贷、供应链金融、"三大经济"专项服务方案。</p>
+<p class="li">· 财富／借记：<u><span class="r">富滇财富</span></u>理财系列、<u><span class="r">泛亚卡</span></u>（银联标准、面向南亚东南亚多币种）、借记卡"富"系列产品。</p>
+<p class="li">· 渠道与客服：<u><span class="r">96533</span></u>；官网 www.fudian-bank.com；总行西园路 1912 号。产品名可能迭代，选择题以公告／官网用词为准。</p>
+
+<h1 id="s-第八节行情模拟试题" class="c-h1">第八节 行情模拟试题</h1>
+
+<h2 id="s-题目20道单选" class="c-h2">题目（20 道单选）</h2>
+<p class="li">1. 富滇银行品牌创立于哪一年？A.1908 B.1911 C.1912 D.1932</p>
+<p class="li">2. 2007 年 12 月，富滇银行是在哪家机构基础上重组更名成立的？A.云南省商业银行 B.昆明市商业银行 C.昆明市农村信用社联合社 D.东陆银行</p>
+<p class="li">3. 下列关于富滇银行"地位／第一"的表述，<b>错误</b>的是：A.云南省唯一的省属城市商业银行 B.云南省首家省级地方性股份制商业银行 C.全国第一家发行信用卡的商业银行 D.全国第一家在境外设立合资银行的城商行</p>
+<p class="li">4. 富滇银行的企业精神是：A.心以致远、行于维新 B.更亲、更近、更可靠 C.富民兴滇、朴实卓越 D.立足云南、服务西南</p>
+<p class="li">5. "心以致远，行于维新"是富滇银行的：A.企业精神 B.品牌价值表述 C.服务口号 D.发展愿景</p>
+<p class="li">6. "更亲、更近、更可靠"是富滇银行的：A.品牌价值 B.企业精神 C.形象（服务）用语 D.经营理念</p>
+<p class="li">7. 下列<b>不属于</b>官方行徽释义要素的是：A."FD"字母变形 B.方孔圆钱（中国古币）局部 C.振翅飞鸟 D.茶马古道马帮图腾</p>
+<p class="li">8. 截至 2025 年 12 月末，全行营业机构共约多少家？A.180 B.185 C.193 D.200</p>
+<p class="li">9. 截至 2025 年 12 月末，富滇银行资产规模约为：A.3740 亿元 B.4064 亿元 C.4300 亿元 D.5000 亿元</p>
+<p class="li">10. 《银行家》"全球银行 1000 强"2025 年度榜单中富滇银行位居：A.第 373 位 B.第 375 位 C.第 383 位 D.第 403 位</p>
+<p class="li">11. 富滇银行外部主体信用评级及地位是：A.AAA，云南省唯一 AAA 地方法人银行 B.AA+，西南第一 C.AA，全省第二 D.AAA，全国城商行最高</p>
+<p class="li">12. 富滇银行与外贸大众银行合资设立老中银行，所在国家及开业时间是：A.缅甸·2013 年 B.老挝·2014 年 1 月 C.泰国·2014 年 D.越南·2015 年</p>
+<p class="li">13. 富滇银行注册资本为：A.56.8 亿元 B.66.80 亿元 C.81.5 亿元 D.100 亿元</p>
+<p class="li">14. 富滇银行第一大股东是：A.云南省财政厅 B.云南省投资控股集团有限公司 C.中国大唐集团财务公司 D.昆明发展投资集团</p>
+<p class="li">15. "1234"战略规划体系中"一个基石"指的是：A.公司业务 B.零售业务 C.跨境业务 D.金融市场业务</p>
+<p class="li">16. 云南省"3815"战略发展目标中"8"的含义是：A.八年大发展（2023—2030）B.八年翻两番（2022—2030）C.八年上台阶（2023—2031）D.2038 年基本实现现代化</p>
+<p class="li">17. 下列<b>不属于</b>金融"五篇大文章"的是：A.科技金融 B.绿色金融 C.文旅金融 D.养老金融</p>
+<p class="li">18. 下列<b>不属于</b>云南省"三大经济"的是：A.资源经济 B.园区经济 C.口岸经济 D.数字经济</p>
+<p class="li">19. 富滇银行泛亚卡首发的时间是：A.2011 年 1 月 B.2014 年 1 月 C.2007 年 12 月 D.2019 年 12 月</p>
+<p class="li">20. 1912 年成立的旧富滇银行停业清理的时间是：A.1932 年 6 月 13 日 B.1932 年 8 月 31 日 C.1950 年 3 月 8 日 D.1930 年</p>
+
+<h2 id="s-答案与解析" class="c-h2">答案与解析</h2>
+<div class="tw"><table><colgroup><col style="width:8%"><col style="width:8%"><col style="width:84%"></colgroup>
+<tr><td><p>题</p></td><td><p>答案</p></td><td><p>解析（错项辨析）</p></td></tr>
+<tr><td><p>1</p></td><td><p><b>C</b></p></td><td><p>品牌创立 1912 年（2 月定名）。1911 是云南公钱局成立，1932 是旧行停业／新行成立之年。</p></td></tr>
+<tr><td><p>2</p></td><td><p><b>B</b></p></td><td><p>昆明市商业银行（银监复〔2007〕622 号批复更名）。"云南省商业银行"为虚构名称。</p></td></tr>
+<tr><td><p>3</p></td><td><p><b>C</b></p></td><td><p>富滇是首家泛亚卡（区域性国际卡）首发行之一，但"全国第一家发行信用卡的商业银行"是中行 1985 年，张冠李戴。其余三项均为官方原文。</p></td></tr>
+<tr><td><p>4</p></td><td><p><b>C</b></p></td><td><p>企业精神＝富民兴滇、朴实卓越。A 是品牌价值，B 是形象用语，D 是愿景开头。</p></td></tr>
+<tr><td><p>5</p></td><td><p><b>B</b></p></td><td><p>品牌价值"心以致远 行于维新"，语源"其命维新"。</p></td></tr>
+<tr><td><p>6</p></td><td><p><b>C</b></p></td><td><p>形象（服务）用语"更亲 更近 更可靠"。</p></td></tr>
+<tr><td><p>7</p></td><td><p><b>D</b></p></td><td><p>官方释义六条：FD 字母、方孔圆钱、飞鸟、循环融通、天圆地方、粗壮表诚信安全；无茶马古道元素。</p></td></tr>
+<tr><td><p>8</p></td><td><p><b>C</b></p></td><td><p>官网简介：193 家营业机构，遍布云南省和重庆市。</p></td></tr>
+<tr><td><p>9</p></td><td><p><b>C</b></p></td><td><p>官网简介"4300 亿元"（2025 年末）。B 是 2024 年末口径，为本题主干扰项。</p></td></tr>
+<tr><td><p>10</p></td><td><p><b>A</b></p></td><td><p>2025 年度榜 373 位、创历史新高；375 是 2024 年度榜。</p></td></tr>
+<tr><td><p>11</p></td><td><p><b>A</b></p></td><td><p>"AAA、云南省唯一外部主体信用评级的地方法人银行"为官方口径；D 错在"全国城商行最高"。</p></td></tr>
+<tr><td><p>12</p></td><td><p><b>B</b></p></td><td><p>老中银行（老挝外贸大众银行合资）2014-01-22 万象开业；注意与"泛亚卡首发 2011"区分。</p></td></tr>
+<tr><td><p>13</p></td><td><p><b>B</b></p></td><td><p>年报注册资本 66.80 亿元。</p></td></tr>
+<tr><td><p>14</p></td><td><p><b>B</b></p></td><td><p>云投集团 14.97% 第一大股东；大唐财务 13.47% 是第二大股东（干扰项）。注意年报同时表述"无控股股东及实际控制人"。</p></td></tr>
+<tr><td><p>15</p></td><td><p><b>B</b></p></td><td><p>1 基石＝零售；2 翼＝产业＋普惠；3 特色＝绿色＋文旅＋跨境；4 支撑＝风控、科技、人才、客户。</p></td></tr>
+<tr><td><p>16</p></td><td><p><b>A</b></p></td><td><p>3815＝三年上台阶（2023—2025）、八年大发展（2023—2030）、十五年大跨越（2021—2035）。</p></td></tr>
+<tr><td><p>17</p></td><td><p><b>C</b></p></td><td><p>五篇大文章＝科技、绿色、普惠、养老、数字；"文旅"是本行特色板块而非五篇大文章。</p></td></tr>
+<tr><td><p>18</p></td><td><p><b>D</b></p></td><td><p>三大经济＝资源、园区、口岸。</p></td></tr>
+<tr><td><p>19</p></td><td><p><b>A</b></p></td><td><p>2011 年 1 月 13 日西双版纳分行首发；2014-01-22 是老中银行开业日。</p></td></tr>
+<tr><td><p>20</p></td><td><p><b>A</b></p></td><td><p>1932-06-13 旧行停业清理；B 是富滇新银行成立日，C 是 1950 年军管会接管新银行。</p></td></tr>
+</table></div>
+<p class="li">· 刷题目标：行情题 20 题至少对 17 题（85%）方算过关；错题回查第三节—第七节对应标红段落。</p>
+
+<h1 id="s-附录信息来源与时效" class="c-h1">附录 · 信息来源与时效</h1>
+
+<h2 id="s-主要信息来源" class="c-h2">主要信息来源</h2>
+<p class="li">· 富滇银行官网（www.fudian-bank.com）："走进富滇"之<u><span class="r">富滇简介</span></u>（规模、网点、定位、老中银行、AAA、373 位口径）、<u><span class="r">富滇文化</span></u>／<u><span class="r">价值观</span></u>页（愿景、经营理念、品牌语、企业精神、新时代文化要素）、<u><span class="r">标志释义</span></u>页（行徽六点释义）、<u><span class="r">富滇大事记</span></u>（1910—2019 史实）、百年回眸系列文章。</p>
+<p class="li">· 富滇银行<u><span class="r">2025 年公开招聘公告</span></u>（"1234"战略规划体系、"5+2"特色领域、"首家省级地方性股份制商业银行"、"全球第六大华资银行"、社招流程原文）；2024 年校园招聘公告（博士免笔试）。</p>
+<p class="li">· <u><span class="r">2023—2025 年度报告</span></u>（资产 4064.58 亿→约 4298 亿、存款贷款、不良率 1.97%→1.64%、拨备 202.33%→228.55%、净息差、核心一级、员工 4231 人、注册资本 66.80 亿、股权结构、老中银行持股 60.13%）。</p>
+<p class="li">· 云南省资信评级机构<u><span class="r">2025 年度主体信用评级报告</span></u>（AAA／稳定）；英国《银行家》2024—2026 年度全球银行 1000 强榜单及财经媒体报道（375 位→373 位及最新回落幅度）。</p>
+<p class="li">· 富滇银行官网"总行领导班子"信息、监管批复公告（曾晓松行长就任等人事信息）。</p>
+<p class="li">· 行测考情与性格测试不计分等模块信息来自<u><span class="r">历届考生网络回忆</span></u>（公考类网站汇总），非官方发布，仅作备考安排参考。</p>
+
+<h2 id="s-时效与使用提醒" class="c-h2">时效与使用提醒</h2>
+<p class="li">· 本册事实与数据<u><span class="r">检索／整理截至 2026 年 11 月</span></u>。资产规模、全球排名、高管、持股比例、产品名等均为动态信息，<b>考前 1—2 周务必重查官网"走进富滇"与最新年报／公告</b>，凡与本册不一致以官方最新发布为准。</p>
+<p class="li">· 若当届公告出现新表述（如战略提法迭代、更名口号、"5+2"被展开定义），以公告原文为唯一答题口径——本册已在相应位置标注"未公开定义、勿自行编造"。</p>
+<p class="li">· 标注"媒体口径"的数字（如 2025 年末存款贷款、边民结算 53 亿、68.65%）源自财经报道对年报／公告的转述，选择题以官网／年报原文优先；两者冲突时记住<b>量级 + 时间</b>即可覆盖绝大多数考法。</p>
+</div>
+</main>
+
+<button id="totop" title="回到顶部">↑</button>
+<script>
+(function(){
+  var toc=document.getElementById('toc'), links=[].slice.call(toc.querySelectorAll('a'));
+  var content=document.getElementById('content');
+  var bar=document.querySelector('#progress i');
+  var totop=document.getElementById('totop');
+  var counter=document.getElementById('counter');
+
+  // progress + back to top
+  function onScroll(){
+    var h=content.scrollHeight||document.body.scrollHeight;
+    var top=window.scrollY||document.documentElement.scrollTop;
+    bar.style.width=Math.min(100,top/(h-window.innerHeight||1)*100)+'%';
+    totop.style.display=top>500?'block':'none';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // scrollspy
+  var heads=[].slice.call(document.querySelectorAll('h1[id],h2[id],h3[id]'));
+  var map={};
+  heads.forEach(function(h){map[h.id]=h;});
+  var current=null;
+  function spy(){
+    var best=null,bestTop=-1e9;
+    var probe=window.scrollY+90;
+    heads.forEach(function(h){
+      var t=h.getBoundingClientRect().top+window.scrollY;
+      if(t<=probe&&t>bestTop){bestTop=t;best=h;}
+    });
+    if(!best)return;
+    if(best.id===current)return;
+    current=best.id;
+    links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+current);});
+    var act=toc.querySelector('a.active');
+    if(act){
+      var tb=toc.getBoundingClientRect(),ab=act.getBoundingClientRect();
+      if(ab.top<tb.top+40||ab.bottom>tb.bottom-40)
+        toc.scrollTop+=ab.top-tb.top-toc.clientHeight/2;
+    }
+  }
+  window.addEventListener('scroll',spy,{passive:true});
+  window.addEventListener('resize',spy);spy();
+
+  // search filter
+  var q=document.getElementById('q');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase();
+    links.forEach(function(a){
+      var hit=!v||a.textContent.toLowerCase().indexOf(v)>=0;
+      a.style.display=hit?'':'none';
+      if(hit&&v){a.classList.add('hit');}
+    });
+    counter.textContent=links.filter(function(a){return a.style.display!=='none';}).length+' / '+links.length;
+  });
+  counter.textContent=links.length+' 项';
+
+  // mobile drawer
+  var sb=document.getElementById('sidebar'),mask=document.getElementById('mask');
+  document.getElementById('menubtn').onclick=function(){sb.classList.toggle('open');mask.style.display=sb.classList.contains('open')?'block':'none';};
+  mask.onclick=function(){sb.classList.remove('open');mask.style.display='none';};
+  toc.addEventListener('click',function(e){if(e.target.tagName==='A'&&window.innerWidth<=900){sb.classList.remove('open');mask.style.display='none';}});
+
+  totop.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+
+  // toggle: collapse chapters
+  var exp=document.getElementById('expand'),collapsed=false;
+  exp.onclick=function(){
+    collapsed=!collapsed;
+    links.forEach(function(a){
+      var l=a.className.indexOf('toc-l1')>=0?1:(a.className.indexOf('toc-l2')>=0?2:3);
+      if(l===3)a.style.display=collapsed?'none':'';
+      if(l===2)a.style.display=collapsed?'none':'';
+    });
+    exp.textContent=collapsed?'显示全部':'仅看章节目';
+  };
+})();
+</script>
+</body>
+</html>

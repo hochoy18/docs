@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>数学运算与思维策略类题型解题技巧讲义</title>
+<meta name="description" content="数学运算与思维策略类题型解题技巧讲义">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b4232a'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle' fill='white' font-family='sans-serif'%3E数%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --fg:#1f2328; --muted:#6b7280;
+  --border:#e3e6ea; --accent:#b4232a; --accent-soft:#fdf0f0;
+  --hl:#ffe08a; --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+  --sidebar-w:320px; --serif:"Songti SC","SimSun","Noto Serif CJK SC",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC",sans-serif;
+  --body-size:16.5px; --lh:1.95;
+}
+html[data-theme="dark"]{
+  --bg:#14161a; --panel:#1c1f25; --fg:#d9dde3; --muted:#8b949e;
+  --border:#2b3038; --accent:#ff6b6b; --accent-soft:#2a1d1f;
+  --hl:#5a4a12; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--fg); font-family:var(--sans);
+  font-size:var(--body-size); line-height:var(--lh);
+  -webkit-font-smoothing:antialiased;
+}
+body[data-font="serif"] .doc{font-family:var(--serif)}
+a{color:inherit;text-decoration:none}
+
+/* ---------- 顶栏 ---------- */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:56px;z-index:40;
+  display:flex;align-items:center;gap:12px;padding:0 16px;
+  background:color-mix(in srgb,var(--panel) 88%,transparent);
+  backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.topbar .brand{font-weight:700;font-size:15px;letter-spacing:.3px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+.topbar .spacer{flex:1}
+.search{position:relative;display:flex;align-items:center}
+.search input{
+  width:230px;padding:7px 30px 7px 32px;border-radius:8px;font-size:13.5px;
+  border:1px solid var(--border);background:var(--bg);color:var(--fg);
+  outline:none;transition:.18s;font-family:inherit;
+}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);width:290px}
+.search .ico{position:absolute;left:10px;font-size:13px;color:var(--muted);pointer-events:none}
+.search .cnt{position:absolute;right:9px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.btn{
+  border:1px solid var(--border);background:var(--panel);color:var(--fg);
+  padding:7px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;
+  display:inline-flex;align-items:center;gap:5px;transition:.15s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.icon{padding:7px 9px;font-size:14px}
+#menuBtn{display:none}
+
+/* ---------- 侧边目录 ---------- */
+.sidebar{
+  position:fixed;top:56px;left:0;bottom:0;width:var(--sidebar-w);z-index:30;
+  background:var(--panel);border-right:1px solid var(--border);
+  overflow-y:auto;overscroll-behavior:contain;padding:14px 8px 60px;
+}
+.sidebar::-webkit-scrollbar{width:9px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:9px}
+.side-title{
+  font-size:11.5px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;
+  padding:4px 12px 10px;font-weight:700;
+}
+.toc-list{list-style:none;margin:0;padding:0}
+.toc-list ul{list-style:none;margin:0;padding:0}
+.toc-list ul.kids{padding-left:13px}
+.toc-list .lv1{margin-top:14px}
+.toc-list .lv1:first-child{margin-top:2px}
+.toc-list a{
+  display:flex;align-items:baseline;gap:8px;padding:5px 10px;border-radius:7px;
+  font-size:13.5px;line-height:1.5;color:var(--fg);
+  border-left:2px solid transparent;transition:.12s;
+}
+.toc-list a .t{flex:1 1 auto;min-width:0}
+.toc-list .lv1 a{font-weight:700;font-size:14.5px;margin-top:4px}
+.toc-list .lv2 a{font-weight:600;color:var(--fg)}
+.toc-list .lv3 a{color:var(--muted)}
+.toc-list .lv4 a,.toc-list .sub-item a{font-size:12.8px;color:var(--muted)}
+.toc-list a:hover{background:var(--accent-soft);color:var(--accent)}
+.toc-list a.active{
+  background:var(--accent-soft);color:var(--accent);border-left-color:var(--accent);
+  font-weight:600;
+}
+.toc-pg{margin-left:auto;font-size:10.5px;color:var(--muted);opacity:.55;
+  font-variant-numeric:tabular-nums;flex:none}
+.caret{
+  width:16px;height:16px;flex:none;align-self:center;cursor:pointer;
+  position:relative;border-radius:4px;transition:.15s;
+}
+.caret::before{
+  content:"";position:absolute;left:5px;top:4px;width:0;height:0;
+  border-left:4px solid var(--muted);border-top:3.5px solid transparent;
+  border-bottom:3.5px solid transparent;transition:transform .18s;
+}
+li.open > .caret::before{transform:rotate(90deg) translateX(-1px)}
+.toc-list ul.fold{max-height:0;overflow:hidden;transition:max-height .28s ease}
+li.open > ul.fold{max-height:2400px}
+li.open > ul.fold a{border-left:1px solid var(--border);margin-left:16px}
+.toc-match a{box-shadow:inset 0 0 0 1px var(--accent)}
+.toc-hidden{display:none}
+
+/* ---------- 正文 ---------- */
+.main{margin-left:var(--sidebar-w);padding:56px 0 0}
+.doc{
+  max-width:860px;margin:0 auto;padding:40px 40px 120px;
+}
+.cover{
+  border:1px solid var(--border);border-radius:14px;background:var(--panel);
+  padding:34px 34px 26px;box-shadow:var(--shadow);margin-bottom:38px;
+}
+.cover h1{
+  font-size:27px;line-height:1.45;margin:0 0 6px;font-weight:800;
+  letter-spacing:.5px;
+}
+.cover .sub{color:var(--muted);font-size:12.5px;margin-bottom:18px;letter-spacing:.4px}
+.cover .disc{border-top:1px dashed var(--border);padding-top:16px}
+.cover .disc p{font-size:13px;line-height:1.85;margin:0 0 8px;text-align:left}
+
+.blk{position:relative}
+p.p{margin:0 0 13px;text-align:justify;text-justify:inter-ideograph}
+.h1{
+  font-size:23px;font-weight:800;margin:52px 0 18px;padding-bottom:10px;
+  border-bottom:2px solid var(--accent);letter-spacing:.4px;scroll-margin-top:76px;
+}
+.h2{
+  font-size:19px;font-weight:750;margin:38px 0 14px;color:var(--fg);
+  padding-left:11px;border-left:4px solid var(--accent);scroll-margin-top:76px;
+}
+.h3{
+  font-size:16.5px;font-weight:700;margin:28px 0 11px;color:var(--fg);
+  scroll-margin-top:76px;
+}
+.h4{
+  font-size:15px;font-weight:700;margin:22px 0 9px;color:var(--accent);
+  scroll-margin-top:76px;
+}
+.pg{
+  font-size:10.5px;color:var(--muted);opacity:.5;margin-left:10px;font-weight:400;
+  vertical-align:middle;font-variant-numeric:tabular-nums;user-select:none;
+}
+.anchor{
+  opacity:0;margin-left:8px;font-weight:400;color:var(--muted);font-size:13px;
+  transition:.15s;
+}
+.blk:hover .anchor{opacity:.55}
+.anchor:hover{opacity:1;color:var(--accent)}
+
+.red{color:var(--accent)}
+.blue{color:#1a6fd4}
+html[data-theme="dark"] .blue{color:#6cb6ff}
+.b{font-weight:700}
+.blank{
+  display:inline-block;border-bottom:1.4px solid currentColor;vertical-align:-.22em;
+  margin:0 .18em;min-width:1em;height:1.05em;
+}
+mark{background:var(--hl);color:#1f2328;border-radius:3px;padding:0 1px}
+.dimmed{opacity:.25}
+.backmatter{
+  margin-top:56px;padding:24px 26px;border:1px solid var(--border);border-radius:12px;
+  background:var(--panel);
+}
+.backmatter h3{
+  font-size:14px;color:var(--muted);font-weight:700;letter-spacing:.6px;
+  margin:0 0 12px;text-transform:uppercase;
+}
+.backmatter p{font-size:12.5px;line-height:1.85;margin:0 0 8px}
+
+#toTop{
+  position:fixed;right:22px;bottom:22px;width:40px;height:40px;border-radius:50%;
+  background:var(--panel);border:1px solid var(--border);box-shadow:var(--shadow);
+  cursor:pointer;font-size:16px;color:var(--muted);z-index:35;opacity:0;
+  pointer-events:none;transition:.25s;
+}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{color:var(--accent);border-color:var(--accent)}
+
+#scrim{
+  position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.35);z-index:25;
+  display:none;
+}
+
+@media (max-width:900px){
+  :root{--sidebar-w:290px}
+  #menuBtn{display:inline-flex}
+  .sidebar{transform:translateX(-100%);transition:transform .25s ease}
+  .sidebar.open{transform:none;box-shadow:var(--shadow)}
+  #scrim.show{display:block}
+  .main{margin-left:0}
+  .doc{padding:26px 18px 100px}
+  .search input{width:150px}
+  .search input:focus{width:190px}
+  .topbar .brand{max-width:26vw}
+  .cover{padding:22px 20px 18px}
+  .cover h1{font-size:21px}
+}
+@media print{
+  .topbar,.sidebar,#toTop,#scrim{display:none!important}
+  .main{margin:0;padding:0}
+  .doc{max-width:none;padding:0}
+  .h1,.h2,.h3,.h4{break-after:avoid}
+  p.p{orphans:3;widows:3}
+}
+
+.tbl{border-collapse:collapse;margin:14px auto;font-size:.95em}
+.tbl td,.tbl th{border:1px solid var(--border);padding:6px 16px;text-align:center}
+.tbl th{background:var(--accent-soft);font-weight:600}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="btn icon" id="menuBtn" title="目录" aria-label="切换目录">☰</button>
+  <div class="brand">数学运算与思维策略类题型解题技巧讲义</div>
+  <div class="spacer"></div>
+  <div class="search">
+    <span class="ico">🔍</span>
+    <input id="q" type="search" placeholder="搜索内容…  ( / )" autocomplete="off" spellcheck="false">
+    <span class="cnt" id="cnt"></span>
+  </div>
+  <button class="btn" id="fontBtn" title="切换字体">宋</button>
+  <button class="btn icon" id="themeBtn" title="切换主题">☾</button>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <div class="side-title">目 录</div>
+  <ul class="toc-list"><li class="lv1"><a href="#s1"><span class="t">第一部分：解题技巧</span><span class="toc-pg">2</span></a><ul class="kids"><li class="lv2"><a href="#s2"><span class="t">第一章题型分类</span><span class="toc-pg">2</span></a><ul class="kids"><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s3"><span class="t">第一节：基本概念</span><span class="toc-pg">2</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s4"><span class="t">1.整数</span><span class="toc-pg">2</span></a></li><li class="lv4 sub-item"><a href="#s5"><span class="t">2.分数</span><span class="toc-pg">2</span></a></li><li class="lv4 sub-item"><a href="#s6"><span class="t">3. 有理数</span><span class="toc-pg">2</span></a></li><li class="lv4 sub-item"><a href="#s7"><span class="t">4.无理数</span><span class="toc-pg">2</span></a></li><li class="lv4 sub-item"><a href="#s8"><span class="t">5.约数</span><span class="toc-pg">2</span></a></li><li class="lv4 sub-item"><a href="#s9"><span class="t">6. 公因数</span><span class="toc-pg">2</span></a></li><li class="lv4 sub-item"><a href="#s10"><span class="t">7.最大公因数</span><span class="toc-pg">2</span></a></li><li class="lv4 sub-item"><a href="#s11"><span class="t">8.倍数</span><span class="toc-pg">2</span></a></li><li class="lv4 sub-item"><a href="#s12"><span class="t">9.最小公倍数</span><span class="toc-pg">2</span></a></li><li class="lv4 sub-item"><a href="#s13"><span class="t">10. 余数</span><span class="toc-pg">2</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s14"><span class="t">第二节：数字特性</span><span class="toc-pg">2</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s15"><span class="t">1. 奇偶特性</span><span class="toc-pg">3</span></a></li><li class="lv4 sub-item"><a href="#s16"><span class="t">2. 比例特性</span><span class="toc-pg">3</span></a></li><li class="lv4 sub-item"><a href="#s17"><span class="t">3. 整除特性</span><span class="toc-pg">3</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s18"><span class="t">第三节：代入排除法</span><span class="toc-pg">3</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s19"><span class="t">1.多位数问题</span><span class="toc-pg">3</span></a></li><li class="lv4 sub-item"><a href="#s20"><span class="t">2. 年龄问题</span><span class="toc-pg">4</span></a></li><li class="lv4 sub-item"><a href="#s21"><span class="t">3. 其他问题</span><span class="toc-pg">4</span></a></li></ul></li><li class="lv3"><a href="#s22"><span class="t">第四节：赋值法</span><span class="toc-pg">4</span></a></li></ul></li><li class="lv2"><a href="#s23"><span class="t">第二章：常见题型</span><span class="toc-pg">4</span></a><ul class="kids"><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s24"><span class="t">第一节：基础计算</span><span class="toc-pg">4</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s25"><span class="t">1. 常规计算</span><span class="toc-pg">5</span></a></li><li class="lv4 sub-item"><a href="#s26"><span class="t">2. 循环类计算</span><span class="toc-pg">5</span></a></li><li class="lv4 sub-item"><a href="#s27"><span class="t">3. 分数类计算</span><span class="toc-pg">6</span></a></li></ul></li><li class="lv3"><a href="#s28"><span class="t">第二节 初等数学</span><span class="toc-pg">6</span></a></li><li class="lv3"><a href="#s29"><span class="t">第三节 方程与不定方程</span><span class="toc-pg">7</span></a></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s30"><span class="t">第四节 数列与平均数</span><span class="toc-pg">8</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s31"><span class="t">（一）等差数列</span><span class="toc-pg">8</span></a></li><li class="lv4 sub-item"><a href="#s32"><span class="t">（二）等比数列</span><span class="toc-pg">9</span></a></li><li class="lv4 sub-item"><a href="#s33"><span class="t">（三）平均数</span><span class="toc-pg">9</span></a></li><li class="lv4 sub-item"><a href="#s34"><span class="t">（一）等差数列</span><span class="toc-pg">9</span></a></li><li class="lv4 sub-item"><a href="#s35"><span class="t">（二）平均数</span><span class="toc-pg">9</span></a></li><li class="lv4 sub-item"><a href="#s36"><span class="t">（三）等比数列</span><span class="toc-pg">9</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s37"><span class="t">第五节：工程问题</span><span class="toc-pg">10</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s38"><span class="t">（一）已知时间类工程问题</span><span class="toc-pg">10</span></a></li><li class="lv4 sub-item"><a href="#s39"><span class="t">1. 同时合作型</span><span class="toc-pg">10</span></a></li><li class="lv4 sub-item"><a href="#s40"><span class="t">2. 交替合作型</span><span class="toc-pg">11</span></a></li><li class="lv4 sub-item"><a href="#s41"><span class="t">（二）已知效率类工程问题</span><span class="toc-pg">11</span></a></li><li class="lv4 sub-item"><a href="#s42"><span class="t">1. 已知效率之间关系</span><span class="toc-pg">11</span></a></li><li class="lv4 sub-item"><a href="#s43"><span class="t">2.给“人”“机器”型</span><span class="toc-pg">11</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s44"><span class="t">第六节：几何问题</span><span class="toc-pg">11</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s45"><span class="t">1. 多边关系</span><span class="toc-pg">11</span></a></li><li class="lv4 sub-item"><a href="#s46"><span class="t">2.其他几何计数问题</span><span class="toc-pg">12</span></a></li><li class="lv4 sub-item"><a href="#s47"><span class="t">3. 长度计算</span><span class="toc-pg">12</span></a></li><li class="lv4 sub-item"><a href="#s48"><span class="t">4. 不规则面积计算</span><span class="toc-pg">12</span></a></li><li class="lv4 sub-item"><a href="#s49"><span class="t">5.割补平移法</span><span class="toc-pg">13</span></a></li><li class="lv4 sub-item"><a href="#s50"><span class="t">6.其他平面几何问题</span><span class="toc-pg">13</span></a></li><li class="lv4 sub-item"><a href="#s51"><span class="t">7.面积计算</span><span class="toc-pg">14</span></a></li><li class="lv4 sub-item"><a href="#s52"><span class="t">8. 体积计算</span><span class="toc-pg">14</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s53"><span class="t">第七节：时间问题</span><span class="toc-pg">15</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s54"><span class="t">（一）星期日期</span><span class="toc-pg">15</span></a></li><li class="lv4 sub-item"><a href="#s55"><span class="t">（二）钟表问题</span><span class="toc-pg">15</span></a></li><li class="lv4 sub-item"><a href="#s56"><span class="t">（三）周期循环问题有两种题目</span><span class="toc-pg">15</span></a></li><li class="lv4 sub-item"><a href="#s57"><span class="t">（四）表盘计算问题</span><span class="toc-pg">15</span></a></li><li class="lv4 sub-item"><a href="#s58"><span class="t">（五）年龄问题</span><span class="toc-pg">16</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s59"><span class="t">第八节：溶液问题</span><span class="toc-pg">16</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s60"><span class="t">（一）基础计算问题</span><span class="toc-pg">16</span></a></li><li class="lv4 sub-item"><a href="#s61"><span class="t">（二）混合溶液原理</span><span class="toc-pg">16</span></a></li><li class="lv4 sub-item"><a href="#s62"><span class="t">（三）反复操作问题</span><span class="toc-pg">16</span></a></li><li class="lv4 sub-item"><a href="#s63"><span class="t">（四）抽象比例问题</span><span class="toc-pg">17</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s64"><span class="t">第九节：经济利润问题</span><span class="toc-pg">17</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s65"><span class="t">1. 基础经济问题</span><span class="toc-pg">17</span></a></li><li class="lv4 sub-item"><a href="#s66"><span class="t">2. 分段计费问题</span><span class="toc-pg">17</span></a></li><li class="lv4 sub-item"><a href="#s67"><span class="t">3. 最优方案问题</span><span class="toc-pg">17</span></a></li><li class="lv4 sub-item"><a href="#s68"><span class="t">1. 基础经济问题</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s69"><span class="t">2. 部分打折类</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s70"><span class="t">3. 分段计费问题</span><span class="toc-pg">18</span></a></li><li class="lv4 sub-item"><a href="#s71"><span class="t">4. 最优方案问题</span><span class="toc-pg">18</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s72"><span class="t">第十节：排列组合问题</span><span class="toc-pg">19</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s73"><span class="t">（一）排列</span><span class="toc-pg">19</span></a></li><li class="lv4 sub-item"><a href="#s74"><span class="t">（二）组合</span><span class="toc-pg">19</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s75"><span class="t">第十一节：概率问题</span><span class="toc-pg">20</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s76"><span class="t">一、题型分类</span><span class="toc-pg">20</span></a></li><li class="lv4 sub-item"><a href="#s77"><span class="t">二、基础公式</span><span class="toc-pg">21</span></a></li><li class="lv4 sub-item"><a href="#s78"><span class="t">三、理论要点</span><span class="toc-pg">21</span></a></li><li class="lv4 sub-item"><a href="#s79"><span class="t">1.基础概率问题</span><span class="toc-pg">21</span></a></li><li class="lv4 sub-item"><a href="#s80"><span class="t">2. 概率之间的计算</span><span class="toc-pg">21</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s81"><span class="t">第十二节：最值问题</span><span class="toc-pg">22</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s82"><span class="t">（一）最不利构造</span><span class="toc-pg">22</span></a></li><li class="lv4 sub-item"><a href="#s83"><span class="t">（二）多集合反向构造</span><span class="toc-pg">22</span></a></li><li class="lv4 sub-item"><a href="#s84"><span class="t">（三）数列构造</span><span class="toc-pg">22</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s85"><span class="t">第十三节：行程问题</span><span class="toc-pg">23</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s86"><span class="t">1. 基础行进型</span><span class="toc-pg">23</span></a></li><li class="lv4 sub-item"><a href="#s87"><span class="t">2. 火车过桥（隧道）型</span><span class="toc-pg">23</span></a></li><li class="lv4 sub-item"><a href="#s88"><span class="t">3. 等距离平均速度</span><span class="toc-pg">23</span></a></li><li class="lv4 sub-item"><a href="#s89"><span class="t">4. 基本相遇追及型</span><span class="toc-pg">24</span></a></li><li class="lv4 sub-item"><a href="#s90"><span class="t">5. 环形相遇型</span><span class="toc-pg">24</span></a></li><li class="lv4 sub-item"><a href="#s91"><span class="t">6. 直线往返相遇型</span><span class="toc-pg">24</span></a></li><li class="lv4 sub-item"><a href="#s92"><span class="t">7. 流水行船问题</span><span class="toc-pg">25</span></a></li><li class="lv4 sub-item"><a href="#s93"><span class="t">8. 比例行程问题</span><span class="toc-pg">25</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s94"><span class="t">第十四节：牛吃草问题</span><span class="toc-pg">25</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s95"><span class="t">1. 基本公式型</span><span class="toc-pg">25</span></a></li><li class="lv4 sub-item"><a href="#s96"><span class="t">2. 可持续发展型</span><span class="toc-pg">25</span></a></li><li class="lv4 sub-item"><a href="#s97"><span class="t">3. 同增同减型</span><span class="toc-pg">26</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s98"><span class="t">第十五节：容斥原理</span><span class="toc-pg">26</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s99"><span class="t">（一）两集合容斥问题</span><span class="toc-pg">26</span></a></li><li class="lv4 sub-item"><a href="#s100"><span class="t">（二）三集合容斥问题</span><span class="toc-pg">26</span></a></li></ul></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s101"><span class="t">第十六节 趣味杂题</span><span class="toc-pg">27</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s102"><span class="t">1. 淘汰赛</span><span class="toc-pg">27</span></a></li><li class="lv4 sub-item"><a href="#s103"><span class="t">2. 循环赛</span><span class="toc-pg">27</span></a></li><li class="lv4 sub-item"><a href="#s104"><span class="t">3. 过河问题</span><span class="toc-pg">27</span></a></li><li class="lv4 sub-item"><a href="#s105"><span class="t">4. 爬井问题</span><span class="toc-pg">27</span></a></li><li class="lv4 sub-item"><a href="#s106"><span class="t">（一）比赛问题</span><span class="toc-pg">27</span></a></li><li class="lv4 sub-item"><a href="#s107"><span class="t">（二）统筹问题</span><span class="toc-pg">27</span></a></li><li class="lv4 sub-item"><a href="#s108"><span class="t">（三） 推断题</span><span class="toc-pg">27</span></a></li><li class="lv4 sub-item"><a href="#s109"><span class="t">（四）过河爬井问题</span><span class="toc-pg">28</span></a></li><li class="lv4 sub-item"><a href="#s110"><span class="t">（五）空瓶换酒问题</span><span class="toc-pg">28</span></a></li></ul></li></ul></li></ul></li><li class="lv1"><a href="#s111"><span class="t">第二部分 特殊方法技巧</span><span class="toc-pg">28</span></a><ul class="kids"><li class="lv3"><a href="#s112"><span class="t">第一节 代入排除法</span><span class="toc-pg">28</span></a></li><li class="lv3"><a href="#s113"><span class="t">第二节 赋值法</span><span class="toc-pg">29</span></a></li><li class="lv3"><a href="#s114"><span class="t">第三节 十字交叉法</span><span class="toc-pg">29</span></a></li><li class="lv3"><span class="caret" aria-hidden="true"></span><a href="#s115"><span class="t">第四节 数字特征法</span><span class="toc-pg">30</span></a><ul class="fold"><li class="lv4 sub-item"><a href="#s116"><span class="t">（一）奇偶特性</span><span class="toc-pg">31</span></a></li><li class="lv4 sub-item"><a href="#s117"><span class="t">（二）比例特性</span><span class="toc-pg">31</span></a></li><li class="lv4 sub-item"><a href="#s118"><span class="t">（三）整除特性</span><span class="toc-pg">31</span></a></li></ul></li></ul></li></ul>
+</nav>
+<div id="scrim"></div>
+
+<main class="main">
+  <article class="doc">
+    <div class="cover">
+<h1>数学运算与思维策略类题型解题技巧讲义</h1>
+<div class="sub">讲义正文 · 第 2–31 页 · 点击左侧目录跳转，按 “/” 搜索</div>
+</div>
+    <h1 class="blk h1" id="s1">第一部分：解题技巧<span class="pg">P2</span><a class="anchor" href="#s1" aria-label="链接到此节">#</a></h1>
+<h2 class="blk h2" id="s2">第一章题型分类<span class="pg">P2</span><a class="anchor" href="#s2" aria-label="链接到此节">#</a></h2>
+<h3 class="blk h3" id="s3">第一节：基本概念<span class="pg">P2</span><a class="anchor" href="#s3" aria-label="链接到此节">#</a></h3>
+<h4 class="blk h4" id="s4">1.整数<span class="pg">P2</span><a class="anchor" href="#s4" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p4">通常像……-3，-2，-1，0，1，2，3……的数都称为整数。</p>
+<p class="blk p" id="p5">在整数系中，零和正整数统称为自然数。-1、-2、-3……-n（n 为非零自然数）为负整数。</p>
+<p class="blk p" id="p6">则正整数、零与负整数构成整数系。正整数可分成奇数和偶数两类。</p>
+<h4 class="blk h4" id="s5">2.分数<span class="pg">P2</span><a class="anchor" href="#s5" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p8">如果把单位“1”平均分成若干份，表示这样的一份或其中几份的数叫分数。表示这样的一份的数叫分数单位。</p>
+<p class="blk p" id="p9">【笔试通】注：整数可以看作分母1的分数。</p>
+<h4 class="blk h4" id="s6">3. 有理数<span class="pg">P2</span><a class="anchor" href="#s6" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p11">正整数、0、负整数、正分数、负分数都可以写成分数的形式，这样的数称为有理数。有理数的小数部分有限或为循环。</p>
+<h4 class="blk h4" id="s7">4.无理数<span class="pg">P2</span><a class="anchor" href="#s7" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p13">从范围上讲，不是有理数的实数遂称为无理数，无理数不能写作两整数之比。若将它写成小数形式，小数点之后的数字有无限多个，并且不会循环。</p>
+<h4 class="blk h4" id="s8">5.约数<span class="pg">P2</span><a class="anchor" href="#s8" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p15">又称因数。如果自然数a 除以整数b（其中b≠0）除得的商正好是整数而没有余数，则称b为a的约数。</p>
+<p class="blk p" id="p16">例如：4的约数有：1、2、4；</p>
+<p class="blk p" id="p17">6 的约数有：1、2、3、6</p>
+<p class="blk p" id="p18">10的约数有：1、2、5、10。</p>
+<h4 class="blk h4" id="s9">6. 公因数<span class="pg">P2</span><a class="anchor" href="#s9" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p20">如果一个自然数c既是数a的因数，又是数b的因数，那么称c为a与b的公因数。</p>
+<h4 class="blk h4" id="s10">7.最大公因数<span class="pg">P2</span><a class="anchor" href="#s10" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p22">多个自然数的公因数中最大的一个公因数，称为这几个自然数的最大公因数。</p>
+<p class="blk p" id="p23">例如：求48和36的最大公因数。</p>
+<p class="blk p" id="p24">把48和36分别分解质因数：48=2 2×2×2×3;36-2×2 3×3。其中48 和36公有的质因数为2、2、3，所以48 和36的最大公因数是2×2×3=12。</p>
+<p class="blk p" id="p25">【笔试通】注：在自然数（0和正整数）的范围内，任何正整数都是0的约数；一个数的约数必然包括1及其本身。</p>
+<h4 class="blk h4" id="s11">8.倍数<span class="pg">P2</span><a class="anchor" href="#s11" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p27">一般来说，如果一个自然数a 除以整数b（其中b≠0）除得的商正好是整数而没有余数，则称a为b的倍数。</p>
+<p class="blk p" id="p28">例如：15能够被3和5整除，因此15是3的倍数，也是5的倍数。</p>
+<h4 class="blk h4" id="s12">9.最小公倍数<span class="pg">P2</span><a class="anchor" href="#s12" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p30">一般来说，如果一个自然数c既是a 的倍数又是b的倍数，那么这个数就是 a、b 的公倍数，如果这个数c在a、b 的所有公倍数里为最小，那这个数c就是最小公倍数。</p>
+<p class="blk p" id="p31">例如：2和4的最小公倍数是4。3和5的最小公倍数是15。</p>
+<p class="blk p" id="p32">【笔试通】注：我们在计算最小公倍数的时候，一般都会借助计算最大公约数的过程来辅助计算。无论是约数还是倍数，它都是一种二元关系的概念，我们不能孤立地说某个整数是约数还是倍数。而且一个整数的约数是有限的，同时它也可以在特定情况下成为公约数。</p>
+<h4 class="blk h4" id="s13">10. 余数<span class="pg">P2</span><a class="anchor" href="#s13" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p34">整数除法中被除数未被除尽的部分</p>
+<p class="blk p" id="p35">7÷3=2……1，1就为余数。</p>
+<h3 class="blk h3" id="s14">第二节：数字特性<span class="pg">P2</span><a class="anchor" href="#s14" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p37">数字特性思想是指不直接求得最终结果，而只需要考虑最终计算结果所具备的某种“数字特性”，从而达到排除错误选项的方法。</p>
+<p class="blk p" id="p38">数字特性主要包括奇偶特性、整除特性及倍数特性，公务员考试中运用较多的是3、9的整除特性，条件中存在比例数、百分数、小数时的倍数特性及其综合运用。当遇到复杂计算和较难题目无从入手时，数字特性往往就是直取答案、节省时间的关键。</p>
+<p class="blk p" id="p39">数字特性常用题型：和差倍比问题、不定方程等。尤其当题目条件中涉及比例数、百分数、小数时要考虑数字特性法解题。当遇到复杂计算或较难突破的题目时，亦可考虑数字特性法。</p>
+<p class="blk p" id="p40">理论要点</p>
+<h4 class="blk h4" id="s15">1. 奇偶特性<span class="pg">P3</span><a class="anchor" href="#s15" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p42">重要结论：</p>
+<p class="blk p" id="p43">任意两个数的和如果是奇数，那么差也是奇数；如果和是偶数，那么差也是偶数。</p>
+<p class="blk p" id="p44">任意两个数的和或差是奇数，则两数奇偶相反；和或差是偶数，则两数奇偶相同。</p>
+<p class="blk p" id="p45">解题思想：Ax+By=C。</p>
+<p class="blk p" id="p46">不定方程，求x或y，可代入排除。</p>
+<p class="blk p" id="p47">不定方程，求整体的式子 Mx+Ny，则需要通过奇偶性分析 5x或5y 的尾数来凑解。</p>
+<p class="blk p" id="p48">【笔试通】例题：小王参加了五门百分制的测验，每门成绩都是整数。其中语文94分，数学的得分最高，外语的得分等于语文和物理的平均分，物理的得分等于五门的平均分，化学的得分比外语多2分，并且是五门中第二高的得分。问小王的物理考了多少分？</p>
+<p class="blk p" id="p49">A. 94 B.95 C.96 D. 97</p>
+<p class="blk p" id="p50"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p51">【题型识别】根据题目中“其中语文 94 分，数学的得分最高，外语的得分等于语文和物理的平均分”的表述，再根据奇偶特性可判定物理分数为偶数，然后考虑代入排除法。</p>
+<p class="blk p" id="p52">【笔试通】【指点迷津】首先排除B、D 两项，代入A项发现不满足题目要求，因此，选择C项。</p>
+<h4 class="blk h4" id="s16">2. 比例特性<span class="pg">P3</span><a class="anchor" href="#s16" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p54">当题目较难计算，而题目条件中涉及比例数、百分数等条件时，考虑倍数特性。</p>
+<p class="blk p" id="p55">如果a:b=m：n（m，n互质），则a是m的倍数；b是n的倍数。</p>
+<p class="blk p" id="p56">如果a：b=m：n（m,n互质），a b应该是m士n的倍数。</p>
+<p class="blk p" id="p57">【笔试通】例题：某班男生比女生人数多 80%，一次考试后，全班平均分为75分，而女生的平均分比男生的平均分高20%，则此班女生的平均分是：</p>
+<p class="blk p" id="p58">A.84分 B.85分 C.86分 D.87分</p>
+<p class="blk p" id="p59"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p60">【题型识别】题目中涉及百分数，考虑倍数特性。</p>
+<p class="blk p" id="p61">【笔试通】【指点迷津】由“女生的平均分比男生的平均分高 20%”可知，女生平均分与男生的比例为 6：5。</p>
+<p class="blk p" id="p62">根据倍数特性，女生平均分为6的倍数，只有A选项满足题意。因此，本题的正确答案为A选项。</p>
+<h4 class="blk h4" id="s17">3. 整除特性<span class="pg">P3</span><a class="anchor" href="#s17" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p64">当题目涉及到数字求和类问题或极难计算时，可考虑3、9的整除特性。</p>
+<p class="blk p" id="p65">一个数字能被3整除，当且仅当其各位数字之和能被3整除。</p>
+<p class="blk p" id="p66">一个数字能被9整除，当且仅当其各位数字之和能被9整除。</p>
+<p class="blk p" id="p67">【笔试通】例题：由1、2、3组成没有重复数字的所有三位数之和是多少？</p>
+<p class="blk p" id="p68">A. 1222 B. 1232C. 1322 D.1332</p>
+<p class="blk p" id="p69"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p70">【题型识别】数字求和，考虑3或者9的整除特性。</p>
+<p class="blk p" id="p71">【笔试通】【指点迷津】数字求和，考虑整除特性。每个三位数都是由1、2、3组成，由于 1+2+3=6 能整除3，说明每个三位数都能整除3，则所有的这些三位数的和也能整除3，只有D选项满足题意。因此，本题的正确答案为D选项。</p>
+<h3 class="blk h3" id="s18">第三节：代入排除法<span class="pg">P3</span><a class="anchor" href="#s18" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p73">代入排除法不仅仅是一种方法，更是一种思想，做任何题目的时候都要有这种思维意识。代入排除不是一种机械的代入，而是需要利用题目和选项所给出的一些特性，选择性地代入排除。当题目涉及到“最大”或“最小”时，注意代入的逻辑顺序；当题目未提及大小时，通常从中间选项进行代入排除。</p>
+<p class="blk p" id="p74">常用题型：多位数问题、年龄问题、和差倍比问题及较复杂类型问题。</p>
+<p class="blk p" id="p75">可用题型：不定方程问题、费用问题、同余问题、周期问题、复杂行程问题等</p>
+<h4 class="blk h4" id="s19">1.多位数问题<span class="pg">P3</span><a class="anchor" href="#s19" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p77">当题目涉及数位、小数点的移动，数的大小类等问题时，直接考虑代入排除法。</p>
+<p class="blk p" id="p78">【笔试通】例题：一个五位数，左边三位数是右边两位数的5倍，如果把右边的两位数移到前面，则所得新的五位数要比原来的五位数的2倍还多75，则原五位数是多少？</p>
+<p class="blk p" id="p79">A. 12525B.13527 C.17535 D.22545</p>
+<p class="blk p" id="p80"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p81">【题型识别】题目中出现“一个五位数”的表述，并且最后要求的就是这个五位数，判定此题为多位数问题，应采用代入排除法求解。</p>
+<p class="blk p" id="p82">【笔试通】【指点迷津】直接代入A选项，左边三位数 125，右边两位数25，满足5倍的关系。按题意移动后所得新的五位数 25125=12525×2+75，满足题意。因此，本题的正确答案为A。</p>
+<h4 class="blk h4" id="s20">2. 年龄问题<span class="pg">P4</span><a class="anchor" href="#s20" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p84">当题目涉及年龄差时，注意无论多少年后，年龄差不变，为定值；</p>
+<p class="blk p" id="p85">当题目涉及年龄倍数时，随着年龄的增长，年龄倍数会越来越小；</p>
+<p class="blk p" id="p86">当题目涉及两个人年龄的对话时，即将此年龄段平均分成三等份，利用等差数列解题。</p>
+<p class="blk p" id="p87">【笔试通】例题：小华4年后的年龄与小丽4年前的年龄相等，3年后，她们两人的年龄和等于她们今年年龄差的3倍，小华和小丽今年的年龄分别是多少岁？</p>
+<p class="blk p" id="p88">A. 10,18 B.4, 12 C.5,13 D.6,14</p>
+<p class="blk p" id="p89"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p90">【题型识别】年龄问题，题目要求根据小华与小丽两个人的年龄关系，求两个人各自的年龄，直接代入排除。</p>
+<p class="blk p" id="p91">【笔试通】【指点迷津】由题目第一句话可知，两人的年龄相差8岁，四个选项均满足此条件。A项，3年后两人分别为13岁、21岁，其和不是3的倍数，排除；B项，3年后两人分别为7岁、15岁，其和不是3的倍数，排除；C项，3年后两人分别为8岁、16岁，其和正好是3的8倍，满足题意。因此，本题的正确答案为C。</p>
+<h4 class="blk h4" id="s21">3. 其他问题<span class="pg">P4</span><a class="anchor" href="#s21" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p93">当题目较抽象或较复杂，无任何思路时，可考虑代入排除法。</p>
+<p class="blk p" id="p94">【笔试通】例题：根据国务院办公厅部分节假日安排的通知，某年8月份有22个工作日，那么当年的8月1日可能是：</p>
+<p class="blk p" id="p95">A. 周一或周三 B.周三或周日 C. 周一或周四 D.周四或周日</p>
+<p class="blk p" id="p96"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p97">【题型识别】时间问题，根据选项可以确定8月有22个工作日，考虑代入排除。</p>
+<p class="blk p" id="p98">【笔试通】【指点迷津】A项，若8月1日是周一，易得到8月有23个工作日，不满足题意，排除A、C两项；B项，若8月1日是周三，易得到 8月也有23个工作日，不满足题意，排除。因此，本题的正确答案为 D。</p>
+<h3 class="blk h3" id="s22">第四节：赋值法<span class="pg">P4</span><a class="anchor" href="#s22" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p100">赋值法也称特值法，即根据题目的具体情形，合理巧妙地对某些元素设出一个具体的数值。特别适用于抽象难入手的题目，将这类抽象题目置于具体的数据环境中，以简化思维得出最终结果。</p>
+<p class="blk p" id="p101">赋值法常用题型：工程问题、费用问题、行程问题、多元不定方程等。</p>
+<p class="blk p" id="p102">尤其当题目中出现多个变量之间存在百分数、分数或比例关系时，多适用赋值法。</p>
+<p class="blk p" id="p103">【笔试通】例题：某种溶液的浓度为20%，加入水后溶液的浓度变为15%，如果再加入同样多的水，则溶液浓度变为：</p>
+<p class="blk p" id="p104">A. 13% B. 12. 5%C.12% D. 10%</p>
+<p class="blk p" id="p105"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p106">【题型识别】等溶质稀释问题。除了公式法外，因为题目中没有具体数据，也可以赋值。</p>
+<p class="blk p" id="p107">【笔试通】【指点迷津】加水前后溶液的溶质为定值，根据比例份数令溶质为 60，所以 20%=60/300，</p>
+<p class="blk p" id="p108">15%=60/400，因此每次加水 100，所以再加100水，得60/500=12%，因此选择C。</p>
+<h2 class="blk h2" id="s23">第二章：常见题型<span class="pg">P4</span><a class="anchor" href="#s23" aria-label="链接到此节">#</a></h2>
+<h3 class="blk h3" id="s24">第一节：基础计算<span class="pg">P4</span><a class="anchor" href="#s24" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p111">基本概念</p>
+<p class="blk p" id="p112"><span class="b">整数</span></p>
+<p class="blk p" id="p113">通常像……-3，-2，-1，0，1，2，3……的数都称为整数。</p>
+<p class="blk p" id="p114">在整数系中，零和正整数统称为自然数。-1、-2、-3……-n（n 为非零自然数）为负整数。</p>
+<p class="blk p" id="p115">则正整数、零与负整数构成整数系。正整数可分成奇数和偶数两类。</p>
+<p class="blk p" id="p116">如果把单位“1”平均分成若干份，表示这样的一份或其中几份的数叫分数。表示这样的一份的数叫分数单位。</p>
+<p class="blk p" id="p117">注：整数可以看作分母为1的分数。</p>
+<p class="blk p" id="p118">有理数：正整数、0、负整数、正分数、负分数都可以写成分数的形式，这样的数称为有理数。有理数的小数部分有限或为循环。</p>
+<p class="blk p" id="p119">无理数：从范围上讲，不是有理数的实数遂称为无理数，无理数不能写作两整数之比。若将它写成小数形式，小数点之后的数字有无限多个，并且不会循环。</p>
+<p class="blk p" id="p120">理论要点</p>
+<h4 class="blk h4" id="s25">1. 常规计算<span class="pg">P5</span><a class="anchor" href="#s25" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p122"><span class="b">尾数类</span></p>
+<p class="blk p" id="p123"><span class="b">（1）形如求 A^B+C^D尾数（个位数）的整数计算类题目，直接数出各自的循环节。自然数1—9</span></p>
+<p class="blk p" id="p124"><span class="b">的n次方都具有明显的循环节，数出后再将尾数相加即可。</span></p>
+<p class="blk p" id="p125"><span class="b">尾数乘方口诀：底数留个位，指数末两位除以4留余数。（余数为0则看作4）</span></p>
+<p class="blk p" id="p126"><span class="b">（2）对于纯粹计算类的题目，如果选项所给数据尾数（个位数）均不一样，也可以用尾数判断</span></p>
+<p class="blk p" id="p127"><span class="b">正确选项，即利用尾数计算。</span></p>
+<p class="blk p" id="p128">【笔试通】例题：</p>
+<p class="blk p" id="p129"><span class="b red">【例 1】</span><span class="b">1988^1989+1989^1988的个位数是（）。</span></p>
+<p class="blk p" id="p130">A.9B.7</p>
+<p class="blk p" id="p131">C.5D.3</p>
+<p class="blk p" id="p132"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p133"><span class="b">【题型识别】形如求A^B+C^D尾数的整数计算类属于乘方尾数类的计算题目。找到8和9的乘方</span></p>
+<p class="blk p" id="p134"><span class="b">尾数周期，然后进行计算。</span></p>
+<p class="blk p" id="p135"><span class="b">【难度指数】★</span></p>
+<p class="blk p" id="p136">【指点迷津】8的n次方尾数分别为：8、4、2、6、8、4……以8、4、2、6为一个循环，1989除以4的余</p>
+<p class="blk p" id="p137"><span class="b">数为1，则1988^1989的尾数为8；9的n次方尾数分别为：9、1、9、1……以9、1为一个循环，1988能够被2</span></p>
+<p class="blk p" id="p138"><span class="b">整除，则1989^1988的尾数为1。两者相加，尾数之和为9。因此，本题的正确答案为 A选项。</span></p>
+<h4 class="blk h4" id="s26">2. 循环类计算<span class="pg">P5</span><a class="anchor" href="#s26" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p140"><span class="b">循环类</span></p>
+<p class="blk p" id="p141"><span class="b">（1）我们把类似 20082008或者198198198这样的数字叫做“循环数”，考生一定要熟练运用</span></p>
+<p class="blk p" id="p142"><span class="b">因式分解，如20082008=2008×10001，198198198=198×1001001，注意算清位数。</span></p>
+<p class="blk p" id="p143"><span class="b">（2）对于一些类似“循环数”的计算过程，我们要通过转化计算形式进行化简计算。</span></p>
+<p class="blk p" id="p144">【笔试通】例题：2009×20082008-2008×20092009=（）</p>
+<p class="blk p" id="p145">A.0 B.1 C.2 D.3</p>
+<p class="blk p" id="p146"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p147"><span class="b">【题型识别】纯粹基础计算类。</span></p>
+<p class="blk p" id="p148"><span class="b">【指点迷津】</span></p>
+<p class="blk p" id="p149">解法一：2009 ×20082008-2008×20092009=2009×2008 10001-2008×2009× 10001=0。</p>
+<p class="blk p" id="p150">解法二：选项中每一个数字的个位数均不一样，所以可采用尾数法进行计算，9×8-8×9=0。因此，本题的正确答案为 A选项。</p>
+<h4 class="blk h4" id="s27">3. 分数类计算<span class="pg">P6</span><a class="anchor" href="#s27" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p152"><span class="b">裂项相消</span></p>
+<p class="blk p" id="p153"><span class="b">（1）对于形同b/m(m+a)的复杂分式相加，考虑裂项相消。</span></p>
+<p class="blk p" id="p154"><span class="b">（2）裂项公式：b/m(m+a)=（1/m-1/（m+a））×b/a</span></p>
+<p class="blk p" id="p155"><span class="b">（3）如果未知数被包含在一个十分复杂的分式中，那么我们不妨要一层层“剥洋葱皮”来解</span></p>
+<p class="blk p" id="p156"><span class="b">题。</span></p>
+<p class="blk p" id="p157">【笔试通】例题：</p>
+<p class="blk p" id="p158">1/42+1/56+1/72+1/90+1/110的值是（）。</p>
+<p class="blk p" id="p159">A. 1/6　　B. 5/66</p>
+<p class="blk p" id="p160">C. 5/87　　D. 11/128</p>
+<p class="blk p" id="p161"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p162"><span class="b">【题型识别】裂项相消计算类，观察分数的分子相同，分母可以变为两个连续数字相乘的形式，符</span></p>
+<p class="blk p" id="p163"><span class="b">合裂项相消类型题目的特征。</span></p>
+<p class="blk p" id="p164"><span class="b">【难度指数】★</span></p>
+<p class="blk p" id="p165">；十十一品一6。因</p>
+<p class="blk p" id="p166"><span class="b">【指点迷津】42+5690+i1o</span></p>
+<p class="blk p" id="p167"><span class="b">此，本题的正确答案为B选项。</span></p>
+<h3 class="blk h3" id="s28">第二节 初等数学<span class="pg">P6</span><a class="anchor" href="#s28" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p169">理论要点</p>
+<p class="blk p" id="p170">约数：又称因数。如果自然数a除以整数b（其中b≠0）除得的商正好是整数而没有余数，则称b为a的约数。</p>
+<p class="blk p" id="p171">4 的约数有：1、2、4；</p>
+<p class="blk p" id="p172">6的约数有：1、2、3、6；</p>
+<p class="blk p" id="p173">10的约数有：1、2、5、10。</p>
+<p class="blk p" id="p174">公因数：如果一个自然数c既是数a 的因数，又是数b的因数，那么称c为a与b的公因数。</p>
+<p class="blk p" id="p175">最大公因数：多个自然数的公因数中最大的一个公因数，称为这几个自然数的最大公因数。</p>
+<p class="blk p" id="p176">求48和36的最大公因数。</p>
+<p class="blk p" id="p177">把48和36分别分解质因数：48=2×2×2×2×3;36=2×2×3×3。其中48和36公有的质因数为2、2、3，所以48 和36的最大公因数是2×2×3=12。</p>
+<p class="blk p" id="p178">注：在自然数（0和正整数）的范围内，任何正整数都是0的约数；一个数的约数必然包括1及其本身。</p>
+<p class="blk p" id="p179">倍数：一般来说，如果一个自然数a 除以整数b（其中b≠0）除得的商正好是整数而没有余数，则称a为b的倍<span class="b">数。</span></p>
+<p class="blk p" id="p180">15 能够被3和5整除，因此15是3的倍数，也是5的倍数。</p>
+<p class="blk p" id="p181">最小公倍数：一般来说，如果一个自然数c既是a 的倍数又是b的倍数，那么这个数就是a、b的公倍数，如果这个数c在a、b的所有公倍数里最小，那这个数c就是最小公倍数。</p>
+<p class="blk p" id="p182">2和4的最小公倍数是4。</p>
+<p class="blk p" id="p183">3和5的最小公倍数是 15。</p>
+<p class="blk p" id="p184">注：我们在计算最小公倍数的时候，一般都会借助计算最大公约数的过程来辅助计算。无论是约数还是倍数，它都是一种二元关系的概念，我们不能孤立地说某个整数是约数还是倍数。而且一个整数的约数是有限的，同时它也可以在特定情况下成为公约数。</p>
+<p class="blk p" id="p185"><span class="b">余数：</span></p>
+<p class="blk p" id="p186">整数除法中被除数未被除尽的部分</p>
+<p class="blk p" id="p187">7÷3=2……1，1就为余数。</p>
+<p class="blk p" id="p188">【笔试通】例题：有100个编号为1—100的罐子，第1个人在所有编号为1的倍数的罐子中倒入1毫升水，第2个人在所有编号为2的倍数的罐子中倒入1毫升水……第100个人在所有编号为100的倍数的罐子中倒入1毫升水，问此时第92号罐子中装了多少毫升的水？</p>
+<p class="blk p" id="p189">A. 2 B.6 C.46 D. 92</p>
+<p class="blk p" id="p190"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p191">【题型识别】根据“第1个人在所有编号为1的倍数的罐子中倒入1毫升水，第2个人在所有编号为2的倍数的罐子中倒入1毫升水……”，每个人只在自己的排次顺序的倍数的编号罐子中倒水，所以问“此时第92号罐子中装了多少毫升的水”，也就是问“92的约数有多少个”。</p>
+<p class="blk p" id="p192">【指点迷津】将92分解质因数，可得</p>
+<p class="blk p" id="p193">92=2×2×23，于是可知100以内能够整除92的整数为1、2、4、23、46、92，换言之，共有6次机会向 92号罐子中注水。故最后 92 号罐子中装了6毫升的水。</p>
+<p class="blk p" id="p194">【笔试通】例题：一副扑克牌有 52张，最上面一张是红桃 A，如果每次把最上面的10张移到最下面而不改变它们的顺序及朝向，那么，至少经过多少次移动，红桃A会出现在最上面？</p>
+<p class="blk p" id="p195">A. 27 B.26 C.35 D.24</p>
+<p class="blk p" id="p196"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p197">【题型识别】根据题目中“如果每次把最上面的10张移到最下面而不改变它们的顺序及朝向”的表述，我们可以明确此题考查的其实是关于10的倍数问题；最后要求“红桃 A 会出现在最上面”，即翻动的总张数又要是52的倍数。</p>
+<p class="blk p" id="p198">【指点迷津】每次移动10张，所以移动牌的总数是10的倍数；又因要红桃A再出现，所以移动牌的总数是52 的倍数；又要移动次数最少，因此移动牌的数量为52和10的最小公倍数260，也就是经过26次移动后，红桃 A会出现在最上面。因此，本题的正确答案为B选项。如果题目只是问“至少需要翻动多少张”的话，此题就只是一道简单的考查最小公倍数的题目，而“至少经过多少次移动”还需要再计算翻动的次数，很多同学在这个地方出现理解混乱，大家要注意。</p>
+<p class="blk p" id="p199">【笔试通】例题：某生产车间有若干名工人，按每四个人一组分多一个人，按每五个人一组分也多一个，按每六个人一组分还是多一个，该车间至少有多少名工人？</p>
+<p class="blk p" id="p200">A. 31 B. 41 C.61 D. 122</p>
+<p class="blk p" id="p201"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p202">【题型识别】根据题目中“按每四个人一组分多一个人，按每五个人一组分也多一个，按每六个人一组分还是多一个”的表述，我们知道此题考查余数的问题。</p>
+<p class="blk p" id="p203">【指点迷津】解法一：根据题目代入排除，可以知道最少61人可以满足题干条件。</p>
+<p class="blk p" id="p204">解法二：根据同余口诀，“余同取余”，人数表示为 6On+l。求至少，故n=1，至少为61 人。因此，本题的正确答案为C选项。</p>
+<p class="blk p" id="p205">【笔试通】例题：某单位招待所有若干间房间，现要安排一支考察队的队员住宿，若每间住3人，则有2人无房可住；若每间住4人，则有一间房间不空也不满，则该招待所的房间最多有：</p>
+<p class="blk p" id="p206">A.5间 B.4间C.6间D.7间</p>
+<p class="blk p" id="p207"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p208">【题型识别】根据题目“若每间住3人，则有2人无房可住”的表述，我们也可以判断出此题考查余数问题。</p>
+<p class="blk p" id="p209">【指点迷津】代入排除法。题目问招待所房间“最多”有多少，故将答案从大到小代入即可。</p>
+<p class="blk p" id="p210">房间数为7或6时，均不符合题意，当共有5间房时，每间住3人，则有2人无房可住，可知共有 5×3+2=17</p>
+<p class="blk p" id="p211">（人），如果每间住4人，第五间房只住了一人，不空也不满，符合题意。因此，本题的正确答案为A选项。</p>
+<h3 class="blk h3" id="s29">第三节 方程与不定方程<span class="pg">P7</span><a class="anchor" href="#s29" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p213">基本概念</p>
+<p class="blk p" id="p214">（1）方程：含有未知数的等式。形似 ax=c。（其中，a，c均为数字，x 为未知数）</p>
+<p class="blk p" id="p215">注：方程中一定有含一个或一个以上未知数的代数式；方程式是等式，但等式不一定是方程。</p>
+<p class="blk p" id="p216">（2）不定方程：指解的范围为整数、正整数、有理数或代数整数的方程或方程组，其未知数的个数通常多于方程的个数。形似 ax+by=c。（其中，a，b，c均数字）</p>
+<p class="blk p" id="p217">理论要点</p>
+<p class="blk p" id="p218"><span class="b">基本方程或方程组</span></p>
+<p class="blk p" id="p219">【笔试通】例题：某地劳动部门租用甲、乙两个教室开展农村实用人才计划。两教室均有5排座位，甲教室每排可坐10人，乙教室每排可坐9人。两教室当月共举办该培训27次，每次培训均座无虚席，当月共培训 1290人次。问甲教室当月共举办了多少次这项培训？</p>
+<p class="blk p" id="p220">A. 8 B.10 C.12 D.15</p>
+<p class="blk p" id="p221"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p222">【题型识别】两个教室举办的培训总场次和培训总人次都给定，可以列方程求解。</p>
+<p class="blk p" id="p223">【指点迷津】由题干知甲、乙教室每次培训可以容纳50、45人。设甲教室举办了x场培训，那么乙教室举办了（27-x）场培训，根据题意可列方程：50x+45 （27-x）=1290。解得x=15。因此，本题正确答案为D选项。</p>
+<p class="blk p" id="p224"><span class="b">整体方程</span></p>
+<p class="blk p" id="p225">整体方程（未知数多于2个）</p>
+<p class="blk p" id="p226">当题目未知数非常对称或轮换出现时，则未知数出现次数相同。可利用已知条件先求出整体，再求出个体。</p>
+<p class="blk p" id="p227">当题目已知其中一个未知数与剩余未知数的关系时，亦可利用已知条件先将其中一个未知数化为与其整体的关系，求出整体，再求出个体。</p>
+<p class="blk p" id="p228">【笔试通】例题：小赵、小王、小李和小陈四人，其中每三个人的岁数之和为65，68，62，75。其中年龄最小的是多少岁？0</p>
+<p class="blk p" id="p229">A. 15 B.16 C.17 D. 18</p>
+<p class="blk p" id="p230"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p231">【题型识别】无论怎么组合，四个人的年龄总和是固定的。</p>
+<p class="blk p" id="p232">【指点迷津】由题，小赵、小王、小李和小陈都出现了3次，故四个人的年龄之和=（65+68+62+75）＋3=90</p>
+<p class="blk p" id="p233">（岁）。四个人的年龄和为固定值，求年龄最小的人即把三个人最大的年龄和減掉即可，则年龄最小的为90-75=15（岁）。因此，本题的正确答案为A选项。</p>
+<p class="blk p" id="p234"><span class="b">不定方程（组）</span></p>
+<p class="blk p" id="p235">不定方程（2个未知数）</p>
+<p class="blk p" id="p236">不定方程，求其中的一个未知数（x 或y），可代入排除。</p>
+<p class="blk p" id="p237">不定方程，求整体的式子，需要通过奇偶性分析各项的尾数来凑解。</p>
+<p class="blk p" id="p238">不定方程组（多于2个未知数）</p>
+<p class="blk p" id="p239">不定方程组，求整体的式子，无法确定每个未知数的解。可将其中系数较大的未知数赋值为0，简化方程组求特解。</p>
+<p class="blk p" id="p240">【笔试通】例题：甲、乙两种笔的单价分别为7元、3元，某小学用60元钱买这两种笔作为学科竞赛一、二等奖奖品。钱恰好用完，则这两种笔最多可购买的支数是（）支。</p>
+<p class="blk p" id="p241">A. 12 B.13 C. 16 D. 18</p>
+<p class="blk p" id="p242"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p243">【题型识别】等量关系不充分，考虑在不定方程的基础上结合特殊方法求解。</p>
+<p class="blk p" id="p244">【指点迷津】设购买甲、乙两种笔的数量分别为x、y支，根据题意可得7x+3y=60。要使得购买数量尽可能多，则尽可能多买便宜的笔，即尽量多买乙种笔、少买甲种笔。根据前述方程可得x 能够被3整除，因此x=3，此时y=13。两者之和为16。故本题选C。</p>
+<h3 class="blk h3" id="s30">第四节 数列与平均数<span class="pg">P8</span><a class="anchor" href="#s30" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p246">基本概念</p>
+<h4 class="blk h4" id="s31">（一）等差数列<span class="pg">P8</span><a class="anchor" href="#s31" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p248">如果一个数列从第2项起，每一项与它的前一项的差等于同一个常数，这个数列就叫做等差数列，这个常数叫做等差数列的公差，公差通常用字母d表示。</p>
+<h4 class="blk h4" id="s32">（二）等比数列<span class="pg">P9</span><a class="anchor" href="#s32" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p250">如果一个数列从第2项起，每一项与它的前一项的比等于同一个常数，这个数列就叫做等比数列。这个常数叫做等比数列的公比，公比通常用字母q表示（q≠0）。</p>
+<h4 class="blk h4" id="s33">（三）平均数<span class="pg">P9</span><a class="anchor" href="#s33" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p252">平均数是用来表示某一组数据集中趋势的量数，是反映该组数据集中趋势的一项具体指标。通常我们所说的平均数一般是指算术平均数，也就是一组数据的和除以这组数据的个数所得的商，但在具体统计的工作中，一般是以平均数（均值）和标准差这两个最重要的测度值来描述数据资料的集中趋势和离散程度。</p>
+<p class="blk p" id="p253">理论要点</p>
+<h4 class="blk h4" id="s34">（一）等差数列<span class="pg">P9</span><a class="anchor" href="#s34" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p255"><span class="b">等差数列</span></p>
+<p class="blk p" id="p256"><span class="b">求和公式：S，=平均数×项数=中位数×项数</span></p>
+<p class="blk p" id="p257"><span class="b">项数公式：项数=（未项一首项）一公差十1</span></p>
+<p class="blk p" id="p258"><span class="b">级差公式：dm一an=（m n）.Xd</span></p>
+<p class="blk p" id="p259">【笔试通】例题：四个连续奇数的和为32，则他们的积多少？</p>
+<p class="blk p" id="p260">A. 945 B. 1875 C. 2745 D.3465</p>
+<p class="blk p" id="p261"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p262">【题型识别】题目中出现“连续奇数”，可以判定题目涉及等差数列考点。</p>
+<p class="blk p" id="p263">【指点迷津】由题，四个连续奇数必组成为公差为2的等差数列，根据等差数列特点可知，中位数=平均数=32÷4=8，所以这四个数分别为5、7、9、11，因此四个数的乘积为3465。</p>
+<h4 class="blk h4" id="s35">（二）平均数<span class="pg">P9</span><a class="anchor" href="#s35" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p265"><span class="b">调和平均数：c=2ab/（a+b）</span></p>
+<p class="blk p" id="p266"><span class="b">等距离平均速度：</span></p>
+<p class="blk p" id="p267"><span class="b">距离相同，来回速度分别为a、b，来回的平均速度为c。</span></p>
+<p class="blk p" id="p268"><span class="b">等总价平均价格；</span></p>
+<p class="blk p" id="p269"><span class="b">总价相同，两种物品价钱分别为a、b，这两种物品的平均价格为c。</span></p>
+<p class="blk p" id="p270"><span class="b">等溶质增减溶剂：</span></p>
+<p class="blk p" id="p271"><span class="b">溶质不变，第一次增减溶剂后浓度为a，第二次增咸溶剂后浓度为c，第三次增减溶剂后浓度</span></p>
+<p class="blk p" id="p272"><span class="b">为 。</span></p>
+<p class="blk p" id="p273"><span class="b">等间隔发车时间：</span></p>
+<p class="blk p" id="p274"><span class="b">人和车匀速，每a时间有车超过，每6时间迎面遇到，发车的等时间间隔为？。</span></p>
+<p class="blk p" id="p275">【笔试通】例题：商店购进甲乙两种不同的糖所用的钱数相等。已知甲种糖每千克6元，乙种糖每千克12元。</p>
+<p class="blk p" id="p276">如果把这两种糖混在一起成为什锦糖，那么这种什锦糖每千克的成本是多少元？</p>
+<p class="blk p" id="p277">A. 7 B.8 C.9 D. 10</p>
+<p class="blk p" id="p278"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p279">【题型识别】根据题目可以确定为等总价平均价格问题。</p>
+<p class="blk p" id="p280">【指点迷津】两种糖各自的总价格相等，直接代入公式可求得这种什锦糖的平均成本</p>
+<p class="blk p" id="p281">=2×6×12÷（6+12）=8（元）。因此，本题的正确答案为B选项。</p>
+<h4 class="blk h4" id="s36">（三）等比数列<span class="pg">P9</span><a class="anchor" href="#s36" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p283"><span class="b">等比数列</span></p>
+<p class="blk p" id="p284"><span class="b">等比数列通项公式：a（n）=a（1）×q^（n-1）</span></p>
+<p class="blk p" id="p285"><span class="b">等比数列中项公式：a（p）×a（q）=a（r）^2，则a（r）为a（p）、a（q）的等比中项</span></p>
+<p class="blk p" id="p286"><span class="b">等比数列求和公式：S（n）=a（1）+a（2）+a（3）+a（n）；</span></p>
+<p class="blk p" id="p287">①当q≠1时，S（n）=a（1）（1-q^n）/（1-q）或 S（n）=（a（1）-a（n）q）/（1-q）；</p>
+<p class="blk p" id="p288"><span class="b">②当q=1时，S（n）=n×a（1）。</span></p>
+<p class="blk p" id="p289">【笔试通】例题：小赵、小钱、小孙、小李、小周五个人的收入依次成等比，已知小赵的收入是3000元，小孙的收入是3600元，那么小周比小孙的收入高（）</p>
+<p class="blk p" id="p290">A. 700元 B. 720元 C.760元 D. 780元</p>
+<p class="blk p" id="p291"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p292">【题型识别】根据题目“小赵、小钱、小孙、小李、小周五个人的收入依次成等比”，可以明确题目考查等比数列问题。</p>
+<p class="blk p" id="p293"><span class="b">【指点迷津】</span></p>
+<p class="blk p" id="p294">解法一：小赵、小钱、小孙、小李、小周五个人的收入依次成等比，因此小赵：小孙=小孙：小周，设小周收入为x元，可列得方程：3000：3600=3600：x，解得 x=4320。因此，小周比小孙收入高 4320-3600=720（元）。</p>
+<p class="blk p" id="p295">因此，本题正确答案为B选项。</p>
+<p class="blk p" id="p296">解法二：小孙比小赵多600元，且小孙收入小赵的1.2倍，所以小周比小孙的收入多600×1.2=720（元）。因此，本题正确答案为B选项。</p>
+<h3 class="blk h3" id="s37">第五节：工程问题<span class="pg">P10</span><a class="anchor" href="#s37" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p298">基本公式</p>
+<p class="blk p" id="p299">工作总量=工作效率×工作时间</p>
+<p class="blk p" id="p300">核心思想</p>
+<p class="blk p" id="p301">赋值法、比例法、方程法</p>
+<p class="blk p" id="p302">理论要点</p>
+<h4 class="blk h4" id="s38">（一）已知时间类工程问题<span class="pg">P10</span><a class="anchor" href="#s38" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p304">题型特色：已知工作时间</p>
+<p class="blk p" id="p305">解题步骤：</p>
+<p class="blk p" id="p306">（1）赋值工作总量为题目中涉及“完成工作”时间的公倍数（最好是最小公倍数）或单位“1”；当涉及具体量的变化时，需要将工作总量设为比例份数或者使用方程法来求解；</p>
+<p class="blk p" id="p307">（2）根据所赋的工作总量结合工作时间求出每个人的效率；</p>
+<p class="blk p" id="p308">（3）依据题意进行解题。</p>
+<h4 class="blk h4" id="s39">1. 同时合作型<span class="pg">P10</span><a class="anchor" href="#s39" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p310">【笔试通】例题：一项工程，甲一人做完需30天，甲、乙合作完成需18天，乙、丙合作完成需15天，甲、乙、丙三人共同完成该工程需：</p>
+<p class="blk p" id="p311">A. 10天 B.12天 C.8天D.9天</p>
+<p class="blk p" id="p312"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p313">【题型识别】和例题1一样，本题也是只知道甲、乙、丙三人工作时间的一道题目。不同的是比例题1多了一个主体，那原来的方法还行不行呢？我们一起来看看。</p>
+<p class="blk p" id="p314">【笔试通】【指点迷津】解法一：已知工作时间，赋值工作总量为30、18、15 的最小公倍数90，则甲的效率为90÷30=3；甲、乙合作的效率为90÷18=5，因此乙效率为2；乙、丙合作效率为90÷15=6，丙效率为4；甲、乙、丙三人共同完成该工程需90（3+2+4）=10（天）。因此，本题的正确答案为A选项。</p>
+<p class="blk p" id="p315">解法二：赋值工作总量为30、15的最小公倍数30，则甲的效率为30÷30=1；乙、丙合作效率为30÷15=2。则甲、乙、丙三人合作的效率为1+2=3，完成工程需要30÷3=10（天）。因此，本题的正确答案为A选项。</p>
+<h4 class="blk h4" id="s40">2. 交替合作型<span class="pg">P11</span><a class="anchor" href="#s40" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p317">【笔试通】例题：一条隧道，甲单独挖要20天完成，乙单独挖要10天完成。如果甲先挖1天，然后乙接替甲挖1天，再由甲接替乙挖1天……两人如此交替工作，挖完这条隧道共用多少天？</p>
+<p class="blk p" id="p318">A. 14 B.16 C.15 D.13</p>
+<p class="blk p" id="p319"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p320">【题型识别】通过读题发现这是一道知道工作时间的题目，并且关于甲、乙两人的工作量没有给出具体的数值。与上几道例题不一样的地方在于本道题后半部分的表述比较繁琐，有“乙接替甲挖1天，再由甲接替乙挖1天……两人如此交替工作”这样的字眼，属于工程问题中的交替合作类。</p>
+<p class="blk p" id="p321">【笔试通】【指点迷津】已知工作时间，赋值工作总量为20，则甲的效率为1，乙的效率为2，两人交替挖，一个周期（即甲、乙各挖一天）为2天，能完成工作量3。20个工作量经过6个周期（即12天）后，完成了6×3=18个工作量，剩余2个工作量，需要甲挖1天，乙挖半天。因此，一共需要 12+1+1=14天。因此，本题的正确答案为A选项。</p>
+<p class="blk p" id="p322">交替合作类问题，首先要得到一个周期需要的时间及完成的工作量；然后算出完成全部工作大概需要几个周期，得到一个时间；最后重点分析余下的工作量需要的时间为多少，将两个时间相加即可。</p>
+<h4 class="blk h4" id="s41">（二）已知效率类工程问题<span class="pg">P11</span><a class="anchor" href="#s41" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p324">题型特色：已知工作效率之间的关系</p>
+<p class="blk p" id="p325">解题步骤：</p>
+<p class="blk p" id="p326">（1）赋值工作效率为具体数值，得到各人的效率；</p>
+<p class="blk p" id="p327">（2）依据题意进行解题。</p>
+<h4 class="blk h4" id="s42">1. 已知效率之间关系<span class="pg">P11</span><a class="anchor" href="#s42" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p329">【笔试通】例题：三个快递员进行一堆快件的分拣工作，乙和丙的效率都是甲的1.5倍。如果乙和丙一起分拣所有的快件，将能比甲和丙一起分拣提前36分钟完成。问如果甲乙丙三人一起工作，需要多长时间能够完成所有快件的分拣工作？</p>
+<p class="blk p" id="p330">A. 1 小时45分钟 B.2 小时 C.2小时 15分钟 D.2小时30分钟</p>
+<p class="blk p" id="p331"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p332">【题型识别】根据题目中出现的“乙和丙的效率都是甲的1.5倍”，我们可以知道这是一道已知工作效率之间关系的工程问题。</p>
+<p class="blk p" id="p333">【笔试通】【指点迷津】已知甲、乙、丙三人效率之间的关系为“乙和丙的效率都是甲的1.5倍”，赋值甲效率是2，则乙、丙的效率均为3，设工作总量x，根据题意可以得到 x （2+3） x （3+3）=36，解得 x=1080，所以甲、乙、丙三人合作需要1080 （2+3+3）=135（分钟），因此，本题的正确答案为C选项。</p>
+<h4 class="blk h4" id="s43">2.给“人”“机器”型<span class="pg">P11</span><a class="anchor" href="#s43" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p335">【笔试通】例题：有20名工人修筑一段公路，计划15天完成。动工3天后抽出5人去其他工地，其余人继续修路。如果每人工作效率不变，那么修完这段公路实际用：</p>
+<p class="blk p" id="p336">A.19天 B.18天 C.17天 D.16天</p>
+<p class="blk p" id="p337"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p338">【题型识别】虽然本道题目是一道关于“修路”的工程问题，但是题目中出现了“修路”的具体人数，我们细分给“人”型的工程问题。</p>
+<p class="blk p" id="p339">【笔试通】【指点迷津】题目中出现“人”，赋值每名工人的工作效率为1，则总工作量为300，3天完成3×20=60 个工作量，剩下的240个工作量由15个人完成需要240÷15=16天，所以一共需要3+16=19（天）。</p>
+<p class="blk p" id="p340">因此，本题的正确答案为A选项。</p>
+<h3 class="blk h3" id="s44">第六节：几何问题<span class="pg">P11</span><a class="anchor" href="#s44" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p342">理论要点</p>
+<h4 class="blk h4" id="s45">1. 多边关系<span class="pg">P11</span><a class="anchor" href="#s45" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p344">三角形三边关系</p>
+<p class="blk p" id="p345">两边之和大于第三边，两边之差小于第三边。</p>
+<p class="blk p" id="p346">多边形各边关系</p>
+<p class="blk p" id="p347">任意一边长度小于剩余各边长之和。</p>
+<p class="blk p" id="p348">【笔试通】例题：某厂生产一批商标，形状为等边三角形或等腰三角形。已知这批商标边长为2cm或4cm，那么这批商标的周长可能是：</p>
+<p class="blk p" id="p349">A. 6cml2cm.B.6cm8cml2cmC.6cml0cml2cmD.6cm8cm10cml2cm</p>
+<p class="blk p" id="p350"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p351">【题型识别】通过读题发现本道题目是关于三角形的一道题，并且知道边长为“2cm或4cm”，再结合题目得出这是一道关于三角形三边关系的几何问题。</p>
+<p class="blk p" id="p352">【笔试通】【指点迷津】根据三角形三边特性“两边之和大于第三边”“两边之差小于第三边”可知，此三角形的三边有以下三种情况：（2、2、2），（4、4、2），（4、4、4），则周长有6、10、12 三种情况。因此本题答案为C选项。</p>
+<h4 class="blk h4" id="s46">2.其他几何计数问题<span class="pg">P12</span><a class="anchor" href="#s46" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p354">【笔试通】例题：七边形的对角线的条数是：</p>
+<p class="blk p" id="p355">A. 14 B. 12C.10 D.16</p>
+<p class="blk p" id="p356"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p357">【题型识别】此题是关于七边形对角线的一道题目。</p>
+<p class="blk p" id="p358">【笔试通】【指点迷津】每个顶点可引4条对角线，共7个顶点，每条对角线被重复计算2次，因此对角线条数为4×7-2=14。因此，本题的正确答案为A选项。</p>
+<h4 class="blk h4" id="s47">3. 长度计算<span class="pg">P12</span><a class="anchor" href="#s47" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p360"><span class="b">常用图形周长公式</span></p>
+<p class="blk p" id="p361"><span class="b">C正 =4a C长 形=2（a+ ）；</span></p>
+<p class="blk p" id="p362"><span class="b">Cw=2元R;C消形一</span></p>
+<p class="blk p" id="p363"><span class="b">180 R（n为国心角度数）。</span></p>
+<p class="blk p" id="p364">【笔试通】例题：一条路上依次有A、B、C三个站点，加油站M 恰好位于AC的中点，加油站N恰好位于 BC的中点。若想知道M 和 N两个加油站之间的距离，只需要知道哪两点之间的距离？</p>
+<p class="blk p" id="p365">A. CN B.BC C.AMD.AB</p>
+<p class="blk p" id="p366"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p367"><span class="b">【题型识别】根据题目中出现的“加油站 M 恰好位于AC 的中点，加油站 N 恰好位于BC的中点”，可知本题是一道关于线段长度的几何问题。</span></p>
+<p class="blk p" id="p368"><span class="b">【难度指数】★★</span></p>
+<p class="blk p" id="p369"><span class="b">为D选项。</span></p>
+<p class="blk p" id="p370"><span class="b">MBNC</span></p>
+<h4 class="blk h4" id="s48">4. 不规则面积计算<span class="pg">P12</span><a class="anchor" href="#s48" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p372"><span class="b">常用图形面积公式</span></p>
+<p class="blk p" id="p373"><span class="b">一 R”；SA# 360*R”；</span></p>
+<p class="blk p" id="p374"><span class="b">S正商形一a；5长方形=ab;Sm</span></p>
+<p class="blk p" id="p375"><span class="b">S三崩形ah,S 平行回边形ah:S精联（a ） ；</span></p>
+<p class="blk p" id="p376"><span class="b">2</span></p>
+<p class="blk p" id="p377"><span class="b">菱形（包括正方形）面积等于对角线乘积的一半。</span></p>
+<p class="blk p" id="p378">【笔试通】例题：一正方形铁片面积为 1 平方米，用其剪出一个最大的圆，然后再从圆中剪出一个最大的正方形，问新正方形的面积比原正方形的面积小多少？</p>
+<p class="blk p" id="p379"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p380"><span class="b">【题型识别】通过读题结合提问，发现这是一道关于面积比较的几何问题。</span></p>
+<p class="blk p" id="p381"><span class="b">【难度系数】★</span></p>
+<p class="blk p" id="p382"><span class="b">【指点迷津】根据题意，原正方形的面积为1平方米，那么边长也是1米。如图，里面小正方形的对角线等于1，新正方形面积为对角线乘积的一半，即1/2平方米，比原正方形面积少1/2平方米。</span></p>
+<p class="blk p" id="p383"><span class="b">因此，本题的正确答案为B选项。</span></p>
+<h4 class="blk h4" id="s49">5.割补平移法<span class="pg">P13</span><a class="anchor" href="#s49" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p385">将一个不规则的整体图形分割为多个部分，通过割补平移的方法，将不规则图形变为规则图形后解题。</p>
+<p class="blk p" id="p386">【笔试通】例题：半径为5厘米的三个圆弧围成如右图所示的区域，其中 AB弧与 AD 弧为四分之一圆弧，而BCD 弧是一个半圆弧，则此区域的面积是多少平方厘米？</p>
+<p class="blk p" id="p387"><span class="b">A. 25　　B. 5π</span></p>
+<p class="blk p" id="p388"><span class="b">C. 50　　D. 50+5π</span></p>
+<p class="blk p" id="p389"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p390"><span class="b">【题型识别】很显然这是一道关于几何面积计算的题目。与上一类题目不同的是，所给图形是不</span></p>
+<p class="blk p" id="p391"><span class="b">规则的，所以属于计算不规则几何图形面积的题目。怎么来求解呢？我们一起看一下。</span></p>
+<p class="blk p" id="p392"><span class="b">【难度系数】★★★</span></p>
+<p class="blk p" id="p393"><span class="b">【指点迷津】如下图所示，作辅助线。a可以平移到d的位置，b可以平移到c的位置，因此，原来</span></p>
+<p class="blk p" id="p394"><span class="b">的不规则图形面积即为长方形BDFE 的面积=5×10=50（平方厘米）。因此，本题的正确答案为C选项。</span></p>
+<h4 class="blk h4" id="s50">6.其他平面几何问题<span class="pg">P13</span><a class="anchor" href="#s50" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p396"><span class="b">内角和、外角和</span></p>
+<p class="blk p" id="p397"><span class="b">边形内角和=（n 2）×180°；</span></p>
+<p class="blk p" id="p398"><span class="b">外角和=360°。</span></p>
+<p class="blk p" id="p399">【笔试通】例题：三角形的内角和为180°，问六边形的内角和是多少度？</p>
+<p class="blk p" id="p400">A. 720 B.600C.480D. 260</p>
+<p class="blk p" id="p401"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p402">【题型识别】很明显这是一道关于多边形内角和的几何问题。</p>
+<p class="blk p" id="p403">【笔试通】【指点迷津】直接利用公式。六边形内角和=（6-2）×180°=720°。因此本题的正确答案为 A选项。</p>
+<h4 class="blk h4" id="s51">7.面积计算<span class="pg">P14</span><a class="anchor" href="#s51" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p405"><span class="b">常用图形表面积公式</span></p>
+<p class="blk p" id="p406"><span class="b">正方体的表面积=6a^2；长方体的表面积=2ab+2ac+2bc；</span></p>
+<p class="blk p" id="p407"><span class="b">球的表面积=4πR^2；圆柱的表面积=2πRh+2πR^2。</span></p>
+<p class="blk p" id="p408"><span class="b">几何特性理论</span></p>
+<p class="blk p" id="p409"><span class="b">若将一个图形尺度扩大为原来的 N 倍，则：</span></p>
+<p class="blk p" id="p410"><span class="b">对应角度不变；周长变为原来的 N 倍；</span></p>
+<p class="blk p" id="p411"><span class="b">面积变为原来的 N”倍；体积变为原来的N“倍。</span></p>
+<p class="blk p" id="p412">【笔试通】例题：工作人员做成了一个长60厘米，宽40厘米，高22厘米的箱子，因丈量错误，长和宽均比设计尺寸多了2厘米，而高比设计尺寸少了3厘米，那么该箱子的表面积与设计时的表面积相差多少平方厘米？</p>
+<p class="blk p" id="p413">A.4B.20C.8D.40</p>
+<p class="blk p" id="p414"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p415">【题型识别】通过读题“长和宽均比设计尺寸多了2厘米，而高比设计尺寸少了3厘米”，结合提问发现这是一道关于长方体表面积计算并比较的几何问题。</p>
+<p class="blk p" id="p416">【笔试通】【指点迷津】根据题意，设计时的箱子的表面积为2×（58×38+38×25+58×25）平方厘米，加工后2×（60×40+60×22+40×22）=8（平方厘米），因此，本题的正确答案为C选项。</p>
+<h4 class="blk h4" id="s52">8. 体积计算<span class="pg">P14</span><a class="anchor" href="#s52" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p418"><span class="b">常用图形体积公式</span></p>
+<p class="blk p" id="p419"><span class="b">正方件的作积一a”；长方作的作和一abrs球的作叔</span></p>
+<p class="blk p" id="p420"><span class="b">国程的你救一aRA</span></p>
+<p class="blk p" id="p421"><span class="b">几何最值理论</span></p>
+<p class="blk p" id="p422"><span class="b">（1）平面图形中，若周长一定，越接近于圆，面积越大；</span></p>
+<p class="blk p" id="p423"><span class="b">若面积一定，越接近于圆，周长越小；</span></p>
+<p class="blk p" id="p424"><span class="b">（2）立体图形中，若表面积一定，越接近于球，体积越大；</span></p>
+<p class="blk p" id="p425"><span class="b">若体积一定，越接近于球，表面积越小。</span></p>
+<p class="blk p" id="p426">【笔试通】例题：连接正方体每个面的中心构成一个正八面体（如图所示）。已知正方体的边长为6厘米，问正八面体的体积为多少立方厘米？</p>
+<p class="blk p" id="p427"><span class="b">A. 182B. 242</span></p>
+<p class="blk p" id="p428"><span class="b">C. 36D. 72</span></p>
+<p class="blk p" id="p429"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p430">【题型识别】很明显这是一道关于求解立体图形体积的题目。但是正八面体并不属于规则图形，怎么办呢？一起来看一下。</p>
+<p class="blk p" id="p431">【笔试通】【指点迷津】正八面体可以看做由两个正四棱锥拼成的，每个四棱锥的底面的边为原正方体四个侧面的中心连线，高分别为原正方体上下两个底面距离的一半，则V=1/3×（6^2×1/2）×3×2=36（立方厘米）。</p>
+<p class="blk p" id="p432">因此，本题的正确答案为C选项。</p>
+<h3 class="blk h3" id="s53">第七节：时间问题<span class="pg">P15</span><a class="anchor" href="#s53" aria-label="链接到此节">#</a></h3>
+<h4 class="blk h4" id="s54">（一）星期日期<span class="pg">P15</span><a class="anchor" href="#s54" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p435">星期每7天一个循环。</p>
+<p class="blk p" id="p436">对于某些星期日期问题中会问“N年后的今天是星期几”，我们可以牢记口诀“过N年加N天，国日再加1”。</p>
+<p class="blk p" id="p437">也就是说如果N年中有M个闰日（2月29日），那么，题目相当于在问过N+M天后是星期几。</p>
+<p class="blk p" id="p438">【笔试通】例题：2005年7月1日是星期五，那么2008年7月1日是星期几？</p>
+<p class="blk p" id="p439">A. 星期三 B. 星期四 C.星期五 D.星期二</p>
+<p class="blk p" id="p440"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p441">【题型识别】题目中有“2005年7月1日是星期五”，所以是一道星期日期问题。</p>
+<p class="blk p" id="p442">【指点迷津】2005—2008年过了3年，加3天；且含有1个闰日，再加1天，共计4天。星期五之后4天是星期二。因此，本题的正确答案是D选项。</p>
+<h4 class="blk h4" id="s55">（二）钟表问题<span class="pg">P15</span><a class="anchor" href="#s55" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p444">钟表一圈分成了12 格，每格30°。</p>
+<p class="blk p" id="p445">每小时，时针转1格30°，分针转 12格360°（1圈）；</p>
+<p class="blk p" id="p446">每分钟，时针转 0.5°，分针转6°。</p>
+<h4 class="blk h4" id="s56">（三）周期循环问题有两种题目<span class="pg">P15</span><a class="anchor" href="#s56" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p448">一种是需要求出最小公倍数；</p>
+<p class="blk p" id="p449">另外一种需要求出经过整数周期后的余数。</p>
+<p class="blk p" id="p450">注意：每隔N天，即为每“N+1天”。</p>
+<p class="blk p" id="p451">【笔试通】例题：有甲、乙、丙三辆公交车于上午8:00同时从公交总站出发，三辆车再次回到公交总站所用的时间分别为 40分钟、25分钟和 50分钟。假设这三辆公交车中途不休息，请问它们下次同时到达公交总站将会是几点？</p>
+<p class="blk p" id="p452">A. 11 点20分B. 11点整 C.11 点40分 D.12 点整</p>
+<p class="blk p" id="p453"><span class="b">【答案】A</span></p>
+<p class="blk p" id="p454">【题型识别】根据题目中“三辆车再次回到公交总站所用的时间分别为 40分钟、25分钟和50分钟”，可以知道这是一个周期循环题目。</p>
+<p class="blk p" id="p455">【笔试通】【指点迷津】因为要求3辆车同时到达，所以这个时间必为40、25、50的公倍数，再结合题目求的的是下次同时到达公交站的时间，所以是40、25、50 的最小公倍数，为200，也就是200分钟，即3小时20分钟后，三车下一次同时到达公交站点，即11点20分。因此，本题的正确答案为A选项。</p>
+<h4 class="blk h4" id="s57">（四）表盘计算问题<span class="pg">P15</span><a class="anchor" href="#s57" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p457">钟表追及问题本质上讲与行程问题中的追及问题一样：</p>
+<p class="blk p" id="p458">分针追上时针的度数=追及时间×5.5°；</p>
+<p class="blk p" id="p459">追及时间=分针与时针的度数差-5.5°</p>
+<p class="blk p" id="p460">如果涉及求角度或是指针重合次数等问题，可以直接拨表盘解题。</p>
+<p class="blk p" id="p461">【笔试通】例题：钟表有一个时针和一个分针，分针每1 小时转360°，时针每12 小时转360°，则24小时内时针和分针成直角共多少次？</p>
+<p class="blk p" id="p462">A. 28 B.36C.44D.48</p>
+<p class="blk p" id="p463"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p464">【题型识别】题目中有“分针每1小时转360°，时针每12 小时转360°”，很显然是一个钟表问题。</p>
+<p class="blk p" id="p465">【笔试通】【指点迷津】一般情况，1小时内会出现2次垂直情况，但是3点、9点、15点、21 点这4个特殊时间，只有1次垂直，所以有24×2-4=44（次）。因此，本题答案为C选项。</p>
+<h4 class="blk h4" id="s58">（五）年龄问题<span class="pg">P16</span><a class="anchor" href="#s58" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p467">过n年，长n岁；两人之间的年龄差不变；两人年龄之间的倍数会随着时间变小。</p>
+<p class="blk p" id="p468">题目若涉及年龄差，把握“两人年龄差不变”原理，采取方程法或代入排除法解题；</p>
+<p class="blk p" id="p469">题目若涉及年龄倍数，把握“两人年龄倍数越来越小”原理解题；</p>
+<p class="blk p" id="p470">题目若涉及两人对话，把握“年龄差不变”原理，使用“平均分段法”解题。</p>
+<p class="blk p" id="p471">【笔试通】例题：小李的弟弟比小李小2岁，小王的哥哥比小王大2岁、比小李大5岁。1994年，小李的弟弟和小王的年龄之和15。问2014年小李与小王的年龄分别多少岁？</p>
+<p class="blk p" id="p472">A.25、32 B.27、30 C.30、27 D.32、25</p>
+<p class="blk p" id="p473"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p474">【题型识别】题目中给出了几个人之间年龄的关系，并且是问其中两人的具体年龄。故是一道年龄问题。</p>
+<p class="blk p" id="p475">【笔试通】【指点迷津】解法一：根据已知，小王比小李的弟弟大5岁，1994年，根据两人的年龄和为15，两人的年龄差不变，还是5岁，可得1994年小王为10岁，故小王在2014年为30岁。因此，本题答案为B选项。解法二：根据已知，小王的哥哥比小王大2 岁、比小李大 5 岁，因此小李比小王小3岁，结合选项只有B符合条件。</p>
+<p class="blk p" id="p476">因此，本题答案为B选项。</p>
+<h3 class="blk h3" id="s59">第八节：溶液问题<span class="pg">P16</span><a class="anchor" href="#s59" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p478">基本公式：</p>
+<p class="blk p" id="p479">溶液=溶质＋溶剂</p>
+<p class="blk p" id="p480">浓度=溶质 溶液=溶质 （溶质+溶剂）</p>
+<p class="blk p" id="p481">理论要点：</p>
+<h4 class="blk h4" id="s60">（一）基础计算问题<span class="pg">P16</span><a class="anchor" href="#s60" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p483">当溶液蒸发或稀释时，把握溶质不变的本质利用公式结合方程法来解题。</p>
+<p class="blk p" id="p484">【笔试通】例题：将40千克浓度16%的溶液蒸发一部分水，变为浓度20%的溶液。应蒸发掉水多少千克？</p>
+<p class="blk p" id="p485">A.8千克 B.9千克　　C.10千克 D.11千克</p>
+<p class="blk p" id="p486"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p487">【题型识别】通过读题发现，题目中有“40千克浓度16%的溶液蒸发一部分水，变为浓度20%的溶液”，很明显这是一道关于溶液浓度的题目。</p>
+<p class="blk p" id="p488">【笔试通】【指点迷津】设蒸发掉 x千克水，根据“蒸发后溶质不变”可得：40×16%=20% （40-x），解得 x=8。</p>
+<p class="blk p" id="p489">因此，本题答案选择A选项。对于溶液“蒸发溶剂”问题，我们要注意的是溶质不会发生变化。</p>
+<h4 class="blk h4" id="s61">（二）混合溶液原理<span class="pg">P16</span><a class="anchor" href="#s61" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p491">两种溶液相混合，则有：</p>
+<p class="blk p" id="p492">混合溶液浓度=（溶液 A的溶质＋溶液B的溶质）÷（溶液 A+溶液 B）</p>
+<p class="blk p" id="p493">两种溶液混合，混合溶液的浓度一定介于溶液 A和溶液B的浓度之间。</p>
+<p class="blk p" id="p494">【笔试通】例题：甲容器有浓度为3%的盐水190克，乙容器中有浓度为9%的盐水若干克，从乙取出210克盐水倒入甲，甲容器中的盐水的浓度是多少？</p>
+<p class="blk p" id="p495">A. 5.45%B. 6. 15% C. 7. 35%D.5.95%</p>
+<p class="blk p" id="p496"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p497">【题型识别】通过读题，发现题目中有“从乙取出210克盐水倒入甲”，属于溶液混合问题。</p>
+<p class="blk p" id="p498">【笔试通】【指点迷津】根据题意，结合两溶液混合公式可得，混合后溶液的浓度</p>
+<p class="blk p" id="p499">=（3%×190+9%×210）÷（190+210）=6.15%。因此，本题答案选择B选项。</p>
+<h4 class="blk h4" id="s62">（三）反复操作问题<span class="pg">P16</span><a class="anchor" href="#s62" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p501"><span class="b">反复操作问题</span></p>
+<p class="blk p" id="p502"><span class="b">1.溶液倒出比例为a 的溶液，再加入相同的溶剂，重复操作 1次，则浓度变成原来的（1一a）。</span></p>
+<p class="blk p" id="p503"><span class="b">2.溶液加入比例为《的溶剂，再倒出相同的溶液，重复操作1次，则浓度变成原来的“。</span></p>
+<p class="blk p" id="p504">【笔试通】例题：从一瓶浓度为20%的消毒液中倒出2/5后，加满清水，再倒出2/5，又加满清水，此时消毒液的浓度为：</p>
+<p class="blk p" id="p505">A. 7.2%B. 3.2%C.5.0%D. 4.8%</p>
+<p class="blk p" id="p506"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p507">【题型识别】题目中有“倒出2/5后，加满清水，再倒出2/5，又加满清水”，属于反复操作型的溶液问题。</p>
+<p class="blk p" id="p508">【笔试通】【指点迷津】倒出比例为 2/5，重复2次，因此消毒液的浓度为20%×（1-2/5）^2=7.2%。因此，本题的正确答案A选项。</p>
+<h4 class="blk h4" id="s63">（四）抽象比例问题<span class="pg">P17</span><a class="anchor" href="#s63" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p510">在溶液中加入溶剂或蒸发溶剂时，把握溶质不变原理进行解题。</p>
+<p class="blk p" id="p511">【笔试通】例题：某种溶液的浓度为20%，加入水后溶液的浓度变为15%，如果再加入同样多的水，则溶液浓度变为：</p>
+<p class="blk p" id="p512">A. 13% B. 12. 5%|C. 12% D. 10%</p>
+<p class="blk p" id="p513"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p514">【题型识别】通过读题发现，往溶液里加的溶剂是水，溶质的量没有发生变化，并且每次加入的水的量是相同的，属于“溶质不变加减水”的题目。</p>
+<p class="blk p" id="p515">【笔试通】【指点迷津】根据题意，溶液中溶质的量是保持不变的，不妨赋值溶质的量为60克，则第一次加水前有溶液60÷20%=300；加水后溶液的浓度变为15%，则溶液的量为60÷15%=400，即加入的水的量为100；</p>
+<p class="blk p" id="p516">第三次加入同样多的水后，溶液的量为500，此时溶液的浓度为60÷500=12%。因此，本题的正确答案为C选项。</p>
+<h3 class="blk h3" id="s64">第九节：经济利润问题<span class="pg">P17</span><a class="anchor" href="#s64" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p518">题型分类</p>
+<h4 class="blk h4" id="s65">1. 基础经济问题<span class="pg">P17</span><a class="anchor" href="#s65" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p520">主要涉及“进价”“原价”“售价”“利润”“利润率”等常见经济概念之间的关系。</p>
+<p class="blk p" id="p521">常见的解题方法：方程法、赋值法。</p>
+<h4 class="blk h4" id="s66">2. 分段计费问题<span class="pg">P17</span><a class="anchor" href="#s66" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p523">每一段的计费标准不用。</p>
+<p class="blk p" id="p524">常见的题目情景有“水费”“电费”“停车费”“打车费”等等。解决问题的关键就是找到分段点，明确对应计费标准。</p>
+<h4 class="blk h4" id="s67">3. 最优方案问题<span class="pg">P17</span><a class="anchor" href="#s67" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p526">通常会给出两到三个不同的方案，并且会设问“最少花费多少元”或者“最多能获利多少元”。</p>
+<p class="blk p" id="p527">这一类题型通常难度指数偏低，只需要对比不同的方案即可，但是容易设置陷阱，同学们需细心应对。</p>
+<p class="blk p" id="p528">基础公式</p>
+<p class="blk p" id="p529">总售价（总收入）=单价×销售量；总利润=单件利润×销售量</p>
+<p class="blk p" id="p530">利润=售价-成本</p>
+<p class="blk p" id="p531">利润率=利润/成本=售价-成本/成本=售价/成本-1</p>
+<p class="blk p" id="p532">售价=成本 （1+利润率）</p>
+<p class="blk p" id="p533">成本=售价/1+利润率</p>
+<p class="blk p" id="p534">折扣：“二折”，即现价为原价的 20%，“九折”，即现价为原价的90%。通常情况下，打折是在售价的基础上打折，而非成本。</p>
+<p class="blk p" id="p535">理论要点</p>
+<h4 class="blk h4" id="s68">1. 基础经济问题<span class="pg">P18</span><a class="anchor" href="#s68" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p537">总售价（总收入）=单价×销售量；总利润=单件利润×销售量</p>
+<p class="blk p" id="p538">利润=售价-成本</p>
+<p class="blk p" id="p539">利润率=利润/成本=售价-成本/成本=售价/成本-1</p>
+<p class="blk p" id="p540">售价=成本 （1+利润率）</p>
+<p class="blk p" id="p541">成本=售价/1+利润率</p>
+<p class="blk p" id="p542">【笔试通】例题：某种汉堡包每个成本4.5元，售价 10.5元，当天卖不完的汉堡包即不再出售。在过去十天里，餐厅每天都会准备200个汉堡包，其中有六天正好卖完，四天各剩余25个，问这十天该餐厅卖汉堡包共赚了多少元？</p>
+<p class="blk p" id="p543">A. 10850 B. 10950 C. 11050 D. 11350</p>
+<p class="blk p" id="p544"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p545">【题型识别】题目中出现“成本”“售价”等词汇，我们可以明确该题属于基础经济问题。</p>
+<p class="blk p" id="p546">【笔试通】【指点迷津】解法一：考虑数字特性，卖出1个获利6元，未卖出赔4.5元，即总利润为3的倍数，观察选项只有B项满足。解法二：总成本为4.5×200×10=9000（元），总售价为10.5×（2000-100）=19950（元）；</p>
+<p class="blk p" id="p547">总利润=总售价-总成本=10950（元）。解法三：总利润=6×（200×6+175×4）+（-4.5）×（25×4）=10950（元）。</p>
+<h4 class="blk h4" id="s69">2. 部分打折类<span class="pg">P18</span><a class="anchor" href="#s69" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p549">实际总收入（利润）=未打折部分收入（利润）＋打折部分收入（利润）</p>
+<p class="blk p" id="p550">【笔试通】例题：某网店以高于进价 10%的定价销售T恤，在售出2/3后，以定价的8折将余下的T恤全部售出，该网店预计盈利为成本的：</p>
+<p class="blk p" id="p551">A. 3.2%B.不赚也不亏 C.1.6%D. 2.7%</p>
+<p class="blk p" id="p552"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p553">【题型识别】题目中出现“以定价的8折将余下的T恤全部售出”等这样的语句，我们可以明确该题属于基础经济问题中的部分打折问题。</p>
+<p class="blk p" id="p554">【笔试通】【指点迷津】</p>
+<div class="blk tblwrap"><table class="tbl"><tbody><tr><td></td><th>进价</th><th>原售价</th><th>折后价</th></tr><tr><th>单件</th><td>100（赋值）</td><td>110</td><td>88</td></tr><tr><th>数量</th><td>3（赋值）</td><td>2</td><td>1</td></tr></tbody></table></div>
+<p class="blk p" id="p556">本题单价和数量均未知，考虑赋值法。将单价赋值为100元/件，数量赋值为3件。实际总收入=未打折部分收入+打折部分收入=110×2+88×1=308（元）。故盈利 308-300=8（元）。盈利是成本的8÷300≈2.7%。因此，本题的正确答案为D选项。</p>
+<h4 class="blk h4" id="s70">3. 分段计费问题<span class="pg">P18</span><a class="anchor" href="#s70" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p558">核心思想：分段计算，找出所求量对应的级别，最后加总即可。突破点：分段点。</p>
+<p class="blk p" id="p559">【笔试通】例题：某市出租车：起步价格为2公里6元，2公里后每增加1公里收取1.7元，6公里之后每增加1公里收取2元，不足1元四舍五入。某乘客乘坐31公里，应该付（）元车费。</p>
+<p class="blk p" id="p560">A. 63元 B. 64元C.65 元 D.66元</p>
+<p class="blk p" id="p561"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p562">【题型识别】题目中每一段的计费标准不一样，我们可确定为分段计费问题。</p>
+<p class="blk p" id="p563">【笔试通】【指点迷津】出租车计价情况如下表所示：</p>
+<div class="blk tblwrap"><table class="tbl"><tbody><tr><th>公里数范围</th><th>计价标准</th></tr><tr><th>公里数≤2</th><td>6元</td></tr><tr><th>2&lt;公里数≤6</th><td>1.7元/公里</td></tr><tr><th>公里数&gt;6</th><td>2元/公里</td></tr></tbody></table></div>
+<p class="blk p" id="p565">乘客乘坐31公里应付车费=6+1.7×4+（31-6）×2=62.8～63（元）。因此，本题正确答案为A选项。</p>
+<h4 class="blk h4" id="s71">4. 最优方案问题<span class="pg">P18</span><a class="anchor" href="#s71" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p567">核心思想：将不同情况下的费用分别计算出来，比较得出最优结果。这种题型通常偏容易，但是容易有陷阱，需要大家细心。</p>
+<p class="blk p" id="p568">【笔试通】例题：某单位举办活动，需要制作8米长的横幅20条。用来制作横幅的原料有两种，一种每卷10米，售价10元；另一种每卷25米，售价23元。如果每卷原料截断后无法拼接，则该单位购买横幅原料最少需要花费（）元。</p>
+<p class="blk p" id="p569">A. 146 B. 158C. 161D.200</p>
+<p class="blk p" id="p570"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p571">【题型识别】题目给出两种方案，并且设问为“最少需要花费多少元”，可以确定为最优方案问题。</p>
+<p class="blk p" id="p572">【笔试通】【指点迷津】每卷10米的只能制作一条横幅，相当于单价为10元；每卷 25 米的能制作三条横幅，因此相当于单价为25/3元。因此要制作20条横幅，购买方式为每卷25米的购买6卷、每卷10米的购买2卷，花费为25×6+10×2=170（元）。</p>
+<h3 class="blk h3" id="s72">第十节：排列组合问题<span class="pg">P19</span><a class="anchor" href="#s72" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p574">题型分类：</p>
+<p class="blk p" id="p575">基础排列组合问题</p>
+<p class="blk p" id="p576">捆绑插空问题</p>
+<p class="blk p" id="p577">分配插板问题</p>
+<p class="blk p" id="p578">错位排列问题</p>
+<p class="blk p" id="p579">环形排列问题</p>
+<p class="blk p" id="p580">概率问题</p>
+<p class="blk p" id="p581">基础公式：</p>
+<h4 class="blk h4" id="s73">（一）排列<span class="pg">P19</span><a class="anchor" href="#s73" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p583">与顺序有关</p>
+<p class="blk p" id="p584"><span class="b">排列公式：A（n，m）=n!/（n-m）!</span></p>
+<p class="blk p" id="p585">=n×（n-1）×（n-2）×……×（n-m+1）</p>
+<h4 class="blk h4" id="s74">（二）组合<span class="pg">P19</span><a class="anchor" href="#s74" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p587">与顺序无关</p>
+<p class="blk p" id="p588"><span class="b">组合公式：C（n，m）=n!/（（n-m）!m!）=</span></p>
+<p class="blk p" id="p589"><span class="b">n（n-1）（n-2）……（n-m+1）/m（m-1）（m-2）……2×1</span></p>
+<p class="blk p" id="p590"><span class="b">特殊计算公式：C（n，1）=n，C（n，n）=1</span></p>
+<p class="blk p" id="p591">理论要点</p>
+<p class="blk p" id="p592">加法原理：分类用加法，适用于分不同情况讨论的情形。</p>
+<p class="blk p" id="p593">乘法原理：分步用乘法，适用于分步骤进行的情形。</p>
+<p class="blk p" id="p594">【笔试通】例题：南阳中学有语文教师8名、数学教师7名、英语教师5名和体育教师2名。现要从以上四科教师中各选出1名教师去参加培训，问共有几种不同的选法？</p>
+<p class="blk p" id="p595">A. 96 B.124 C.382 D. 560</p>
+<p class="blk p" id="p596"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p597">【题型识别】本题设问为“共有几种不同的选法”，我们可以确定属于排列组合问题。</p>
+<p class="blk p" id="p598">【笔试通】【指点迷津】本题考点：分步+组合。四科教师中每科选1 人，共有C（8，1）×C（7，1）×C（5，1）</p>
+<p class="blk p" id="p599">×C（2，1）=560（种）不同的选法。</p>
+<p class="blk p" id="p600">【笔试通】例题：有颜色不同的四盏灯，每次使用一盏、两盏、三盏或四盏，并按一定的次序挂在灯杆上表示信号，问共可表示多少种不同的信号？</p>
+<p class="blk p" id="p601">A.24种 B.48种　C.64种 D.72种</p>
+<p class="blk p" id="p602"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p603">【题型识别】本题设问为“共可表示多少种不同的信号”，我们可以确定属于排列组合问题。</p>
+<p class="blk p" id="p604">【笔试通】【指点迷津】分情况用加法原理，与顺序有关即为排列问题。</p>
+<p class="blk p" id="p605">4盏灯用1盏：A（4,1）=4（种）；4盏灯用2盏：A（4,2）=4 3=12（种）；4盏灯用3盏：A（4,3）</p>
+<p class="blk p" id="p606">=4×3×2=24（种）：4盏灯全用：A（4,4）=4 3×2×1=24（种）。</p>
+<p class="blk p" id="p607">故共可以表示信号 4+12+24+24=64（种）。因此，本题的正确答案为C选项。</p>
+<p class="blk p" id="p608"><span class="b">捆绑插空问题</span></p>
+<p class="blk p" id="p609"><span class="b">捆绑法</span></p>
+<p class="blk p" id="p610">特征：“相邻”“在一起”</p>
+<p class="blk p" id="p611">方法：先将相邻的主体捆绑在一起，再将它们视为一个整体与其他主体进行全排列。</p>
+<p class="blk p" id="p612"><span class="b">插空法</span></p>
+<p class="blk p" id="p613">特征：“不相邻”“不在一起”</p>
+<p class="blk p" id="p614">方法：先将其他主体排好，再将不相邻的主体进行插空。</p>
+<p class="blk p" id="p615">【笔试通】例题：某市至旱季水源不足，自来水公司计划在下周七天内选择两天停止供水，若要求停水的两天不相连，则自来水公司共有（）种停水方案。</p>
+<p class="blk p" id="p616">A. 21B.19C.15D.6</p>
+<p class="blk p" id="p617"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p618">【题型识别】本题出现“不相连”，我们可以确定属于排列组合问题中的插空问题。</p>
+<p class="blk p" id="p619">【笔试通】【指点迷津】将供水的5天排成一列，一共形成6个空，从中任意选2个，共有C（6,2）=15（种）</p>
+<p class="blk p" id="p620">停水方案，因此本题的正确答案是C。</p>
+<p class="blk p" id="p621"><span class="b">分配插板问题</span></p>
+<p class="blk p" id="p622">同质物体分堆，至少分一个，可直接用分配插板法。</p>
+<p class="blk p" id="p623">结论：将m个相同的物品，分给n个人，每个人至少得1个，则共有C（m-1，n-1） 种分配方法。</p>
+<p class="blk p" id="p624">注意：如果是每个人至少得多个，要先转化为每个人至少得一个，再用分配插板法解题。</p>
+<p class="blk p" id="p625">【笔试通】例题：将7个大小相同的桔子分给4个小朋友，要求每个小朋友至少得到1个桔子，一共有几种分配方法？</p>
+<p class="blk p" id="p626">A. 14 B.18C.20D.22</p>
+<p class="blk p" id="p627"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p628">【题型识别】本题出现“将7个大小相同的桔子分给4个小朋友”，我们可以确定属于排列组合问题中的分配插板问题。</p>
+<p class="blk p" id="p629">【笔试通】【指点迷津】7个桔子摆一排，中间有6个空，插3个板，就能分给4个小朋友，因此，分配方法总数为C（6，3）=20（种）。故本题答案为C选项。</p>
+<p class="blk p" id="p630"><span class="b">错位排列问题</span></p>
+<p class="blk p" id="p631">结论：有N个信封N封信，每封信都不装在自己的信封里，可能的方法种数记为Dn，则D1=0，D2=1，D3=2，D4=9，D5=44....</p>
+<p class="blk p" id="p632">【笔试通】例题：四位厨师聚餐时各做了一道拿手菜，现在要求每个人去品尝一道菜，但不能尝自己做的那道菜，问共有几种不同的尝法？</p>
+<p class="blk p" id="p633">A.6种 B.9种C.12种 D. 15种</p>
+<p class="blk p" id="p634"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p635">【题型识别】本题出现“要求每个人去品尝一道菜，但不能尝自己做的那道菜”，我们可以确定属于排列组合问题中的错位排列问题。</p>
+<p class="blk p" id="p636">【笔试通】【指点迷津】错位排列问题，D4=9（种）。因此，本题的正确答案是B选项。</p>
+<p class="blk p" id="p637"><span class="b">圆型排列问题</span></p>
+<p class="blk p" id="p638">结论：n个人排成一圈，则有A（n，n）/n=A（n-1，n-1）种排法。</p>
+<p class="blk p" id="p639">【笔试通】例题：五个人围成一圈跳舞，请问有多少种不同的排列方法？</p>
+<p class="blk p" id="p640">A. 120B.72C.48D.24</p>
+<p class="blk p" id="p641"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p642">【题型识别】本题出现“围成一圈”，我们可以确定属于排列组合问题中的圆型排列问题。</p>
+<p class="blk p" id="p643">【笔试通】【指点迷津】圆型排列，五个人排列方法共有A（4,4）=4×3×2×1=24（种）。</p>
+<h3 class="blk h3" id="s75">第十一节：概率问题<span class="pg">P20</span><a class="anchor" href="#s75" aria-label="链接到此节">#</a></h3>
+<h4 class="blk h4" id="s76">一、题型分类<span class="pg">P20</span><a class="anchor" href="#s76" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p646">基础概率问题</p>
+<p class="blk p" id="p647">概率之间的计算</p>
+<h4 class="blk h4" id="s77">二、基础公式<span class="pg">P21</span><a class="anchor" href="#s77" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p649">概率=满足条件的情况数÷总的情况数</p>
+<h4 class="blk h4" id="s78">三、理论要点<span class="pg">P21</span><a class="anchor" href="#s78" aria-label="链接到此节">#</a></h4>
+<h4 class="blk h4" id="s79">1.基础概率问题<span class="pg">P21</span><a class="anchor" href="#s79" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p652">概率=满足条件的情况数÷总的情况数</p>
+<p class="blk p" id="p653">满足条件的情况数和总的情况数分别用排列组合知识寻找，笔试中少部分情况用几何知识计算。</p>
+<p class="blk p" id="p654">【笔试通】例题：某单位共有四个科室，第一科室 20人，第二科室 21人，第三科室 25人，第四科室34人，随机抽取一人到外地考察学习，抽到第一科室的概率是多少？</p>
+<p class="blk p" id="p655">A. 0.3 B. 0.24 C. 0.2　　D. 0.15</p>
+<p class="blk p" id="p656"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p657">【题型识别】本题设问为“抽到第一科室的概率是多少”，我们可以确定属于概率问题。</p>
+<p class="blk p" id="p658">【指点迷津】四个科室总共有 20+21+25+34=100人，抽取一人的情况数为100，抽取到第一科室人的情况数为0，概率=满足条件的情况数÷总的情况数=20÷100=0.2。</p>
+<p class="blk p" id="p659">【笔试通】例题：某种密码锁的界面是一组汉字键，只有不重复并且不遗漏地依次按下界面上的汉字才能打开，其中只有一种顺序是正确的。要使得每次对密码锁进行破解的成功率在万分之一以下，则密码锁的界面至少要设置多少个汉字键？</p>
+<p class="blk p" id="p660">A.5 B.6 C.7 D.8</p>
+<p class="blk p" id="p661"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p662">【题型识别】本题出现“破解的成功率在万分之一以下”，我们可以确定属于概率问题。</p>
+<p class="blk p" id="p663">【指点迷津】破解密码锁需要不重复并且不遗漏地依次按下界面上的汉字，且要求顺序，则打开密码锁的情况数只有一种，假设密码锁有x 个按键，则总的情况数为A（x，x），所以概率=1/A（x，x），概率小于万分之一，将选项代入，只有D符合。因此，本题的正确答案为D选项。</p>
+<p class="blk p" id="p664">【笔试通】例题：从3双完全相同的鞋中，随机抽取一双鞋的概率是（）。</p>
+<p class="blk p" id="p665">A.1/2 B.3/5 C.1/6 D.1/3</p>
+<p class="blk p" id="p666"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p667">【题型识别】本题设问“概率是多少”，我们可以确定属于概率问题。</p>
+<p class="blk p" id="p668">【指点迷津】基本公式：满足条件的概率=满足条件的个数÷总的情况数。本题结合已知，3双鞋是相同的，所以随机抽取一双鞋，从左脚抽一只、从右脚抽一只的情况数为C（3,1）×C（3,1）=9（种），总的情况数为从6 只鞋子里任意抽取 2只即C（6，2）=15（种）。所以满足条件的概率=9-15=3/5。因此，本题答案为B选项。</p>
+<h4 class="blk h4" id="s80">2. 概率之间的计算<span class="pg">P21</span><a class="anchor" href="#s80" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p670">1.已知某个单独事件的概率，问复合情况下的概率。</p>
+<p class="blk p" id="p671">结论：总情况 m个事件中，发生n次，每次的独立概率为x，则复合情况下的概率为：C（m，n）×x^n×（1-x）^（m-n）</p>
+<p class="blk p" id="p672">2.如果某个概率正面求解比较麻烦，可以采用逆向思维：发生概率=1-不发生概率例1</p>
+<p class="blk p" id="p673">【笔试通】例题：根据天气预报，未来4天中每天下雨的概率约为0.6，则未来4天中仅有1天下雨的概率p为（）。</p>
+<p class="blk p" id="p674">A. 0.03&lt;p&lt;0.05 B.0.06&lt;p&lt;0.09 C. 0.13&lt;p&lt;0.16 D.0. 16&lt;p&lt;0. 36</p>
+<p class="blk p" id="p675"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p676">【题型识别】本题出现“未来4天中每天下雨的概率约为 0.6”，我们可以确定属于规律问题中的概率之间的计算。</p>
+<p class="blk p" id="p677">【指点迷津】4天中仅有1天下雨的概率p=C（4,1）×（0.6）×（1-0.6）”。式子列出后直接计算较麻烦，题目问的是范围，所以用估算，4×0.6×0.4=0.96×0.16，结果会比0.16小一点，故本题答案为C选项。</p>
+<p class="blk p" id="p678">【笔试通】例题：小王开车上班需经过4个交通路口，假设经过每个路口遇到红灯的概率分别为 0.1、0.2、0.</p>
+<p class="blk p" id="p679">25、0.4，则他上班经过4个路口至少有一处遇到绿灯的概率是：</p>
+<p class="blk p" id="p680">A. 0.899 B. 0.988 C.0.989 D. 0.998</p>
+<p class="blk p" id="p681"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p682">【题型识别】本题设问为“至少有一处遇到绿灯的概率是多少”，而之前告诉了我们一些高绿，我们可以确定属于概率问题中的概率之间的计算。</p>
+<p class="blk p" id="p683">【指点迷津】至少有一处绿灯分为一处绿灯、两处绿灯、三处绿灯、四处绿灯四种情况，正面计算较麻烦，考虑逆向思维，至少有一处绿灯的反面是没有一处绿灯，即全是红灯，全是红灯的概率为 0.1×0.2×0.25×0.4=0.002，而发生概率=1-不发生概率=1-0.002=0.998。因此，本题答案为D选项。</p>
+<h3 class="blk h3" id="s81">第十二节：最值问题<span class="pg">P22</span><a class="anchor" href="#s81" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p685">题型分类：</p>
+<p class="blk p" id="p686">最不利构造</p>
+<p class="blk p" id="p687">多集合反向构造</p>
+<p class="blk p" id="p688">数列构造</p>
+<p class="blk p" id="p689">题型特征：</p>
+<p class="blk p" id="p690">题目中涉及“至多”“至少”“最多”“最少”“最大”“最小”“最重”“最轻”“最快”“最慢”“排名第.”</p>
+<p class="blk p" id="p691">理论要点：</p>
+<h4 class="blk h4" id="s82">（一）最不利构造<span class="pg">P22</span><a class="anchor" href="#s82" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p693">特征：“至（最）少……保证（确保）……”</p>
+<p class="blk p" id="p694">方法：“最不利情形+1”</p>
+<p class="blk p" id="p695">【笔试通】例题：从一副完整的扑克牌中，至少抽出（）张牌才能保证至少6张牌的花色相同。</p>
+<p class="blk p" id="p696">A. 21 B.22 C.23 D.24</p>
+<p class="blk p" id="p697"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p698">【题型识别】设问为“至少……保证……”，我们可以确定为最不利构造。</p>
+<p class="blk p" id="p699">【笔试通】【指点迷津】最不利情形：每种花色的牌都抽5张，4×5=20（张），再摸出两张王共22张，这时再抽一张即可满足题意，22+1=23（张）。因此，本题的正确答案为C选项。</p>
+<h4 class="blk h4" id="s83">（二）多集合反向构造<span class="pg">P22</span><a class="anchor" href="#s83" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p701">特征：“都……至少……”</p>
+<p class="blk p" id="p702">方法：反向—--—加和———做差</p>
+<p class="blk p" id="p703">【笔试通】例题：某社团共有46人，其中35人爱好戏剧，30人爱好体育，38人爱好写作，40人爱好收藏，这个社团至少有多少人以上四项活动都喜欢？</p>
+<p class="blk p" id="p704">A.5 B.6 C.7 D.8</p>
+<p class="blk p" id="p705"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p706">【题型识别】设问为“至少……都……”，我们可以确定为多集合反向构造。</p>
+<p class="blk p" id="p707">【笔试通】【指点迷津】这一类题型分为三步走：第一步：反向。即每项活动不喜欢的分别有11人、16人、8人、6人；第二步：加和。所得值为反向的最大值。即 11+16+8+6=41（人）；第三步：做差。即答案=总数-反向最大值=46-41=5（人）。因此，本题的正确答案A选项。</p>
+<h4 class="blk h4" id="s84">（三）数列构造<span class="pg">P22</span><a class="anchor" href="#s84" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p709">特征：“排名第……最（至）……”“最……最（至）……”</p>
+<p class="blk p" id="p710">方法：排序——一定位———构造———加和</p>
+<p class="blk p" id="p711">特别要注意题目中是否有“整数”“互不相等”等限制条件，有或无会导致构造数列、列方程上的一些区别。</p>
+<p class="blk p" id="p712">【笔试通】例题：100人参加7项活动，已知每个人只参加一项活动，每项活动都有人参加而且参加的人数都不一样，那么参加人数第四多的活动最多有几个人参加？</p>
+<p class="blk p" id="p713">A. 22 B. 21 C.24D.23</p>
+<p class="blk p" id="p714"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p715">【题型识别】设问为“第四多……最……”，我们可以确定为数列构造。</p>
+<p class="blk p" id="p716">【笔试通】【指点迷津】题中7项活动参加总数是100人，求的是参加人数第四多活动最多有多少人，判定属于构造数列题，做此类题就是构造数列。排名第四的活动人数最多，即其他活动人数最少。设排名第四的活动有x 人参加，可列出表格：<span class="b">第3 第4总数第1第2第5第6 第7X+3X+2X+1×321100</span>可列出方程，x+3+x+2+x+1+x+3+2+1=100，解得x=22。因此，本题的正确答案为A.</p>
+<h3 class="blk h3" id="s85">第十三节：行程问题<span class="pg">P23</span><a class="anchor" href="#s85" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p718">题型分类</p>
+<p class="blk p" id="p719">基础行程类：</p>
+<p class="blk p" id="p720">火车过桥（隧道型）</p>
+<p class="blk p" id="p721">等距离平均速度</p>
+<p class="blk p" id="p722">基本相遇追及型</p>
+<p class="blk p" id="p723">环形相遇型</p>
+<p class="blk p" id="p724">直线往返相遇型</p>
+<p class="blk p" id="p725">其他：</p>
+<p class="blk p" id="p726">相遇追及问题</p>
+<p class="blk p" id="p727">流水行船问题</p>
+<p class="blk p" id="p728">比例行程问题</p>
+<p class="blk p" id="p729">基础公式：</p>
+<p class="blk p" id="p730">路程=速度 时间</p>
+<p class="blk p" id="p731">核心方法：</p>
+<p class="blk p" id="p732">赋值法、方程法、图示法</p>
+<p class="blk p" id="p733">理论要点</p>
+<h4 class="blk h4" id="s86">1. 基础行进型<span class="pg">P23</span><a class="anchor" href="#s86" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p735">核心公式：S=v×t</p>
+<p class="blk p" id="p736">【笔试通】例题：一辆汽车从 A地开到B地需要一个小时，返回时速度为每小时75千米，比去时节约了20分钟，问A、B两地相距多少千米？</p>
+<p class="blk p" id="p737"><span class="b">A.30 B.50C.60D. 75</span></p>
+<p class="blk p" id="p738"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p739">【题型识别】本题出现“速度”等相关词汇，我们确定本题为行程问题。</p>
+<p class="blk p" id="p740">【笔试通】【指点迷津】根据题意可知，汽车返程比去时节约了20分钟，即实际开了2/3小时。A、B两地相距75×2/3=50（千米）。因此，本题的正确答案为B选项。</p>
+<h4 class="blk h4" id="s87">2. 火车过桥（隧道）型<span class="pg">P23</span><a class="anchor" href="#s87" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p742">火车通过整座大桥，从车头上桥至车尾离桥，行进路程S=桥长＋车长=速度×时间；</p>
+<p class="blk p" id="p743">火车在整座大桥上，从车尾上桥至车头离桥，行进路程S=桥长-车长=速度×时间。</p>
+<p class="blk p" id="p744">【笔试通】例题：一列长90米的火车以每秒30米的速度匀速完全通过一座长1200 米的桥，所需时间（）</p>
+<p class="blk p" id="p745">秒。</p>
+<p class="blk p" id="p746">A. 37B.40C.43D.46</p>
+<p class="blk p" id="p747"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p748">【题型识别】本题出现“速度”“火车”、“桥”等相关词汇，我们确定本题为行程问题中的火车过桥（隧道）</p>
+<p class="blk p" id="p749">问题。</p>
+<p class="blk p" id="p750">【笔试通】【指点迷津】根据公式，火车完全通过大桥的行进路程s=桥长＋车长=1200+90=1290（米），则需要的时间t= v=1290÷30=43（秒）。因此，本题的正确答案为C选项。</p>
+<h4 class="blk h4" id="s88">3. 等距离平均速度<span class="pg">P23</span><a class="anchor" href="#s88" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p752">等距离平均速度核心公式：V=2v1v2/（v1+v2）</p>
+<p class="blk p" id="p753">【笔试通】例题：老张上山速度为60米/分钟，原路返回的速度100米/分钟，问老张往返的平均速度是多少米/分钟？</p>
+<p class="blk p" id="p754"><span class="b">A.85 B.80C. 75D.70</span></p>
+<p class="blk p" id="p755"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p756">【题型识别】本题出现“上山速度”“返回速度”等相关词汇，我们确定本题为行程问题中的等距离平均速度问题。</p>
+<p class="blk p" id="p757">【笔试通】【指点迷津】根据等距离平均速度公式得：V=2v1v2/v1+v2=2×60×100/（60+100）=75（米/分钟）。故本题正确答案为C选项。</p>
+<h4 class="blk h4" id="s89">4. 基本相遇追及型<span class="pg">P24</span><a class="anchor" href="#s89" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p759">核心公式</p>
+<p class="blk p" id="p760">相遇问题：相遇路程=（大速度＋小速度）×相遇时间</p>
+<p class="blk p" id="p761">追及问题：追及路程=（大速度-小速度）×追及时间</p>
+<p class="blk p" id="p762">【笔试通】例题：甲以6千米/小时的速度步行从A地往B地，在甲出发90分钟时，乙发现甲落下重要物品，立即骑自行车以12千米/小时追甲，在11 点追上，甲出发的时间为上午（ ）点。</p>
+<p class="blk p" id="p763">A. 7 B.8 C.9 D.10</p>
+<p class="blk p" id="p764"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p765">【题型识别】本题出现“追上”等相关词汇，我们可以确定为行程问题中的相遇追及问题。</p>
+<p class="blk p" id="p766">【笔试通】【指点迷津】由题意可知，甲出发90分钟所走路程即为乙追甲的路程。则追及时间=追及路程</p>
+<p class="blk p" id="p767">（乙速度-甲速度）=6×1.5÷（12-6）=1.5（小时），11点追上，甲先走了1.5小时，乙又追了甲1.5小时，故出发时间为早上8点。因此，本题的正确答案为B选项。</p>
+<h4 class="blk h4" id="s90">5. 环形相遇型<span class="pg">P24</span><a class="anchor" href="#s90" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p769">当甲、乙两人运动方向相同时，为追及运动。设甲速度＞乙速度，则第一次追上时，甲比乙多跑1圈；第二次追上时，多跑2圈……第N次追上时，多跑N圈。则有：</p>
+<p class="blk p" id="p770">同向环形问题：追上N圈时，N圈跑道长度=（甲速度-乙速度）×追及时间</p>
+<p class="blk p" id="p771">当甲、乙两人运动方向相反时，为相遇（或背离）运动。则第一次相遇时，两人共同行进1圈；</p>
+<p class="blk p" id="p772">第二次相遇时，两人共同行进2圈……第N次相遇时，共走N圈。则有：</p>
+<p class="blk p" id="p773">反向/背向环形问题：相遇N 圈时，N圈跑道长度=（甲速度＋乙速度）×相遇时间</p>
+<p class="blk p" id="p774">【笔试通】例题：甲乙两人在一条椭圆形田径跑道上练习快跑和慢跑，甲的速度为3米/秒，乙的速度为7米/秒，他们在同一点同向跑步，经过100秒第一次相遇，若他们反向跑，多少秒后第一次相遇？</p>
+<p class="blk p" id="p775">A.30 B.40C.50 D. 70</p>
+<p class="blk p" id="p776"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p777">【题型识别】本题出现“相遇”等相关词汇，我们可以确定为行程问题中的相遇追及问题。</p>
+<p class="blk p" id="p778">【笔试通】【指点迷津】根据公式，两人同向跑步，100秒后追上。跑道周长=（7-3）×100=400（米）。若反向跑步，那么相遇时间t=400÷（7+3）=40（秒）。因此，本题的正确答案为B选项。</p>
+<h4 class="blk h4" id="s91">6. 直线往返相遇型<span class="pg">P24</span><a class="anchor" href="#s91" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p780">如果两人分别从两端出发：</p>
+<p class="blk p" id="p781">那么两人第N次迎面相遇，路程和=全程×（2N-1）；</p>
+<p class="blk p" id="p782">第N次追上相遇，路程差=全程×（2N-1）。</p>
+<p class="blk p" id="p783">如果两人从同一点出发：</p>
+<p class="blk p" id="p784">那么两人第N次迎面相遇，路程和=全程×2N；</p>
+<p class="blk p" id="p785">第N次追上相遇，路程差=全程×2N。</p>
+<p class="blk p" id="p786">【笔试通】例题：甲、乙两人在长30米的泳池内游泳，甲每分钟游37.5米，乙每分钟游52.5米。两人同时分别从泳池的两端出发，触壁后原路返回，如是往返。如果不计转向的时间，则从出发开始计算的1分50秒内两人共相遇多少次？</p>
+<p class="blk p" id="p787">A.2 B.3C.4D.5</p>
+<p class="blk p" id="p788"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p789">【题型识别】本题出现“追上”等相关词汇，我们可以确定为行程问题中的相遇追及问题。</p>
+<p class="blk p" id="p790">【笔试通】【指点迷津】泳池长30米，两人速度和90米/分，则两人迎面相遇时所走的路程和应为 1×30，3×30，5×30，7×30……，而1分50秒两人游了90×（1+50/60）=165（米），5×30&lt;165&lt;7×30，所以最多可以迎面相遇3次。而两人路程差为（52.5-37.5）×（1+5/6）=27.5（米），不到一个全程，因此从出发开始计算的1分50秒内两人没有一次追上相遇。因此，本题的正确答案为B选项。</p>
+<h4 class="blk h4" id="s92">7. 流水行船问题<span class="pg">P25</span><a class="anchor" href="#s92" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p792">顺流路程=顺流速度×顺流时间=（船速＋水速）×顺流时间</p>
+<p class="blk p" id="p793">逆流路程=逆流速度×逆流时间=（船速-水速）×逆流时间</p>
+<p class="blk p" id="p794">无动力漂流所需时间 t=2t 巡tw/t逆一七顺</p>
+<p class="blk p" id="p795">【笔试通】例题：长江上游的A港与下游S 港相距 270千米，一轮船以恒定速度从A港到S港需6.75 小时，返回需9小时。如果一只漂流瓶从A港顺水漂流到S港，则需要的时间是：</p>
+<p class="blk p" id="p796">A.84 小时 B.50 小时 C.54小时 D.81 小时</p>
+<p class="blk p" id="p797"><span class="b">【答案】C</span></p>
+<p class="blk p" id="p798">【题型识别】本题出现“顺水”等相关词汇，我们可以确定为行程问题中的流水行船问题。</p>
+<p class="blk p" id="p799">【笔试通】【指点迷津】根据顺水漂流模型，漂流时间=（2×6.75×9）÷（9-6.75）=54（小时）。</p>
+<h4 class="blk h4" id="s93">8. 比例行程问题<span class="pg">P25</span><a class="anchor" href="#s93" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p801">路程相同，速度和时间成反比；</p>
+<p class="blk p" id="p802">时间相同，速度和路程成正比。</p>
+<p class="blk p" id="p803">【笔试通】例题：甲乙两辆车从A地驶往90千米外的B地，两车的速度比为5：6。甲车于上午10点半出发，乙车于10点40分出发，最终乙车比甲车早2分钟到达乙地。问两车的时速相差多少千米/小时？</p>
+<p class="blk p" id="p804">A.10 B.12 C.12.5 D.15</p>
+<p class="blk p" id="p805"><span class="b">【答案】D</span></p>
+<p class="blk p" id="p806">【题型识别】本题出现“追上”等相关词汇，我们可以确定为行程问题中的相遇追及问题。</p>
+<p class="blk p" id="p807">【笔试通】【指点迷津】根据题意可知：s一定，所以速度比为时间的反比。因此甲乙所用时间的比应该为6:5。设甲用了 6t，乙用了 5t，又根据题意甲比乙多用12分钟，所以t为12，即甲用了72分钟，乙用了60分钟。因此甲的时速为90-72/60=千米，乙的时速为90千米，两者相差15千米/小时，故选D。</p>
+<h3 class="blk h3" id="s94">第十四节：牛吃草问题<span class="pg">P25</span><a class="anchor" href="#s94" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p809">方法：套公式，列方程。</p>
+<p class="blk p" id="p810">公式：y=（N-x）×T</p>
+<p class="blk p" id="p811">y：原有的总量（比如 “原有的草量”）</p>
+<p class="blk p" id="p812">T：完全消耗所需的时间</p>
+<p class="blk p" id="p813">N：促使原有总量减少的变量（比如“牛数”）</p>
+<p class="blk p" id="p814">x：单位时间内的增长量（比如“草的生长速度”）。</p>
+<p class="blk p" id="p815">题目特征：给出两组对应的T、N；本质：两个变量影响原有总量的变化。</p>
+<p class="blk p" id="p816">理论要点</p>
+<h4 class="blk h4" id="s95">1. 基本公式型<span class="pg">P25</span><a class="anchor" href="#s95" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p818">y=（N-x） ×T</p>
+<p class="blk p" id="p819">【笔试通】例题：一片草地（草以均匀速度生长），240只羊可以吃6天，200只羊可以吃 10天，则这片草可供190只羊吃的天数是：</p>
+<p class="blk p" id="p820">A. 11天 B.12天 C.14天 D.15天</p>
+<p class="blk p" id="p821"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p822">【题型识别】本题出现“240只羊可以吃6天，200只羊可以吃10天”，我们可以确定为牛吃草问题。</p>
+<p class="blk p" id="p823">【笔试通】【指点迷津】牛吃草公式：y=（N-x）×T根据题意可得：y=（240-x）×6：y=（200-x）×10 解得：x=140，y=600将 N=190代入，则600=（190-140）×T，得T=12。故本题答案为B选项。</p>
+<h4 class="blk h4" id="s96">2. 可持续发展型<span class="pg">P25</span><a class="anchor" href="#s96" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p825">减少速度（N）≤增长速度（x）</p>
+<p class="blk p" id="p826">【笔试通】例题：某河段中的沉积河沙可供80人连续开采6个月或60人连续开采10个月。如果要保证该河段河沙不被开采枯竭，问最多可供多少人进行连续不间断地开采？（假定该河段河沙沉积的速度相对稳定）</p>
+<p class="blk p" id="p827">A. 25 B.30 C.35D.40</p>
+<p class="blk p" id="p828"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p829">【题型识别】本题出现“80人连续开采6个月或60人连续开采10个月”，我们可以确定为牛吃草问题。此外，出现“保证该河段河沙不被开采枯竭”，确定为可持续发展型。</p>
+<p class="blk p" id="p830">【笔试通】【指点迷津】牛吃草公式：y=（N-x）×T根据题意可得： =（80-x）×6,y=（60-x）×10解得：×=30，表示每个月河沙沉积速度为30，则要保证不被开采枯竭，每个月最多供30人开采。故本题答案为B选项。</p>
+<h4 class="blk h4" id="s97">3. 同增同减型<span class="pg">P26</span><a class="anchor" href="#s97" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p832">【笔试通】例题：当算出x为负值时，则表示N和x 同增同减，直接代入计算即可。某医院有一氧气罐匀速漏气，该氧气罐充满后同时供40人吸氧，60分钟后氧气耗尽，再次充满该氧气罐同时供60个人吸氧，45 分钟后氧气耗尽。问如果该氧气罐充满后无人吸氧，氧气耗尽需要多长时间？</p>
+<p class="blk p" id="p833">A.1.5个小时B.2个小时　C.2.5个小时 D.3个小时</p>
+<p class="blk p" id="p834"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p835">【题型识别】本题出现“同时供40人吸氧，60分钟后氧气耗尽，再次充满该氧气罐同时供60个人吸氧，45分钟后氧气耗尽”，我们可以确定为牛吃草问题。</p>
+<p class="blk p" id="p836">【笔试通】【指点迷津】牛吃草公式：y=（N-x）×T 根据题意可得：y=（40-x） 60，y=（60-x）×45 解得：y=3600，x=-20。则3600÷20=180（分钟）=3（小时）。故本题答案为D选项。</p>
+<h3 class="blk h3" id="s98">第十五节：容斥原理<span class="pg">P26</span><a class="anchor" href="#s98" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p838">基本公式</p>
+<p class="blk p" id="p839">两集合容斥问题</p>
+<p class="blk p" id="p840">总个数-两者都不满足的个数=A+B-AB</p>
+<p class="blk p" id="p841">三集合容斥问题</p>
+<p class="blk p" id="p842">总个数-三者都不满足的个数=A+B+C-（AB+AC+BC）+ABC</p>
+<p class="blk p" id="p843">总个数-三者都不满足的个数=A+B+C-②-2×③</p>
+<p class="blk p" id="p844">（其中②表示满足两种的个数；③表示三者都满足的个数）</p>
+<p class="blk p" id="p845">核心方法</p>
+<p class="blk p" id="p846">公式法、图示法</p>
+<p class="blk p" id="p847">理论要点</p>
+<h4 class="blk h4" id="s99">（一）两集合容斥问题<span class="pg">P26</span><a class="anchor" href="#s99" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p849">解题方法：公式法、图示法。</p>
+<p class="blk p" id="p850">核心公式：总个数-两者都不满足的个数=A+B-AB</p>
+<p class="blk p" id="p851">【笔试通】例题：某班对50名学生进行体检，有20人近视，12人超重，4人既近视又超重。问该班有多少人既不近视又不超重？</p>
+<p class="blk p" id="p852">A. 22人 B. 24人 C.26人 D.28人</p>
+<p class="blk p" id="p853"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p854">【题型识别】本题出现“有20人近视，12人超重，4人既近视又超重”，我们可以确定为两集合问题。</p>
+<p class="blk p" id="p855">【笔试通】【指点迷津】根据两集合容斥原理可知，近视和超重的学生共有20+12-4=28（人），可得既不近视也不超重的人数为50-28=22（人）。故正确答案为A选项。</p>
+<h4 class="blk h4" id="s100">（二）三集合容斥问题<span class="pg">P26</span><a class="anchor" href="#s100" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p857">解题方法：公式法、图示法。</p>
+<p class="blk p" id="p858">适用情形：当题目直接求公式中的某个未知量时，直接适用公式法；</p>
+<p class="blk p" id="p859">当题目所求未知量未在公式中体现出来时，直接适用图示法。</p>
+<p class="blk p" id="p860">核心公式：①总个数-三者都不满足的个数=A+B+C-（AB+AC+BC） +ABC（适用于 AB、BC、AC 均已知的情形）；</p>
+<p class="blk p" id="p861">②总个数-三者都不满足的个数=A+B+C-②-2×③（适用于已知满足两种情况个数的情形）。</p>
+<p class="blk p" id="p862">计算策略：因三集合容斥公式太长，在选项尾数都不相同的情况下，可直接适用尾数法快速选出正确答案。</p>
+<p class="blk p" id="p863">【笔试通】例题：某专业有学生50人，现开设有甲、乙、丙三门必修课。有40人选修甲课程，36人选修乙课程，30人选修丙课程，兼选甲、乙两门课程的有28人，兼选甲、丙两门课程的有26人，兼选乙、丙两门、课程的有24人，甲、乙、丙三门课程均选的有20人，问三门课程均未选的有多少人？</p>
+<p class="blk p" id="p864">A. 1人 B.2人 C.3人 D.4人</p>
+<p class="blk p" id="p865"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p866">【题型识别】本题出现“三门课程均未选”，我们可以确定为三集合问题。</p>
+<p class="blk p" id="p867">【笔试通】【指点迷津】直接使用公式法。三者都不=总数-【（A+B+C）-（AB+BC+AC） +ABC］=50-【（40+36+30）-</p>
+<p class="blk p" id="p868">（28+26+24）+20J=2（人）。因此，本题的正确答案为B选项。</p>
+<h3 class="blk h3" id="s101">第十六节 趣味杂题<span class="pg">P27</span><a class="anchor" href="#s101" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p870">题型分类：</p>
+<p class="blk p" id="p871">比赛问题</p>
+<p class="blk p" id="p872">统筹问题</p>
+<p class="blk p" id="p873">推断问题</p>
+<p class="blk p" id="p874">过河爬井问题</p>
+<p class="blk p" id="p875">空瓶换酒问题</p>
+<p class="blk p" id="p876">基本公式：</p>
+<h4 class="blk h4" id="s102">1. 淘汰赛<span class="pg">P27</span><a class="anchor" href="#s102" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p878">如果有N支队伍，需要决出冠、亚军，比赛场次=N-1；</p>
+<p class="blk p" id="p879">如果有N支队伍，需要决出第1、2、3、4名，比赛场次=N。</p>
+<h4 class="blk h4" id="s103">2. 循环赛<span class="pg">P27</span><a class="anchor" href="#s103" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p881">如果N支队伍打单循环赛（任意两个队打一场比赛），比赛场次=C（N,2）；</p>
+<p class="blk p" id="p882">如果N 支队伍打双循环赛（任意两个队打两场比赛），比赛场次=A （N,2）。</p>
+<h4 class="blk h4" id="s104">3. 过河问题<span class="pg">P27</span><a class="anchor" href="#s104" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p884">有M个人过河，船每次过河最多能带 N个人，需要a 人划船，则渡河至少需要（M-a）/（N-a）次。</p>
+<h4 class="blk h4" id="s105">4. 爬井问题<span class="pg">P27</span><a class="anchor" href="#s105" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p886">井深M米，青蛙每向上跳N米，往下滑落a 米，则青蛙需要（M-a）/（N-a）次能跳出井。</p>
+<p class="blk p" id="p887">理论要点</p>
+<h4 class="blk h4" id="s106">（一）比赛问题<span class="pg">P27</span><a class="anchor" href="#s106" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p889">1 淘汰赛：如果有N 支队伍，需要决出冠、亚军，比赛场次=N-1；</p>
+<p class="blk p" id="p890">如果有N支队伍，需要决出第1、2、3、4名，比赛场次=N。</p>
+<p class="blk p" id="p891">2循环赛：如果N支队伍打单循环赛（任意两个队打一场比赛），比赛场次=C（N,2）；</p>
+<p class="blk p" id="p892">如果N支队伍打双循环赛（任意两个队打两场比赛），比赛场次=A （N2）。</p>
+<p class="blk p" id="p893">【笔试通】例题：某单位职员在健身活动中举行乒乓球比赛，每个选手都要和其他选手各赛一场，一共120场比赛，则该单位参加人数是（）人。</p>
+<p class="blk p" id="p894">A. 18 B. 16 C. 15 D. 14</p>
+<p class="blk p" id="p895"><span class="b">【本题答案】B</span></p>
+<p class="blk p" id="p896">【题型识别】本题出现“比赛”等相关词汇，我们可以确定为比赛问题。</p>
+<p class="blk p" id="p897">【指点迷津】单循环赛，比赛场次是C（N,2）=120，解得N=16。因此，本题的正确答案为B选项。</p>
+<h4 class="blk h4" id="s107">（二）统筹问题<span class="pg">P27</span><a class="anchor" href="#s107" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p899">解题密钥：比较相对效率。</p>
+<p class="blk p" id="p900">如果有两个人，则做得快的先做完后再来帮做得慢的；如果有三个人及以上，则处于中间效率的人需要两边统筹才能最优。</p>
+<p class="blk p" id="p901">【笔试通】例题：人工生产某种装饰用珠链，每条珠链需要珠子25颗，丝线3条，搭扣1对，以及10分钟的单个人工劳动。现有珠子 4880颗，丝线586条，搭扣200对，4个工人。则8小时最多可以生产珠链：</p>
+<p class="blk p" id="p902">A.200条 B. 195条C.193条D. 192条</p>
+<p class="blk p" id="p903"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p904">【题型识别】本题问“最多可以生产珠链”，我们可以初步确定为统筹问题。</p>
+<p class="blk p" id="p905">【指点迷津】珠子足够生产4880÷25≈195（条）珠链，丝线足够生产 586÷3≈195（条）珠链，搭扣足够生产200（条）珠链，4个工人8小时足够生产4×6×8=192（条）珠链，而生产一条珠链需要满足所有条件，应取最小值，故最多可以生产珠链192条。因此，本题的正确答案为D选项。</p>
+<h4 class="blk h4" id="s108">（三） 推断题<span class="pg">P27</span><a class="anchor" href="#s108" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p907">1假币类：如果已知假币是轻或是重，N次天平称量可从 3^N 个硬币（其中有一个假币）中选出假币。</p>
+<p class="blk p" id="p908">2面包类：数字特性法，尤其考虑3或9的特性。</p>
+<p class="blk p" id="p909">【笔试通】例题：一盒巧克力和一瓶蜂蜜需18元，一包泡泡糖和一袋香肠11元，一包泡泡糖和一瓶蜂蜜需14元，一袋香肠比一盒巧克力贵1元，这四样商品中最贵的是什么？</p>
+<p class="blk p" id="p910">A. 泡泡糖 B. 巧克力 C. 香肠 D. 蜂蜜</p>
+<p class="blk p" id="p911"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p912"><span class="b">【题型识别】特殊题型：两两比较。</span></p>
+<p class="blk p" id="p913">【指点迷津】一盒巧克力和一瓶蜂蜜需18元，一包泡泡糖和一瓶蜂蜜需14元，得到巧克力比泡泡糖贵。一包泡泡糖和一袋香肠11元，一包泡泡糖和一瓶蜂蜜需14元，得到蜂蜜比香肠贵，而香肠又比巧克力贵，故最贵的是蜂蜜。因此，本题的正确答案为D选项。</p>
+<h4 class="blk h4" id="s109">（四）过河爬井问题<span class="pg">P28</span><a class="anchor" href="#s109" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p915">1 过河问题：有M个人过河，船每次过河最多能带N个人，需要a人划船，则疲河至少需要（M-a）/（N-a）次。</p>
+<p class="blk p" id="p916">注明：若往返各算一次，则需要（（M-a）/（N-a） ×2-1）次。</p>
+<p class="blk p" id="p917">2爬井问题：井深M米，青蛙每向上跳N米，往下滑落a米，则青蛙需要（M-a）/（N-a）次能跳出井。</p>
+<p class="blk p" id="p918">【笔试通】例题：有一只青蛙在井底，每天上爬10米，又下滑6米，这口井深20米，这只青蛙爬出井口至少需要多少天？</p>
+<p class="blk p" id="p919">A. 2 B. 3 C.4 D. 5</p>
+<p class="blk p" id="p920"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p921">【题型识别】本题出现“青蛙”“井”等词汇，我们可以确定本题为爬井问题。</p>
+<p class="blk p" id="p922">【指点迷津】设需要x天，根据题意，代入公式，可得方程：x=（20-6）÷（10-6）=3.5，取整后得到 4天。因此，本题的正确答案为C选项。如果求出的天数为小数，那么一定要进1。</p>
+<h4 class="blk h4" id="s110">（五）空瓶换酒问题<span class="pg">P28</span><a class="anchor" href="#s110" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p924">N个空瓶换a 瓶酒，M个空瓶免费至多能喝（M/N-a）×a 瓶酒。</p>
+<p class="blk p" id="p925">【笔试通】例题：如果4个矿泉水空瓶可以换一瓶矿泉水，现有15个矿泉水空瓶，不交钱最多可以喝矿泉水：</p>
+<p class="blk p" id="p926">A.3瓶 B. 4瓶 C.5瓶 D.6瓶</p>
+<p class="blk p" id="p927"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p928">【题型识别】本题出现“4个矿泉水空瓶可以换一瓶矿泉水”，我们可以确定本题为空瓶换酒问题。</p>
+<p class="blk p" id="p929">【指点迷津】代入公式可得，15 个矿泉水空瓶可以换矿泉水 154-1=5（瓶）。因此，本题的正确答案为C选项。</p>
+<h1 class="blk h1" id="s111">第二部分 特殊方法技巧<span class="pg">P28</span><a class="anchor" href="#s111" aria-label="链接到此节">#</a></h1>
+<h3 class="blk h3" id="s112">第一节 代入排除法<span class="pg">P28</span><a class="anchor" href="#s112" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p932">方法阐释</p>
+<p class="blk p" id="p933">代入排除法不仅仅是一种方法更是一种思想，做任何题目的时候都要有这种思维意识。代入排除不是一种机械的代入，而是需要利用题目和选项所给出的一些特性，选择性地代入排除。当题目涉及到“最大”或“最小”时，注意代入的逻辑顺序；当题目未提及大小时，通常从中间选项进行代入排除。</p>
+<p class="blk p" id="p934">题型辨识</p>
+<p class="blk p" id="p935">通过对历年题型的分析，我们发现以下题型经常用到代入排除法：</p>
+<p class="blk p" id="p936">代入排除常用题型：多位数问题、年龄问题、和差倍比问题及较复杂类型问题。</p>
+<p class="blk p" id="p937">代入排除可用题型：不定方程问题、费用问题、同余问题、周期问题、复杂行程问题等</p>
+<p class="blk p" id="p938">理论要点</p>
+<p class="blk p" id="p939"><span class="b">多位数问题</span></p>
+<p class="blk p" id="p940">当题目涉及数位、小数点的移动，数的大小类等问题时，直接考虑代入排除法。</p>
+<p class="blk p" id="p941">【笔试通】例题：一个五位数，左边三位数是右边两位数的5倍，如果把右边的两位数移到前面，则所得新的五位数要比原来的五位数的2倍还多75，则原五位数是多少？</p>
+<p class="blk p" id="p942">A. 12525 B.13527 C. 17535 D. 22545</p>
+<p class="blk p" id="p943"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p944">【题型识别】题目中出现“一个五位数”的表述，并且最后要求的就是这个五位数，判定此题为多位数问题，应采用代入排除法求解。</p>
+<p class="blk p" id="p945">【指点迷津】直接代入A选项，左边三位数125，右边两位数25，满足5倍的关系。按题意移动后所得新的五位数 25125=12525×2+75，满足题意。因此，本题的正确答案为A。</p>
+<p class="blk p" id="p946"><span class="b">年龄问题</span></p>
+<p class="blk p" id="p947">1. 当题目涉及年龄差时，注意无论多少年后，年龄差不变，为定值；</p>
+<p class="blk p" id="p948">2. 当题目涉及年龄倍数时，随着年龄的增长，年龄倍数会越来越小；</p>
+<p class="blk p" id="p949">3.当题目涉及两个人年龄的对话时，即将此年龄段平均分成三等份，利用等差数列解题。</p>
+<p class="blk p" id="p950">【笔试通】例题：小华4年后的年龄与小丽4年前的年龄相等，3年后，她们两人的年龄和等于她们今年年龄差的3倍，小华和小丽今年的年龄分别是多少岁？</p>
+<p class="blk p" id="p951">A. 10,18 B. 4,12 C. 5,13 D.6, 14</p>
+<p class="blk p" id="p952"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p953">【题型识别】年龄问题，题目要求根据小华与小丽两个人的年龄关系，求两个人各自的年龄，直接代入排除。</p>
+<p class="blk p" id="p954">【指点迷津】由题目第一句话可知，两人的年龄相差8岁，四个选项均满足此条件。</p>
+<p class="blk p" id="p955">A项，3年后两人分别为13岁、21岁，其和不是3的倍数，排除；</p>
+<p class="blk p" id="p956">B项，3年后两人分别为7岁、15岁，其和不是3的倍数，排除；</p>
+<p class="blk p" id="p957">C项，3年后两人分别为8岁、16岁，其和正好是3的8倍，满足题意。</p>
+<p class="blk p" id="p958">因此，本题的正确答案为C。</p>
+<p class="blk p" id="p959"><span class="b">其他问题</span></p>
+<p class="blk p" id="p960">当题目较抽象或较复杂，无任何思路时，可考虑代入排除法。</p>
+<p class="blk p" id="p961">【笔试通】例题：根据国务院办公厅部分节假日安排的通知，某年8月份有22个工作日，那么当年的8月1日可能是：</p>
+<p class="blk p" id="p962">A. 周一或周三 B. 周三或周日 C.周一或周四D.周四或周日</p>
+<p class="blk p" id="p963"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p964">【题型识别】时间问题，根据选项可以确定8月有22个工作日，考虑代入排除。</p>
+<p class="blk p" id="p965">【指点迷津】A项，若8月1日是周一，易得到8月有23个工作日，不满足题意，排除A、C两项；B项，若8月1日是周三，易得到8月也有23个工作日，不满足题意，排除。因此，本题的正确答案为D。</p>
+<h3 class="blk h3" id="s113">第二节 赋值法<span class="pg">P29</span><a class="anchor" href="#s113" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p967">方法阐释</p>
+<p class="blk p" id="p968">赋值法也称特值法，即根据题目的具体情形，合理巧妙地对某些元素设出一个具体的数值。特别适用于抽象难入手的题目，将这类抽象题目置于具体的数据环境中，以简化思维得出最终结果。</p>
+<p class="blk p" id="p969">题型辨识</p>
+<p class="blk p" id="p970">赋值法常用题型：工程问题、费用问题、行程问题、多元不定方程等。</p>
+<p class="blk p" id="p971">尤其当题目中出现多个变量之间存在百分数、分数或比例关系时，多适用赋值法。</p>
+<p class="blk p" id="p972">【笔试通】例题：某种溶液的浓度为20%，加入水后溶液的浓度变为15%，如果再加入同样多的水，则溶液浓度变为：</p>
+<p class="blk p" id="p973">A. 13% B. 12. 5% C. 12% D. 10%</p>
+<p class="blk p" id="p974"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p975">【题型识别】等溶质稀释问题。除了公式法外，因为题目中没有具体数据，也可以赋值。</p>
+<p class="blk p" id="p976">【指点迷津】加水前后溶液的溶质为定值，根据比例份数令溶质60，所以 20%=60/300，15%=60/400，因此每次加水100，所以再加 100水，得60/500=12%，因此选择C。</p>
+<h3 class="blk h3" id="s114">第三节 十字交叉法<span class="pg">P29</span><a class="anchor" href="#s114" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p978">方法阐释</p>
+<p class="blk p" id="p979"><span class="b">十字交叉法是由方程简化而来，凡是符合如下左边方程的形式，都可用右边的“十字交叉”的方法</span></p>
+<p class="blk p" id="p980"><span class="b">来化简：</span></p>
+<p class="blk p" id="p981">Aa+Bb=（A+B）r⇒A/B=（r-b）/（a-r）⇒</p>
+<p class="blk p" id="p982">A：a　　＼／　　r-b</p>
+<p class="blk p" id="p983">＼　r　／</p>
+<p class="blk p" id="p984">B：b　　／＼　　a-r　⇒A/B=（r-b）/（a-r）</p>
+<p class="blk p" id="p985">题型辨识</p>
+<p class="blk p" id="p986"><span class="b">典型适用情形</span></p>
+<p class="blk p" id="p987">重量分别为A和B的溶液，浓度分别为a 和b，混合后浓度为r。</p>
+<p class="blk p" id="p988">数量分别为A和B 的人口，分别增长a与b，总体增长为r。</p>
+<p class="blk p" id="p989">A个男生的平均分为a，B个女生的平均分为b，总体平均分为r。</p>
+<p class="blk p" id="p990">以上情形都属于加权平均问题，都能列出方程 Aa+Bb=（A+B）r，可用十字交叉法快速解题。</p>
+<p class="blk p" id="p991">注意事项：</p>
+<p class="blk p" id="p992">重量、数量、平均分都应与A、B—一对应；斜线上的数据是大减小。</p>
+<p class="blk p" id="p993">最终得到的比值 A/B 代表未混合之前，即初期时间段的比值。</p>
+<p class="blk p" id="p994">【笔试通】例题：浓度为70%的酒精溶液 100克与浓度为20%的酒精溶液 400克混合后得到的酒精溶液的浓度是多少？</p>
+<p class="blk p" id="p995">A. 30% B. 32% C. 40% D. 45%</p>
+<p class="blk p" id="p996"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p997"><span class="b">【题型识别】溶液混合问题，采用十字交叉法。</span></p>
+<p class="blk p" id="p998"><span class="b">【难度指数】★★</span></p>
+<p class="blk p" id="p999">A：70%　　＼／　　x-20%</p>
+<p class="blk p" id="p1000">【指点迷津】　＼x／　＝100/400，解得x=30%。因此，本题的正确答案为A选项。</p>
+<p class="blk p" id="p1001">B：20%　　／＼　　70%-x</p>
+<p class="blk p" id="p1002">【笔试通】例题：某公司2011年前三季度营业收入7650万元，比上年同期增长2%，其中主营业务收入比上年同期减少 2%，而其他业务收入比上年同期增加 10%，那么，该公司2011年前三季度主营业务收入为多少？</p>
+<p class="blk p" id="p1003">A. 3920 万元 B.4410万元 C.4900 万元 D. 5490万元</p>
+<p class="blk p" id="p1004"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p1005"><span class="b">【题型识别】增长率混合问题，采用十字交叉法。</span></p>
+<p class="blk p" id="p1006"><span class="b">【难度指数】★★★</span></p>
+<p class="blk p" id="p1007">2010年主营业务收入-2%　＼／　10%-2%　　2</p>
+<p class="blk p" id="p1008">【指点迷津】　　＼2%／　　＝2/1，设2010年前三季度其他业务收入为x万元，则主营业务收入为2x万元，可列出方程x+2x=7650/（1+2%），解得x=2500。</p>
+<p class="blk p" id="p1009">2010年其他业务收入10%　／＼　2%-（-2%）　1</p>
+<p class="blk p" id="p1010"><span class="b">故2010年前三季度主营业务收入为5000万元，2011年前三季度主营业务收入为5000×（1-2%）=</span></p>
+<p class="blk p" id="p1011"><span class="b">4900（万元），因此，本题的正确答案为C选项。</span></p>
+<h3 class="blk h3" id="s115">第四节 数字特征法<span class="pg">P30</span><a class="anchor" href="#s115" aria-label="链接到此节">#</a></h3>
+<p class="blk p" id="p1013">方法阐释</p>
+<p class="blk p" id="p1014">数字特性思想是指不直接求得最终结果，而只需要考虑最终计算结果所具备的某种“数字特性”，从而达到排除错误选项的方法。</p>
+<p class="blk p" id="p1015">数字特性主要包括奇偶特性、整除特性及倍数特性，公务员考试中运用较多的是3、9的整除特性，条件中存在比例数、百分数、小数时的倍数特性及其综合运用。当遇到复杂计算和较难题目无从入手时，数字特性往往就是直取答案、节省时间的关键。</p>
+<p class="blk p" id="p1016">题型辨识</p>
+<p class="blk p" id="p1017">数字特性常用题型：和差倍比问题、不定方程等。尤其当题日条件中涉及比例数、百分数、小数时要考虑数字特性法解题。当遇到复杂计算或较难突破的题目时，亦可考虑数字特性法。</p>
+<p class="blk p" id="p1018">理论要点</p>
+<h4 class="blk h4" id="s116">（一）奇偶特性<span class="pg">P31</span><a class="anchor" href="#s116" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p1020">重要结论：</p>
+<p class="blk p" id="p1021">任意两个数的和如果是奇数，那么差也是奇数；如果和是偶数，那么差也是偶数。</p>
+<p class="blk p" id="p1022">任意两个数的和或差是奇数，则两数奇偶相反；和或差是偶数，则两数奇偶相同。</p>
+<p class="blk p" id="p1023">解题思想：Ax+By=C。</p>
+<p class="blk p" id="p1024">不定方程，求x或y，可代入排除。</p>
+<p class="blk p" id="p1025">不定方程，求整体的式子 Mx+Ny，则需要通过奇偶性分析 5x 或5y 的尾数来凑解。</p>
+<p class="blk p" id="p1026">【笔试通】例题：小王参加了五门百分制的测验，每门成绩都是整数。其中语文94分，数学的得分最高，外语的得分等于语文和物理的平均分，物理的得分等于五门的平均分，化学的得分比外语多2分，并且是五门中第二高的得分。问小王的物理考了多少分？</p>
+<p class="blk p" id="p1027">A.94 B.95 C.96 D.97</p>
+<p class="blk p" id="p1028"><span class="b">【本题答案】C</span></p>
+<p class="blk p" id="p1029">【题型识别】根据题目中“其中语文 94 分，数学的得分最高，外语的得分等于语文和物理的平均分”的表述，再根据奇偶特性可判定物理分数为偶数，然后考虑代入排除法。</p>
+<p class="blk p" id="p1030">【指点迷津】首先排除B、D两项，代入A项发现不满足题目要求，因此，选择C项。</p>
+<h4 class="blk h4" id="s117">（二）比例特性<span class="pg">P31</span><a class="anchor" href="#s117" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p1032">当题目较难计算，而题目条件中涉及比例数、百分数等条件时，考虑倍数特性。</p>
+<p class="blk p" id="p1033">如果a：b=m：n（m,n互质），则a是m的倍数；b是n 的倍数。</p>
+<p class="blk p" id="p1034">如果a：b=m：n（m,n互质），a士b应该是m士n 的倍数。</p>
+<p class="blk p" id="p1035">【笔试通】例题：某班男生比女生人数多80%，一次考试后，全班平均分为75分，而女生的平均分比男生的平均分高20%，则此班女生的平均分是：</p>
+<p class="blk p" id="p1036">A.84分B.85分C.86分 D.87分</p>
+<p class="blk p" id="p1037"><span class="b">【本题答案】A</span></p>
+<p class="blk p" id="p1038"><span class="b">【题型识别】题目中涉及百分数，考虑倍数特性。</span></p>
+<p class="blk p" id="p1039">【指点迷津】由“女生的平均分比男生的平均分高20%”可知，女生平均分与男生的比例为6：5。根据倍数特性，女生平均分为6的倍数，只有A选项满足题意。因此，本题的正确答案为A选项。</p>
+<h4 class="blk h4" id="s118">（三）整除特性<span class="pg">P31</span><a class="anchor" href="#s118" aria-label="链接到此节">#</a></h4>
+<p class="blk p" id="p1041">当题目涉及到数字求和类问题或极难计算时，可考虑3、9的整除特性。</p>
+<p class="blk p" id="p1042">一个数字能被3整除，当且仅当其各位数字之和能被3整除。</p>
+<p class="blk p" id="p1043">一个数字能被9整除，当且仅当其各位数字之和能被9整除。</p>
+<p class="blk p" id="p1044">【笔试通】例题：由1、2、3组成没有重复数字的所有三位数之和是多少？</p>
+<p class="blk p" id="p1045">A. 1222 B. 1232 C. 1322 D. 1332</p>
+<p class="blk p" id="p1046"><span class="b">【本题答案】D</span></p>
+<p class="blk p" id="p1047"><span class="b">【题型识别】数字求和，考虑3或者9的整除特性。</span></p>
+<p class="blk p" id="p1048">【指点迷津】数字求和，考虑整除特性。每个三位数都是由1、2、3组成，由于1+2+3=6能整除3，说明每个三位数都能整除3，则所有的这些三位数的和也能整除3，只有D选项满足题意。因此，本题的正确答案D选项。</p>
+  </article>
+</main>
+
+<button id="toTop" title="回到顶部" aria-label="回到顶部">↑</button>
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var body=document.body, html=document.documentElement;
+
+  /* ---------- 主题 ---------- */
+  var saved=localStorage.getItem('thm');
+  if(saved){html.setAttribute('data-theme',saved)}
+  $('#themeBtn').addEventListener('click',function(){
+    var cur=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',cur);localStorage.setItem('thm',cur);
+    this.textContent=cur==='dark'?'☀':'☾';
+  });
+  $('#themeBtn').textContent=html.getAttribute('data-theme')==='dark'?'☀':'☾';
+
+  /* ---------- 字体 ---------- */
+  var fs=localStorage.getItem('fnt')||'sans';
+  body.setAttribute('data-font',fs);
+  $('#fontBtn').addEventListener('click',function(){
+    fs=fs==='sans'?'serif':'sans';
+    body.setAttribute('data-font',fs);localStorage.setItem('fnt',fs);
+    this.textContent=fs==='sans'?'宋':'黑';
+  });
+  $('#fontBtn').textContent=fs==='sans'?'宋':'黑';
+
+  /* ---------- 字号 ---------- */
+  var fsz=parseInt(localStorage.getItem('fsz')||'0',10);
+  if(fsz){html.style.setProperty('--body-size',fsz+'px')}
+
+  /* ---------- 移动端目录 ---------- */
+  var side=$('#sidebar'), scrim=$('#scrim');
+  function closeSide(){side.classList.remove('open');scrim.classList.remove('show')}
+  $('#menuBtn').addEventListener('click',function(){
+    side.classList.toggle('open');
+    scrim.classList.toggle('show',side.classList.contains('open'));
+  });
+  scrim.addEventListener('click',closeSide);
+
+  /* ---------- 折叠子目录 ---------- */
+  $$('.caret').forEach(function(c){
+    c.addEventListener('click',function(e){
+      e.preventDefault();e.stopPropagation();
+      c.parentNode.parentNode.classList.toggle('open');
+    });
+  });
+  /* 默认展开含词条的分组 */
+  $$('.toc-list li').forEach(function(li){
+    if(li.querySelector(':scope > ul.fold')) li.classList.add('open');
+  });
+
+  /* ---------- 目录跳转 ---------- */
+  var links={};
+  $$('#sidebar a[href^="#"]').forEach(function(a){
+    links[a.getAttribute('href').slice(1)]=a;
+  });
+  $$('#sidebar a[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var id=a.getAttribute('href').slice(1);
+      var el=document.getElementById(id);
+      if(!el)return;
+      e.preventDefault();
+      var y=el.getBoundingClientRect().top+window.pageYOffset-72;
+      window.scrollTo({top:y,behavior:'smooth'});
+      history.replaceState(null,'','#'+id);
+      closeSide();
+    });
+  });
+
+  /* ---------- 滚动高亮 ---------- */
+  var heads=$$('.doc .blk.h1,.doc .blk.h2,.doc .blk.h3,.doc .blk.h4');
+  var cur=null;
+  function setActive(id){
+    if(id===cur)return;cur=id;
+    $$('#sidebar a.active').forEach(function(a){a.classList.remove('active')});
+    var a=links[id];
+    if(a){
+      a.classList.add('active');
+      if(!side.classList.contains('open')){
+        var r=a.getBoundingClientRect(), sr=side.getBoundingClientRect();
+        if(r.top<sr.top+40||r.bottom>sr.bottom-40){
+          side.scrollTop += (r.top - sr.top) - sr.height/2;
+        }
+      }
+      var p=a.closest('li');
+      while(p){ if(p.querySelector(':scope > ul.fold')) p.classList.add('open'); p=p.parentElement; }
+    }
+  }
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting) setActive(e.target.id); });
+  },{rootMargin:'-70px 0px -72% 0px',threshold:0});
+  heads.forEach(function(h){io.observe(h)});
+
+  /* ---------- 回到顶部 ---------- */
+  var top=$('#toTop');
+  top.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+  window.addEventListener('scroll',function(){
+    top.classList.toggle('show',window.pageYOffset>500);
+  },{passive:true});
+
+  /* ---------- 搜索 ---------- */
+  var input=$('#q'), cnt=$('#cnt');
+  var marks=[];
+  function clearMarks(){
+    marks.forEach(function(m){var p=m.parentNode;p.replaceChild(document.createTextNode(m.textContent),m);p.normalize()});
+    marks=[];
+  }
+  function doSearch(){
+    clearMarks();
+    var q=input.value.trim().toLowerCase();
+    var items=$$('#sidebar .toc-list a');
+    if(!q){
+      cnt.textContent='';
+      items.forEach(function(a){a.parentNode.classList.remove('toc-hidden');a.classList.remove('toc-match')});
+      $$('.doc .blk').forEach(function(b){b.classList.remove('dimmed')});
+      return;
+    }
+    var n=0, nocc=0, first=null;
+    $$('.doc .blk').forEach(function(b){
+      var hit=b.textContent.toLowerCase().indexOf(q)>=0;
+      b.classList.toggle('dimmed',!hit);
+      if(hit){
+        n++;
+        if(!first)first=b;
+        /* 高亮 */
+        var walker=document.createTreeWalker(b,NodeFilter.SHOW_TEXT,null);
+        var nodes=[],nw;
+        while((nw=walker.nextNode())){nodes.push(nw)}
+        nodes.forEach(function(node){
+          var s=node.nodeValue, low=s.toLowerCase(), idx=low.indexOf(q);
+          if(idx<0)return;
+          var frag=document.createDocumentFragment();
+          var last=0,pos;
+          while((pos=low.indexOf(q,last))>=0){
+            if(pos>last)frag.appendChild(document.createTextNode(s.slice(last,pos)));
+            var m=document.createElement('mark');m.textContent=s.slice(pos,pos+q.length);
+            marks.push(m);frag.appendChild(m);nocc++;
+            last=pos+q.length;
+          }
+          if(last<s.length)frag.appendChild(document.createTextNode(s.slice(last)));
+          node.parentNode.replaceChild(frag,node);
+        });
+      }
+    });
+    cnt.textContent=nocc+' 处';
+    /* 目录过滤 */
+    items.forEach(function(a){
+      var tt=a.querySelector('.t');
+      var txt=(tt?tt.textContent:a.textContent).toLowerCase();
+      var m=txt.indexOf(q)>=0;
+      a.classList.toggle('toc-match',m);
+      var li=a.parentNode;
+      var keep=m;
+      if(!keep){ /* 祖先命中则保留 */
+        var p=li.parentNode;
+        while(p&&p.id!=='sidebar'){
+          var pl=p.querySelector(':scope > a > .t');
+          if(pl&&pl.textContent.toLowerCase().indexOf(q)>=0){keep=true;break}
+          p=p.parentNode;
+        }
+      }
+      li.classList.toggle('toc-hidden',!keep);
+    });
+    $$('#sidebar ul.fold').forEach(function(ul){
+      var any=ul.querySelector('li:not(.toc-hidden)');
+      ul.parentNode.classList.toggle('open',!!any);
+    });
+    if(first){
+      var y=first.getBoundingClientRect().top+window.pageYOffset-90;
+      window.scrollTo({top:y,behavior:'smooth'});
+    }
+  }
+  var timer=null;
+  input.addEventListener('input',function(){clearTimeout(timer);timer=setTimeout(doSearch,180)});
+  input.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){input.value='';doSearch();input.blur()}
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='/'&&document.activeElement!==input){e.preventDefault();input.focus()}
+  });
+})();
+</script>
+</body>
+</html>
