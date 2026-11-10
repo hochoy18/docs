@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>富滇银行备考资料库 · 总目录</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --ink:#1d2129; --ink-2:#4a5158; --ink-3:#828a94;
+  --line:#e3e6ea; --line-2:#eef0f3; --accent:#b3261e; --accent-2:#1a56a8;
+  --red:#c62828; --red-bg:#fff5f5;
+  --font-serif:"Songti SC","STSong","SimSun","Source Han Serif SC",serif;
+  --font-sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-serif);font-size:16.5px;line-height:1.9;-webkit-font-smoothing:antialiased;}
+#wrap{max-width:980px;margin:0 auto;padding:40px 28px 90px}
+
+/* hero */
+.hero{background:linear-gradient(135deg,#16335c 0%,#1f4e8c 55%,#b3261e 130%);
+  color:#fff;border-radius:14px;padding:40px 44px 34px;margin-bottom:14px}
+.hero h1{font-family:var(--font-sans);font-size:30px;font-weight:800;margin:0 0 8px;letter-spacing:1px}
+.hero .sub{font-family:var(--font-sans);font-size:14px;opacity:.85;margin-bottom:18px}
+.hero .chips{display:flex;flex-wrap:wrap;gap:8px}
+.hero .chips span{font-family:var(--font-sans);font-size:12px;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.28);border-radius:20px;padding:3px 12px}
+
+/* quick nav */
+.qnav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 8px;padding:14px 0 6px}
+.qnav a{font-family:var(--font-sans);font-size:13px;text-decoration:none;color:var(--accent-2);
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px 14px;transition:.15s}
+.qnav a:hover{background:#eaf1fb;border-color:#b9c6d6}
+
+/* module */
+.module{margin-top:44px}
+.m-head{display:flex;align-items:baseline;gap:12px;font-family:var(--font-sans);
+  border-bottom:2px solid var(--accent-2);padding-bottom:8px;margin-bottom:6px}
+.m-no{font-size:13px;font-weight:800;color:#fff;background:var(--accent-2);
+  border-radius:6px;padding:2px 10px;letter-spacing:1px}
+.m-title{font-size:21px;font-weight:800;color:var(--ink)}
+.m-desc{font-family:var(--font-sans);font-size:12.5px;color:var(--ink-3);margin:2px 0 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* card */
+.card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px 14px;text-decoration:none;color:inherit;transition:.15s;position:relative}
+.card:hover{border-color:#b9c6d6;box-shadow:0 4px 14px rgba(26,86,168,.10);transform:translateY(-1px)}
+.card .file{font-family:var(--font-sans);font-size:11px;color:var(--accent-2);
+  background:#eaf1fb;border-radius:4px;padding:1px 8px;display:inline-block;margin-bottom:8px}
+.card h3{font-family:var(--font-sans);font-size:16.5px;font-weight:700;margin:0 0 6px;line-height:1.5}
+.card p{font-family:var(--font-sans);font-size:12.5px;color:var(--ink-2);margin:0 0 10px;line-height:1.7}
+.card .meta{display:flex;flex-wrap:wrap;gap:6px}
+.card .meta i{font-style:normal;font-family:var(--font-sans);font-size:11px;color:var(--ink-3);
+  border:1px solid var(--line-2);background:#fbfcfd;border-radius:12px;padding:1px 9px}
+.card .meta i.ok{color:#1e7d3e;border-color:#cfe8d6;background:#f2faf5}
+.card .meta i.todo{color:var(--red);border-color:#f0d4d4;background:var(--red-bg)}
+
+/* placeholder */
+.ph{border:1.5px dashed var(--line);border-radius:10px;background:#fbfcfd;
+  padding:22px 24px;font-family:var(--font-sans);color:var(--ink-3);font-size:13.5px;line-height:1.9}
+.ph b{color:var(--ink-2)}
+
+/* foot */
+.foot{margin-top:52px;padding-top:18px;border-top:1px dashed var(--line);
+  font-family:var(--font-sans);font-size:12px;color:var(--ink-3);line-height:2}
+.foot a{color:var(--accent-2)}
+.r{color:var(--red);font-weight:600}
+
+@media (max-width:720px){
+  #wrap{padding:24px 14px 70px}
+  .hero{padding:28px 24px 24px}
+  .hero h1{font-size:24px}
+  .grid{grid-template-columns:1fr}
+}
+@media print{
+  body{background:#fff}
+  .hero{background:#1f3f6d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .card,.ph{break-inside:avoid}
+  .qnav{display:none}
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+
+  <div class="hero">
+    <h1>富滇银行备考资料库</h1>
+    <div class="sub">银行招聘笔试 · HTML 考点手册目录 —— 点击任意卡片进入对应文档</div>
+    <div class="chips">
+      <span>4 大模块</span><span>9 份文档</span><span>浏览器直接打开</span><span>支持全文检索 · 可打印</span><span>目录更新于 2026-11-10</span>
+    </div>
+  </div>
+
+  <nav class="qnav">
+    <a href="#m0">0 · 关于富滇</a>
+    <a href="#m1">1 · EPI 行测</a>
+    <a href="#m2">2 · 经济金融</a>
+    <a href="#m3">3 · 科技岗相关</a>
+  </nav>
+
+  <section class="module" id="m0">
+    <div class="m-head"><span class="m-no">模块 0</span><span class="m-title">关于富滇</span></div>
+    <p class="m-desc">富滇银行本行情（行史、治理、战略、文化、数据）——笔试综合知识中的"行情题"专项，兼作本系列总索引。</p>
+    <div class="grid">
+      <a class="card" href="0-0-富滇银行行情考点与系列索引.html">
+        <span class="file">0-0</span>
+        <h3>富滇银行行情考点与系列索引</h3>
+        <p>1912 创立 / 2007 重组 / "1234"战略 / 企业文化口号 / 经营数据 / 跨境特色 / 20 道行情模拟题，附全部信息源。</p>
+        <div class="meta"><i>8 节 + 附录</i><i>38 个目录项</i><i class="ok">手写整理</i><i class="todo">数据截至 2026-11，考前复核官网</i></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m1">
+    <div class="m-head"><span class="m-no">模块 1</span><span class="m-title">EPI · 行测</span></div>
+    <p class="m-desc">行政职业能力测验各题型的解题技巧讲义：言语、数学运算、数字推理、资料分析（逻辑推理 1-4 待补充）。</p>
+    <div class="grid">
+      <a class="card" href="1-1-言语理解与解题技巧.html">
+        <span class="file">1-1</span>
+        <h3>言语理解与解题技巧</h3>
+        <p>逻辑填空、片段阅读、语句表达等言语类题型的解题技巧讲义。</p>
+        <div class="meta"><i>约 150 KB</i></div>
+      </a>
+      <a class="card" href="1-2-数学运算与思维策略.html">
+        <span class="file">1-2</span>
+        <h3>数学运算与思维策略</h3>
+        <p>数量关系类题型的方程、赋值、比例等思维策略与解题技巧。</p>
+        <div class="meta"><i>约 168 KB</i></div>
+      </a>
+      <a class="card" href="1-3-数字推理解题技巧.html">
+        <span class="file">1-3</span>
+        <h3>数字推理解题技巧</h3>
+        <p>数列推理的常见规律类型与解题技巧讲义。</p>
+        <div class="meta"><i>约 43 KB</i></div>
+      </a>
+      <a class="card" href="1-5-资料分析.html">
+        <span class="file">1-5</span>
+        <h3>资料分析与图表分析</h3>
+        <p>增长率、比重、平均数等资料的速算技巧与图表分析题型解法。</p>
+        <div class="meta"><i>约 569 KB</i></div>
+      </a>
+      <div class="card" style="border-style:dashed;cursor:default">
+        <span class="file">1-4</span>
+        <h3>（待补充）逻辑推理 / 图形推理</h3>
+        <p>本模块编号 1-4 尚未入库，后续补充。</p>
+        <div class="meta"><i class="todo">占位</i></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="module" id="m2">
+    <div class="m-head"><span class="m-no">模块 2</span><span class="m-title">经济金融</span></div>
+    <p class="m-desc">综合知识部分的经济、金融、会计、商业银行专业考点（付费讲义 OCR 转写 + 逐段校对）。</p>
+    <div class="grid">
+      <a class="card" href="3-1-货币与金融知识高频考点-基础.html">
+        <span class="file">3-1</span>
+        <h3>货币与金融知识高频考点（基础）</h3>
+        <p>货币、信用、利率、金融机构与市场等基础知识。</p>
+        <div class="meta"><i>约 390 KB</i><i class="ok">已校对</i></div>
+      </a>
+      <a class="card" href="3-2-金融知识考点-高阶.html">
+        <span class="file">3-2</span>
+        <h3>金融知识考点（高阶）</h3>
+        <p>货币制度、货币政策、金融监管等进阶考点，573 个知识点编号检索。</p>
+        <div class="meta"><i>约 322 KB</i><i class="ok">已校对</i></div>
+      </a>
+      <a class="card" href="3-3-商业银行高频考点.html">
+        <span class="file">3-3</span>
+        <h3>商业银行高频考点</h3>
+        <p>商业银行经营与管理、业务运营、市场营销、绩效考评等 4 节 17 知识点。</p>
+        <div class="meta"><i>约 758 KB</i><i class="ok">已校对（修正 40 处）</i></div>
+      </a>
+      <a class="card" href="3-8-经济-金融高频考点.html">
+        <span class="file">3-8</span>
+        <h3>经济 · 金融高频考点（公式曲线汇总）</h3>
+        <p>经济 + 金融 + 会计 + 财务管理常考公式与曲线总结。</p>
+        <div class="meta"><i>约 1.66 MB</i><i class="todo">待校对</i></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m3">
+    <div class="m-head"><span class="m-no">模块 3</span><span class="m-title">科技岗相关</span></div>
+    <p class="m-desc">信息科技岗笔试专项（科技岗招聘笔试通常加试专业技能）。</p>
+    <div class="ph">
+      <b>本模块暂无文档，将逐步补充。</b><br>
+      规划范围：计算机基础与网络、数据库（SQL）、程序设计、信息安全、金融科技／数字货币时政、富滇银行数字化转型相关行情（如手机银行、富滇快贷等，见 0-0 第七节）。
+    </div>
+  </section>
+
+  <div class="foot">
+    备考路径建议：<a href="0-0-富滇银行行情考点与系列索引.html">模块 0 行情必背</a> → 模块 2 按 3-3 → 3-1 → 3-2 → 3-8 顺序过考点 → 模块 1 刷题提速 → 模块 3 视当届岗位公告决定是否加试。<br>
+    红色标注均为高频考点；各文档左侧目录支持关键词筛选。原 OCR 讲义来源与免责说明见各文档封面。<br>
+    本目录为相对链接，<b>整目录移动／拷贝时请连同 index.html 一起操作</b>。
+  </div>
+
+</div>
+</body>
+</html>
