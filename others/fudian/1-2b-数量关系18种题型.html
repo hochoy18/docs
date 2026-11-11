@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数量关系 · 18 种题型急救包</title>
+<meta name="description" content="数量关系18种题型急救包：53道例题逐题拆解，含题型识别、救急技巧、板书演算与B站时间轴回链">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b4232a'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle' fill='white' font-family='sans-serif'%3E数%3C/text%3E%3C/svg%3E">
+<style>
+
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --ink:#1d2129; --ink-2:#4a5158; --ink-3:#828a94;
+  --line:#e3e6ea; --line-2:#eef0f3; --accent:#b3261e; --accent-2:#1a56a8;
+  --red:#c62828; --red-bg:#fff5f5; --sidebar:300px;
+  --font-serif:"Songti SC","STSong","SimSun","Source Han Serif SC",serif;
+  --font-sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-serif);font-size:16.5px;line-height:1.95;-webkit-font-smoothing:antialiased;}
+
+/* ---------- sidebar ---------- */
+#sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:var(--panel);
+  border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40}
+.sb-head{padding:18px 20px 12px;border-bottom:1px solid var(--line-2)}
+.sb-title{font-family:var(--font-sans);font-size:15px;font-weight:700;line-height:1.5;color:var(--ink)}
+.sb-sub{font-family:var(--font-sans);font-size:11.5px;color:var(--ink-3);margin-top:5px;letter-spacing:.3px}
+.sb-search{padding:12px 16px 10px}
+.sb-search input{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:6px;
+  font-family:var(--font-sans);font-size:12.5px;background:#fbfcfd;color:var(--ink);outline:none}
+.sb-search input:focus{border-color:#b9c6d6;background:#fff}
+#toc{flex:1;overflow-y:auto;padding:6px 10px 60px;scrollbar-width:thin}
+#toc a{display:block;font-family:var(--font-sans);text-decoration:none;color:var(--ink-2);
+  border-radius:5px;padding:5px 10px;line-height:1.5;border-left:2px solid transparent;transition:.14s}
+#toc a:hover{background:#f2f4f7;color:var(--ink)}
+.toc-l1{font-size:13.5px;font-weight:700;color:var(--ink);margin-top:12px;padding-top:7px!important}
+.toc-l2{font-size:12.5px;color:#384049;margin-left:10px}
+.toc-l3{font-size:12px;color:var(--ink-3);margin-left:22px;padding-top:3px!important;padding-bottom:3px!important}.toc-l4{font-size:11.5px;color:#6a727c;margin-left:34px;padding-top:2px!important;padding-bottom:2px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+#toc a.active{background:#eaf1fb;color:var(--accent-2);border-left-color:var(--accent-2);font-weight:600}
+.toc-l1.active{color:var(--accent-2)}
+.sb-foot{padding:10px 16px;border-top:1px solid var(--line-2);font-family:var(--font-sans);
+  font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;align-items:center}
+.sb-foot button{font-family:var(--font-sans);font-size:11px;border:1px solid var(--line);
+  background:#fff;border-radius:5px;padding:3px 8px;cursor:pointer;color:var(--ink-2)}
+.sb-foot button:hover{background:#f2f4f7}
+
+/* ---------- main ---------- */
+#main{margin-left:var(--sidebar);min-height:100vh}
+#progress{position:fixed;top:0;left:var(--sidebar);right:0;height:2px;background:transparent;z-index:45}
+#progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2f6fd0,#b3261e)}
+#content{max-width:900px;margin:0 auto;padding:34px 46px 120px}
+
+/* cover */
+.cover{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:46px 48px 38px;margin-bottom:26px}
+.cover h1{font-family:var(--font-sans);font-size:31px;font-weight:800;margin:0 0 10px;letter-spacing:.5px}
+.cover .cv-sub{font-family:var(--font-sans);font-size:14px;color:var(--ink-3);margin-bottom:22px}
+.cv-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.cv-meta span{font-family:var(--font-sans);font-size:12px;background:#f2f4f7;color:var(--ink-2);
+  border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+.cv-note{font-family:var(--font-sans);font-size:12.5px;line-height:1.85;color:var(--ink-3);
+  border-top:1px dashed var(--line);padding-top:16px}
+.cv-note b{color:var(--ink-2)}
+
+/* headings */
+h1,h2,h3,h4,h5,h6{font-family:var(--font-sans);scroll-margin-top:14px}
+.c-h1{font-size:25px;font-weight:800;margin:52px 0 20px;padding:14px 18px;color:#fff;
+  background:linear-gradient(100deg,#1f3f6d,#2f6fd0);border-radius:8px;letter-spacing:.5px}
+.c-h2{font-size:20px;font-weight:700;margin:40px 0 16px;padding:9px 0 9px 14px;
+  border-left:5px solid var(--accent-2);color:#123;line-height:1.5}
+.c-h3{font-size:17px;font-weight:700;margin:32px 0 13px;padding:7px 12px;background:#eef3fb;
+  color:#173f75;border-radius:6px;border:1px solid #dde7f6}
+.c-h4{font-size:16px;font-weight:700;margin:24px 0 10px;color:#1d2129}
+.c-h5{font-size:15.5px;font-weight:600;margin:18px 0 8px;color:#2b3138}
+.c-h6{font-size:15px;font-weight:600;margin:14px 0 6px;color:var(--ink-2)}
+
+p{margin:0 0 12px;text-align:justify}
+p.li{margin:0 0 7px;padding-left:1.5em;text-indent:-1.5em}
+.r{color:var(--red);font-weight:600}
+u{text-decoration-color:#c96;font-weight:600;text-underline-offset:3px}
+
+/* callout */
+.callout{background:var(--red-bg);border:1px solid #f3d3d3;border-left:4px solid var(--red);
+  border-radius:6px;padding:11px 16px;margin:14px 0}
+.callout .co-tag{font-family:var(--font-sans);font-weight:700;color:var(--red);margin-bottom:2px}
+.callout p{margin:4px 0}
+p.co-lead{margin:13px 0 7px}
+
+/* tables */
+.tw{overflow-x:auto;margin:16px 0 22px;border:1px solid var(--line);border-radius:8px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:15px;table-layout:fixed}
+td{border:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.85}
+tr:first-child td{background:#f7f9fc}
+td p{margin:0 0 6px}
+td p:last-child{margin-bottom:0}
+td:empty{background:#fafbfc}
+
+/* figures */
+figure.fig{margin:20px 0 24px;padding:14px 16px 10px;border:1px solid var(--line);
+  border-radius:10px;background:#fff;text-align:center}
+figure.fig img{max-width:100%;height:auto;display:block;margin:0 auto;
+  image-rendering:-webkit-optimize-contrast}
+figure.fig figcaption{font-family:var(--font-sans);font-size:13px;color:var(--ink-2);
+  margin-top:10px;letter-spacing:.3px}
+figure.fig .figtext{text-align:left;border-top:1px dashed var(--line);margin-top:10px;
+  padding-top:8px}
+figure.fig .figtext p{margin:4px 0;font-size:14.5px;color:var(--ink-2)}
+figure.fig .figtext h1,figure.fig .figtext h2,figure.fig .figtext h3,
+figure.fig .figtext h4,figure.fig .figtext h5,figure.fig .figtext h6{
+  font-size:15px;margin:6px 0 2px}
+
+/* page marker */
+.pagebreak{position:relative;height:0;margin:0}
+.pg-mark{position:absolute;right:4px;top:-14px;font-family:var(--font-sans);font-size:10.5px;
+  color:#b9c0c8;background:var(--bg);padding:0 6px;letter-spacing:.5px}
+/* tools */
+#totop{position:fixed;right:26px;bottom:26px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;font-size:17px;color:var(--ink-2);display:none;z-index:50}
+#totop:hover{color:var(--accent-2);border-color:#b9c6d6}
+/* 返回总目录：叠在「回到顶部」上方，间距 8px */
+#home{position:fixed;right:26px;bottom:76px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;color:var(--ink-2);display:flex;align-items:center;justify-content:center;
+  z-index:50;text-decoration:none;transition:color .15s,border-color .15s}
+#home:hover{color:var(--accent-2);border-color:#b9c6d6}
+#home svg{width:19px;height:19px;display:block;pointer-events:none}
+#menubtn{display:none;position:fixed;left:14px;top:12px;z-index:60;width:38px;height:34px;
+  border:1px solid var(--line);background:#fff;border-radius:6px;font-size:16px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(20,30,50,.1)}
+#mask{display:none;position:fixed;inset:0;background:rgba(20,28,40,.35);z-index:35}
+
+@media (max-width:900px){
+  :root{--sidebar:280px}
+  #menubtn{display:block}
+  #sidebar{transform:translateX(-100%);transition:transform .22s ease}
+  #sidebar.open{transform:none}
+  #main{margin-left:0}
+  #content{padding:22px 18px 90px}
+  .cover{padding:30px 24px 26px}
+  .cover h1{font-size:24px}
+  #progress{left:0}
+  #toc a.toc-l3{font-size:11.5px}
+      #toc a.toc-l4{font-size:11px;margin-left:26px}
+
+}
+@media print{
+  #sidebar,#totop,#home,#menubtn,#mask,#progress{display:none!important}
+  #main{margin:0}
+  #content{max-width:none;padding:0}
+  body{background:#fff;font-size:11pt}
+  .cover,.tw{break-inside:avoid}
+  .c-h1{background:#1f3f6d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .r,.callout .co-tag{color:var(--red)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* ---------- 讲义正文补充样式 ---------- */
+a{color:inherit;text-decoration:none}
+.blk{position:relative}
+.pg{font-size:10.5px;color:var(--ink-3);opacity:.5;margin-left:10px;font-weight:400;
+  vertical-align:middle;font-variant-numeric:tabular-nums;user-select:none}
+.anchor{opacity:0;margin-left:8px;font-weight:400;color:var(--ink-3);font-size:13px;
+  transition:.15s}
+.blk:hover .anchor{opacity:.55}
+.anchor:hover{opacity:1;color:var(--accent-2)}
+.bd{font-weight:700}
+.blue{color:#1a56a8}
+.blank{display:inline-block;border-bottom:1.4px solid currentColor;vertical-align:-.22em;
+  margin:0 .18em;min-width:1em;height:1.05em}
+
+th{border:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.85;
+  font-weight:700;text-align:center;background:#f7f9fc}
+
+/* ---------- 数量关系 18 题型：补充样式 ---------- */
+p.lead{font-family:var(--font-sans);font-size:13.5px;color:var(--ink-3);
+  border-left:3px solid var(--line);padding-left:11px;margin:0 0 16px;line-height:1.8}
+p.stem{margin:0 0 9px;line-height:1.9}
+p.opts{margin:0 0 9px;font-family:var(--font-sans);font-size:15px;color:#2b3138;
+  letter-spacing:.2px}
+p.opts span{display:inline-block;margin-right:22px;white-space:nowrap}
+p.ans{margin:0 0 8px;font-family:var(--font-sans);font-size:15px}
+p.tags{margin:0 0 4px}
+.tag{display:inline-block;font-family:var(--font-sans);font-size:11.5px;line-height:1.75;
+  border-radius:11px;padding:1px 10px;margin:0 7px 7px 0;border:1px solid;white-space:nowrap}
+.tg-red{color:var(--red);border-color:#f0d4d4;background:var(--red-bg)}
+.tg-blue{color:#1a56a8;border-color:#cfdef3;background:#eef3fb}
+.tg-green{color:#1e7d3e;border-color:#cfe8d6;background:#f2faf5}
+.tg-amber{color:#9a6200;border-color:#f0e2c2;background:#fdf7ec}
+.box{border:1px solid var(--line);border-radius:8px;background:#fff;padding:11px 15px;margin:12px 0}
+.box .co-lead{font-family:var(--font-sans);font-weight:700;font-size:13px;margin:0 0 5px}
+.box p{margin:3px 0;font-size:15px}
+.box.solve{border-left:4px solid var(--accent-2)}
+.box.solve .co-lead{color:var(--accent-2)}
+.box.hand{background:#fffdf6;border-color:#efe3c6;border-left:4px solid #d9a441}
+.box.hand .co-lead{color:#9a6200}
+.box.hand p{color:#4a4234}
+p.src{font-family:var(--font-sans);font-size:12px;color:var(--ink-3);margin:9px 0 22px}
+p.src a{color:var(--accent-2)}
+p.src a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<button id="menubtn" aria-label="目录">☰</button>
+<div id="mask"></div>
+<div id="progress"><i></i></div>
+
+<aside id="sidebar">
+  <div class="sb-head">
+    <div class="sb-title">数量关系 · 18 种题型急救包</div>
+    <div class="sb-sub">EPI 行测 · 1-2b 数量关系 18 种题型</div>
+  </div>
+  <div class="sb-search"><input id="q" type="search" placeholder="筛选目录关键词…"></div>
+  <nav id="toc">
+<a class="toc-l1" href="#intro" data-toc="0">〇、18 种题型速查表</a>
+<a class="toc-l1" href="#t1" data-toc="1">题型1　比例倍数</a>
+<a class="toc-l2" href="#e1" data-toc="2">例2【2024-联考】</a>
+<a class="toc-l3" href="#e1s" data-toc="3">解法</a>
+<a class="toc-l2" href="#e2" data-toc="4">例3【2025-天津】</a>
+<a class="toc-l3" href="#e2s" data-toc="5">解法</a>
+<a class="toc-l2" href="#e3" data-toc="6">例4【2024-联考】</a>
+<a class="toc-l3" href="#e3s" data-toc="7">解法</a>
+<a class="toc-l2" href="#e4" data-toc="8">例5【2020-江苏】</a>
+<a class="toc-l3" href="#e4s" data-toc="9">解法</a>
+<a class="toc-l2" href="#e5" data-toc="10">例6【2025-联考】</a>
+<a class="toc-l3" href="#e5s" data-toc="11">解法</a>
+<a class="toc-l2" href="#e6" data-toc="12">例7【2025-联考】</a>
+<a class="toc-l3" href="#e6s" data-toc="13">解法</a>
+<a class="toc-l1" href="#t2" data-toc="14">题型2　余数问题</a>
+<a class="toc-l2" href="#e7" data-toc="15">例7′【2024-全国事业单位联考】</a>
+<a class="toc-l3" href="#e7s" data-toc="16">解法</a>
+<a class="toc-l1" href="#t3" data-toc="17">题型3　乘积模型</a>
+<a class="toc-l2" href="#e8" data-toc="18">例8【2019-新疆】</a>
+<a class="toc-l3" href="#e8s" data-toc="19">解法</a>
+<a class="toc-l2" href="#e9" data-toc="20">例9【2024-广东】</a>
+<a class="toc-l3" href="#e9s" data-toc="21">解法</a>
+<a class="toc-l1" href="#t4" data-toc="22">题型4　等距离平均速度</a>
+<a class="toc-l2" href="#e10" data-toc="23">例10【2020-联考】</a>
+<a class="toc-l3" href="#e10s" data-toc="24">解法</a>
+<a class="toc-l2" href="#e11" data-toc="25">例11【2023-广东】</a>
+<a class="toc-l3" href="#e11s" data-toc="26">解法</a>
+<a class="toc-l1" href="#t5" data-toc="27">题型5　等差数列中间项</a>
+<a class="toc-l2" href="#e12" data-toc="28">例12【2022-联考】</a>
+<a class="toc-l3" href="#e12s" data-toc="29">解法</a>
+<a class="toc-l2" href="#e13" data-toc="30">例13【2023-四川】</a>
+<a class="toc-l3" href="#e13s" data-toc="31">解法</a>
+<a class="toc-l2" href="#e14" data-toc="32">例14【2022-江苏】</a>
+<a class="toc-l3" href="#e14s" data-toc="33">解法</a>
+<a class="toc-l1" href="#t6" data-toc="34">题型6　最值数列构造</a>
+<a class="toc-l2" href="#e15" data-toc="35">例15【2022-上海】</a>
+<a class="toc-l3" href="#e15s" data-toc="36">解法</a>
+<a class="toc-l2" href="#e16" data-toc="37">例16【2024-联考】</a>
+<a class="toc-l3" href="#e16s" data-toc="38">解法</a>
+<a class="toc-l2" href="#e17" data-toc="39">例17【2023-联考】</a>
+<a class="toc-l3" href="#e17s" data-toc="40">解法</a>
+<a class="toc-l1" href="#t7" data-toc="41">题型7　最不利构造</a>
+<a class="toc-l2" href="#e18" data-toc="42">例18【2023-山东】</a>
+<a class="toc-l3" href="#e18s" data-toc="43">解法</a>
+<a class="toc-l2" href="#e19" data-toc="44">例19【2023-浙江】</a>
+<a class="toc-l3" href="#e19s" data-toc="45">解法</a>
+<a class="toc-l1" href="#t8" data-toc="46">题型8　极端容斥</a>
+<a class="toc-l2" href="#e20" data-toc="47">例20【2021-广东选调】</a>
+<a class="toc-l3" href="#e20s" data-toc="48">解法</a>
+<a class="toc-l2" href="#e21" data-toc="49">例21【2022-江苏】</a>
+<a class="toc-l3" href="#e21s" data-toc="50">解法</a>
+<a class="toc-l1" href="#t9" data-toc="51">题型9　年龄问题</a>
+<a class="toc-l2" href="#e22" data-toc="52">例23【2018-联考】</a>
+<a class="toc-l3" href="#e22s" data-toc="53">解法</a>
+<a class="toc-l2" href="#e23" data-toc="54">例24【2023-联考】</a>
+<a class="toc-l3" href="#e23s" data-toc="55">解法</a>
+<a class="toc-l1" href="#t10" data-toc="56">题型10　经济利润问题</a>
+<a class="toc-l2" href="#e24" data-toc="57">例25【2019-联考】</a>
+<a class="toc-l3" href="#e24s" data-toc="58">解法</a>
+<a class="toc-l2" href="#e25" data-toc="59">例26【2019-联考】</a>
+<a class="toc-l3" href="#e25s" data-toc="60">解法</a>
+<a class="toc-l2" href="#e26" data-toc="61">例27【2015-四川】</a>
+<a class="toc-l3" href="#e26s" data-toc="62">解法</a>
+<a class="toc-l1" href="#t11" data-toc="63">题型11　溶液问题</a>
+<a class="toc-l2" href="#e27" data-toc="64">例29【2023-福建事业单位】</a>
+<a class="toc-l3" href="#e27s" data-toc="65">解法</a>
+<a class="toc-l2" href="#e28" data-toc="66">例30【2023-全国事业单位联考】</a>
+<a class="toc-l3" href="#e28s" data-toc="67">解法</a>
+<a class="toc-l2" href="#e29" data-toc="68">例31【2018-江西】</a>
+<a class="toc-l3" href="#e29s" data-toc="69">解法</a>
+<a class="toc-l2" href="#e30" data-toc="70">例32【2024-联考】</a>
+<a class="toc-l3" href="#e30s" data-toc="71">解法</a>
+<a class="toc-l1" href="#t12" data-toc="72">题型12　工程问题</a>
+<a class="toc-l2" href="#e31" data-toc="73">例33【2024-联考】</a>
+<a class="toc-l3" href="#e31s" data-toc="74">解法</a>
+<a class="toc-l2" href="#e32" data-toc="75">例34【2024-江苏】</a>
+<a class="toc-l3" href="#e32s" data-toc="76">解法</a>
+<a class="toc-l2" href="#e33" data-toc="77">例35【2024-江苏】</a>
+<a class="toc-l3" href="#e33s" data-toc="78">解法</a>
+<a class="toc-l1" href="#t13" data-toc="79">题型13　容斥原理（一）：两集合与三集合标准型</a>
+<a class="toc-l2" href="#e34" data-toc="80">例36【2025-国考】</a>
+<a class="toc-l3" href="#e34s" data-toc="81">解法</a>
+<a class="toc-l2" href="#e35" data-toc="82">例37【2020-新疆】</a>
+<a class="toc-l3" href="#e35s" data-toc="83">解法</a>
+<a class="toc-l2" href="#e36" data-toc="84">例38【2025-江苏】</a>
+<a class="toc-l3" href="#e36s" data-toc="85">解法</a>
+<a class="toc-l1" href="#t14" data-toc="86">题型14　容斥原理（二）：交叉图去重</a>
+<a class="toc-l2" href="#e37" data-toc="87">例39【2024-江苏】</a>
+<a class="toc-l3" href="#e37s" data-toc="88">解法</a>
+<a class="toc-l2" href="#e38" data-toc="89">例40【2024-黑龙江公安】</a>
+<a class="toc-l3" href="#e38s" data-toc="90">解法</a>
+<a class="toc-l2" href="#e39" data-toc="91">例41【2025-国考】</a>
+<a class="toc-l3" href="#e39s" data-toc="92">解法</a>
+<a class="toc-l1" href="#t15" data-toc="93">题型15　混合比值问题</a>
+<a class="toc-l2" href="#e40" data-toc="94">例42【2024-吉林】</a>
+<a class="toc-l3" href="#e40s" data-toc="95">解法</a>
+<a class="toc-l2" href="#e41" data-toc="96">例43【2024-联考】</a>
+<a class="toc-l3" href="#e41s" data-toc="97">解法</a>
+<a class="toc-l2" href="#e42" data-toc="98">例44【2023-四川】</a>
+<a class="toc-l3" href="#e42s" data-toc="99">解法</a>
+<a class="toc-l2" href="#e43" data-toc="100">例45【2020-山东】</a>
+<a class="toc-l3" href="#e43s" data-toc="101">解法</a>
+<a class="toc-l1" href="#t16" data-toc="102">题型16　星期日期问题</a>
+<a class="toc-l2" href="#e44" data-toc="103">例47【2019-黑龙江】</a>
+<a class="toc-l3" href="#e44s" data-toc="104">解法</a>
+<a class="toc-l2" href="#e45" data-toc="105">例48【2024-广东】</a>
+<a class="toc-l3" href="#e45s" data-toc="106">解法</a>
+<a class="toc-l2" href="#e46" data-toc="107">例49【2025-国考】</a>
+<a class="toc-l3" href="#e46s" data-toc="108">解法</a>
+<a class="toc-l2" href="#e47" data-toc="109">例50【2024-吉林】</a>
+<a class="toc-l3" href="#e47s" data-toc="110">解法</a>
+<a class="toc-l2" href="#e48" data-toc="111">例51【2025-国考】</a>
+<a class="toc-l3" href="#e48s" data-toc="112">解法</a>
+<a class="toc-l1" href="#t17" data-toc="113">题型17　空瓶换酒</a>
+<a class="toc-l2" href="#e49" data-toc="114">例52【2019-山东】</a>
+<a class="toc-l3" href="#e49s" data-toc="115">解法</a>
+<a class="toc-l2" href="#e50" data-toc="116">例53【2024-黑龙江】</a>
+<a class="toc-l3" href="#e50s" data-toc="117">解法</a>
+<a class="toc-l1" href="#t18" data-toc="118">题型18　牛吃草</a>
+<a class="toc-l2" href="#e51" data-toc="119">例54【2013-国家】</a>
+<a class="toc-l3" href="#e51s" data-toc="120">解法</a>
+<a class="toc-l2" href="#e52" data-toc="121">例55【2024-联考】</a>
+<a class="toc-l3" href="#e52s" data-toc="122">解法</a>
+<a class="toc-l2" href="#e53" data-toc="123">例56【2023-河北事业单位】</a>
+<a class="toc-l3" href="#e53s" data-toc="124">解法</a>
+<a class="toc-l1" href="#appendix" data-toc="125">附录：出处、说明与原始素材</a>
+  </nav>
+  <div class="sb-foot">
+    <span id="counter">—</span>
+    <button id="expand">仅看章节目</button>
+  </div>
+</aside>
+
+<main id="main">
+<div id="content">
+  <section class="cover">
+    <h1>数量关系 · 18 种题型急救包</h1>
+    <div class="cv-sub">识别 + 技巧 · 53 道例题逐题拆解 · 板书演算还原</div>
+    <div class="cv-meta">
+      <span>18 个题型</span><span>53 道例题</span><span>84 张课件</span><span>3 级目录</span><span>红/蓝标签＝考点与技巧</span>
+    </div>
+    <div class="cv-note">
+      <b>原始出处：</b>B 站视频 <b>BV1N6Q7YcEgj</b>《数量关系 · 18个急救包》（识别 + 技巧）。本手册逐张读取课件画面与老师板书整理，
+      每道例题均给出【答案】、分步【解法】与还原的【板书】演算，并附课件页码与 B 站时间轴回链，可点击回到原视频对应位置核对。
+      <br><b>使用说明：</b>先看每个题型的「题型识别 / 救急技巧」，判断题目属于哪一类，再按该题型的固定套路列式；例题中的
+      <span class="r">红色标签</span>是题型与识别要点，<span class="blue">蓝色标签</span>是解法工具，<span class="bd">绿色标签</span>是必背公式，
+      <span class="bd">琥珀色标签</span>是原课件的编号/表述提醒。
+    </div>
+  </section>
+
+<h1 class="c-h1 blk" id="intro">〇、18 种题型速查表<span class="pg">导读</span><a class="anchor" href="#intro" aria-label="链接到此节">#</a></h1>
+<p>课件把数量关系拆成 18 个「急救包」。每个包都有一句<b>题型识别</b>（看到什么就该想到它）和一套<b>救急技巧</b>（怎么列式最快）。
+下表按课件顺序排列，最后一列可直接跳到原视频该包的位置。</p>
+<div class="tw"><table><thead><tr><th style="width:40px">#</th><th style="width:96px">题型</th><th style="width:23%">题型识别</th><th style="width:24%">救急技巧</th><th style="width:168px">例题</th><th style="width:150px">视频位置</th></tr></thead><tbody>
+<tr><td><b>1</b></td><td>比例倍数</td><td>出现比例、分数或 %</td><td>抓比例，找倍数</td><td>例2、例3、例4、例5、例6、例7</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=11" target="_blank" rel="noopener">幻灯片 s001 · 00:11</a></td></tr>
+<tr><td><b>2</b></td><td>余数问题</td><td>7 个一组，剩余 4 个</td><td>减余数，抓倍数</td><td>例7′</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=797" target="_blank" rel="noopener">幻灯片 s009 · 13:17</a></td></tr>
+<tr><td><b>3</b></td><td>乘积模型</td><td>A = B × C（B、C 均为整数）</td><td>A 能被 B 整除，且 A 能被 C 整除</td><td>例8、例9</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=946" target="_blank" rel="noopener">幻灯片 s011 · 15:46</a></td></tr>
+<tr><td><b>4</b></td><td>等距离平均速度</td><td>往返运动（上坡 / 下坡）</td><td>全程平均速度 = 上下坡平均速度 ≠ 算术平均</td><td>例10、例11</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1114" target="_blank" rel="noopener">幻灯片 s014 · 18:34</a></td></tr>
+<tr><td><b>5</b></td><td>等差数列中间项</td><td>每次增加相同</td><td>前 N 项和 = 平均数 × 项数 = 中间项 × 项数</td><td>例12、例13、例14</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1347" target="_blank" rel="noopener">幻灯片 s017 · 22:27</a></td></tr>
+<tr><td><b>6</b></td><td>最值数列构造</td><td>某个主体最多或最少</td><td>① 求谁设谁 ② 反向推其它 ③ 求和列式</td><td>例15、例16、例17</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1763" target="_blank" rel="noopener">幻灯片 s021 · 29:23</a></td></tr>
+<tr><td><b>7</b></td><td>最不利构造</td><td>问「至少……才能保证……」？</td><td>要保证 n 个同类，每种先各取 n−1 个（不够的全取），最后再加 1</td><td>例18、例19</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2091" target="_blank" rel="noopener">幻灯片 s025 · 34:51</a></td></tr>
+<tr><td><b>8</b></td><td>极端容斥</td><td>求全集的最小值</td><td>① A∩B 至少 = A + B − M　② A∩B∩C 至少 = A + B + C − 2M　③ N 个主体 = 各主体之和 − (N−1)M</td><td>例20、例21</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2232" target="_blank" rel="noopener">幻灯片 s028 · 37:12</a></td></tr>
+<tr><td><b>9</b></td><td>年龄问题</td><td>出现年龄差，选项信息充分</td><td>抓年龄差不变</td><td>例23、例24</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2471" target="_blank" rel="noopener">幻灯片 s031 · 41:11</a></td></tr>
+<tr><td><b>10</b></td><td>经济利润问题</td><td>出现三量关系 A = B × C，且至少两个量未知</td><td>比例赋值，公式秒解</td><td>例25、例26、例27</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2606" target="_blank" rel="noopener">幻灯片 s034 · 43:26</a></td></tr>
+<tr><td><b>11</b></td><td>溶液问题</td><td>溶质 = 溶液 × 浓度，三量中只有一个量已知</td><td>谁不变就赋值谁：① 溶液不变 → 赋值溶液质量 100　② 溶质不变 → 赋值溶质质量为最小公倍数</td><td>例29、例30、例31、例32</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3026" target="_blank" rel="noopener">幻灯片 s038 · 50:26</a></td></tr>
+<tr><td><b>12</b></td><td>工程问题</td><td>工作量 = 效率 × 时间，三量中只有一个量已知</td><td>① 给完工时间：赋值工作量总量，求效率，列过程式　② 给效率比：赋值效率，求工作量总量，列过程式</td><td>例33、例34、例35</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3506" target="_blank" rel="noopener">幻灯片 s043 · 58:26</a></td></tr>
+<tr><td><b>13</b></td><td>容斥原理（一）：两集合与三集合标准型</td><td>两集合 / 三集合，公式法</td><td>两集合：A + B − A∩B = 总数 − 均不满足　　三集合标准型：A + B + C − A∩B − A∩C − B∩C + A∩B∩C = 总人数 − 均不参加</td><td>例36、例37、例38</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3963" target="_blank" rel="noopener">幻灯片 s047 · 1:06:03</a></td></tr>
+<tr><td><b>14</b></td><td>容斥原理（二）：交叉图去重</td><td>只选 A、选 A 和 B 但不选 C、只选一样</td><td>画交叉圈，标数字，注意去重</td><td>例39、例40、例41</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4387" target="_blank" rel="noopener">幻灯片 s052 · 1:13:07</a></td></tr>
+<tr><td><b>15</b></td><td>混合比值问题</td><td>出现两者比值的混合</td><td>① 部分照抄 ② 对角线作差（大 − 小）③ 部分比 = 比值差之比</td><td>例42、例43、例44、例45</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4811" target="_blank" rel="noopener">幻灯片 s056 · 1:20:11</a></td></tr>
+<tr><td><b>16</b></td><td>星期日期问题</td><td>① 问某年某日是周几　② 某年某月有 5 个星期三，问某个具体日期是星期几</td><td>① 每经过一个平年星期推一天，每经过一个闰年推两天　② 把 N 个完整周期放开头或最后，剩下的几天必有一个出现五次的那一天；日期相减等于 7 的倍数则星期相同</td><td>例47、例48、例49、例50、例51</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5362" target="_blank" rel="noopener">幻灯片 s065 · 1:29:22</a></td></tr>
+<tr><td><b>17</b></td><td>空瓶换酒</td><td>N 个空瓶兑换 1 瓶酒</td><td>N − 1 个空瓶等价于 1 份酒；注意兑换时酒瓶已抵掉，只有酒没有瓶</td><td>例52、例53</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6235" target="_blank" rel="noopener">幻灯片 s077 · 1:43:55</a></td></tr>
+<tr><td><b>18</b></td><td>牛吃草</td><td>① 两组数据，表述不同但含义完全相同　② 两组不变的量：原有量、草的生长速度</td><td>① 两组数据乘积差 ÷ 时间差 = 草的生长速度（临界值）② 某组数据乘积 = 生长速度 × 该组时间 + 原有量 ③ 原有量 + 新增量 = 第三组数据乘积</td><td>例54、例55、例56</td><td><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6410" target="_blank" rel="noopener">幻灯片 s080 · 1:46:50</a></td></tr>
+</tbody></table></div>
+
+<h2 class="c-h2 blk" id="t1">题型1　比例倍数<span class="pg">00:11</span><a class="anchor" href="#t1" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>出现比例、分数或 %</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>抓比例，找倍数</p>
+</div>
+<p class="src">原课件标注：急救包1 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=11" target="_blank" rel="noopener">幻灯片 s001 · 00:11</a></p>
+
+<p class="lead">比例题几乎都能「赋值」：把比例项化成最小整数倍，先定住不变的量，再推变化。</p>
+
+<h3 class="c-h3 blk" id="e1">例2【2024-联考】<span class="pg">00:34</span><a class="anchor" href="#e1" aria-label="链接到此节">#</a></h3>
+<p class="stem">运动会招募志愿者，第一次招募不到100人，其中男女比例为11∶7；补招若干女性志愿者后，男女比例变为4∶3。问最多能补招了多少名女性志愿者？</p>
+<p class="opts"><span>A.3</span>　<span>B.5</span>　<span>C.6</span>　<span>D.10</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">比例倍数</span><span class="tag tg-blue">赋值法</span><span class="tag tg-green">整数倍锁定</span></p>
+<div class="box solve" id="e1s"><p class="co-lead">【解法】</p>
+<p>男女比 11∶7 赋值：男 = 11×4 = 44，女 = 7×4 = 28（此时总人数 72 &lt; 100，符合「不到100人」）。</p>
+<p>补招女性后男女比 4∶3，男不变仍是 44 → 44 ÷ 女 = 4∶3 → 女 = 33。</p>
+<p>补招人数 = 33 − 28 = 5。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>赋值 男 44、女 28；补招后男 44 不变，44 : 女 = 4 : 3 → 女 = 33；33 − 28 = 5 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=34" target="_blank" rel="noopener">▶ 原视频 00:34</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=34" target="_blank" rel="noopener">幻灯片 s002 · 00:34</a></p>
+
+<h3 class="c-h3 blk" id="e2">例3【2025-天津】<span class="pg">03:25</span><a class="anchor" href="#e2" aria-label="链接到此节">#</a></h3>
+<p class="stem">某水产养殖公司拥有若干幼体培育车间、育苗车间和藻类池。已知幼体培育车间的水体与育苗车间的水体之比为1∶4，藻类池的水体是幼体培育车间水体的50%。若每水体需配备1名管理人员，则幼体培育车间需要200㎡的管理人员比育苗车间少12人。问该公司共配备了多少名管理人员？</p>
+<p class="opts"><span>A.25</span>　<span>B.24</span>　<span>C.23</span>　<span>D.22</span></p>
+<p class="ans"><span class="bd">【答案】D</span></p>
+<p class="tags"><span class="tag tg-red">比例倍数</span><span class="tag tg-blue">赋值法</span><span class="tag tg-green">份数法</span></p>
+<div class="box solve" id="e2s"><p class="co-lead">【解法】</p>
+<p>水体比：幼体 ∶ 育苗 ∶ 藻类 = 1 ∶ 4 ∶ 0.5，每 1 单位水体配 1 人 → 人数比 = 2 ∶ 8 ∶ 1（整体乘 2）。</p>
+<p>设 1 份对应 k 人：幼体 2k，育苗 8k，藻类 k。</p>
+<p>「幼体比育苗少12人」→ 8k − 2k = 12 → k = 2。</p>
+<p>总人数 = (2 + 8 + 1) × 2 = 22 人。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>幼 ∶ 育 ∶ 藻 = 1 ∶ 4 ∶ 0.5 → 人数 2 ∶ 8 ∶ 1；2 份比 8 份少 12 人 → 1 份 = 2 人；合计 (2+8+1)×2 = 22 → D</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=205" target="_blank" rel="noopener">▶ 原视频 03:25</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=205" target="_blank" rel="noopener">幻灯片 s003 · 03:25</a></p>
+
+<h3 class="c-h3 blk" id="e3">例4【2024-联考】<span class="pg">04:49</span><a class="anchor" href="#e3" aria-label="链接到此节">#</a></h3>
+<p class="stem">大学生创业主要集中高科技、智力服务、连锁加盟和自媒体运营四个领域。某学院今年选择创业的大学毕业生不到50人，其中选择智力服务领域、连锁加盟领域和自媒体运营领域的分别占1/7、1/7和1/3。那么该学院今年选择高科技领域创业的大学毕业生有多少人？</p>
+<p class="opts"><span>A.1</span>　<span>B.3</span>　<span>C.5</span>　<span>D.7</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">比例倍数</span><span class="tag tg-blue">反比例</span><span class="tag tg-green">最小公倍数</span></p>
+<div class="box solve" id="e3s"><p class="co-lead">【解法】</p>
+<p>高科技占比 = 1 − 1/7 − 1/7 − 1/3 = 1/42。</p>
+<p>总人数必须是 42 的倍数，又「不到50人」→ 总人数 = 42。</p>
+<p>高科技人数 = 42 × 1/42 = 1 人。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>1 − 1/7 − 1/7 − 1/3 = 1/42；总人数 = 42 的倍数且 &lt; 50 → 42 人；高科技 = 42/42 = 1 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=289" target="_blank" rel="noopener">▶ 原视频 04:49</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=289" target="_blank" rel="noopener">幻灯片 s005 · 04:49</a></p>
+
+<h3 class="c-h3 blk" id="e4">例5【2020-江苏】<span class="pg">06:06</span><a class="anchor" href="#e4" aria-label="链接到此节">#</a></h3>
+<p class="stem">某企业预计今年营业收入增长15%，营业支出增长10%，营业利润增加600万元。已知该企业去年的营业利润为1000万元，则其今年的预计营业支出是：</p>
+<p class="opts"><span>A.9000万元</span>　<span>B.9900万元</span>　<span>C.10800万元</span>　<span>D.11500万元</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">经济利润</span><span class="tag tg-blue">比例倍数</span><span class="tag tg-green">方程组</span></p>
+<div class="box solve" id="e4s"><p class="co-lead">【解法】</p>
+<p>设去年收入 R、去年支出 S：R − S = 1000（去年利润）。</p>
+<p>今年利润 = 1.15R − 1.1S = 1000 + 600 = 1600。</p>
+<p>代入 R = S + 1000：1.15(S + 1000) − 1.1S = 1600 → 0.05S = 450 → S = 9000（去年支出）。</p>
+<p>今年预计支出 = 1.1 × 9000 = 9900 万元。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>去 R − S = 1000；今 1.15R − 1.1S = 1600；代入得 0.05S = 450 → S = 9000；今支 = 1.1S = 9900 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=366" target="_blank" rel="noopener">▶ 原视频 06:06</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=366" target="_blank" rel="noopener">幻灯片 s006 · 06:06</a></p>
+
+<h3 class="c-h3 blk" id="e5">例6【2025-联考】<span class="pg">07:07</span><a class="anchor" href="#e5" aria-label="链接到此节">#</a></h3>
+<p class="stem">某小区组织“情满金秋”柑橘采摘活动，参加人员按年龄分成老年组、中年组、青年组。老年组、中年组的人数之比为5∶2，中年组、青年组的人数之比为3∶4，老年组、中年组、青年组平均每人采摘速度之比为1∶2∶3。已知青年组共采摘80斤柑橘，那么三组人员一共采摘柑橘：</p>
+<p class="opts"><span>A.170斤</span>　<span>B.212斤</span>　<span>C.255斤</span>　<span>D.298斤</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">比例倍数</span><span class="tag tg-blue">效率=人数×速度</span><span class="tag tg-green">比例赋值</span></p>
+<div class="box solve" id="e5s"><p class="co-lead">【解法】</p>
+<p>人数比：老年 ∶ 中年 = 5∶2，中年 ∶ 青年 = 3∶4 → 老年 ∶ 中年 ∶ 青年 = 15 ∶ 6 ∶ 8。</p>
+<p>效率 = 人数 × 速度：15×1 ∶ 6×2 ∶ 8×3 = 15 ∶ 12 ∶ 24。</p>
+<p>青年组 24 份对应 80 斤 → 1 份 = 80/24 斤；老年 15 份 = 50 斤，中年 12 份 = 40 斤。</p>
+<p>三组合计 = 50 + 40 + 80 = 170 斤。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>人数 15 ∶ 6 ∶ 8，速度 1 ∶ 2 ∶ 3 → 效率 15 ∶ 12 ∶ 24；青 24 份 = 80 斤 → 老 50 斤 + 中 40 斤 → 合计 170 斤 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=427" target="_blank" rel="noopener">▶ 原视频 07:07</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=427" target="_blank" rel="noopener">幻灯片 s007 · 07:07</a></p>
+
+<h3 class="c-h3 blk" id="e6">例7【2025-联考】<span class="pg">09:57</span><a class="anchor" href="#e6" aria-label="链接到此节">#</a></h3>
+<p class="stem">小何在网络二手交易平台按照每张150元的价格转手了两张珍藏版CD，其中一张盈利25%，另一张亏损25%，则小何转手这两张CD总的盈亏情况是：</p>
+<p class="opts"><span>A.不盈不亏</span>　<span>B.盈利20元</span>　<span>C.亏损20元</span>　<span>D.亏损25元</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">比例倍数</span><span class="tag tg-blue">盈亏=倍数</span><span class="tag tg-green">分数化</span></p>
+<div class="box solve" id="e6s"><p class="co-lead">【解法】</p>
+<p>盈利 25% → 售价 = 成本 × 1.25 = 5/4 → 成本 = 150 ÷ 5/4 = 120 元，盈利 30 元。</p>
+<p>亏损 25% → 售价 = 成本 × 0.75 = 3/4 → 成本 = 150 ÷ 3/4 = 200 元，亏损 50 元。</p>
+<p>合计：盈利 30 − 亏损 50 = 亏损 20 元。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>1.25 = 5/4 → 成本 120，盈 30；0.75 = 3/4 → 成本 200，亏 50；30 − 50 = −20 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=597" target="_blank" rel="noopener">▶ 原视频 09:57</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=597" target="_blank" rel="noopener">幻灯片 s008 · 09:57</a></p>
+
+<h2 class="c-h2 blk" id="t2">题型2　余数问题<span class="pg">13:17</span><a class="anchor" href="#t2" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>7 个一组，剩余 4 个</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>减余数，抓倍数</p>
+</div>
+<p class="src">原课件标注：急救包2 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=797" target="_blank" rel="noopener">幻灯片 s009 · 13:17</a></p>
+
+<p class="lead">余数题先做「减余数」：把每组的零头先减掉，剩下的必然是整倍数，再从选项里挑倍数。</p>
+
+<h3 class="c-h3 blk" id="e7">例7′【2024-全国事业单位联考】<span class="pg">13:36</span><a class="anchor" href="#e7" aria-label="链接到此节">#</a></h3>
+<p class="stem">企业招聘了100多名应届毕业生，其中13人被分配到总部工作，剩下的员工正好被平均分配到7个分公司，也能被平均分配到9个分公司工作。问企业招聘了多少名应届毕业生？</p>
+<p class="opts"><span>A.126</span>　<span>B.139</span>　<span>C.176</span>　<span>D.189</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">余数问题</span><span class="tag tg-blue">减余数</span><span class="tag tg-green">公倍数</span><span class="tag tg-amber">原课件编号与上题重复</span></p>
+<div class="box solve" id="e7s"><p class="co-lead">【解法】</p>
+<p>总部 13 人是零头：总人数 − 13 既要能被 7 整除，也要能被 9 整除。</p>
+<p>「100多名」且 7、9 的最小公倍数是 63 → 总人数 − 13 = 63×2 = 126（×1 得 76 不够 100，×2 得 126 符合）。</p>
+<p>总人数 = 126 + 13 = 139 人。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>余 13 → 总数 − 13 为 63 的倍数；63×2 = 126 → 126 + 13 = 139 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=816" target="_blank" rel="noopener">▶ 原视频 13:36</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=816" target="_blank" rel="noopener">幻灯片 s010 · 13:36</a></p>
+
+<h2 class="c-h2 blk" id="t3">题型3　乘积模型<span class="pg">15:46</span><a class="anchor" href="#t3" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>A = B × C（B、C 均为整数）</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>A 能被 B 整除，且 A 能被 C 整除</p>
+</div>
+<p class="src">原课件标注：急救包3 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=946" target="_blank" rel="noopener">幻灯片 s011 · 15:46</a></p>
+
+<p class="lead">看到「数量 = 单位 × 总量」就写乘积式：先设单位量，把各天的量都写成同一个乘积的形式。</p>
+
+<h3 class="c-h3 blk" id="e8">例8【2019-新疆】<span class="pg">16:34</span><a class="anchor" href="#e8" aria-label="链接到此节">#</a></h3>
+<p class="stem">某超市购入800斤桃子，第一天售价为进价的1.8倍，销售额为1620元；第二天售价为进价的1.5倍，销售额为900元；第三天售价为进价的1.2倍，第四天以进价的八折销售，两天销售额均为360元。第四天营业结束后发现还剩50斤未卖出。问该超市购买桃子花了多少钱？</p>
+<p class="opts"><span>A.2240元</span>　<span>B.2400元</span>　<span>C.2800元</span>　<span>D.3040元</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">乘积模型</span><span class="tag tg-blue">设单位量</span><span class="tag tg-green">总销量倒推</span></p>
+<div class="box solve" id="e8s"><p class="co-lead">【解法】</p>
+<p>总花费 = 重量 × 单价 = 800 × 进价，设进价为 x 元/斤。</p>
+<p>四天销量 = 1620÷(1.8x) + 900÷(1.5x) + 360÷(1.2x) + 360÷(0.8x) = (900 + 600 + 300 + 450)/x = 2250/x。</p>
+<p>总销量 = 800 − 50 = 750 斤 → 2250/x = 750 → x = 3 元/斤。</p>
+<p>总花费 = 800 × 3 = 2400 元。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>花费 = 重量 × 单价 = 800 × x；销量和 = (900+600+300+450)/x = 2250/x = 750 → x = 3；总花费 = 800×3 = 2400 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=994" target="_blank" rel="noopener">▶ 原视频 16:34</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=994" target="_blank" rel="noopener">幻灯片 s012 · 16:34</a></p>
+
+<h3 class="c-h3 blk" id="e9">例9【2024-广东】<span class="pg">17:46</span><a class="anchor" href="#e9" aria-label="链接到此节">#</a></h3>
+<p class="stem">档案室需要整理300份档案，要求每天整理的档案数量相同，且规定了完成的期限。如果要提前一天完成，那么每天需要多整理10份档案。则规定的期限为多少天？</p>
+<p class="opts"><span>A.6</span>　<span>B.7</span>　<span>C.8</span>　<span>D.9</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">乘积模型</span><span class="tag tg-blue">列方程</span><span class="tag tg-green">天数递减</span></p>
+<div class="box solve" id="e9s"><p class="co-lead">【解法】</p>
+<p>设期限 t 天、每天 x 份：x × t = 300。</p>
+<p>提前一天：每天 x + 10 份，天数 t − 1 → (x + 10)(t − 1) = 300。</p>
+<p>展开：xt − x + 10t − 10 = xt → x = 10t − 10，代入 xt = 300 → 10t² − 10t = 300 → t² − t − 30 = 0。</p>
+<p>t = 6（每天 50 份）；t = −5 舍去。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>xt = 300；(x+10)(t−1) = 300 → x = 10t − 10 → 10t² − 10t = 300 → t² − t − 30 = 0 → t = 6（每天 50 份）→ A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1066" target="_blank" rel="noopener">▶ 原视频 17:46</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1066" target="_blank" rel="noopener">幻灯片 s013 · 17:46</a></p>
+
+<h2 class="c-h2 blk" id="t4">题型4　等距离平均速度<span class="pg">18:34</span><a class="anchor" href="#t4" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>往返运动（上坡 / 下坡）</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>全程平均速度 = 上下坡平均速度 ≠ 算术平均</p>
+</div>
+<p class="src">原课件标注：急救包4 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1114" target="_blank" rel="noopener">幻灯片 s014 · 18:34</a></p>
+
+<p class="lead">等距离往返：V平 = 2V₁V₂ /(V₁ + V₂)。先算这一段的平均速度，再倒推时间。</p>
+
+<h3 class="c-h3 blk" id="e10">例10【2020-联考】<span class="pg">19:58</span><a class="anchor" href="#e10" aria-label="链接到此节">#</a></h3>
+<p class="stem">小明每天从家中出发骑自行车经过一段平路，再经过一道斜坡后到达学校上课。某天早上，小明从家中骑车出发，一到学校就发现忘带课本，马上返回，从离家到返回家中共用了1个小时。假设小明当天平路骑行速度为9千米/小时，上坡速度为6千米/小时，下坡速度为18千米/小时，那么小明的家距离学校多远？</p>
+<p class="opts"><span>A.3.5千米</span>　<span>B.4.5千米</span>　<span>C.5.5千米</span>　<span>D.6.5千米</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">等距离平均速度</span><span class="tag tg-blue">调和平均</span><span class="tag tg-green">时间拆分</span></p>
+<div class="box solve" id="e10s"><p class="co-lead">【解法】</p>
+<p>设平路长 x 千米、斜坡长 y 千米。</p>
+<p>去程：平路 x/9 + 上坡 y/6；回程：下坡 y/18 + 平路 x/9。</p>
+<p>总时间：2x/9 + y/6 + y/18 = 2x/9 + 4y/18 = 2(x + y)/9 = 1（小时）。</p>
+<p>x + y = 4.5 千米，即家到学校的距离。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>往返等距离：2x/9 + (y/6 + y/18) = 2(x+y)/9 = 1 → x + y = 4.5 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1198" target="_blank" rel="noopener">▶ 原视频 19:58</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1198" target="_blank" rel="noopener">幻灯片 s015 · 19:58</a></p>
+
+<h3 class="c-h3 blk" id="e11">例11【2023-广东】<span class="pg">21:19</span><a class="anchor" href="#e11" aria-label="链接到此节">#</a></h3>
+<p class="stem">某地举办了“铁人三项”体育活动，先进行蛙跳，后游泳，最后竞走到达终点。一位选手在上午7点出发，9点到达了终点，全程未休息，其蛙跳、游泳和竞走的速度分别为每小时2千米、3千米和6千米。如果蛙跳和竞走的路程相同，则所有项目的总路程是（ ）。</p>
+<p class="opts"><span>A.无法计算</span>　<span>B.6千米</span>　<span>C.8千米</span>　<span>D.12千米</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">等距离平均速度</span><span class="tag tg-blue">调和平均</span><span class="tag tg-green">总路程=总时间×等效速度</span></p>
+<div class="box solve" id="e11s"><p class="co-lead">【解法】</p>
+<p>蛙跳与竞走等距离，等距离平均速度 = 2×2×6/(2 + 6) = 3 千米/小时。</p>
+<p>设蛙跳（=竞走）路程为 d，游泳为 s：耗时 = 2d/3 + s/3 = 2 小时 → 2d + s = 6。</p>
+<p>总路程 = 2d + s = 6 千米。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>V平 = 2×2×6/(2+6) = 3；2d/3 + s/3 = 2 → 2d + s = 6 → 总路程 6 千米 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1279" target="_blank" rel="noopener">▶ 原视频 21:19</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1279" target="_blank" rel="noopener">幻灯片 s016 · 21:19</a></p>
+
+<h2 class="c-h2 blk" id="t5">题型5　等差数列中间项<span class="pg">22:27</span><a class="anchor" href="#t5" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>每次增加相同</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>前 N 项和 = 平均数 × 项数 = 中间项 × 项数</p>
+</div>
+<p class="src">原课件标注：急救包5 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1347" target="_blank" rel="noopener">幻灯片 s017 · 22:27</a></p>
+
+<p class="lead">等差数列一出现「和」，立刻用「和 = 中间项 × 项数」，奇数项直接取中间那项。</p>
+
+<h3 class="c-h3 blk" id="e12">例12【2022-联考】<span class="pg">23:12</span><a class="anchor" href="#e12" aria-label="链接到此节">#</a></h3>
+<p class="stem">某市对下辖9个文艺表演团体去年新创节目的数量进行统计分析，发现9个团体新创节目的数量恰好成等差数列，其中前5个团体的新创节目总数是60，前7个团体的新创节目总数是70。那么这9个文艺表演团体去年新创节目的总数是：</p>
+<p class="opts"><span>A.72</span>　<span>B.76</span>　<span>C.78</span>　<span>D.80</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">等差数列</span><span class="tag tg-blue">中间项法</span><span class="tag tg-green">和=中位×项数</span></p>
+<div class="box solve" id="e12s"><p class="co-lead">【解法】</p>
+<p>前 7 项和 70 → 前 7 项的平均数 = 第 4 项 = 70÷7 = 10。</p>
+<p>前 5 项和 60 → 前 5 项的平均数 = 第 3 项 = 60÷5 = 12。</p>
+<p>公差 d = 第4项 − 第3项 = 10 − 12 = −2；第 5 项 = 12 + 2×(−2) = 8。</p>
+<p>9 项和 = 中间项（第5项）× 9 = 8 × 9 = 72。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>a4 = 70÷7 = 10；a3 = 60÷5 = 12；d = −2；a5 = 8；总和 = 8 × 9 = 72 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1392" target="_blank" rel="noopener">▶ 原视频 23:12</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1392" target="_blank" rel="noopener">幻灯片 s018 · 23:12</a></p>
+
+<h3 class="c-h3 blk" id="e13">例13【2023-四川】<span class="pg">25:39</span><a class="anchor" href="#e13" aria-label="链接到此节">#</a></h3>
+<p class="stem">商场6月6日开始销售某种电器，从6月7日起，每天这种电器的销量都比前一天多1台。已知6月16日卖了22台这种电器，问其6月共卖了多少台这种电器？</p>
+<p class="opts"><span>A.555</span>　<span>B.600</span>　<span>C.645</span>　<span>D.690</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">等差数列</span><span class="tag tg-blue">首末项配对</span><span class="tag tg-amber">项数易错</span></p>
+<div class="box solve" id="e13s"><p class="co-lead">【解法】</p>
+<p>6月16日 = 22 台，6月6日 = 22 − 10 = 12 台，6月30日 = 12 + 24 = 36 台。</p>
+<p>6月6日至30日共 25 天（注意：不是 30 天）。</p>
+<p>和 = (12 + 36) × 25 ÷ 2 = 600 台。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>6 号 = 12 台，30 号 = 36 台（6号+30号 = 2×18号 = 48）；共 25 天 → (12+36)×25÷2 = 600 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1539" target="_blank" rel="noopener">▶ 原视频 25:39</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1539" target="_blank" rel="noopener">幻灯片 s019 · 25:39</a></p>
+
+<h3 class="c-h3 blk" id="e14">例14【2022-江苏】<span class="pg">28:32</span><a class="anchor" href="#e14" aria-label="链接到此节">#</a></h3>
+<p class="stem">某金融机构向9家“专精特新”企业共发放了4500万元贷款，若这9家企业获得的贷款额从少到多排列，恰好为一个等差数列，且排第3的企业获得420万元贷款，排第8的企业获得的贷款额为：</p>
+<p class="opts"><span>A.620万元</span>　<span>B.660万元</span>　<span>C.720万元</span>　<span>D.760万元</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">等差数列</span><span class="tag tg-blue">中间项法</span><span class="tag tg-green">公差求解</span></p>
+<div class="box solve" id="e14s"><p class="co-lead">【解法】</p>
+<p>9 项和 4500 → 中间项（第5名）= 4500÷9 = 500 万元。</p>
+<p>第3名 420 → 公差 d = (500 − 420)÷2 = 40。</p>
+<p>第8名 = 500 + 3×40 = 620 万元。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>中间项 a5 = 4500÷9 = 500；a3 = 420 → d = (500−420)÷2 = 40；a8 = 500+3×40 = 620 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1712" target="_blank" rel="noopener">▶ 原视频 28:32</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1712" target="_blank" rel="noopener">幻灯片 s020 · 28:32</a></p>
+
+<h2 class="c-h2 blk" id="t6">题型6　最值数列构造<span class="pg">29:23</span><a class="anchor" href="#t6" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>某个主体最多或最少</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>① 求谁设谁 ② 反向推其它 ③ 求和列式</p>
+</div>
+<p class="src">原课件标注：急救包6 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1763" target="_blank" rel="noopener">幻灯片 s021 · 29:23</a></p>
+
+<p class="lead">「最值 + 构造」三板斧：设最值 → 其余按最不利取 → 求和列方程。</p>
+
+<h3 class="c-h3 blk" id="e15">例15【2022-上海】<span class="pg">29:38</span><a class="anchor" href="#e15" aria-label="链接到此节">#</a></h3>
+<p class="stem">某单位进行一次绩效考评打分，满分为100分，有5位员工的平均分为90分，而且他们的分数各不相同，其中分数最低的员工得分为77分，那么排第二名的员工至少得（ ）分。（员工分数取整数）</p>
+<p class="opts"><span>A.90</span>　<span>B.92</span>　<span>C.94</span>　<span>D.96</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">最值构造</span><span class="tag tg-blue">求谁设谁</span><span class="tag tg-green">其余取最不利</span></p>
+<div class="box solve" id="e15s"><p class="co-lead">【解法】</p>
+<p>5 人总分 = 90 × 5 = 450。</p>
+<p>设第二名为 x：要让 x 最小，第一名取最高 100，第三、四名分别取 x−1、x−2，最低固定 77。</p>
+<p>100 + x + (x−1) + (x−2) + 77 = 450 → 3x + 174 = 450 → x = 92。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>总分 450；100 + x + (x−1) + (x−2) + 77 = 450 → 3x = 276 → x = 92 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1778" target="_blank" rel="noopener">▶ 原视频 29:38</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1778" target="_blank" rel="noopener">幻灯片 s022 · 29:38</a></p>
+
+<h3 class="c-h3 blk" id="e16">例16【2024-联考】<span class="pg">31:14</span><a class="anchor" href="#e16" aria-label="链接到此节">#</a></h3>
+<p class="stem">部队射击比赛中，5名参赛的战士共击中了88次目标。已知任意2人击中的目标数量均不相同。问射击成绩排前两名的战士至少击中了多少次目标？</p>
+<p class="opts"><span>A.39</span>　<span>B.40</span>　<span>C.58</span>　<span>D.60</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">最值构造</span><span class="tag tg-blue">居中法</span><span class="tag tg-green">连续整数</span></p>
+<div class="box solve" id="e16s"><p class="co-lead">【解法】</p>
+<p>5 人成绩互不相同，和为 88 → 88÷5 = 17.6，第 3 名（居中）取 18。</p>
+<p>此时第 4、5 名至少为 19、20，第 1、2 名最多为 16、15。</p>
+<p>验证：15 + 16 + 18 + 19 + 20 = 88 ✓，前两名 = 19 + 20 = 39。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>88 ÷ 5 = 17.6 → 中间取 18；后两名 19、20，前两名 15、16（和 = 88 自洽）；前两名 = 19 + 20 = 39 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1874" target="_blank" rel="noopener">▶ 原视频 31:14</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=1874" target="_blank" rel="noopener">幻灯片 s023 · 31:14</a></p>
+
+<h3 class="c-h3 blk" id="e17">例17【2023-联考】<span class="pg">33:21</span><a class="anchor" href="#e17" aria-label="链接到此节">#</a></h3>
+<p class="stem">某小区物业准备了230盒口罩免费派发给10栋楼，要求任意两栋楼派发的口罩数量都不相同，但最多相差不超过1倍。假设口罩不拆盒发放，那么派发口罩数量最少的那栋楼至少应派发口罩：</p>
+<p class="opts"><span>A.18盒</span>　<span>B.15盒</span>　<span>C.14盒</span>　<span>D.12盒</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">最值构造</span><span class="tag tg-blue">差值约束</span><span class="tag tg-green">构造验证</span></p>
+<div class="box solve" id="e17s"><p class="co-lead">【解法】</p>
+<p>设最少的那栋为 x 盒，则最多的一栋 ≤ 2x（相差不超过 1 倍）。</p>
+<p>要使 x 最小、总数仍能达到 230，10 栋按最大取法：x, 2x−1, 2x−2, …, 2x−8。</p>
+<p>总和 = x + (2x−1) + … + (2x−8) = 19x − 36 ≤ 230 → x ≤ 14。</p>
+<p>x = 14 可行（14、20、21、…、28，和 = 230）→ 至少 14 盒。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>最多 2x，其后 2x−1 … 2x−8，最少 x；10 栋共 19x − 36 = 230 → 19x = 266 → x = 14 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2001" target="_blank" rel="noopener">▶ 原视频 33:21</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2001" target="_blank" rel="noopener">幻灯片 s024 · 33:21</a></p>
+
+<h2 class="c-h2 blk" id="t7">题型7　最不利构造<span class="pg">34:51</span><a class="anchor" href="#t7" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>问「至少……才能保证……」？</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>要保证 n 个同类，每种先各取 n−1 个（不够的全取），最后再加 1</p>
+</div>
+<p class="src">原课件标注：急救包7 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2091" target="_blank" rel="noopener">幻灯片 s025 · 34:51</a></p>
+
+<p class="lead">「保证」类问题的标准套路：把最坏情况造出来，答案 = 最坏情况 + 1。</p>
+
+<h3 class="c-h3 blk" id="e18">例18【2023-山东】<span class="pg">35:11</span><a class="anchor" href="#e18" aria-label="链接到此节">#</a></h3>
+<p class="stem">一个袋子里装了50个苹果、5个香蕉、30个橘子和50个梨，若每次从袋子里随机取出1个水果，问至少需要取多少次才能肯定拿出10个相同种类的水果？</p>
+<p class="opts"><span>A.10</span>　<span>B.35</span>　<span>C.33</span>　<span>D.32</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">最不利构造</span><span class="tag tg-blue">分类计数</span><span class="tag tg-green">+1 法</span></p>
+<div class="box solve" id="e18s"><p class="co-lead">【解法】</p>
+<p>最坏情况：苹果取 9 个、香蕉只有 5 个（全取）、橘子取 9 个、梨取 9 个 —— 此时还没有 10 个同类。</p>
+<p>共 9 + 5 + 9 + 9 = 32 次。</p>
+<p>再取 1 个必然凑齐 10 个同类 → 33 次。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>苹果 9 + 香蕉 5（全取）+ 橘子 9 + 梨 9 = 32，再取 1 个必出 10 个同类 → 33 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2111" target="_blank" rel="noopener">▶ 原视频 35:11</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2111" target="_blank" rel="noopener">幻灯片 s026 · 35:11</a></p>
+
+<h3 class="c-h3 blk" id="e19">例19【2023-浙江】<span class="pg">36:11</span><a class="anchor" href="#e19" aria-label="链接到此节">#</a></h3>
+<p class="stem">某部门举行年会抽奖活动。抽奖箱里有80个抽奖券，共20个不同的数字，每个数字均出现4次，且分别对应一份礼品，不同的数字对应的礼品不同。每人当天限抽1次。那么最少多少人当天参加抽奖活动，才能保证至少有3人领到的礼品相同？</p>
+<p class="opts"><span>A.41</span>　<span>B.42</span>　<span>C.61</span>　<span>D.62</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">最不利构造</span><span class="tag tg-blue">抽屉原理</span><span class="tag tg-green">+1 法</span></p>
+<div class="box solve" id="e19s"><p class="co-lead">【解法】</p>
+<p>最坏情况：20 种数字各被抽走 2 次，共 20 × 2 = 40 人，此时还没有 3 人同礼品。</p>
+<p>第 41 人必然使某种数字出现 3 次 → 41 人。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>每种数字各取 2 张 = 20×2 = 40，再抽 1 张必有人拿满 3 张 → 40 + 1 = 41 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2171" target="_blank" rel="noopener">▶ 原视频 36:11</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2171" target="_blank" rel="noopener">幻灯片 s027 · 36:11</a></p>
+
+<h2 class="c-h2 blk" id="t8">题型8　极端容斥<span class="pg">37:12</span><a class="anchor" href="#t8" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>求全集的最小值</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>① A∩B 至少 = A + B − M　② A∩B∩C 至少 = A + B + C − 2M　③ N 个主体 = 各主体之和 − (N−1)M</p>
+</div>
+<p class="src">原课件标注：急救包8 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2232" target="_blank" rel="noopener">幻灯片 s028 · 37:12</a></p>
+
+<p class="lead">「至少」= 取最坏：让交集尽量小。M 是全集，其余公式都是「加回」被重复扣掉的量。</p>
+
+<h3 class="c-h3 blk" id="e20">例20【2021-广东选调】<span class="pg">38:49</span><a class="anchor" href="#e20" aria-label="链接到此节">#</a></h3>
+<p class="stem">某单位在网上办公系统传阅了15份文件，甲阅读了9份，乙阅读了12份，丙阅读了10份，则甲、乙、丙三人共同阅读过的文件至少有（ ）份。</p>
+<p class="opts"><span>A.0</span>　<span>B.1</span>　<span>C.2</span>　<span>D.3</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">极端容斥</span><span class="tag tg-blue">三集合下界</span><span class="tag tg-green">反向思考</span></p>
+<div class="box solve" id="e20s"><p class="co-lead">【解法】</p>
+<p>公式法：A∩B∩C 至少 = 9 + 12 + 10 − 2×15 = 1（份）。</p>
+<p>反向验证：甲不读 6 份、乙不读 3 份、丙不读 5 份，共 14 份至少有一人读过 → 15 − 14 = 1。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>① 9+12+10−2×15 = 1；② 甲不读 6、乙不读 3、丙不读 5 → 14；至少共同 = 15−14 = 1 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2329" target="_blank" rel="noopener">▶ 原视频 38:49</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2329" target="_blank" rel="noopener">幻灯片 s029 · 38:49</a></p>
+
+<h3 class="c-h3 blk" id="e21">例21【2022-江苏】<span class="pg">39:59</span><a class="anchor" href="#e21" aria-label="链接到此节">#</a></h3>
+<p class="stem">某机构对全运会收视情况进行调查，在1000名受访者中，观看过乒乓球比赛的占87%，观看过跳水比赛的占75%，观看过田径比赛的占69%，这1000名受访者中，乒乓球、跳水和田径比赛都观看过的至少有：</p>
+<p class="opts"><span>A.310人</span>　<span>B.440人</span>　<span>C.620人</span>　<span>D.690人</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">极端容斥</span><span class="tag tg-blue">百分比容斥</span><span class="tag tg-green">下界公式</span></p>
+<div class="box solve" id="e21s"><p class="co-lead">【解法】</p>
+<p>三者都看过的至少占比 = 87% + 75% + 69% − 2×100% = 31%。</p>
+<p>31% × 1000 = 310 人。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>87% + 75% + 69% − 200% = 31% → 31% × 1000 = 310 人 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2399" target="_blank" rel="noopener">▶ 原视频 39:59</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2399" target="_blank" rel="noopener">幻灯片 s030 · 39:59</a></p>
+
+<h2 class="c-h2 blk" id="t9">题型9　年龄问题<span class="pg">41:11</span><a class="anchor" href="#t9" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>出现年龄差，选项信息充分</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>抓年龄差不变</p>
+</div>
+<p class="src">原课件标注：急救包9 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2471" target="_blank" rel="noopener">幻灯片 s031 · 41:11</a></p>
+
+<p class="lead">年龄差永远不变：只要锁定「某年某人的年龄」，其余全部用差值推。选项信息充分时，直接代入选项验证最快。</p>
+
+<h3 class="c-h3 blk" id="e22">例23【2018-联考】<span class="pg">41:23</span><a class="anchor" href="#e22" aria-label="链接到此节">#</a></h3>
+<p class="stem">一家三口，妈妈比儿子大26岁，爸爸比儿子大33岁。1995年，一家人三口的年龄之和为62。那么，2018年儿子、妈妈和爸爸的年龄分别是：</p>
+<p class="opts"><span>A.23、51、57</span>　<span>B.24、50、57</span>　<span>C.25、51、57</span>　<span>D.26、52、58</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">年龄问题</span><span class="tag tg-blue">年龄差不变</span><span class="tag tg-green">列方程</span></p>
+<div class="box solve" id="e22s"><p class="co-lead">【解法】</p>
+<p>设 1995 年儿子 x 岁：妈妈 x + 26，爸爸 x + 33。</p>
+<p>x + (x + 26) + (x + 33) = 62 → 3x = 3 → x = 1（1995 年儿子 1 岁）。</p>
+<p>2018 年比 1995 年晚 23 年：儿子 24、妈妈 50、爸爸 57。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>3x + 59 = 62 → x = 1；+23 年 → 儿子 24、妈妈 50、爸爸 57 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2483" target="_blank" rel="noopener">▶ 原视频 41:23</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2483" target="_blank" rel="noopener">幻灯片 s032 · 41:23</a></p>
+
+<h3 class="c-h3 blk" id="e23">例24【2023-联考】<span class="pg">42:04</span><a class="anchor" href="#e23" aria-label="链接到此节">#</a></h3>
+<p class="stem">美术培训班有3名学员，他们的年龄满足以下条件：他们的年龄都是正整数；2号学员的年龄是1号学员年龄的一半；3号学员比2号学员大7岁；3名学员的年龄之和是不超过70的素数，且该素数的各位数字之和为13。那么这3位学员的年龄分别是多少岁？</p>
+<p class="opts"><span>A.12、6、13</span>　<span>B.20、10、17</span>　<span>C.24、12、19</span>　<span>D.30、15、22</span></p>
+<p class="ans"><span class="bd">【答案】D</span></p>
+<p class="tags"><span class="tag tg-red">年龄问题</span><span class="tag tg-blue">数论筛选</span><span class="tag tg-green">素数+数位和</span></p>
+<div class="box solve" id="e23s"><p class="co-lead">【解法】</p>
+<p>设 1 号 x 岁 → 2 号 x/2、3 号 x/2 + 7 → 年龄和 = 2x + 7 ≤ 70，x 为偶数。</p>
+<p>候选素数（对应 x = 2,4,…,30）：11、19、23、31、43、47、59、67。</p>
+<p>数位和为 13 的只有 67 → 2x + 7 = 67 → x = 30。</p>
+<p>三人年龄 30、15、22。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>和 = 2x + 7 ≤ 70；候选素数 11,19,23,31,43,47,59,67 → 数位和 = 13 仅 67 → x = 30 → 30、15、22 → D</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2524" target="_blank" rel="noopener">▶ 原视频 42:04</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2524" target="_blank" rel="noopener">幻灯片 s033 · 42:04</a></p>
+
+<h2 class="c-h2 blk" id="t10">题型10　经济利润问题<span class="pg">43:26</span><a class="anchor" href="#t10" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>出现三量关系 A = B × C，且至少两个量未知</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>比例赋值，公式秒解</p>
+</div>
+<p class="src">原课件标注：急救包10 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2606" target="_blank" rel="noopener">幻灯片 s034 · 43:26</a></p>
+
+<p class="lead">板书三式：总营收 = 销量 × 单价；利润 = 销量 × 利润率；亏损 = 成本 − 售价。</p>
+
+<h3 class="c-h3 blk" id="e24">例25【2019-联考】<span class="pg">45:16</span><a class="anchor" href="#e24" aria-label="链接到此节">#</a></h3>
+<p class="stem">某楼盘的地下停车位，第一次开盘时平均价格为15万元/个；第二次开盘时，车位的销售量增加了一倍，销售额增加了60%。那么，第二次开盘的车位平均价格为：</p>
+<p class="opts"><span>A.10万元/个</span>　<span>B.11万元/个</span>　<span>C.12万元/个</span>　<span>D.13万元/个</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">经济利润</span><span class="tag tg-blue">总额=量×价</span><span class="tag tg-green">比例赋值</span></p>
+<div class="box solve" id="e24s"><p class="co-lead">【解法】</p>
+<p>第一次：设销量 10 个、单价 15 万元 → 总额 150 万元。</p>
+<p>第二次：销量增加一倍 = 20 个，销售额增加 60% = 150×1.6 = 240 万元。</p>
+<p>单价 = 240 ÷ 20 = 12 万元/个。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>10 × 15 = 150；销量翻倍 → 20，销售额 +60% → 240；240 ÷ 20 = 12 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2716" target="_blank" rel="noopener">▶ 原视频 45:16</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2716" target="_blank" rel="noopener">幻灯片 s035 · 45:16</a></p>
+
+<h3 class="c-h3 blk" id="e25">例26【2019-联考】<span class="pg">46:39</span><a class="anchor" href="#e25" aria-label="链接到此节">#</a></h3>
+<p class="stem">某医院内科，今年门诊人数比上一年增加了30%，平均每位患者的门诊花费比上一年下降20%，若上一年该医院内科门诊收入为3000万元，那么今年的门诊收入大约是多少万元？</p>
+<p class="opts"><span>A.2600</span>　<span>B.2880</span>　<span>C.3120</span>　<span>D.3640</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">经济利润</span><span class="tag tg-blue">总额=量×价</span><span class="tag tg-green">连乘</span></p>
+<div class="box solve" id="e25s"><p class="co-lead">【解法】</p>
+<p>去年：设人数 100、均费 30 → 收入 3000 万元。</p>
+<p>今年：人数 100×1.3 = 130，均费 30×0.8 = 24。</p>
+<p>今年收入 = 130 × 24 = 3120 万元。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>去年 30 × 100 = 3000；今年人数 ×1.3 = 130、均费 ×0.8 = 24；130 × 24 = 3120 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2799" target="_blank" rel="noopener">▶ 原视频 46:39</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2799" target="_blank" rel="noopener">幻灯片 s036 · 46:39</a></p>
+
+<h3 class="c-h3 blk" id="e26">例27【2015-四川】<span class="pg">48:13</span><a class="anchor" href="#e26" aria-label="链接到此节">#</a></h3>
+<p class="stem">某钢铁厂生产一种特种钢材，由于原材料价格上涨，今年这种特种钢材的成本比去年上升了20%。为了推销该种钢材，钢铁厂仍然以去年的价格出售，这种钢材每吨的盈利下降了40%，不过销售量比去年增加了80%，那么今年生产该种钢材的总盈利比去年增加了多少？</p>
+<p class="opts"><span>A.4%</span>　<span>B.8%</span>　<span>C.20%</span>　<span>D.54%</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">经济利润</span><span class="tag tg-blue">总量=分项×倍数</span><span class="tag tg-green">连乘公式</span></p>
+<div class="box solve" id="e26s"><p class="co-lead">【解法】</p>
+<p>总盈利 = 销量 × 单位盈利。</p>
+<p>销量 +80%、单位盈利 −40% → 总盈利变化 = a + b + a×b = 80% + (−40%) + 80%×(−40%) = 40% − 32% = 8%。</p>
+<p>即总盈利比去年增加 8%。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>r = a + b + a×b = 80% − 40% − 32% = 8% → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2893" target="_blank" rel="noopener">▶ 原视频 48:13</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=2893" target="_blank" rel="noopener">幻灯片 s037 · 48:13</a></p>
+
+<h2 class="c-h2 blk" id="t11">题型11　溶液问题<span class="pg">50:26</span><a class="anchor" href="#t11" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>溶质 = 溶液 × 浓度，三量中只有一个量已知</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>谁不变就赋值谁：① 溶液不变 → 赋值溶液质量 100　② 溶质不变 → 赋值溶质质量为最小公倍数</p>
+</div>
+<p class="src">原课件标注：急救包11 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3026" target="_blank" rel="noopener">幻灯片 s038 · 50:26</a></p>
+
+<p class="lead">浓度题的核心是「不变量」：先判断什么量不变，再把那个量赋值掉。</p>
+
+<h3 class="c-h3 blk" id="e27">例29【2023-福建事业单位】<span class="pg">51:27</span><a class="anchor" href="#e27" aria-label="链接到此节">#</a></h3>
+<p class="stem">有一杯盐水，第一次往杯内加入一些水后浓度变为12%，第二次再加入同样多的水后浓度变为8%，第三次再加入同样多的水后浓度变为（ ）。</p>
+<p class="opts"><span>A.7%</span>　<span>B.6%</span>　<span>C.5%</span>　<span>D.4%</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">溶液问题</span><span class="tag tg-blue">溶质不变</span><span class="tag tg-green">赋值溶质</span></p>
+<div class="box solve" id="e27s"><p class="co-lead">【解法】</p>
+<p>加水过程中溶质不变 → 赋值溶质为 24 份。</p>
+<p>第一次：24 ÷ 12% = 200 → 溶液 200 份，加水 100 份。</p>
+<p>第二次：24 ÷ 8% = 300 → 溶液 300 份，再加水 100 份。</p>
+<p>第三次：24 ÷ 400 = 6%。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>溶质不变赋值 24：24/200 = 12% → 加水 100 → 24/300 = 8% → 再加水 100 → 24/400 = 6% → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3087" target="_blank" rel="noopener">▶ 原视频 51:27</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3087" target="_blank" rel="noopener">幻灯片 s039 · 51:27</a></p>
+
+<h3 class="c-h3 blk" id="e28">例30【2023-全国事业单位联考】<span class="pg">52:58</span><a class="anchor" href="#e28" aria-label="链接到此节">#</a></h3>
+<p class="stem">某模拟海洋养殖场有一批海鱼，其池塘具有一定的盐度，且不大于该品种鱼的存活盐度3.5%，已知每天太阳蒸发掉相同的水量，若不采取任何措施则在第三天结束时，池塘盐度将首次达到该品种鱼可承受的最大盐度极限值5%。为了维持初始盐度不变，每天补充等体积的淡水，问每天可能补充的水量体积最少是原溶液体积的（ ）。</p>
+<p class="opts"><span>A.5%</span>　<span>B.10%</span>　<span>C.15%</span>　<span>D.20%</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">溶液问题</span><span class="tag tg-blue">蒸发模型</span><span class="tag tg-green">赋值体积 1000</span></p>
+<div class="box solve" id="e28s"><p class="co-lead">【解法】</p>
+<p>赋值原溶液体积 1000，盐 35（浓度 3.5%）。</p>
+<p>若不补水，3 天后盐度 5% → 体积 = 35 ÷ 5% = 700，即 3 天共蒸发 300，每天蒸发 100。</p>
+<p>要维持 3.5%，每天必须补回当天蒸发的 100，即原体积的 10%。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>35/1000 = 3.5%；3 天后 35/700 = 5% → 日蒸发 100；维持浓度每天补水 100 = 10% → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3178" target="_blank" rel="noopener">▶ 原视频 52:58</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3178" target="_blank" rel="noopener">幻灯片 s040 · 52:58</a></p>
+
+<h3 class="c-h3 blk" id="e29">例31【2018-江西】<span class="pg">54:43</span><a class="anchor" href="#e29" aria-label="链接到此节">#</a></h3>
+<p class="stem">从一瓶浓度为52%的酒精溶液中倒出1/3，加满纯净水，再倒出1/3，又加满纯净水，此时酒精溶液的浓度是多少？</p>
+<p class="opts"><span>A.5.8%</span>　<span>B.23.1%</span>　<span>C.17.3%</span>　<span>D.31.5%</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">溶液问题</span><span class="tag tg-blue">溶质不变</span><span class="tag tg-green">比例连乘</span></p>
+<div class="box solve" id="e29s"><p class="co-lead">【解法】</p>
+<p>两次操作后溶质都只剩原来的 (1 − 1/3) = 2/3，溶液体积回到满瓶 → 溶质占原溶液的 (2/3)² = 4/9。</p>
+<p>浓度 = 52% × 4/9 = 23.1%。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>52% × (2/3) × (2/3) = 52% × 4/9 = 23.1% → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3283" target="_blank" rel="noopener">▶ 原视频 54:43</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3283" target="_blank" rel="noopener">幻灯片 s041 · 54:43</a></p>
+
+<h3 class="c-h3 blk" id="e30">例32【2024-联考】<span class="pg">56:41</span><a class="anchor" href="#e30" aria-label="链接到此节">#</a></h3>
+<p class="stem">现有一容器，装有100克浓度为75%的盐水，从中倒出40克盐水后，再加入40克纯净水，如此反复三次。问此时盐水的浓度是：</p>
+<p class="opts"><span>A.16.20%</span>　<span>B.9%</span>　<span>C.1.62%</span>　<span>D.0.90%</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">溶液问题</span><span class="tag tg-blue">等比衰减</span><span class="tag tg-green">比例连乘</span></p>
+<div class="box solve" id="e30s"><p class="co-lead">【解法】</p>
+<p>每轮：倒出 40 克后剩 60 克（浓度不变），再补 40 克纯水 → 溶质变为原来的 60/100 = 3/5。</p>
+<p>三轮后浓度 = 75% × (3/5)³ = 75% × 27/125 = 16.2%。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>100 × 75% × (3/5) × (3/5) × (3/5) = 75% × 27/125 = 16.2% → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3401" target="_blank" rel="noopener">▶ 原视频 56:41</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3401" target="_blank" rel="noopener">幻灯片 s042 · 56:41</a></p>
+
+<h2 class="c-h2 blk" id="t12">题型12　工程问题<span class="pg">58:26</span><a class="anchor" href="#t12" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>工作量 = 效率 × 时间，三量中只有一个量已知</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>① 给完工时间：赋值工作量总量，求效率，列过程式　② 给效率比：赋值效率，求工作量总量，列过程式</p>
+</div>
+<p class="src">原课件标注：急救包12 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3506" target="_blank" rel="noopener">幻灯片 s043 · 58:26</a></p>
+
+<p class="lead">多人合作的工程题，两种入口：给时间就赋「总量」，给效率就赋「效率」，最后一定回到「总量 = Σ效率×时间」。</p>
+
+<h3 class="c-h3 blk" id="e31">例33【2024-联考】<span class="pg">59:50</span><a class="anchor" href="#e31" aria-label="链接到此节">#</a></h3>
+<p class="stem">有一批配件，如果甲车间单独完成需要50小时，乙车间单独完成需要30小时，在甲车间单独完成若干小时后，由于要承担其他紧急任务，剩余的任务由乙车间继续完成，这样一共用了42小时。问乙车间完成的配件量占这批配件总量的：</p>
+<p class="opts"><span>A.3/4</span>　<span>B.3/5</span>　<span>C.2/5</span>　<span>D.1/3</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">工程问题</span><span class="tag tg-blue">赋值总量</span><span class="tag tg-green">列过程式</span></p>
+<div class="box solve" id="e31s"><p class="co-lead">【解法】</p>
+<p>赋值总量 = 150 份（甲 50 小时 → 效率 3，乙 30 小时 → 效率 5）。</p>
+<p>设甲做了 x 小时，则乙做 42 − x 小时：3x + 5(42 − x) = 150 → 2x = 60 → x = 30。</p>
+<p>乙做了 12 小时，完成 5 × 12 = 60 份 → 60/150 = 2/5。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>总量 150，甲 3、乙 5；3X + 5(42−X) = 150 → 2X = 60 → X = 30；乙 5×12 = 60；60/150 = 2/5 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3590" target="_blank" rel="noopener">▶ 原视频 59:50</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3590" target="_blank" rel="noopener">幻灯片 s044 · 59:50</a></p>
+
+<h3 class="c-h3 blk" id="e32">例34【2024-江苏】<span class="pg">1:01:47</span><a class="anchor" href="#e32" aria-label="链接到此节">#</a></h3>
+<p class="stem">小王去超市买办公用品，经费恰好可以买18个计算器或者买30个订书机或者买50个档案盒，若购买6个计算器、8个订书机后，剩下的经费全部购买了档案盒，则他购买档案盒的个数是：</p>
+<p class="opts"><span>A.10</span>　<span>B.14</span>　<span>C.20</span>　<span>D.26</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">工程问题</span><span class="tag tg-blue">总量=单价×数量</span><span class="tag tg-green">单位价赋值</span></p>
+<div class="box solve" id="e32s"><p class="co-lead">【解法】</p>
+<p>设总经费 = 900（18、30、50 的最小公倍数为 900）。</p>
+<p>计算器单价 900÷18 = 50，订书机单价 900÷30 = 30，档案盒单价 900÷50 = 18。</p>
+<p>6×50 + 8×30 + 18x = 900 → 300 + 240 + 18x = 900 → x = 20。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>经费 900；单价 50、30、18；6×50 + 8×30 + 18x = 900 → 18x = 360 → x = 20 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3707" target="_blank" rel="noopener">▶ 原视频 1:01:47</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3707" target="_blank" rel="noopener">幻灯片 s045 · 1:01:47</a></p>
+
+<h3 class="c-h3 blk" id="e33">例35【2024-江苏】<span class="pg">1:04:50</span><a class="anchor" href="#e33" aria-label="链接到此节">#</a></h3>
+<p class="stem">一项工程由甲、乙、丙三个工程队合作完成，他们的工作效率之比为5∶6∶4。已知甲、乙合作需60天完成，现两人合作若干天后，剩余工程由丙单独完成，共用74天，则甲、乙合作的天数是：</p>
+<p class="opts"><span>A.52</span>　<span>B.53</span>　<span>C.54</span>　<span>D.55</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">工程问题</span><span class="tag tg-blue">赋值效率</span><span class="tag tg-green">总量 = Σ效率×时间</span></p>
+<div class="box solve" id="e33s"><p class="co-lead">【解法】</p>
+<p>赋值效率 甲 5、乙 6、丙 4 → 总工作量 = (5 + 6) × 60 = 660。</p>
+<p>设甲乙合作 x 天，丙做 74 − x 天：11x + 4(74 − x) = 660 → 7x = 364 → x = 52。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>效率 5∶6∶4；总量 = 11×60 = 660；(5+6)x + 4(74−x) = 660 → 7x = 364 → x = 52 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3890" target="_blank" rel="noopener">▶ 原视频 1:04:50</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3890" target="_blank" rel="noopener">幻灯片 s046 · 1:04:50</a></p>
+
+<h2 class="c-h2 blk" id="t13">题型13　容斥原理（一）：两集合与三集合标准型<span class="pg">1:06:03</span><a class="anchor" href="#t13" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>两集合 / 三集合，公式法</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>两集合：A + B − A∩B = 总数 − 均不满足　　三集合标准型：A + B + C − A∩B − A∩C − B∩C + A∩B∩C = 总人数 − 均不参加</p>
+</div>
+<p class="src">原课件标注：急救包13 / 12 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=3963" target="_blank" rel="noopener">幻灯片 s047 · 1:06:03</a></p>
+
+<p class="lead">标准型只能用于「三集合」的完整式子；只参加几项要改用非标准型或画交叉图。</p>
+
+<h3 class="c-h3 blk" id="e34">例36【2025-国考】<span class="pg">1:06:56</span><a class="anchor" href="#e34" aria-label="链接到此节">#</a></h3>
+<p class="stem">某研发小组员工中，60%的人参与了A项目，45%的人参与了B项目，两个项目都参与的人比两个项目都不参与的少2人。问该研发小组有多少人？</p>
+<p class="opts"><span>A.100</span>　<span>B.50</span>　<span>C.40</span>　<span>D.20</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">容斥原理</span><span class="tag tg-blue">两集合公式</span><span class="tag tg-green">设总数</span></p>
+<div class="box solve" id="e34s"><p class="co-lead">【解法】</p>
+<p>设总人数 M，都参加 x 人，则都不参加 x + 2 人。</p>
+<p>参加至少一个 = 60%M + 45%M − x = 105%M − x；同时 = M − (x + 2)。</p>
+<p>105%M − x = M − x − 2 → 5%M = 2 → M = 40 人。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>60%M + 45%M − x = M − (x+2) → 5%M = 2 → M = 40 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4016" target="_blank" rel="noopener">▶ 原视频 1:06:56</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4016" target="_blank" rel="noopener">幻灯片 s048 · 1:06:56</a></p>
+
+<h3 class="c-h3 blk" id="e35">例37【2020-新疆】<span class="pg">1:09:06</span><a class="anchor" href="#e35" aria-label="链接到此节">#</a></h3>
+<p class="stem">某单位共有240名员工，其中订阅A期刊的有125人，订阅B期刊的有126人，订阅C期刊的有135人，订阅A、B期刊的有57人，订阅A、C期刊的有73人，订阅3种期刊的有31人，此外，还有17人没有订阅这三种期刊中的任何一种。问订阅B、C期刊的有多少人？</p>
+<p class="opts"><span>A.57</span>　<span>B.64</span>　<span>C.69</span>　<span>D.78</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">容斥原理</span><span class="tag tg-blue">三集合标准型</span><span class="tag tg-green">设未知项</span></p>
+<div class="box solve" id="e35s"><p class="co-lead">【解法】</p>
+<p>订阅至少一种 = 240 − 17 = 223 人。</p>
+<p>标准型：125 + 126 + 135 − 57 − 73 − x + 31 = 223 → 287 − x = 223 → x = 64。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>125+126+135−57−73−x+31 = 240−17 → 287 − x = 223 → x = 64 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4146" target="_blank" rel="noopener">▶ 原视频 1:09:06</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4146" target="_blank" rel="noopener">幻灯片 s050 · 1:09:06</a></p>
+
+<h3 class="c-h3 blk" id="e36">例38【2025-江苏】<span class="pg">1:11:01</span><a class="anchor" href="#e36" aria-label="链接到此节">#</a></h3>
+<p class="stem">某单位组织45名员工参观第十五届中国国际航空航天博览会。其中，21人参观了一代隐身战斗机歼-35，22人参观了嫦娥六号取回的月球月壤样品，19人参观了大型无人作战舰“虎鲸”。所有员工中，这三种展览都未参加的有5人，至少参观2种的有12人。则这三种展览都参观的有多少人？</p>
+<p class="opts"><span>A.7人</span>　<span>B.8人</span>　<span>C.9人</span>　<span>D.10人</span></p>
+<p class="ans"><span class="bd">【答案】D</span></p>
+<p class="tags"><span class="tag tg-red">容斥原理</span><span class="tag tg-blue">非标准型</span><span class="tag tg-green">设三项都看</span></p>
+<div class="box solve" id="e36s"><p class="co-lead">【解法】</p>
+<p>参加至少一种 = 45 − 5 = 40 人。</p>
+<p>设三种都参加 x 人，则只参加两种 = 12 − x 人。</p>
+<p>非标准型：21 + 22 + 19 − (12 − x) − 2x = 40 → 50 − x = 40 → x = 10。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>至少一种 = 45−5 = 40；21+22+19−(12−x)−2x = 40 → 50−x = 40 → x = 10 → D</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4261" target="_blank" rel="noopener">▶ 原视频 1:11:01</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4261" target="_blank" rel="noopener">幻灯片 s051 · 1:11:01</a></p>
+
+<h2 class="c-h2 blk" id="t14">题型14　容斥原理（二）：交叉图去重<span class="pg">1:13:07</span><a class="anchor" href="#t14" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>只选 A、选 A 和 B 但不选 C、只选一样</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>画交叉圈，标数字，注意去重</p>
+</div>
+<p class="src">原课件标注：急救包14 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4387" target="_blank" rel="noopener">幻灯片 s052 · 1:13:07</a></p>
+
+<p class="lead">标准型不适用时画「交叉图」：先填中间，再填两边，最后回填独占部分。</p>
+
+<h3 class="c-h3 blk" id="e37">例39【2024-江苏】<span class="pg">1:14:13</span><a class="anchor" href="#e37" aria-label="链接到此节">#</a></h3>
+<p class="stem">某基层工会共有180名会员，举行甲、乙两项工会活动，60%的会员参加甲活动，50%的会员参加乙活动，若只参加甲活动的会员有80人，则只参加乙活动的会员有（ ）。</p>
+<p class="opts"><span>A.10人</span>　<span>B.28人</span>　<span>C.62人</span>　<span>D.72人</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">容斥原理</span><span class="tag tg-blue">交叉图</span><span class="tag tg-green">两集合</span></p>
+<div class="box solve" id="e37s"><p class="co-lead">【解法】</p>
+<p>参加甲 = 60%×180 = 108 人，参加乙 = 50%×180 = 90 人。</p>
+<p>只参加甲 80 人 → 甲∩乙 = 108 − 80 = 28 人。</p>
+<p>只参加乙 = 90 − 28 = 62 人。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>甲 = 108，乙 = 90；交 = 108 − 80 = 28；只乙 = 90 − 28 = 62 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4453" target="_blank" rel="noopener">▶ 原视频 1:14:13</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4453" target="_blank" rel="noopener">幻灯片 s053 · 1:14:13</a></p>
+
+<h3 class="c-h3 blk" id="e38">例40【2024-黑龙江公安】<span class="pg">1:15:19</span><a class="anchor" href="#e38" aria-label="链接到此节">#</a></h3>
+<p class="stem">单位组织职工周六周日两天植树，已知13人仅周六参加，有20人两天都参加，周六参加的比周日参加的人数少6人，且周六参加的人数比周六未参加的人数多4/7，问多少人两天都未参加？</p>
+<p class="opts"><span>A.2</span>　<span>B.3</span>　<span>C.4</span>　<span>D.5</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">容斥原理</span><span class="tag tg-blue">交叉图</span><span class="tag tg-green">分数关系</span></p>
+<div class="box solve" id="e38s"><p class="co-lead">【解法】</p>
+<p>周六参加 = 13 + 20 = 33 人；周日参加 = 33 + 6 = 39 人 → 只周日 = 19 人。</p>
+<p>设周六未参加 x 人，则 33 比 x 多 4/7 → 33 = (x + 19) × 11/7。</p>
+<p>19 + x = 21 → x = 2 人，即两天都未参加 2 人。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>33 = (19 + x) × 11/7 → 19 + x = 21 → x = 2 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4519" target="_blank" rel="noopener">▶ 原视频 1:15:19</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4519" target="_blank" rel="noopener">幻灯片 s054 · 1:15:19</a></p>
+
+<h3 class="c-h3 blk" id="e39">例41【2025-国考】<span class="pg">1:17:20</span><a class="anchor" href="#e39" aria-label="链接到此节">#</a></h3>
+<p class="stem">某单位65名职工中，拥有甲、乙、丙三项认证中至少一项的职工正好占80%，没有甲认证的职工与有乙认证的职工人数一样多，仅有丙认证的职工有3人，三项认证都有的职工有6人。问有多少人仅拥有甲、乙两项认证？</p>
+<p class="opts"><span>A.10</span>　<span>B.13</span>　<span>C.16</span>　<span>D.19</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">容斥原理</span><span class="tag tg-blue">交叉图</span><span class="tag tg-green">设未知量</span></p>
+<div class="box solve" id="e39s"><p class="co-lead">【解法】</p>
+<p>至少一项 = 65×80% = 52 人，至多一项 = 65×20% = 13 人。</p>
+<p>设仅甲 a、仅乙 b、仅丙 3、两项 x、三项 6、一项都没有 w。</p>
+<p>没有甲 = 有乙：b + 3 + w = b + x + 6 → w = x + 3。</p>
+<p>至多一项：a + b + 3 + w = 13 → a + b + x = 7；至少一项：a + b + x + (甲丙) + (乙丙) = 43 → (甲丙)+(乙丙) = 36。</p>
+<p>由 65 = 13 + x + (甲丙) + (乙丙) + 6 → x + 36 = 46 → x = 10。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>65×20% = 13；没有甲 = 有乙 → w = x+3；a+b+x = 7 → 两项外其余 = 36；x = 46 − 36 = 10 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4640" target="_blank" rel="noopener">▶ 原视频 1:17:20</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4640" target="_blank" rel="noopener">幻灯片 s055 · 1:17:20</a></p>
+
+<h2 class="c-h2 blk" id="t15">题型15　混合比值问题<span class="pg">1:20:11</span><a class="anchor" href="#t15" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>出现两者比值的混合</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>① 部分照抄 ② 对角线作差（大 − 小）③ 部分比 = 比值差之比</p>
+</div>
+<p class="src">原课件标注：急救包15 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4811" target="_blank" rel="noopener">幻灯片 s056 · 1:20:11</a></p>
+
+<p class="lead">十字交叉三板斧：先看整体比值定方向，再作差得部分比，最后回算部分的具体量。</p>
+
+<h3 class="c-h3 blk" id="e40">例42【2024-吉林】<span class="pg">1:21:07</span><a class="anchor" href="#e40" aria-label="链接到此节">#</a></h3>
+<p class="stem">某人买了甲、乙两种金融产品，期限结束后，甲、乙两种金融产品收益率分别是5%和3%，最终收益率为3.5%，那么购买甲、乙两种金融产品的金额比例为：</p>
+<p class="opts"><span>A.1∶1</span>　<span>B.1∶2</span>　<span>C.1∶3</span>　<span>D.1∶4</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">混合比值</span><span class="tag tg-blue">十字交叉</span><span class="tag tg-green">作差求比</span></p>
+<div class="box solve" id="e40s"><p class="co-lead">【解法】</p>
+<p>十字交叉：甲 5%、乙 3%、整体 3.5%。</p>
+<p>甲 ∶ 乙 = (3.5% − 3%) ∶ (5% − 3.5%) = 0.5% ∶ 1.5% = 1 ∶ 3。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>甲 5%、乙 3%、混合 3.5% → 甲∶乙 = (3.5−3)∶(5−3.5) = 0.5∶1.5 = 1∶3 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4867" target="_blank" rel="noopener">▶ 原视频 1:21:07</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4867" target="_blank" rel="noopener">幻灯片 s057 · 1:21:07</a></p>
+
+<h3 class="c-h3 blk" id="e41">例43【2024-联考】<span class="pg">1:23:05</span><a class="anchor" href="#e41" aria-label="链接到此节">#</a></h3>
+<p class="stem">高校管理学院某期培训班有不到100名学员参加，期中、期末两次考试平均分分别为68分和75分，期中考试不及格学员平均分为53分，及格学员平均分为74分；期末考试不及格学员平均分为47分，及格学员平均分为83分。问这期培训班有多少名学员参加？</p>
+<p class="opts"><span>A.42</span>　<span>B.54</span>　<span>C.63</span>　<span>D.77</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">混合比值</span><span class="tag tg-blue">十字交叉</span><span class="tag tg-green">最小公倍数</span></p>
+<div class="box solve" id="e41s"><p class="co-lead">【解法】</p>
+<p>期中：及格 ∶ 不及格 = (68 − 53) ∶ (74 − 68) = 15 ∶ 6 = 5 ∶ 2 → 总人数是 7 的倍数。</p>
+<p>期末：及格 ∶ 不及格 = (75 − 47) ∶ (83 − 75) = 28 ∶ 8 = 7 ∠ 2 → 总人数是 9 的倍数。</p>
+<p>同时是 7 和 9 的倍数且 &lt; 100 → 63 人。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>期中 (68−53):(74−68) = 5:2 → 7 的倍数；期末 (75−47):(83−75) = 7:2 → 9 的倍数；最小公倍数 63 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4985" target="_blank" rel="noopener">▶ 原视频 1:23:05</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=4985" target="_blank" rel="noopener">幻灯片 s058 · 1:23:05</a></p>
+
+<h3 class="c-h3 blk" id="e42">例44【2023-四川】<span class="pg">1:25:37</span><a class="anchor" href="#e42" aria-label="链接到此节">#</a></h3>
+<p class="stem">某年级有甲、乙、丙三个班级，三个班级的期末考试平均成绩分别为70分、88分和74分。若甲班和乙班的平均成绩为78分，乙班和丙班的平均成绩为82分，问该年级的期末考试平均成绩为多少？</p>
+<p class="opts"><span>A.75</span>　<span>B.77</span>　<span>C.79</span>　<span>D.81</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">混合比值</span><span class="tag tg-blue">十字交叉</span><span class="tag tg-green">两两定比</span></p>
+<div class="box solve" id="e42s"><p class="co-lead">【解法】</p>
+<p>甲 70、乙 88、平均 78 → 甲 ∶ 乙 = (88 − 78) ∶ (78 − 70) = 10 ∶ 8 = 5 ∶ 4。</p>
+<p>乙 88、丙 74、平均 82 → 乙 ∶ 丙 = (82 − 74) ∶ (88 − 82) = 8 ∶ 6 = 4 ∶ 3。</p>
+<p>合并：甲 ∶ 乙 ∶ 丙 = 5 ∶ 4 ∶ 3。</p>
+<p>年级平均 = (70×5 + 88×4 + 74×3) ÷ 12 = 924 ÷ 12 = 77。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>甲:乙 = (88−78):(78−70) = 5:4；乙:丙 = (82−74):(88−82) = 4:3 → 5:4:3；(70×5+88×4+74×3)/12 = 77 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5137" target="_blank" rel="noopener">▶ 原视频 1:25:37</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5137" target="_blank" rel="noopener">幻灯片 s059 · 1:25:37</a></p>
+
+<h3 class="c-h3 blk" id="e43">例45【2020-山东】<span class="pg">1:27:09</span><a class="anchor" href="#e43" aria-label="链接到此节">#</a></h3>
+<p class="stem">由于改良了种植技术，农场2017年种植的A和B两种作物，产量分别增加了10%和25%。已知2017年两种作物总产量增加了18%。问这7年A和B两种作物的产量比为：</p>
+<p class="opts"><span>A.7∶8</span>　<span>B.8∶7</span>　<span>C.176∶175</span>　<span>D.77∶100</span></p>
+<p class="ans"><span class="bd">【答案】D</span></p>
+<p class="tags"><span class="tag tg-red">混合比值</span><span class="tag tg-blue">十字交叉</span><span class="tag tg-green">连乘放大</span><span class="tag tg-amber">原稿题干年份与板书答案不一致</span></p>
+<div class="box solve" id="e43s"><p class="co-lead">【解法】</p>
+<p>十字交叉（2017 年）：A 增 10%、B 增 25%、整体增 18% → 2017 年 A ∶ B = (25% − 18%) ∶ (18% − 10%) = 7 ∶ 8。</p>
+<p>2018 年：A ∶ B = 7×1.1 ∶ 8×1.25 = 7.7 ∶ 10 = 77 ∶ 100。</p>
+<p>课件板书与标注答案均为 77∶100（D）。注：题干原文写「2017年」，但按板书与答案应为 2018 年的产量比。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>2017 年 7:8（A 项被划掉）；2018 年 7×1.1 : 8×1.25 = 7.7 : 10 = 77:100 → D</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5229" target="_blank" rel="noopener">▶ 原视频 1:27:09</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5229" target="_blank" rel="noopener">幻灯片 s060 · 1:27:09</a></p>
+
+<h2 class="c-h2 blk" id="t16">题型16　星期日期问题<span class="pg">1:29:22</span><a class="anchor" href="#t16" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>① 问某年某日是周几　② 某年某月有 5 个星期三，问某个具体日期是星期几</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>① 每经过一个平年星期推一天，每经过一个闰年推两天　② 把 N 个完整周期放开头或最后，剩下的几天必有一个出现五次的那一天；日期相减等于 7 的倍数则星期相同</p>
+</div>
+<p class="src">原课件标注：急救包16 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5362" target="_blank" rel="noopener">幻灯片 s065 · 1:29:22</a></p>
+
+<p class="lead">两讲合一：先数「完整星期」，再把零头几天对上那个「出现 5 次」的星期。</p>
+
+<h3 class="c-h3 blk" id="e44">例47【2019-黑龙江】<span class="pg">1:30:15</span><a class="anchor" href="#e44" aria-label="链接到此节">#</a></h3>
+<p class="stem">2019年1月12日是星期六，2040年1月12日是（ ）。</p>
+<p class="opts"><span>A.星期二</span>　<span>B.星期三</span>　<span>C.星期四</span>　<span>D.星期五</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">星期日期</span><span class="tag tg-blue">平闰年推算</span><span class="tag tg-green">跨年计时</span></p>
+<div class="box solve" id="e44s"><p class="co-lead">【解法】</p>
+<p>2019 → 2040 共 21 年，其中闰年有 2020、2024、2028、2032、2036 共 5 个。</p>
+<p>总推移天数 = 21 + 5 = 26 天，26 mod 7 = 5。</p>
+<p>星期六往后推 5 天 → 星期四。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>21 年含 5 个闰年 → 21 + 5 = 26；26 mod 7 = 5；六 + 5 = 四 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5415" target="_blank" rel="noopener">▶ 原视频 1:30:15</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5415" target="_blank" rel="noopener">幻灯片 s066 · 1:30:15</a></p>
+
+<h3 class="c-h3 blk" id="e45">例48【2024-广东】<span class="pg">1:40:09</span><a class="anchor" href="#e45" aria-label="链接到此节">#</a></h3>
+<p class="stem">只有在星期六，小王才会去图书馆。如果某年3月小王一共有5天去过图书馆，则当年4月1日可能是（ ）。</p>
+<p class="opts"><span>A.星期二</span>　<span>B.星期三</span>　<span>C.星期五</span>　<span>D.星期六</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">星期日期</span><span class="tag tg-blue">完整周期</span><span class="tag tg-green">零头对齐</span></p>
+<div class="box solve" id="e45s"><p class="co-lead">【解法】</p>
+<p>3 月 31 天 = 4 个完整星期 + 3 天，多出的 3 天必含「出现 5 次」的那个星期。</p>
+<p>小王只在星期六去，共去 5 天 → 3 月 1 日、2 日、3 日中有一天是星期六 → 3月1日 ∈ {星期四、星期五、星期六}。</p>
+<p>4 月 1 日 = 3 月 1 日 + 31 天（31 mod 7 = 3）→ 4月1日 ∈ {星期日、星期一、星期二}。</p>
+<p>选项中只有星期二可能。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>31 天 = 4 周 + 3 天 → 多出的 3 天含周六 → 3/1 为四或五或六；4/1 = 3/1 + 31 ≡ +3 → 日/一/二 → 选星期二 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6009" target="_blank" rel="noopener">▶ 原视频 1:40:09</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6009" target="_blank" rel="noopener">幻灯片 s070 · 1:40:09</a></p>
+
+<h3 class="c-h3 blk" id="e46">例49【2025-国考】<span class="pg">1:34:43</span><a class="anchor" href="#e46" aria-label="链接到此节">#</a></h3>
+<p class="stem">某门店星期一至星期五的日营业额均为1万元，星期六和星期日的日营业额均为2万元。某月1-16日的总营业额为22万元，问该月8日为：</p>
+<p class="opts"><span>A.星期三</span>　<span>B.星期四</span>　<span>C.星期五</span>　<span>D.星期六</span></p>
+<p class="ans"><span class="bd">【答案】D</span></p>
+<p class="tags"><span class="tag tg-red">星期日期</span><span class="tag tg-blue">完整周期</span><span class="tag tg-green">两天凑整</span></p>
+<div class="box solve" id="e46s"><p class="co-lead">【解法】</p>
+<p>一个完整星期（周一到周日）营业额 = 1×5 + 2×2 = 9 万元。</p>
+<p>16 天 = 2 个完整星期 + 2 天 → 前 14 天 = 18 万元，剩 22 − 18 = 4 万元。</p>
+<p>剩的 2 天共 4 万元 → 两天都是周末（各 2 万元）→ 15、16 日是周六、周日。</p>
+<p>15 日是周六 → 8 日也是周六。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>16 = 2 个整周（18 万）+ 2 天（22 − 18 = 4 万）→ 两天都是周末 → 15、16 是周六日 → 8 日周六 → D</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5683" target="_blank" rel="noopener">▶ 原视频 1:34:43</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5683" target="_blank" rel="noopener">幻灯片 s068 · 1:34:43</a></p>
+
+<h3 class="c-h3 blk" id="e47">例50【2024-吉林】<span class="pg">1:38:01</span><a class="anchor" href="#e47" aria-label="链接到此节">#</a></h3>
+<p class="stem">某年的元旦是星期二，这一年共有53个星期三，则3月27日这一天为：</p>
+<p class="opts"><span>A.星期二</span>　<span>B.星期三</span>　<span>C.星期四</span>　<span>D.星期五</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">星期日期</span><span class="tag tg-blue">53 个星期几</span><span class="tag tg-green">闰年判定</span></p>
+<div class="box solve" id="e47s"><p class="co-lead">【解法】</p>
+<p>平年 365 天 = 52 周 + 1 天，多出的是星期二 → 星期三只有 52 个；出现 53 个星期三说明是闰年。</p>
+<p>闰年 366 天 = 52 周 + 2 天，多出的两天是星期二、星期三 → 2 月 29 日，多出的星期三。</p>
+<p>3 月 27 日是当年的第 31 + 29 + 27 = 87 天 → 距元旦 86 天，86 mod 7 = 2。</p>
+<p>星期二往后推 2 天 → 星期四。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>53 个星期三 → 闰年（366 = 52 周 + 2 天，多出二、三）；3/27 = 第 87 天 → 距元旦 86 天，86 mod 7 = 2 → 二 + 2 = 四 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5881" target="_blank" rel="noopener">▶ 原视频 1:38:01</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=5881" target="_blank" rel="noopener">幻灯片 s069 · 1:38:01</a></p>
+
+<h3 class="c-h3 blk" id="e48">例51【2025-国考】<span class="pg">1:40:51</span><a class="anchor" href="#e48" aria-label="链接到此节">#</a></h3>
+<p class="stem">小张每周一到周四夜跑，周五到周日休息，已知某年2月他夜跑17次，3月夜跑19次，问4月他夜跑多少次？</p>
+<p class="opts"><span>A.16</span>　<span>B.17</span>　<span>C.18</span>　<span>D.19</span></p>
+<p class="ans"><span class="bd">【答案】A</span></p>
+<p class="tags"><span class="tag tg-red">星期日期</span><span class="tag tg-blue">整周 + 零头</span><span class="tag tg-green">月末推首日</span></p>
+<div class="box solve" id="e48s"><p class="co-lead">【解法】</p>
+<p>2 月夜跑 17 次 = 4 个整周（16 次）+ 1 天 → 2 月 1 日是周一（周一至周四各多 1 次）。</p>
+<p>3 月 1 日是周二（2 月 28 天），3 月 19 次 = 16 + 3（周二、周三、周各多 1 次）✓ 自洽。</p>
+<p>4 月 1 日 = 周五；4 月 30 天 = 4 个整周 + 2 天，多出的两天是周五、周六。</p>
+<p>周一至周四各出现 4 次 → 夜跑 4 × 4 = 16 次。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>2 月 17 次 → 2/1 为周一；3 月 19 次 → 3/1 为周二；4/1 = 周五；4 月 30 天 = 4 周 + 2 天（多出五、六）→ 周一至周四各 4 次 = 16 → A</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6051" target="_blank" rel="noopener">▶ 原视频 1:40:51</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6051" target="_blank" rel="noopener">幻灯片 s076 · 1:40:51</a></p>
+
+<h2 class="c-h2 blk" id="t17">题型17　空瓶换酒<span class="pg">1:43:55</span><a class="anchor" href="#t17" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>N 个空瓶兑换 1 瓶酒</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>N − 1 个空瓶等价于 1 份酒；注意兑换时酒瓶已抵掉，只有酒没有瓶</p>
+</div>
+<p class="src">原课件标注：急救包17 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6235" target="_blank" rel="noopener">幻灯片 s077 · 1:43:55</a></p>
+
+<p class="lead">兑换类问题的关键是「净消耗」：每换 1 瓶酒，净少 N − 1 个空瓶。</p>
+
+<h3 class="c-h3 blk" id="e49">例52【2019-山东】<span class="pg">1:45:09</span><a class="anchor" href="#e49" aria-label="链接到此节">#</a></h3>
+<p class="stem">某啤酒厂为促销啤酒，开展6个空啤酒瓶换1瓶啤酒的活动，孙先生去年花钱先后购买了109瓶该品牌啤酒，期间不断用空啤酒瓶去换啤酒，请问孙先生去年一共喝掉了多少瓶啤酒？</p>
+<p class="opts"><span>A.127</span>　<span>B.128</span>　<span>C.129</span>　<span>D.130</span></p>
+<p class="ans"><span class="bd">【答案】D</span></p>
+<p class="tags"><span class="tag tg-red">空瓶换酒</span><span class="tag tg-blue">净消耗 N−1</span><span class="tag tg-green">整除取整</span></p>
+<div class="box solve" id="e49s"><p class="co-lead">【解法】</p>
+<p>每换 1 瓶酒：给出 6 个空瓶、得到 1 个新空瓶 → 净消耗 5 个空瓶。</p>
+<p>109 个空瓶可换 ⌊(109 − 1) ÷ 5⌋ = 21 瓶。</p>
+<p>共喝掉 109 + 21 = 130 瓶。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>109 + ⌊108/5⌋ = 109 + 21 = 130 → D</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6309" target="_blank" rel="noopener">▶ 原视频 1:45:09</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6309" target="_blank" rel="noopener">幻灯片 s078 · 1:45:09</a></p>
+
+<h3 class="c-h3 blk" id="e50">例53【2024-黑龙江】<span class="pg">1:46:01</span><a class="anchor" href="#e50" aria-label="链接到此节">#</a></h3>
+<p class="stem">某篮球队队长买饮料，发现某品牌汽水正在促销，每三个空瓶可换一瓶汽水，队长计算后发现，只要买7瓶就能保证球队每个人都能喝到2瓶汽水，该篮球队共有多少人？</p>
+<p class="opts"><span>A.4</span>　<span>B.5</span>　<span>C.6</span>　<span>D.7</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">空瓶换酒</span><span class="tag tg-blue">净消耗 N−1</span><span class="tag tg-green">反向求人数</span></p>
+<div class="box solve" id="e50s"><p class="co-lead">【解法】</p>
+<p>每换 1 瓶净消耗 2 个空瓶：7 瓶 → 空瓶 7 → 可换 ⌊(7 − 1) ÷ 2⌋ = 3 瓶 → 共 10 瓶汽水。</p>
+<p>每人 2 瓶 → 10 ÷ 2 = 5 人。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>7 + ⌊6/2⌋ = 7 + 3 = 10 瓶；10 ÷ 2 = 5 人 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6361" target="_blank" rel="noopener">▶ 原视频 1:46:01</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6361" target="_blank" rel="noopener">幻灯片 s079 · 1:46:01</a></p>
+
+<h2 class="c-h2 blk" id="t18">题型18　牛吃草<span class="pg">1:46:50</span><a class="anchor" href="#t18" aria-label="链接到此节">#</a></h2>
+<div class="callout">
+  <div class="co-tag">题型识别</div>
+  <p>① 两组数据，表述不同但含义完全相同　② 两组不变的量：原有量、草的生长速度</p>
+  <div class="co-tag" style="margin-top:8px">救急技巧</div>
+  <p>① 两组数据乘积差 ÷ 时间差 = 草的生长速度（临界值）② 某组数据乘积 = 生长速度 × 该组时间 + 原有量 ③ 原有量 + 新增量 = 第三组数据乘积</p>
+</div>
+<p class="src">原课件标注：急救包18 ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6410" target="_blank" rel="noopener">幻灯片 s080 · 1:46:50</a></p>
+
+<p class="lead">牛吃草 = 「原有量 + 生长量」模型。牛吃草量 = 原有量 + 草速 × 时间。</p>
+
+<h3 class="c-h3 blk" id="e51">例54【2013-国家】<span class="pg">1:47:14</span><a class="anchor" href="#e51" aria-label="链接到此节">#</a></h3>
+<p class="stem">某河段中的沉积河沙可供80人连续开采6个月或60人连续开采10个月。如果要保证该河段河沙不被开采枯竭，问最多可供多少人进行连续不断的开采（假定该河段河沙的沉积速度相对稳定）？</p>
+<p class="opts"><span>A.25</span>　<span>B.30</span>　<span>C.35</span>　<span>D.40</span></p>
+<p class="ans"><span class="bd">【答案】B</span></p>
+<p class="tags"><span class="tag tg-red">牛吃草</span><span class="tag tg-blue">乘积差÷时间差</span><span class="tag tg-green">临界值</span></p>
+<div class="box solve" id="e51s"><p class="co-lead">【解法】</p>
+<p>设原有沙量 x、每月沉积 v：x + 6v = 80×6 = 480；x + 10v = 60×10 = 600。</p>
+<p>两式相减：4v = 120 → v = 30（每月沉积量相当于 30 人的开采量）。</p>
+<p>临界人数 = 30 人（再多就会越吃越少）。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>V = (60×10 − 80×6) ÷ (10 − 6) = 120 ÷ 4 = 30 → B</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6434" target="_blank" rel="noopener">▶ 原视频 1:47:14</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6434" target="_blank" rel="noopener">幻灯片 s081 · 1:47:14</a></p>
+
+<h3 class="c-h3 blk" id="e52">例55【2024-联考】<span class="pg">1:49:20</span><a class="anchor" href="#e52" aria-label="链接到此节">#</a></h3>
+<p class="stem">某农产品基地对外供应一批农副产品。假设这批农副产品每天都有定量的自然损耗，如果提货方每天运走1.5吨农副产品，则50天运完；如果提货方每天运走2吨农副产品，则40天运完。那么，这批农副产品有：</p>
+<p class="opts"><span>A.75吨</span>　<span>B.80吨</span>　<span>C.100吨</span>　<span>D.110吨</span></p>
+<p class="ans"><span class="bd">【答案】C</span></p>
+<p class="tags"><span class="tag tg-red">牛吃草</span><span class="tag tg-blue">损耗模型</span><span class="tag tg-green">倒推总量</span></p>
+<div class="box solve" id="e52s"><p class="co-lead">【解法】</p>
+<p>设原有量 x、每天损耗 v：x + 50v = 1.5×50 = 75；x + 40v = 2×40 = 80。</p>
+<p>相减：10v = 5 → v = 0.5 吨/天。</p>
+<p>原有量 x = 80 − 40×0.5 = 100 吨。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>v = (2×40 − 1.5×50) ÷ (50 − 40) = 0.5；x = 2×40 + 40×0.5 = 100 吨 → C</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6560" target="_blank" rel="noopener">▶ 原视频 1:49:20</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6560" target="_blank" rel="noopener">幻灯片 s082 · 1:49:20</a></p>
+
+<h3 class="c-h3 blk" id="e53">例56【2023-河北事业单位】<span class="pg">1:51:48</span><a class="anchor" href="#e53" aria-label="链接到此节">#</a></h3>
+<p class="stem">某蓄水池存有一定量的水，河水均匀流入蓄水池。用5台抽水机10天可将水抽完，用6台抽水机8天可将水抽完。若要求4天抽完，需要同样的抽水机多少台？（ ）</p>
+<p class="opts"><span>A.14</span>　<span>B.13</span>　<span>C.12</span>　<span>D.11</span></p>
+<p class="ans"><span class="bd">【答案】D</span></p>
+<p class="tags"><span class="tag tg-red">牛吃草</span><span class="tag tg-blue">进水模型</span><span class="tag tg-green">单位量统一</span></p>
+<div class="box solve" id="e53s"><p class="co-lead">【解法】</p>
+<p>以「1 台抽水机 1 天」为 1 个单位：设进水速度 r、原有水量 W。</p>
+<p>5 台 10 天：W + 10r = 50；6 台 8 天：W + 8r = 48 → 2r = 2 → r = 1（即每天进水量相当于 1 台机的抽水量）。</p>
+<p>原有水量 W = 50 − 10×1 = 40。</p>
+<p>4 天抽完需 x 台：40 + 4×1 = 4x → x = 11。</p>
+</div>
+<div class="box hand"><p class="co-lead">【板书还原】</p>
+<p>① 进水 V = (5×10 − 6×8) ÷ (10 − 8) = 2 ÷ 2 = 1；② 5×10 = 10x + 5×2 → 原有量 40；③ 40 + 4×1 = 4x → x = 11 → D</p>
+</div>
+<p class="src"><a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6708" target="_blank" rel="noopener">▶ 原视频 1:51:48</a> ｜ <a href="https://www.bilibili.com/video/BV1N6Q7YcEgj/?t=6708" target="_blank" rel="noopener">幻灯片 s083 · 1:51:48</a></p>
+
+<h1 class="c-h1 blk" id="appendix">附录：出处、说明与原始素材<span class="pg">附录</span><a class="anchor" href="#appendix" aria-label="链接到此节">#</a></h1>
+<h2 class="c-h2 blk" id="app1">一、原始出处</h2>
+<p>本手册的全部题干、选项、答案、解法与板书演算，均来自 B 站视频 <b>BV1N6Q7YcEgj</b>《数量关系 · 18个急救包（识别 + 技巧）》，
+共 84 张课件幻灯片、约 1 小时 53 分。例题编号沿用课件原编号（例 2–例 56，其中例 1、例 22、例 28 课件未收录，
+「例7」在课件中出现两次，本手册记为「例7」与「例7′」）。</p>
+<p>点击正文各例题下方的「▶ 原视频 mm:ss」即可跳转到视频对应时间点；点击「幻灯片 sNNN」可回到该题所在的课件页。</p>
+<h2 class="c-h2 blk" id="app2">二、关于「18 个急救包」的编号</h2>
+<p>课件封题写「18 个急救包」，但正文中容斥原理、星期日期等处存在编号重复（容斥原理分三讲、星期日期分两讲）。
+本手册按课件的 18 个编号重新整理为 18 个题型：容斥原理合并为「容斥原理（一）（二）」两讲、星期日期合并为一讲，
+每节标题下均标注课件原始编号，便于与视频对照。</p>
+<h2 class="c-h2 blk" id="app3">三、答案速查</h2>
+<div class="tw"><table><thead><tr><th style="width:100px">例题</th><th style="width:120px">来源</th><th style="width:90px">答案</th><th>题型</th></tr></thead><tbody>
+<tr><td>例2</td><td>2024-联考</td><td><b>B</b></td><td>比例倍数</td></tr>
+<tr><td>例3</td><td>2025-天津</td><td><b>D</b></td><td>比例倍数</td></tr>
+<tr><td>例4</td><td>2024-联考</td><td><b>A</b></td><td>比例倍数</td></tr>
+<tr><td>例5</td><td>2020-江苏</td><td><b>B</b></td><td>比例倍数</td></tr>
+<tr><td>例6</td><td>2025-联考</td><td><b>A</b></td><td>比例倍数</td></tr>
+<tr><td>例7</td><td>2025-联考</td><td><b>C</b></td><td>比例倍数</td></tr>
+<tr><td>例7′</td><td>2024-全国事业单位联考</td><td><b>B</b></td><td>余数问题</td></tr>
+<tr><td>例8</td><td>2019-新疆</td><td><b>B</b></td><td>乘积模型</td></tr>
+<tr><td>例9</td><td>2024-广东</td><td><b>A</b></td><td>乘积模型</td></tr>
+<tr><td>例10</td><td>2020-联考</td><td><b>B</b></td><td>等距离平均速度</td></tr>
+<tr><td>例11</td><td>2023-广东</td><td><b>B</b></td><td>等距离平均速度</td></tr>
+<tr><td>例12</td><td>2022-联考</td><td><b>A</b></td><td>等差数列中间项</td></tr>
+<tr><td>例13</td><td>2023-四川</td><td><b>B</b></td><td>等差数列中间项</td></tr>
+<tr><td>例14</td><td>2022-江苏</td><td><b>A</b></td><td>等差数列中间项</td></tr>
+<tr><td>例15</td><td>2022-上海</td><td><b>B</b></td><td>最值数列构造</td></tr>
+<tr><td>例16</td><td>2024-联考</td><td><b>A</b></td><td>最值数列构造</td></tr>
+<tr><td>例17</td><td>2023-联考</td><td><b>C</b></td><td>最值数列构造</td></tr>
+<tr><td>例18</td><td>2023-山东</td><td><b>C</b></td><td>最不利构造</td></tr>
+<tr><td>例19</td><td>2023-浙江</td><td><b>A</b></td><td>最不利构造</td></tr>
+<tr><td>例20</td><td>2021-广东选调</td><td><b>B</b></td><td>极端容斥</td></tr>
+<tr><td>例21</td><td>2022-江苏</td><td><b>A</b></td><td>极端容斥</td></tr>
+<tr><td>例23</td><td>2018-联考</td><td><b>B</b></td><td>年龄问题</td></tr>
+<tr><td>例24</td><td>2023-联考</td><td><b>D</b></td><td>年龄问题</td></tr>
+<tr><td>例25</td><td>2019-联考</td><td><b>C</b></td><td>经济利润问题</td></tr>
+<tr><td>例26</td><td>2019-联考</td><td><b>C</b></td><td>经济利润问题</td></tr>
+<tr><td>例27</td><td>2015-四川</td><td><b>B</b></td><td>经济利润问题</td></tr>
+<tr><td>例29</td><td>2023-福建事业单位</td><td><b>B</b></td><td>溶液问题</td></tr>
+<tr><td>例30</td><td>2023-全国事业单位联考</td><td><b>B</b></td><td>溶液问题</td></tr>
+<tr><td>例31</td><td>2018-江西</td><td><b>B</b></td><td>溶液问题</td></tr>
+<tr><td>例32</td><td>2024-联考</td><td><b>A</b></td><td>溶液问题</td></tr>
+<tr><td>例33</td><td>2024-联考</td><td><b>C</b></td><td>工程问题</td></tr>
+<tr><td>例34</td><td>2024-江苏</td><td><b>C</b></td><td>工程问题</td></tr>
+<tr><td>例35</td><td>2024-江苏</td><td><b>A</b></td><td>工程问题</td></tr>
+<tr><td>例36</td><td>2025-国考</td><td><b>C</b></td><td>容斥原理（一）：两集合与三集合标准型</td></tr>
+<tr><td>例37</td><td>2020-新疆</td><td><b>B</b></td><td>容斥原理（一）：两集合与三集合标准型</td></tr>
+<tr><td>例38</td><td>2025-江苏</td><td><b>D</b></td><td>容斥原理（一）：两集合与三集合标准型</td></tr>
+<tr><td>例39</td><td>2024-江苏</td><td><b>C</b></td><td>容斥原理（二）：交叉图去重</td></tr>
+<tr><td>例40</td><td>2024-黑龙江公安</td><td><b>A</b></td><td>容斥原理（二）：交叉图去重</td></tr>
+<tr><td>例41</td><td>2025-国考</td><td><b>A</b></td><td>容斥原理（二）：交叉图去重</td></tr>
+<tr><td>例42</td><td>2024-吉林</td><td><b>C</b></td><td>混合比值问题</td></tr>
+<tr><td>例43</td><td>2024-联考</td><td><b>C</b></td><td>混合比值问题</td></tr>
+<tr><td>例44</td><td>2023-四川</td><td><b>B</b></td><td>混合比值问题</td></tr>
+<tr><td>例45</td><td>2020-山东</td><td><b>D</b></td><td>混合比值问题</td></tr>
+<tr><td>例47</td><td>2019-黑龙江</td><td><b>C</b></td><td>星期日期问题</td></tr>
+<tr><td>例48</td><td>2024-广东</td><td><b>A</b></td><td>星期日期问题</td></tr>
+<tr><td>例49</td><td>2025-国考</td><td><b>D</b></td><td>星期日期问题</td></tr>
+<tr><td>例50</td><td>2024-吉林</td><td><b>C</b></td><td>星期日期问题</td></tr>
+<tr><td>例51</td><td>2025-国考</td><td><b>A</b></td><td>星期日期问题</td></tr>
+<tr><td>例52</td><td>2019-山东</td><td><b>D</b></td><td>空瓶换酒</td></tr>
+<tr><td>例53</td><td>2024-黑龙江</td><td><b>B</b></td><td>空瓶换酒</td></tr>
+<tr><td>例54</td><td>2013-国家</td><td><b>B</b></td><td>牛吃草</td></tr>
+<tr><td>例55</td><td>2024-联考</td><td><b>C</b></td><td>牛吃草</td></tr>
+<tr><td>例56</td><td>2023-河北事业单位</td><td><b>D</b></td><td>牛吃草</td></tr>
+</tbody></table></div>
+
+</div>
+</main>
+
+<a id="home" href="index.html" title="返回总目录" aria-label="返回总目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 10.6 12 3.4l9 7.2"/>
+    <path d="M5.6 9.4V20.2h12.8V9.4"/>
+    <path d="M9.8 20.2v-5.6h4.4v5.6"/>
+  </svg>
+</a>
+<button id="totop" title="回到顶部">↑</button>
+<script>
+(function(){
+  var HIDE_FROM=2;                       // 折叠时隐藏 toc-lN 及更深层级
+  var toc=document.getElementById('toc'), links=[].slice.call(toc.querySelectorAll('a'));
+  var content=document.getElementById('content');
+  var bar=document.querySelector('#progress i');
+  var totop=document.getElementById('totop');
+  var counter=document.getElementById('counter');
+  var q=document.getElementById('q');
+
+  // progress + back to top
+  function onScroll(){
+    var h=content.scrollHeight||document.body.scrollHeight;
+    var top=window.scrollY||document.documentElement.scrollTop;
+    bar.style.width=Math.min(100,top/(h-window.innerHeight||1)*100)+'%';
+    totop.style.display=top>500?'block':'none';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // scrollspy
+  var heads=[];links.forEach(function(a){var h=document.getElementById(a.getAttribute('href').slice(1));if(h)heads.push(h);});
+  var current=null;
+  function spy(){
+    var best=null,bestTop=-1e9;
+    var probe=window.scrollY+90;
+    heads.forEach(function(h){
+      var t=h.getBoundingClientRect().top+window.scrollY;
+      if(t<=probe&&t>bestTop){bestTop=t;best=h;}
+    });
+    if(!best)return;
+    if(best.id===current)return;
+    current=best.id;
+    links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+current);});
+    var act=toc.querySelector('a.active');
+    if(act){
+      var tb=toc.getBoundingClientRect(),ab=act.getBoundingClientRect();
+      if(ab.top<tb.top+40||ab.bottom>tb.bottom-40)
+        toc.scrollTop+=ab.top-tb.top-toc.clientHeight/2;
+    }
+  }
+  window.addEventListener('scroll',spy,{passive:true});
+  window.addEventListener('resize',spy);spy();
+
+  // 目录筛选 + 章节折叠（筛选时忽略折叠状态）
+  function level(a){
+    var c=a.className;
+    if(c.indexOf('toc-l1')>=0)return 1;
+    if(c.indexOf('toc-l2')>=0)return 2;
+    if(c.indexOf('toc-l3')>=0)return 3;
+    return 4;
+  }
+  var collapsed=false;
+  function refresh(){
+    var v=(q.value||'').trim().toLowerCase();
+    var shown=0;
+    links.forEach(function(a){
+      var hit=!v||a.textContent.toLowerCase().indexOf(v)>=0;
+      var hide=!hit||(!v&&collapsed&&level(a)>=HIDE_FROM);
+      a.style.display=hide?'none':'';
+      if(!hide)shown++;
+    });
+    counter.textContent=(v||shown!==links.length)?shown+' / '+links.length:links.length+' 项';
+  }
+  q.addEventListener('input',refresh);
+
+  var exp=document.getElementById('expand');
+  exp.onclick=function(){
+    collapsed=!collapsed;
+    exp.textContent=collapsed?'展开全部':'仅看章节目';
+    refresh();
+  };
+
+  // mobile drawer
+  var sb=document.getElementById('sidebar'),mask=document.getElementById('mask');
+  document.getElementById('menubtn').onclick=function(){sb.classList.toggle('open');mask.style.display=sb.classList.contains('open')?'block':'none';};
+  mask.onclick=function(){sb.classList.remove('open');mask.style.display='none';};
+  toc.addEventListener('click',function(e){if(e.target.tagName==='A'&&window.innerWidth<=900){sb.classList.remove('open');mask.style.display='none';}});
+
+  totop.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+
+  exp.textContent=collapsed?'展开全部':'仅看章节目';
+  refresh();
+})();
+</script>
+</body>
+</html>
