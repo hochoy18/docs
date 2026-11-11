@@ -835,7 +835,7 @@ figure.fig .figtext h4,figure.fig .figtext h5,figure.fig .figtext h6{
   window.addEventListener('scroll',onScroll,{passive:true});onScroll();
 
   // scrollspy
-  var heads=[].slice.call(document.querySelectorAll('h1[id],h2[id],h3[id],h4[id]'));
+  var heads=[];links.forEach(function(a){var h=document.getElementById(a.getAttribute('href').slice(1));if(h)heads.push(h);});
   var current=null;
   function spy(){
     var best=null,bestTop=-1e9;
