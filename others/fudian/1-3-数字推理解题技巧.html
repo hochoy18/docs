@@ -1,564 +1,472 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>数字推理类题型解题技巧讲义</title>
 <meta name="description" content="数字推理类题型解题技巧讲义">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b4232a'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle' fill='white' font-family='sans-serif'%3E语%3C/text%3E%3C/svg%3E">
 <style>
+
 :root{
-  --bg:#f6f7f9; --panel:#ffffff; --fg:#1f2328; --muted:#6b7280;
-  --border:#e3e6ea; --accent:#b4232a; --accent-soft:#fdf0f0;
-  --hl:#ffe08a; --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
-  --sidebar-w:320px; --serif:"Songti SC","SimSun","Noto Serif CJK SC",serif;
-  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC",sans-serif;
-  --body-size:16.5px; --lh:1.95;
-}
-html[data-theme="dark"]{
-  --bg:#14161a; --panel:#1c1f25; --fg:#d9dde3; --muted:#8b949e;
-  --border:#2b3038; --accent:#ff6b6b; --accent-soft:#2a1d1f;
-  --hl:#5a4a12; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  --bg:#f5f6f8; --panel:#ffffff; --ink:#1d2129; --ink-2:#4a5158; --ink-3:#828a94;
+  --line:#e3e6ea; --line-2:#eef0f3; --accent:#b3261e; --accent-2:#1a56a8;
+  --red:#c62828; --red-bg:#fff5f5; --sidebar:300px;
+  --font-serif:"Songti SC","STSong","SimSun","Source Han Serif SC",serif;
+  --font-sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{
-  background:var(--bg); color:var(--fg); font-family:var(--sans);
-  font-size:var(--body-size); line-height:var(--lh);
-  -webkit-font-smoothing:antialiased;
-}
-body[data-font="serif"] .doc{font-family:var(--serif)}
-a{color:inherit;text-decoration:none}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-serif);font-size:16.5px;line-height:1.95;-webkit-font-smoothing:antialiased;}
 
-/* ---------- 顶栏 ---------- */
-.topbar{
-  position:fixed;top:0;left:0;right:0;height:56px;z-index:40;
-  display:flex;align-items:center;gap:12px;padding:0 16px;
-  background:color-mix(in srgb,var(--panel) 88%,transparent);
-  backdrop-filter:saturate(180%) blur(12px);
-  border-bottom:1px solid var(--border);
-}
-.topbar .brand{font-weight:700;font-size:15px;letter-spacing:.3px;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;max-width:34vw}
-.topbar .spacer{flex:1}
-.search{position:relative;display:flex;align-items:center}
-.search input{
-  width:230px;padding:7px 30px 7px 32px;border-radius:8px;font-size:13.5px;
-  border:1px solid var(--border);background:var(--bg);color:var(--fg);
-  outline:none;transition:.18s;font-family:inherit;
-}
-.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);width:290px}
-.search .ico{position:absolute;left:10px;font-size:13px;color:var(--muted);pointer-events:none}
-.search .cnt{position:absolute;right:9px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
-.btn{
-  border:1px solid var(--border);background:var(--panel);color:var(--fg);
-  padding:7px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;
-  display:inline-flex;align-items:center;gap:5px;transition:.15s;white-space:nowrap;
-}
-.btn:hover{border-color:var(--accent);color:var(--accent)}
-.btn.icon{padding:7px 9px;font-size:14px}
-#menuBtn{display:none}
+/* ---------- sidebar ---------- */
+#sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:var(--panel);
+  border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40}
+.sb-head{padding:18px 20px 12px;border-bottom:1px solid var(--line-2)}
+.sb-title{font-family:var(--font-sans);font-size:15px;font-weight:700;line-height:1.5;color:var(--ink)}
+.sb-sub{font-family:var(--font-sans);font-size:11.5px;color:var(--ink-3);margin-top:5px;letter-spacing:.3px}
+.sb-search{padding:12px 16px 10px}
+.sb-search input{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:6px;
+  font-family:var(--font-sans);font-size:12.5px;background:#fbfcfd;color:var(--ink);outline:none}
+.sb-search input:focus{border-color:#b9c6d6;background:#fff}
+#toc{flex:1;overflow-y:auto;padding:6px 10px 60px;scrollbar-width:thin}
+#toc a{display:block;font-family:var(--font-sans);text-decoration:none;color:var(--ink-2);
+  border-radius:5px;padding:5px 10px;line-height:1.5;border-left:2px solid transparent;transition:.14s}
+#toc a:hover{background:#f2f4f7;color:var(--ink)}
+.toc-l1{font-size:13.5px;font-weight:700;color:var(--ink);margin-top:12px;padding-top:7px!important}
+.toc-l2{font-size:12.5px;color:#384049;margin-left:10px}
+.toc-l3{font-size:12px;color:var(--ink-3);margin-left:22px;padding-top:3px!important;padding-bottom:3px!important}.toc-l4{font-size:11.5px;color:#6a727c;margin-left:34px;padding-top:2px!important;padding-bottom:2px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* ---------- 侧边目录 ---------- */
-.sidebar{
-  position:fixed;top:56px;left:0;bottom:0;width:var(--sidebar-w);z-index:30;
-  background:var(--panel);border-right:1px solid var(--border);
-  overflow-y:auto;overscroll-behavior:contain;padding:14px 8px 60px;
-}
-.sidebar::-webkit-scrollbar{width:9px}
-.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:9px}
-.side-title{
-  font-size:11.5px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;
-  padding:4px 12px 10px;font-weight:700;
-}
-.toc-list{list-style:none;margin:0;padding:0}
-.toc-list ul{list-style:none;margin:0;padding:0}
-.toc-list ul.kids{padding-left:13px}
-.toc-list .lv1{margin-top:14px}
-.toc-list .lv1:first-child{margin-top:2px}
-.toc-list a{
-  display:flex;align-items:baseline;gap:8px;padding:5px 10px;border-radius:7px;
-  font-size:13.5px;line-height:1.5;color:var(--fg);
-  border-left:2px solid transparent;transition:.12s;
-}
-.toc-list a .t{flex:1 1 auto;min-width:0}
-.toc-list .lv1 a{font-weight:700;font-size:14.5px;margin-top:4px}
-.toc-list .lv2 a{font-weight:600;color:var(--fg)}
-.toc-list .lv3 a{color:var(--muted)}
-.toc-list .lv4 a,.toc-list .sub-item a{font-size:12.8px;color:var(--muted)}
-.toc-list a:hover{background:var(--accent-soft);color:var(--accent)}
-.toc-list a.active{
-  background:var(--accent-soft);color:var(--accent);border-left-color:var(--accent);
-  font-weight:600;
-}
-.toc-pg{margin-left:auto;font-size:10.5px;color:var(--muted);opacity:.55;
-  font-variant-numeric:tabular-nums;flex:none}
-.caret{
-  width:16px;height:16px;flex:none;align-self:center;cursor:pointer;
-  position:relative;border-radius:4px;transition:.15s;
-}
-.caret::before{
-  content:"";position:absolute;left:5px;top:4px;width:0;height:0;
-  border-left:4px solid var(--muted);border-top:3.5px solid transparent;
-  border-bottom:3.5px solid transparent;transition:transform .18s;
-}
-li.open > .caret::before{transform:rotate(90deg) translateX(-1px)}
-.toc-list ul.fold{max-height:0;overflow:hidden;transition:max-height .28s ease}
-li.open > ul.fold{max-height:2400px}
-li.open > ul.fold a{border-left:1px solid var(--border);margin-left:16px}
-.toc-match a{box-shadow:inset 0 0 0 1px var(--accent)}
-.toc-hidden{display:none}
+#toc a.active{background:#eaf1fb;color:var(--accent-2);border-left-color:var(--accent-2);font-weight:600}
+.toc-l1.active{color:var(--accent-2)}
+.sb-foot{padding:10px 16px;border-top:1px solid var(--line-2);font-family:var(--font-sans);
+  font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;align-items:center}
+.sb-foot button{font-family:var(--font-sans);font-size:11px;border:1px solid var(--line);
+  background:#fff;border-radius:5px;padding:3px 8px;cursor:pointer;color:var(--ink-2)}
+.sb-foot button:hover{background:#f2f4f7}
 
-/* ---------- 正文 ---------- */
-.main{margin-left:var(--sidebar-w);padding:56px 0 0}
-.doc{
-  max-width:860px;margin:0 auto;padding:40px 40px 120px;
-}
-.cover{
-  border:1px solid var(--border);border-radius:14px;background:var(--panel);
-  padding:34px 34px 26px;box-shadow:var(--shadow);margin-bottom:38px;
-}
-.cover h1{
-  font-size:27px;line-height:1.45;margin:0 0 6px;font-weight:800;
-  letter-spacing:.5px;
-}
-.cover .sub{color:var(--muted);font-size:12.5px;margin-bottom:18px;letter-spacing:.4px}
-.cover .disc{border-top:1px dashed var(--border);padding-top:16px}
-.cover .disc p{font-size:13px;line-height:1.85;margin:0 0 8px;text-align:left}
+/* ---------- main ---------- */
+#main{margin-left:var(--sidebar);min-height:100vh}
+#progress{position:fixed;top:0;left:var(--sidebar);right:0;height:2px;background:transparent;z-index:45}
+#progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2f6fd0,#b3261e)}
+#content{max-width:900px;margin:0 auto;padding:34px 46px 120px}
 
-.blk{position:relative}
-p.p{margin:0 0 13px;text-align:justify;text-justify:inter-ideograph}
-.h1{
-  font-size:23px;font-weight:800;margin:52px 0 18px;padding-bottom:10px;
-  border-bottom:2px solid var(--accent);letter-spacing:.4px;scroll-margin-top:76px;
-}
-.h2{
-  font-size:19px;font-weight:750;margin:38px 0 14px;color:var(--fg);
-  padding-left:11px;border-left:4px solid var(--accent);scroll-margin-top:76px;
-}
-.h3{
-  font-size:16.5px;font-weight:700;margin:28px 0 11px;color:var(--fg);
-  scroll-margin-top:76px;
-}
-.h4{
-  font-size:15px;font-weight:700;margin:22px 0 9px;color:var(--accent);
-  scroll-margin-top:76px;
-}
-.pg{
-  font-size:10.5px;color:var(--muted);opacity:.5;margin-left:10px;font-weight:400;
-  vertical-align:middle;font-variant-numeric:tabular-nums;user-select:none;
-}
-.anchor{
-  opacity:0;margin-left:8px;font-weight:400;color:var(--muted);font-size:13px;
-  transition:.15s;
-}
-.blk:hover .anchor{opacity:.55}
-.anchor:hover{opacity:1;color:var(--accent)}
+/* cover */
+.cover{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:46px 48px 38px;margin-bottom:26px}
+.cover h1{font-family:var(--font-sans);font-size:31px;font-weight:800;margin:0 0 10px;letter-spacing:.5px}
+.cover .cv-sub{font-family:var(--font-sans);font-size:14px;color:var(--ink-3);margin-bottom:22px}
+.cv-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.cv-meta span{font-family:var(--font-sans);font-size:12px;background:#f2f4f7;color:var(--ink-2);
+  border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+.cv-note{font-family:var(--font-sans);font-size:12.5px;line-height:1.85;color:var(--ink-3);
+  border-top:1px dashed var(--line);padding-top:16px}
+.cv-note b{color:var(--ink-2)}
 
-.red{color:var(--accent)}
-.blue{color:#1a6fd4}
-html[data-theme="dark"] .blue{color:#6cb6ff}
-.b{font-weight:700}
-.blank{
-  display:inline-block;border-bottom:1.4px solid currentColor;vertical-align:-.22em;
-  margin:0 .18em;min-width:1em;height:1.05em;
-}
-mark{background:var(--hl);color:#1f2328;border-radius:3px;padding:0 1px}
-.dimmed{opacity:.25}
-.backmatter{
-  margin-top:56px;padding:24px 26px;border:1px solid var(--border);border-radius:12px;
-  background:var(--panel);
-}
-.backmatter h3{
-  font-size:14px;color:var(--muted);font-weight:700;letter-spacing:.6px;
-  margin:0 0 12px;text-transform:uppercase;
-}
-.backmatter p{font-size:12.5px;line-height:1.85;margin:0 0 8px}
+/* headings */
+h1,h2,h3,h4,h5,h6{font-family:var(--font-sans);scroll-margin-top:14px}
+.c-h1{font-size:25px;font-weight:800;margin:52px 0 20px;padding:14px 18px;color:#fff;
+  background:linear-gradient(100deg,#1f3f6d,#2f6fd0);border-radius:8px;letter-spacing:.5px}
+.c-h2{font-size:20px;font-weight:700;margin:40px 0 16px;padding:9px 0 9px 14px;
+  border-left:5px solid var(--accent-2);color:#123;line-height:1.5}
+.c-h3{font-size:17px;font-weight:700;margin:32px 0 13px;padding:7px 12px;background:#eef3fb;
+  color:#173f75;border-radius:6px;border:1px solid #dde7f6}
+.c-h4{font-size:16px;font-weight:700;margin:24px 0 10px;color:#1d2129}
+.c-h5{font-size:15.5px;font-weight:600;margin:18px 0 8px;color:#2b3138}
+.c-h6{font-size:15px;font-weight:600;margin:14px 0 6px;color:var(--ink-2)}
 
-#toTop{
-  position:fixed;right:22px;bottom:22px;width:40px;height:40px;border-radius:50%;
-  background:var(--panel);border:1px solid var(--border);box-shadow:var(--shadow);
-  cursor:pointer;font-size:16px;color:var(--muted);z-index:35;opacity:0;
-  pointer-events:none;transition:.25s;
-}
-#toTop.show{opacity:1;pointer-events:auto}
-#toTop:hover{color:var(--accent);border-color:var(--accent)}
+p{margin:0 0 12px;text-align:justify}
+p.li{margin:0 0 7px;padding-left:1.5em;text-indent:-1.5em}
+.r{color:var(--red);font-weight:600}
+u{text-decoration-color:#c96;font-weight:600;text-underline-offset:3px}
 
-#scrim{
-  position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.35);z-index:25;
-  display:none;
-}
+/* callout */
+.callout{background:var(--red-bg);border:1px solid #f3d3d3;border-left:4px solid var(--red);
+  border-radius:6px;padding:11px 16px;margin:14px 0}
+.callout .co-tag{font-family:var(--font-sans);font-weight:700;color:var(--red);margin-bottom:2px}
+.callout p{margin:4px 0}
+p.co-lead{margin:13px 0 7px}
+
+/* tables */
+.tw{overflow-x:auto;margin:16px 0 22px;border:1px solid var(--line);border-radius:8px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:15px;table-layout:fixed}
+td{border:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.85}
+tr:first-child td{background:#f7f9fc}
+td p{margin:0 0 6px}
+td p:last-child{margin-bottom:0}
+td:empty{background:#fafbfc}
+
+/* figures */
+figure.fig{margin:20px 0 24px;padding:14px 16px 10px;border:1px solid var(--line);
+  border-radius:10px;background:#fff;text-align:center}
+figure.fig img{max-width:100%;height:auto;display:block;margin:0 auto;
+  image-rendering:-webkit-optimize-contrast}
+figure.fig figcaption{font-family:var(--font-sans);font-size:13px;color:var(--ink-2);
+  margin-top:10px;letter-spacing:.3px}
+figure.fig .figtext{text-align:left;border-top:1px dashed var(--line);margin-top:10px;
+  padding-top:8px}
+figure.fig .figtext p{margin:4px 0;font-size:14.5px;color:var(--ink-2)}
+figure.fig .figtext h1,figure.fig .figtext h2,figure.fig .figtext h3,
+figure.fig .figtext h4,figure.fig .figtext h5,figure.fig .figtext h6{
+  font-size:15px;margin:6px 0 2px}
+
+/* page marker */
+.pagebreak{position:relative;height:0;margin:0}
+.pg-mark{position:absolute;right:4px;top:-14px;font-family:var(--font-sans);font-size:10.5px;
+  color:#b9c0c8;background:var(--bg);padding:0 6px;letter-spacing:.5px}
+/* tools */
+#totop{position:fixed;right:26px;bottom:26px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;font-size:17px;color:var(--ink-2);display:none;z-index:50}
+#totop:hover{color:var(--accent-2);border-color:#b9c6d6}
+/* 返回总目录：叠在「回到顶部」上方，间距 8px */
+#home{position:fixed;right:26px;bottom:76px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;color:var(--ink-2);display:flex;align-items:center;justify-content:center;
+  z-index:50;text-decoration:none;transition:color .15s,border-color .15s}
+#home:hover{color:var(--accent-2);border-color:#b9c6d6}
+#home svg{width:19px;height:19px;display:block;pointer-events:none}
+#menubtn{display:none;position:fixed;left:14px;top:12px;z-index:60;width:38px;height:34px;
+  border:1px solid var(--line);background:#fff;border-radius:6px;font-size:16px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(20,30,50,.1)}
+#mask{display:none;position:fixed;inset:0;background:rgba(20,28,40,.35);z-index:35}
 
 @media (max-width:900px){
-  :root{--sidebar-w:290px}
-  #menuBtn{display:inline-flex}
-  .sidebar{transform:translateX(-100%);transition:transform .25s ease}
-  .sidebar.open{transform:none;box-shadow:var(--shadow)}
-  #scrim.show{display:block}
-  .main{margin-left:0}
-  .doc{padding:26px 18px 100px}
-  .search input{width:150px}
-  .search input:focus{width:190px}
-  .topbar .brand{max-width:26vw}
-  .cover{padding:22px 20px 18px}
-  .cover h1{font-size:21px}
+  :root{--sidebar:280px}
+  #menubtn{display:block}
+  #sidebar{transform:translateX(-100%);transition:transform .22s ease}
+  #sidebar.open{transform:none}
+  #main{margin-left:0}
+  #content{padding:22px 18px 90px}
+  .cover{padding:30px 24px 26px}
+  .cover h1{font-size:24px}
+  #progress{left:0}
+  #toc a.toc-l3{font-size:11.5px}
+      #toc a.toc-l4{font-size:11px;margin-left:26px}
+
 }
 @media print{
-  .topbar,.sidebar,#toTop,#scrim{display:none!important}
-  .main{margin:0;padding:0}
-  .doc{max-width:none;padding:0}
-  .h1,.h2,.h3,.h4{break-after:avoid}
-  p.p{orphans:3;widows:3}
+  #sidebar,#totop,#home,#menubtn,#mask,#progress{display:none!important}
+  #main{margin:0}
+  #content{max-width:none;padding:0}
+  body{background:#fff;font-size:11pt}
+  .cover,.tw{break-inside:avoid}
+  .c-h1{background:#1f3f6d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .r,.callout .co-tag{color:var(--red)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+/* ---------- 讲义正文补充样式 ---------- */
+a{color:inherit;text-decoration:none}
+.blk{position:relative}
+.pg{font-size:10.5px;color:var(--ink-3);opacity:.5;margin-left:10px;font-weight:400;
+  vertical-align:middle;font-variant-numeric:tabular-nums;user-select:none}
+.anchor{opacity:0;margin-left:8px;font-weight:400;color:var(--ink-3);font-size:13px;
+  transition:.15s}
+.blk:hover .anchor{opacity:.55}
+.anchor:hover{opacity:1;color:var(--accent-2)}
+.bd{font-weight:700}
+.blue{color:#1a56a8}
+.blank{display:inline-block;border-bottom:1.4px solid currentColor;vertical-align:-.22em;
+  margin:0 .18em;min-width:1em;height:1.05em}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <button class="btn icon" id="menuBtn" title="目录" aria-label="切换目录">☰</button>
-  <div class="brand">数字推理类题型解题技巧讲义</div>
-  <div class="spacer"></div>
-  <div class="search">
-    <span class="ico">🔍</span>
-    <input id="q" type="search" placeholder="搜索内容…  ( / )" autocomplete="off" spellcheck="false">
-    <span class="cnt" id="cnt"></span>
+<button id="menubtn" aria-label="目录">☰</button>
+<div id="mask"></div>
+<div id="progress"><i></i></div>
+
+<aside id="sidebar">
+  <div class="sb-head">
+    <div class="sb-title">数字推理类题型解题技巧讲义</div>
+    <div class="sb-sub">EPI 行测 · 1-3 数字推理解题技巧</div>
   </div>
-  <button class="btn" id="fontBtn" title="切换字体">宋</button>
-  <button class="btn icon" id="themeBtn" title="切换主题">☾</button>
-</header>
+  <div class="sb-search"><input id="q" type="search" placeholder="筛选目录关键词…"></div>
+  <nav id="toc">
+<a class="toc-l1" href="#s1" data-toc="0">第一种情形——等差数列</a>
+<a class="toc-l2" href="#s2" data-toc="1">1、等差数列的常规公式</a>
+<a class="toc-l2" href="#s3" data-toc="2">2、二级等差数列</a>
+<a class="toc-l2" href="#s4" data-toc="3">3、分子分母的等差数列</a>
+<a class="toc-l2" href="#s5" data-toc="4">4、混合等差数列</a>
+<a class="toc-l1" href="#s6" data-toc="5">第二种情形——等比数列</a>
+<a class="toc-l2" href="#s7" data-toc="6">5、等比数列的常规公式</a>
+<a class="toc-l2" href="#s8" data-toc="7">6、二级等比数列</a>
+<a class="toc-l2" href="#s9" data-toc="8">7、等比数列的特殊变式</a>
+<a class="toc-l1" href="#s10" data-toc="9">第三种情形—混合数列式</a>
+<a class="toc-l2" href="#s11" data-toc="10">8、双重数列式</a>
+<a class="toc-l2" href="#s12" data-toc="11">9、混合数列</a>
+<a class="toc-l1" href="#s13" data-toc="12">第四种情形—四则混合运算</a>
+<a class="toc-l2" href="#s14" data-toc="13">10、加法规律</a>
+<a class="toc-l3" href="#s15" data-toc="14">之一：前两个或几个数相加等于第三个数，相加的项数是固定的。</a>
+<a class="toc-l3" href="#s16" data-toc="15">之二：前面所有的数相加等到于最后一项，相加的项数为前面所有项。</a>
+<a class="toc-l2" href="#s17" data-toc="16">11、减法规律</a>
+<a class="toc-l2" href="#s18" data-toc="17">12、加减混合</a>
+<a class="toc-l2" href="#s19" data-toc="18">13、乘法规律</a>
+<a class="toc-l3" href="#s20" data-toc="19">之一：普通常规式：前两项之积等于第三项。</a>
+<a class="toc-l3" href="#s21" data-toc="20">之二：乘法规律的变式：</a>
+<a class="toc-l2" href="#s22" data-toc="21">14、除法规律</a>
+<a class="toc-l2" href="#s23" data-toc="22">15、除法规律与等差数列混合式</a>
+<a class="toc-l1" href="#s24" data-toc="23">第五种情形——平方规律</a>
+<a class="toc-l2" href="#s25" data-toc="24">16、平方规律的常规式</a>
+<a class="toc-l2" href="#s26" data-toc="25">17、平方规律的变式</a>
+<a class="toc-l3" href="#s27" data-toc="26">之一、n<sup>2</sup>-n</a>
+<a class="toc-l3" href="#s28" data-toc="27">之二、n<sup>2</sup>+n</a>
+<a class="toc-l3" href="#s29" data-toc="28">之三、每项自身的平方减去前一项的差等于下一项。</a>
+<a class="toc-l2" href="#s30" data-toc="29">17、立方规律的常规式</a>
+<a class="toc-l2" href="#s31" data-toc="30">18、立方规律的变式</a>
+<a class="toc-l3" href="#s32" data-toc="31">之一、n<sup>3</sup>-n</a>
+<a class="toc-l3" href="#s33" data-toc="32">之二、n<sup>3</sup>+n</a>
+<a class="toc-l3" href="#s34" data-toc="33">之三、从第二项起后项是相邻前一项的立方加 1。</a>
+<a class="toc-l2" href="#s35" data-toc="34">19、需经变形后方可看出规律的题型</a>
+<a class="toc-l2" href="#s36" data-toc="35">20、容易出错规律的题</a>
+  </nav>
+  <div class="sb-foot">
+    <span id="counter">—</span>
+    <button id="expand">仅看章节目</button>
+  </div>
+</aside>
 
-<nav class="sidebar" id="sidebar">
-  <div class="side-title">目 录</div>
-  <ul class="toc-list"><li class="lv1"><a href="#s1"><span class="t">第一种情形——等差数列</span><span class="toc-pg">2</span></a><ul class="kids"><li class="lv2"><a href="#s2"><span class="t">1、等差数列的常规公式</span><span class="toc-pg">2</span></a></li><li class="lv2"><a href="#s3"><span class="t">2、二级等差数列</span><span class="toc-pg">2</span></a></li><li class="lv2"><a href="#s4"><span class="t">3、分子分母的等差数列</span><span class="toc-pg">2</span></a></li><li class="lv2"><a href="#s5"><span class="t">4、混合等差数列</span><span class="toc-pg">2</span></a></li></ul></li><li class="lv1"><a href="#s6"><span class="t">第二种情形——等比数列</span><span class="toc-pg">2</span></a><ul class="kids"><li class="lv2"><a href="#s7"><span class="t">5、等比数列的常规公式</span><span class="toc-pg">2</span></a></li><li class="lv2"><a href="#s8"><span class="t">6、二级等比数列</span><span class="toc-pg">2</span></a></li><li class="lv2"><a href="#s9"><span class="t">7、等比数列的特殊变式</span><span class="toc-pg">2</span></a></li></ul></li><li class="lv1"><a href="#s10"><span class="t">第三种情形—混合数列式</span><span class="toc-pg">3</span></a><ul class="kids"><li class="lv2"><a href="#s11"><span class="t">8、双重数列式</span><span class="toc-pg">3</span></a></li><li class="lv2"><a href="#s12"><span class="t">9、混合数列</span><span class="toc-pg">3</span></a></li></ul></li><li class="lv1"><a href="#s13"><span class="t">第四种情形—四则混合运算</span><span class="toc-pg">3</span></a><ul class="kids"><li class="lv2"><a href="#s14"><span class="t">10、加法规律</span><span class="toc-pg">3</span></a><ul class="kids"><li class="lv3"><a href="#s15"><span class="t">之一：前两个或几个数相加等于第三个数，相加的项数是固定的。</span><span class="toc-pg">3</span></a></li><li class="lv3"><a href="#s16"><span class="t">之二：前面所有的数相加等到于最后一项，相加的项数为前面所有项。</span><span class="toc-pg">3</span></a></li></ul></li><li class="lv2"><a href="#s17"><span class="t">11、减法规律</span><span class="toc-pg">3</span></a></li><li class="lv2"><a href="#s18"><span class="t">12、加减混合</span><span class="toc-pg">3</span></a></li><li class="lv2"><a href="#s19"><span class="t">13、乘法规律</span><span class="toc-pg">3</span></a><ul class="kids"><li class="lv3"><a href="#s20"><span class="t">之一：普通常规式：前两项之积等于第三项。</span><span class="toc-pg">3</span></a></li><li class="lv3"><a href="#s21"><span class="t">之二：乘法规律的变式：</span><span class="toc-pg">3</span></a></li></ul></li><li class="lv2"><a href="#s22"><span class="t">14、除法规律</span><span class="toc-pg">3</span></a></li><li class="lv2"><a href="#s23"><span class="t">15、除法规律与等差数列混合式</span><span class="toc-pg">4</span></a></li></ul></li><li class="lv1"><a href="#s24"><span class="t">第五种情形——平方规律</span><span class="toc-pg">4</span></a><ul class="kids"><li class="lv2"><a href="#s25"><span class="t">16、平方规律的常规式</span><span class="toc-pg">4</span></a></li><li class="lv2"><a href="#s26"><span class="t">17、平方规律的变式</span><span class="toc-pg">4</span></a><ul class="kids"><li class="lv3"><a href="#s27"><span class="t">之一、n<sup>2</sup>-n</span><span class="toc-pg">4</span></a></li><li class="lv3"><a href="#s28"><span class="t">之二、n<sup>2</sup>+n</span><span class="toc-pg">4</span></a></li><li class="lv3"><a href="#s29"><span class="t">之三、每项自身的平方减去前一项的差等于下一项。</span><span class="toc-pg">4</span></a></li></ul></li><li class="lv2"><a href="#s30"><span class="t">17、立方规律的常规式</span><span class="toc-pg">4</span></a></li><li class="lv2"><a href="#s31"><span class="t">18、立方规律的变式</span><span class="toc-pg">4</span></a><ul class="kids"><li class="lv3"><a href="#s32"><span class="t">之一、n<sup>3</sup>-n</span><span class="toc-pg">4</span></a></li><li class="lv3"><a href="#s33"><span class="t">之二、n<sup>3</sup>+n</span><span class="toc-pg">4</span></a></li><li class="lv3"><a href="#s34"><span class="t">之三、从第二项起后项是相邻前一项的立方加 1。</span><span class="toc-pg">5</span></a></li></ul></li><li class="lv2"><a href="#s35"><span class="t">19、需经变形后方可看出规律的题型</span><span class="toc-pg">5</span></a></li><li class="lv2"><a href="#s36"><span class="t">20、容易出错规律的题</span><span class="toc-pg">5</span></a></li></ul></li></ul>
-</nav>
-<div id="scrim"></div>
+<main id="main">
+<div id="content">
+  <section class="cover">
+    <h1>数字推理类题型解题技巧讲义</h1>
+    <div class="cv-sub">讲义正文 · 5 页 · EPI 行测专项讲义</div>
+    <div class="cv-meta">
+      <span>讲义正文 · 5 页</span><span>36 个目录项</span><span>3 级目录</span><span>红色标注为高频考点</span>
+    </div>
+  </section>
 
-<main class="main">
-  <article class="doc">
-    <div class="cover">
-<h1>数字推理类题型解题技巧讲义</h1>
-<div class="sub">讲义正文 · 5 页 · 点击左侧目录跳转，按 “/” 搜索</div></div>
-    <p class="blk p" id="p0">数字推理由题干和选项两部分组成，题干是一个有某种规律的数列，但其中缺少一项，要求考生仔细观察这个数列各数字之间的关系，找出其中的规律，然后从四个供选择的答案中选出你认为最合适、最合理的一个，使之符合数列的排列规律。其不同于其他形式的推理，题目中全部是数字，没有文字可供应试者理解题意，真实地考查了应试者的抽象思维能力。</p>
-<h1 class="blk h1" id="s1">第一种情形——等差数列<span class="pg">P2</span><a class="anchor" href="#s1" aria-label="链接到此节">#</a></h1>
-<p class="blk p" id="p2">是指相邻之间的差值相等，整个数字序列依次递增或递减的一组数。</p>
-<h2 class="blk h2" id="s2">1、等差数列的常规公式<span class="pg">P2</span><a class="anchor" href="#s2" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p4">设等差数列的首项为 a<sub>1</sub>，公差为 d，则等差数列的通项公式为 a<sub>n</sub>=a<sub>1</sub>+(n-1)d（n为自然数）。</p>
-<p class="blk p" id="p5">【笔试通】例题：1，3，5，7，9，（）</p>
-<p class="blk p" id="p6">A. 7 B. 8 C. 11 D. 13</p>
-<p class="blk p" id="p7">【笔试通】[解析]这是一种很简单的排列方式：其特征是相邻两个数字之间的差是一个常数。从该题中我们很容易发现相邻两个数字的差均为2，所以括号内的数字应为11。故选C。</p>
-<h2 class="blk h2" id="s3">2、二级等差数列<span class="pg">P2</span><a class="anchor" href="#s3" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p9">是指等差数列的变式，相邻两项之差之间有着明显的规律性，往往构成等差数列.</p>
-<p class="blk p" id="p10">【笔试通】例题：2，5，10,17,26，（），50</p>
-<p class="blk p" id="p11">A. 35 B. 33 C. 37 D. 36</p>
-<p class="blk p" id="p12">【笔试通】[解析]相邻两位数之差分别为3，5，7，9，是一个差值为2的等差数列，所以括号内的数与26的差值应为11，即括号内的数为 26+11=37. 故选C。</p>
-<h2 class="blk h2" id="s4">3、分子分母的等差数列<span class="pg">P2</span><a class="anchor" href="#s4" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p14">是指一组分数中，分子或分母、分子和分母分别呈现等差数列的规律性。</p>
-<p class="blk p" id="p15">【笔试通】例题：2/3，3/4，4/5，5/6,6/7，（）</p>
-<p class="blk p" id="p16">A、8/9 B、9/10 C、9/11 D、7/8</p>
-<p class="blk p" id="p17">【笔试通】[解析]数列分母依次为3，4，5，6，7；分子依次为2，3，4，5，6，故括号应为7/8。故选D。</p>
-<h2 class="blk h2" id="s5">4、混合等差数列<span class="pg">P2</span><a class="anchor" href="#s5" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p19">是指一组数中，相邻的奇数项与相邻的偶数项呈现等差数列。</p>
-<p class="blk p" id="p20">【笔试通】例题：1，3，3，5，7，9，13,15，，（），（）。</p>
-<p class="blk p" id="p21">A、19 21 B、19 23 C、21 23 D、27 30</p>
-<p class="blk p" id="p22">【笔试通】[解析]相邻奇数项之间的差是以2为首项，公差为2的等差数列，相邻偶数项之间的差是以2为首项，公差为2的等差数列。</p>
-<p class="blk p" id="p23">提示：熟练掌握基本题型及其简单变化是保证数字推理题不丢分的关键。</p>
-<h1 class="blk h1" id="s6">第二种情形——等比数列<span class="pg">P2</span><a class="anchor" href="#s6" aria-label="链接到此节">#</a></h1>
-<p class="blk p" id="p25">是指相邻数列之间的比值相等，整个数字序列依次递增或递减的一组数。</p>
-<h2 class="blk h2" id="s7">5、等比数列的常规公式<span class="pg">P2</span><a class="anchor" href="#s7" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p27">设等比数列的首项为 a<sub>1</sub>，公比为 q(q 不等于 0)，则等比数列的通项公式为</p>
-<p class="blk p" id="p28">a<sub>n</sub>=a<sub>1</sub>*q<sup>n-1</sup>（n 为自然数）。</p>
-<p class="blk p" id="p29">【笔试通】例题：12，4，4/3， 4/9，（）</p>
-<p class="blk p" id="p30">A、2/9 B、1/9 C、1/27 D、4/27</p>
-<p class="blk p" id="p31">【笔试通】[解析]很明显，这是一个典型的等比数列，公比为1/3。故选D。</p>
-<h2 class="blk h2" id="s8">6、二级等比数列<span class="pg">P2</span><a class="anchor" href="#s8" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p33">是指等比数列的变式，相邻两项之比有着明显的规律性，往往构成等比数列。</p>
-<p class="blk p" id="p34">【笔试通】例题：4，6，10，18,34，（）</p>
-<p class="blk p" id="p35">A、50 B、64 C、66 D、68</p>
-<p class="blk p" id="p36">【笔试通】[解析]此数列表面上看没有规律，但它们后一项与前一项的差分别为2，4，6，8，16，是一个公比为2的等比数列，故括号内的值应为34+16×2=66 故选C。</p>
-<h2 class="blk h2" id="s9">7、等比数列的特殊变式<span class="pg">P2</span><a class="anchor" href="#s9" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p38">【笔试通】例题：8,12，24，60，（）</p>
-<p class="blk p" id="p39">A、90 B、120 C、180 D、240</p>
-<p class="blk p" id="p40">【笔试通】[解析]该题有一定的难度。题目中相邻两个数字之间后一项除以前一项得到的商并不是一个常数，但它们是按照一定规律排列的：3/2，4/2，5/2，因此，括号内数字应为60×6/2=180。故选C。此题值得再分析一下，相邻两项的差分别为 4，12，36，后一个值是前一个值的3倍，括号内的数减去60应为36的3倍，即108，括号数为168，如果选项中没有180只有168的话，就应选168了。同时出现的话就值得争论了，这题只是一个特例。</p>
-<h1 class="blk h1" id="s10">第三种情形—混合数列式<span class="pg">P3</span><a class="anchor" href="#s10" aria-label="链接到此节">#</a></h1>
-<p class="blk p" id="p42">是指一组数列中，存在两种以上的数列规律。</p>
-<h2 class="blk h2" id="s11">8、双重数列式<span class="pg">P3</span><a class="anchor" href="#s11" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p44">即等差与等比数列混合，特点是相隔两项之间的差值或比值相等。</p>
-<p class="blk p" id="p45">【笔试通】例题：26，11，31，6,36,1,41，（）</p>
-<p class="blk p" id="p46">A、0 B、-3 C、-4 D、46</p>
-<p class="blk p" id="p47">【笔试通】[解析]此题是一道典型的双重数列题。其中奇数项是公差为5的等差递增数列，偶数项是公差为5的等差递减数列。故选C。</p>
-<h2 class="blk h2" id="s12">9、混合数列<span class="pg">P3</span><a class="anchor" href="#s12" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p49">是两个数列交替排列在一列数中，有时是两个相同的数列（等差或等比），有时两个数列是按不同规律排列的，一个是等差数列，另一个是等比数列。</p>
-<p class="blk p" id="p50">【笔试通】例题：5，3，10, 6,15,12，（），（）</p>
-<p class="blk p" id="p51">A、20 18 B、18 20 C、20 24 D、18 32</p>
-<p class="blk p" id="p52">【笔试通】[解析]此题是一道典型的等差、等比数列混合题。其中奇数项是以5为首项、公差为5的等差数列，偶数项是以3为首项、公比为2的等比数列。故选C。</p>
-<h1 class="blk h1" id="s13">第四种情形—四则混合运算<span class="pg">P3</span><a class="anchor" href="#s13" aria-label="链接到此节">#</a></h1>
-<p class="blk p" id="p54">是指前两（或几）个数经过某种四则运算等到于下一个数，如前两个数之和、之差、之积、之商等于第三个数。</p>
-<h2 class="blk h2" id="s14">10、加法规律<span class="pg">P3</span><a class="anchor" href="#s14" aria-label="链接到此节">#</a></h2>
-<h3 class="blk h3" id="s15">之一：前两个或几个数相加等于第三个数，相加的项数是固定的。<span class="pg">P3</span><a class="anchor" href="#s15" aria-label="链接到此节">#</a></h3>
-<p class="blk p" id="p57">【笔试通】例题：2，4，6，10，16，（）</p>
-<p class="blk p" id="p58">A、26 B、32 C、35 D、20</p>
-<p class="blk p" id="p59">【笔试通】[解析]首先分析相邻两数间数量关系进行两两比较，第一个数2与第二个数4之和是第三个数，而第二个数4与第三个数6之和是10。依此类推，括号内的数应该是第四个数与第五个数的和26。故选A。</p>
-<h3 class="blk h3" id="s16">之二：前面所有的数相加等到于最后一项，相加的项数为前面所有项。<span class="pg">P3</span><a class="anchor" href="#s16" aria-label="链接到此节">#</a></h3>
-<p class="blk p" id="p61">【笔试通】例题：1，3，4， 8，16，（）</p>
-<p class="blk p" id="p62">A、22 B、24 C、28 D、32</p>
-<p class="blk p" id="p63">【笔试通】[解析]这道题从表面上看认为是题目出错了，第二位数应是 2，以为是等比数列。其实不难看出，第三项等于前两项之和，第四项与等于前三项之和，括号内的数应为前五项之和为32。故选D。</p>
-<h2 class="blk h2" id="s17">11、减法规律<span class="pg">P3</span><a class="anchor" href="#s17" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p65">是指前一项减去第二项的差等于第三项。</p>
-<p class="blk p" id="p66">【笔试通】例题：25，16，9，7，（），5</p>
-<p class="blk p" id="p67">A、8 B、2 C、3 D、6</p>
-<p class="blk p" id="p68">【笔试通】[解析]此题是典型的减法规律题，前两项之差等于第三项。故选B。</p>
-<h2 class="blk h2" id="s18">12、加减混合<span class="pg">P3</span><a class="anchor" href="#s18" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p70">是指一组数中需要用加法规律的同时还要使用减法，才能得出所要的项。</p>
-<p class="blk p" id="p71">【笔试通】例题：1，2，2，3，4，6，（）</p>
-<p class="blk p" id="p72">A、7 B、8 C、9 D、10</p>
-<p class="blk p" id="p73">【笔试通】[解析]即前两项之和减去1等于第三项。故选C。</p>
-<h2 class="blk h2" id="s19">13、乘法规律<span class="pg">P3</span><a class="anchor" href="#s19" aria-label="链接到此节">#</a></h2>
-<h3 class="blk h3" id="s20">之一：普通常规式：前两项之积等于第三项。<span class="pg">P3</span><a class="anchor" href="#s20" aria-label="链接到此节">#</a></h3>
-<p class="blk p" id="p76">【笔试通】例题：3，4，12，48，（）</p>
-<p class="blk p" id="p77">A、96 B、36 C、192 D、576</p>
-<p class="blk p" id="p78">【笔试通】[解析]这是一道典型的乘法规律题，仔细观察，前两项之积等于第三项。故选D。</p>
-<h3 class="blk h3" id="s21">之二：乘法规律的变式：<span class="pg">P3</span><a class="anchor" href="#s21" aria-label="链接到此节">#</a></h3>
-<p class="blk p" id="p80">【笔试通】例题：2，4，12，48，（）</p>
-<p class="blk p" id="p81">A、96 B、120 C、240 D、480</p>
-<p class="blk p" id="p82">【笔试通】[解析]每个数都是相邻的前面的数乘以自己所排列的位数，所以第5位数应是5×48=240。故选D。</p>
-<h2 class="blk h2" id="s22">14、除法规律<span class="pg">P3</span><a class="anchor" href="#s22" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p84">【笔试通】例题：60，30，2,15，（）</p>
-<p class="blk p" id="p85">A、5 B、1 C、1/5 D、2/15</p>
-<p class="blk p" id="p86">【笔试通】[解析]本题中的数是具有典型的除法规律，前两项之商等于第三项，故第五项应是第三项与第四项的商。故选D。</p>
-<h2 class="blk h2" id="s23">15、除法规律与等差数列混合式<span class="pg">P4</span><a class="anchor" href="#s23" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p88">【笔试通】例题：3，3，6，18，（）</p>
-<p class="blk p" id="p89">A、36 B、54 C、72 D、108</p>
-<p class="blk p" id="p90">【笔试通】[解析]数列中后个数字与前一个数字之间的商形成一个等差数列，以此类推，第5个数与第4个数之间的商应该是4，所以18×4=72。故选C。</p>
-<p class="blk p" id="p91">思路引导：快速扫描已给出的几个数字，仔细观察和分析各数之间的关系，大胆提出假设，并迅速将这种假设延伸到下面的数。如果假设被否定，立刻换一种假设，这样可以极大地提高解题速度。</p>
-<h1 class="blk h1" id="s24">第五种情形——平方规律<span class="pg">P4</span><a class="anchor" href="#s24" aria-label="链接到此节">#</a></h1>
-<p class="blk p" id="p93">是指数列中包含一个完全平方数列，有的明显，有的隐含。</p>
-<h2 class="blk h2" id="s25">16、平方规律的常规式<span class="pg">P4</span><a class="anchor" href="#s25" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p95">【笔试通】例题：49，64，81，（），121</p>
-<p class="blk p" id="p96">A、98 B、100 C、108 D、116</p>
-<p class="blk p" id="p97">【笔试通】[解析]这组数列可变形为7<sup>2</sup>，8<sup>2</sup>，9<sup>2</sup>，（），11<sup>2</sup>，不难看出这是一组具有平方规律的数列，所以括号内的数应是100。故选B。</p>
-<h2 class="blk h2" id="s26">17、平方规律的变式<span class="pg">P4</span><a class="anchor" href="#s26" aria-label="链接到此节">#</a></h2>
-<h3 class="blk h3" id="s27">之一、n<sup>2</sup>-n<span class="pg">P4</span><a class="anchor" href="#s27" aria-label="链接到此节">#</a></h3>
-<p class="blk p" id="p100">【笔试通】例题：0，3，8，15，24，（）</p>
-<p class="blk p" id="p101">A、28 B、32 C、35 D、40</p>
-<p class="blk p" id="p102">【笔试通】[解析]这个数列没有直接规律，经过变形后就可以看出规律。由于所给数列各项分别加1，可得1，4，9，16，25，即1<sup>2</sup>，2<sup>2</sup>，3<sup>2</sup>，4<sup>2</sup>，5<sup>2</sup>，故括号内的数应为6<sup>2</sup>-1=35，其实就是n<sup>2</sup>-n。故选C。</p>
-<h3 class="blk h3" id="s28">之二、n<sup>2</sup>+n<span class="pg">P4</span><a class="anchor" href="#s28" aria-label="链接到此节">#</a></h3>
-<p class="blk p" id="p104">【笔试通】例题：2， 5，10，17，26，（）</p>
-<p class="blk p" id="p105">A、43 B、34 C、35 D、37</p>
-<p class="blk p" id="p106">【笔试通】[解析]这个数是一个二级等差数列，相邻两项的差是一个公差为2的等差数列，括号内的数是26+11=37。如将所给的数列分别减1，可得1，4，9，16，25，即1<sup>2</sup>，2<sup>2</sup>，3<sup>2</sup>，4<sup>2</sup>，5<sup>2</sup>，故括号内的数应为6<sup>2</sup>+1=37，其实就是n<sup>2</sup>+n。故选D。</p>
-<h3 class="blk h3" id="s29">之三、每项自身的平方减去前一项的差等于下一项。<span class="pg">P4</span><a class="anchor" href="#s29" aria-label="链接到此节">#</a></h3>
-<p class="blk p" id="p108">【笔试通】例题：1， 2， 3，7，46，（）</p>
-<p class="blk p" id="p109">A、2109 B、1289 C、322 D、147</p>
-<p class="blk p" id="p110">【笔试通】[解析]本数列规律为第项自身的平方减去前一项的差等于下一项，即1<sup>2</sup>-0，2<sup>2</sup>-1=3，3<sup>2</sup>-2=7，7<sup>2</sup>-3=46，46<sup>2</sup>-7=2109，故选A。</p>
-<h2 class="blk h2" id="s30">17、立方规律的常规式<span class="pg">P4</span><a class="anchor" href="#s30" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p112">【笔试通】例题：1/343，1/216，1/125，（）</p>
-<p class="blk p" id="p113">A、1/36 B、1/49 C、1/64 D、1/27</p>
-<p class="blk p" id="p114">【笔试通】[解析]仔细观察可以看出，上面的数列分别是1/7<sup>3</sup>，1/6<sup>3</sup>，1/5<sup>3</sup>的变形，因此，括号内应该是1/4<sup>3</sup>，即 1/64。故选C。</p>
-<h2 class="blk h2" id="s31">18、立方规律的变式<span class="pg">P4</span><a class="anchor" href="#s31" aria-label="链接到此节">#</a></h2>
-<h3 class="blk h3" id="s32">之一、n<sup>3</sup>-n<span class="pg">P4</span><a class="anchor" href="#s32" aria-label="链接到此节">#</a></h3>
-<p class="blk p" id="p117">【笔试通】例题：0，6，24，60,120，（）</p>
-<p class="blk p" id="p118">A、280 B、320 C、729 D、336</p>
-<p class="blk p" id="p119">【笔试通】[解析]数列中各项可以变形为1<sup>3</sup>-1，2<sup>3</sup>-2，3<sup>3</sup>-3，4<sup>3</sup>-4，5<sup>3</sup>-5，6<sup>3</sup>-6，故后面的项应为7<sup>3</sup>-7=336，其排列规律可概括为n<sup>3</sup>-n。故选D。</p>
-<h3 class="blk h3" id="s33">之二、n<sup>3</sup>+n<span class="pg">P4</span><a class="anchor" href="#s33" aria-label="链接到此节">#</a></h3>
-<p class="blk p" id="p121">【笔试通】例题：2，10，30，68，（）</p>
-<p class="blk p" id="p122">A、70 B、90 C、130 D、225</p>
-<p class="blk p" id="p123">【笔试通】[解析]数列可变形为1<sup>3</sup>+1，2<sup>3</sup>+2，3<sup>3</sup>+3，4<sup>3</sup>+4，故第5项为5<sup>3</sup>+5=130，其排列规律可概括为n<sup>3</sup>+n。</p>
-<p class="blk p" id="p124">故选C。</p>
-<h3 class="blk h3" id="s34">之三、从第二项起后项是相邻前一项的立方加 1。<span class="pg">P5</span><a class="anchor" href="#s34" aria-label="链接到此节">#</a></h3>
-<p class="blk p" id="p126">【笔试通】例题：-1，0，1，2，9，（）</p>
-<p class="blk p" id="p127">A、11 B、82 C、729 D、730</p>
-<p class="blk p" id="p128">【笔试通】[解析]从第二项起后项分别是相邻前一项的立方加1，故括号内应为9<sup>3</sup>+1=730。故选D。</p>
-<p class="blk p" id="p129">思路引导：做立方型变式这类题时应从前面几种排列中跳出来，想到这种新的排列思路，再通过分析比较尝试寻找，才能找到正确答案。</p>
-<h2 class="blk h2" id="s35">19、需经变形后方可看出规律的题型<span class="pg">P5</span><a class="anchor" href="#s35" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p131">【笔试通】例题：1,1/16，（），1/256,1/625</p>
-<p class="blk p" id="p132">A、1/27 B、1/81 C、1/100 D、1/121</p>
-<p class="blk p" id="p133">【笔试通】[解析]此题数列可变形为1/1<sup>2</sup>，1/4<sup>2</sup>，（），1/16<sup>2</sup>，1/25<sup>2</sup>，可以看出分母各项分别为 1，4，（），16，25的平方，而1，4，16，25，分别是1，2，4，5的平方，由此可以判断这个数列是1，2，3，4，5的平方的平方，由此可以判断括号内所缺项应为1/（3<sup>2</sup>）<sup>2</sup>=1/81。故选B。</p>
-<h2 class="blk h2" id="s36">20、容易出错规律的题<span class="pg">P5</span><a class="anchor" href="#s36" aria-label="链接到此节">#</a></h2>
-<p class="blk p" id="p135">【笔试通】例题：12，34，56，78，（）</p>
-<p class="blk p" id="p136">A、90 B、100 C、910 D、901</p>
-<p class="blk p" id="p137">【笔试通】[解析]这道题表面看起来起来似乎有着明显的规律，12后是34，然后是 56，78，后面一项似乎应该是910，其实，这是一个等差数列，后一项减去前一项均为 22，所以括号内的数字应该是 78+22=100。故选B。</p>
-  </article>
+<p id="p0">数字推理由题干和选项两部分组成，题干是一个有某种规律的数列，但其中缺少一项，要求考生仔细观察这个数列各数字之间的关系，找出其中的规律，然后从四个供选择的答案中选出你认为最合适、最合理的一个，使之符合数列的排列规律。其不同于其他形式的推理，题目中全部是数字，没有文字可供应试者理解题意，真实地考查了应试者的抽象思维能力。</p>
+<h1 class="c-h1 blk" id="s1">第一种情形——等差数列<span class="pg">P2</span><a class="anchor" href="#s1" aria-label="链接到此节">#</a></h1>
+<p id="p2">是指相邻之间的差值相等，整个数字序列依次递增或递减的一组数。</p>
+<h2 class="c-h2 blk" id="s2">1、等差数列的常规公式<span class="pg">P2</span><a class="anchor" href="#s2" aria-label="链接到此节">#</a></h2>
+<p id="p4">设等差数列的首项为 a<sub>1</sub>，公差为 d，则等差数列的通项公式为 a<sub>n</sub>=a<sub>1</sub>+(n-1)d（n为自然数）。</p>
+<p id="p5">【笔试通】例题：1，3，5，7，9，（）</p>
+<p id="p6">A. 7 B. 8 C. 11 D. 13</p>
+<p id="p7">【笔试通】[解析]这是一种很简单的排列方式：其特征是相邻两个数字之间的差是一个常数。从该题中我们很容易发现相邻两个数字的差均为2，所以括号内的数字应为11。故选C。</p>
+<h2 class="c-h2 blk" id="s3">2、二级等差数列<span class="pg">P2</span><a class="anchor" href="#s3" aria-label="链接到此节">#</a></h2>
+<p id="p9">是指等差数列的变式，相邻两项之差之间有着明显的规律性，往往构成等差数列.</p>
+<p id="p10">【笔试通】例题：2，5，10,17,26，（），50</p>
+<p id="p11">A. 35 B. 33 C. 37 D. 36</p>
+<p id="p12">【笔试通】[解析]相邻两位数之差分别为3，5，7，9，是一个差值为2的等差数列，所以括号内的数与26的差值应为11，即括号内的数为 26+11=37. 故选C。</p>
+<h2 class="c-h2 blk" id="s4">3、分子分母的等差数列<span class="pg">P2</span><a class="anchor" href="#s4" aria-label="链接到此节">#</a></h2>
+<p id="p14">是指一组分数中，分子或分母、分子和分母分别呈现等差数列的规律性。</p>
+<p id="p15">【笔试通】例题：2/3，3/4，4/5，5/6,6/7，（）</p>
+<p id="p16">A、8/9 B、9/10 C、9/11 D、7/8</p>
+<p id="p17">【笔试通】[解析]数列分母依次为3，4，5，6，7；分子依次为2，3，4，5，6，故括号应为7/8。故选D。</p>
+<h2 class="c-h2 blk" id="s5">4、混合等差数列<span class="pg">P2</span><a class="anchor" href="#s5" aria-label="链接到此节">#</a></h2>
+<p id="p19">是指一组数中，相邻的奇数项与相邻的偶数项呈现等差数列。</p>
+<p id="p20">【笔试通】例题：1，3，3，5，7，9，13,15，，（），（）。</p>
+<p id="p21">A、19 21 B、19 23 C、21 23 D、27 30</p>
+<p id="p22">【笔试通】[解析]相邻奇数项之间的差是以2为首项，公差为2的等差数列，相邻偶数项之间的差是以2为首项，公差为2的等差数列。</p>
+<p id="p23">提示：熟练掌握基本题型及其简单变化是保证数字推理题不丢分的关键。</p>
+<h1 class="c-h1 blk" id="s6">第二种情形——等比数列<span class="pg">P2</span><a class="anchor" href="#s6" aria-label="链接到此节">#</a></h1>
+<p id="p25">是指相邻数列之间的比值相等，整个数字序列依次递增或递减的一组数。</p>
+<h2 class="c-h2 blk" id="s7">5、等比数列的常规公式<span class="pg">P2</span><a class="anchor" href="#s7" aria-label="链接到此节">#</a></h2>
+<p id="p27">设等比数列的首项为 a<sub>1</sub>，公比为 q(q 不等于 0)，则等比数列的通项公式为</p>
+<p id="p28">a<sub>n</sub>=a<sub>1</sub>*q<sup>n-1</sup>（n 为自然数）。</p>
+<p id="p29">【笔试通】例题：12，4，4/3， 4/9，（）</p>
+<p id="p30">A、2/9 B、1/9 C、1/27 D、4/27</p>
+<p id="p31">【笔试通】[解析]很明显，这是一个典型的等比数列，公比为1/3。故选D。</p>
+<h2 class="c-h2 blk" id="s8">6、二级等比数列<span class="pg">P2</span><a class="anchor" href="#s8" aria-label="链接到此节">#</a></h2>
+<p id="p33">是指等比数列的变式，相邻两项之比有着明显的规律性，往往构成等比数列。</p>
+<p id="p34">【笔试通】例题：4，6，10，18,34，（）</p>
+<p id="p35">A、50 B、64 C、66 D、68</p>
+<p id="p36">【笔试通】[解析]此数列表面上看没有规律，但它们后一项与前一项的差分别为2，4，6，8，16，是一个公比为2的等比数列，故括号内的值应为34+16×2=66 故选C。</p>
+<h2 class="c-h2 blk" id="s9">7、等比数列的特殊变式<span class="pg">P2</span><a class="anchor" href="#s9" aria-label="链接到此节">#</a></h2>
+<p id="p38">【笔试通】例题：8,12，24，60，（）</p>
+<p id="p39">A、90 B、120 C、180 D、240</p>
+<p id="p40">【笔试通】[解析]该题有一定的难度。题目中相邻两个数字之间后一项除以前一项得到的商并不是一个常数，但它们是按照一定规律排列的：3/2，4/2，5/2，因此，括号内数字应为60×6/2=180。故选C。此题值得再分析一下，相邻两项的差分别为 4，12，36，后一个值是前一个值的3倍，括号内的数减去60应为36的3倍，即108，括号数为168，如果选项中没有180只有168的话，就应选168了。同时出现的话就值得争论了，这题只是一个特例。</p>
+<h1 class="c-h1 blk" id="s10">第三种情形—混合数列式<span class="pg">P3</span><a class="anchor" href="#s10" aria-label="链接到此节">#</a></h1>
+<p id="p42">是指一组数列中，存在两种以上的数列规律。</p>
+<h2 class="c-h2 blk" id="s11">8、双重数列式<span class="pg">P3</span><a class="anchor" href="#s11" aria-label="链接到此节">#</a></h2>
+<p id="p44">即等差与等比数列混合，特点是相隔两项之间的差值或比值相等。</p>
+<p id="p45">【笔试通】例题：26，11，31，6,36,1,41，（）</p>
+<p id="p46">A、0 B、-3 C、-4 D、46</p>
+<p id="p47">【笔试通】[解析]此题是一道典型的双重数列题。其中奇数项是公差为5的等差递增数列，偶数项是公差为5的等差递减数列。故选C。</p>
+<h2 class="c-h2 blk" id="s12">9、混合数列<span class="pg">P3</span><a class="anchor" href="#s12" aria-label="链接到此节">#</a></h2>
+<p id="p49">是两个数列交替排列在一列数中，有时是两个相同的数列（等差或等比），有时两个数列是按不同规律排列的，一个是等差数列，另一个是等比数列。</p>
+<p id="p50">【笔试通】例题：5，3，10, 6,15,12，（），（）</p>
+<p id="p51">A、20 18 B、18 20 C、20 24 D、18 32</p>
+<p id="p52">【笔试通】[解析]此题是一道典型的等差、等比数列混合题。其中奇数项是以5为首项、公差为5的等差数列，偶数项是以3为首项、公比为2的等比数列。故选C。</p>
+<h1 class="c-h1 blk" id="s13">第四种情形—四则混合运算<span class="pg">P3</span><a class="anchor" href="#s13" aria-label="链接到此节">#</a></h1>
+<p id="p54">是指前两（或几）个数经过某种四则运算等到于下一个数，如前两个数之和、之差、之积、之商等于第三个数。</p>
+<h2 class="c-h2 blk" id="s14">10、加法规律<span class="pg">P3</span><a class="anchor" href="#s14" aria-label="链接到此节">#</a></h2>
+<h3 class="c-h3 blk" id="s15">之一：前两个或几个数相加等于第三个数，相加的项数是固定的。<span class="pg">P3</span><a class="anchor" href="#s15" aria-label="链接到此节">#</a></h3>
+<p id="p57">【笔试通】例题：2，4，6，10，16，（）</p>
+<p id="p58">A、26 B、32 C、35 D、20</p>
+<p id="p59">【笔试通】[解析]首先分析相邻两数间数量关系进行两两比较，第一个数2与第二个数4之和是第三个数，而第二个数4与第三个数6之和是10。依此类推，括号内的数应该是第四个数与第五个数的和26。故选A。</p>
+<h3 class="c-h3 blk" id="s16">之二：前面所有的数相加等到于最后一项，相加的项数为前面所有项。<span class="pg">P3</span><a class="anchor" href="#s16" aria-label="链接到此节">#</a></h3>
+<p id="p61">【笔试通】例题：1，3，4， 8，16，（）</p>
+<p id="p62">A、22 B、24 C、28 D、32</p>
+<p id="p63">【笔试通】[解析]这道题从表面上看认为是题目出错了，第二位数应是 2，以为是等比数列。其实不难看出，第三项等于前两项之和，第四项与等于前三项之和，括号内的数应为前五项之和为32。故选D。</p>
+<h2 class="c-h2 blk" id="s17">11、减法规律<span class="pg">P3</span><a class="anchor" href="#s17" aria-label="链接到此节">#</a></h2>
+<p id="p65">是指前一项减去第二项的差等于第三项。</p>
+<p id="p66">【笔试通】例题：25，16，9，7，（），5</p>
+<p id="p67">A、8 B、2 C、3 D、6</p>
+<p id="p68">【笔试通】[解析]此题是典型的减法规律题，前两项之差等于第三项。故选B。</p>
+<h2 class="c-h2 blk" id="s18">12、加减混合<span class="pg">P3</span><a class="anchor" href="#s18" aria-label="链接到此节">#</a></h2>
+<p id="p70">是指一组数中需要用加法规律的同时还要使用减法，才能得出所要的项。</p>
+<p id="p71">【笔试通】例题：1，2，2，3，4，6，（）</p>
+<p id="p72">A、7 B、8 C、9 D、10</p>
+<p id="p73">【笔试通】[解析]即前两项之和减去1等于第三项。故选C。</p>
+<h2 class="c-h2 blk" id="s19">13、乘法规律<span class="pg">P3</span><a class="anchor" href="#s19" aria-label="链接到此节">#</a></h2>
+<h3 class="c-h3 blk" id="s20">之一：普通常规式：前两项之积等于第三项。<span class="pg">P3</span><a class="anchor" href="#s20" aria-label="链接到此节">#</a></h3>
+<p id="p76">【笔试通】例题：3，4，12，48，（）</p>
+<p id="p77">A、96 B、36 C、192 D、576</p>
+<p id="p78">【笔试通】[解析]这是一道典型的乘法规律题，仔细观察，前两项之积等于第三项。故选D。</p>
+<h3 class="c-h3 blk" id="s21">之二：乘法规律的变式：<span class="pg">P3</span><a class="anchor" href="#s21" aria-label="链接到此节">#</a></h3>
+<p id="p80">【笔试通】例题：2，4，12，48，（）</p>
+<p id="p81">A、96 B、120 C、240 D、480</p>
+<p id="p82">【笔试通】[解析]每个数都是相邻的前面的数乘以自己所排列的位数，所以第5位数应是5×48=240。故选D。</p>
+<h2 class="c-h2 blk" id="s22">14、除法规律<span class="pg">P3</span><a class="anchor" href="#s22" aria-label="链接到此节">#</a></h2>
+<p id="p84">【笔试通】例题：60，30，2,15，（）</p>
+<p id="p85">A、5 B、1 C、1/5 D、2/15</p>
+<p id="p86">【笔试通】[解析]本题中的数是具有典型的除法规律，前两项之商等于第三项，故第五项应是第三项与第四项的商。故选D。</p>
+<h2 class="c-h2 blk" id="s23">15、除法规律与等差数列混合式<span class="pg">P4</span><a class="anchor" href="#s23" aria-label="链接到此节">#</a></h2>
+<p id="p88">【笔试通】例题：3，3，6，18，（）</p>
+<p id="p89">A、36 B、54 C、72 D、108</p>
+<p id="p90">【笔试通】[解析]数列中后个数字与前一个数字之间的商形成一个等差数列，以此类推，第5个数与第4个数之间的商应该是4，所以18×4=72。故选C。</p>
+<p id="p91">思路引导：快速扫描已给出的几个数字，仔细观察和分析各数之间的关系，大胆提出假设，并迅速将这种假设延伸到下面的数。如果假设被否定，立刻换一种假设，这样可以极大地提高解题速度。</p>
+<h1 class="c-h1 blk" id="s24">第五种情形——平方规律<span class="pg">P4</span><a class="anchor" href="#s24" aria-label="链接到此节">#</a></h1>
+<p id="p93">是指数列中包含一个完全平方数列，有的明显，有的隐含。</p>
+<h2 class="c-h2 blk" id="s25">16、平方规律的常规式<span class="pg">P4</span><a class="anchor" href="#s25" aria-label="链接到此节">#</a></h2>
+<p id="p95">【笔试通】例题：49，64，81，（），121</p>
+<p id="p96">A、98 B、100 C、108 D、116</p>
+<p id="p97">【笔试通】[解析]这组数列可变形为7<sup>2</sup>，8<sup>2</sup>，9<sup>2</sup>，（），11<sup>2</sup>，不难看出这是一组具有平方规律的数列，所以括号内的数应是100。故选B。</p>
+<h2 class="c-h2 blk" id="s26">17、平方规律的变式<span class="pg">P4</span><a class="anchor" href="#s26" aria-label="链接到此节">#</a></h2>
+<h3 class="c-h3 blk" id="s27">之一、n<sup>2</sup>-n<span class="pg">P4</span><a class="anchor" href="#s27" aria-label="链接到此节">#</a></h3>
+<p id="p100">【笔试通】例题：0，3，8，15，24，（）</p>
+<p id="p101">A、28 B、32 C、35 D、40</p>
+<p id="p102">【笔试通】[解析]这个数列没有直接规律，经过变形后就可以看出规律。由于所给数列各项分别加1，可得1，4，9，16，25，即1<sup>2</sup>，2<sup>2</sup>，3<sup>2</sup>，4<sup>2</sup>，5<sup>2</sup>，故括号内的数应为6<sup>2</sup>-1=35，其实就是n<sup>2</sup>-n。故选C。</p>
+<h3 class="c-h3 blk" id="s28">之二、n<sup>2</sup>+n<span class="pg">P4</span><a class="anchor" href="#s28" aria-label="链接到此节">#</a></h3>
+<p id="p104">【笔试通】例题：2， 5，10，17，26，（）</p>
+<p id="p105">A、43 B、34 C、35 D、37</p>
+<p id="p106">【笔试通】[解析]这个数是一个二级等差数列，相邻两项的差是一个公差为2的等差数列，括号内的数是26+11=37。如将所给的数列分别减1，可得1，4，9，16，25，即1<sup>2</sup>，2<sup>2</sup>，3<sup>2</sup>，4<sup>2</sup>，5<sup>2</sup>，故括号内的数应为6<sup>2</sup>+1=37，其实就是n<sup>2</sup>+n。故选D。</p>
+<h3 class="c-h3 blk" id="s29">之三、每项自身的平方减去前一项的差等于下一项。<span class="pg">P4</span><a class="anchor" href="#s29" aria-label="链接到此节">#</a></h3>
+<p id="p108">【笔试通】例题：1， 2， 3，7，46，（）</p>
+<p id="p109">A、2109 B、1289 C、322 D、147</p>
+<p id="p110">【笔试通】[解析]本数列规律为第项自身的平方减去前一项的差等于下一项，即1<sup>2</sup>-0，2<sup>2</sup>-1=3，3<sup>2</sup>-2=7，7<sup>2</sup>-3=46，46<sup>2</sup>-7=2109，故选A。</p>
+<h2 class="c-h2 blk" id="s30">17、立方规律的常规式<span class="pg">P4</span><a class="anchor" href="#s30" aria-label="链接到此节">#</a></h2>
+<p id="p112">【笔试通】例题：1/343，1/216，1/125，（）</p>
+<p id="p113">A、1/36 B、1/49 C、1/64 D、1/27</p>
+<p id="p114">【笔试通】[解析]仔细观察可以看出，上面的数列分别是1/7<sup>3</sup>，1/6<sup>3</sup>，1/5<sup>3</sup>的变形，因此，括号内应该是1/4<sup>3</sup>，即 1/64。故选C。</p>
+<h2 class="c-h2 blk" id="s31">18、立方规律的变式<span class="pg">P4</span><a class="anchor" href="#s31" aria-label="链接到此节">#</a></h2>
+<h3 class="c-h3 blk" id="s32">之一、n<sup>3</sup>-n<span class="pg">P4</span><a class="anchor" href="#s32" aria-label="链接到此节">#</a></h3>
+<p id="p117">【笔试通】例题：0，6，24，60,120，（）</p>
+<p id="p118">A、280 B、320 C、729 D、336</p>
+<p id="p119">【笔试通】[解析]数列中各项可以变形为1<sup>3</sup>-1，2<sup>3</sup>-2，3<sup>3</sup>-3，4<sup>3</sup>-4，5<sup>3</sup>-5，6<sup>3</sup>-6，故后面的项应为7<sup>3</sup>-7=336，其排列规律可概括为n<sup>3</sup>-n。故选D。</p>
+<h3 class="c-h3 blk" id="s33">之二、n<sup>3</sup>+n<span class="pg">P4</span><a class="anchor" href="#s33" aria-label="链接到此节">#</a></h3>
+<p id="p121">【笔试通】例题：2，10，30，68，（）</p>
+<p id="p122">A、70 B、90 C、130 D、225</p>
+<p id="p123">【笔试通】[解析]数列可变形为1<sup>3</sup>+1，2<sup>3</sup>+2，3<sup>3</sup>+3，4<sup>3</sup>+4，故第5项为5<sup>3</sup>+5=130，其排列规律可概括为n<sup>3</sup>+n。</p>
+<p id="p124">故选C。</p>
+<h3 class="c-h3 blk" id="s34">之三、从第二项起后项是相邻前一项的立方加 1。<span class="pg">P5</span><a class="anchor" href="#s34" aria-label="链接到此节">#</a></h3>
+<p id="p126">【笔试通】例题：-1，0，1，2，9，（）</p>
+<p id="p127">A、11 B、82 C、729 D、730</p>
+<p id="p128">【笔试通】[解析]从第二项起后项分别是相邻前一项的立方加1，故括号内应为9<sup>3</sup>+1=730。故选D。</p>
+<p id="p129">思路引导：做立方型变式这类题时应从前面几种排列中跳出来，想到这种新的排列思路，再通过分析比较尝试寻找，才能找到正确答案。</p>
+<h2 class="c-h2 blk" id="s35">19、需经变形后方可看出规律的题型<span class="pg">P5</span><a class="anchor" href="#s35" aria-label="链接到此节">#</a></h2>
+<p id="p131">【笔试通】例题：1,1/16，（），1/256,1/625</p>
+<p id="p132">A、1/27 B、1/81 C、1/100 D、1/121</p>
+<p id="p133">【笔试通】[解析]此题数列可变形为1/1<sup>2</sup>，1/4<sup>2</sup>，（），1/16<sup>2</sup>，1/25<sup>2</sup>，可以看出分母各项分别为 1，4，（），16，25的平方，而1，4，16，25，分别是1，2，4，5的平方，由此可以判断这个数列是1，2，3，4，5的平方的平方，由此可以判断括号内所缺项应为1/（3<sup>2</sup>）<sup>2</sup>=1/81。故选B。</p>
+<h2 class="c-h2 blk" id="s36">20、容易出错规律的题<span class="pg">P5</span><a class="anchor" href="#s36" aria-label="链接到此节">#</a></h2>
+<p id="p135">【笔试通】例题：12，34，56，78，（）</p>
+<p id="p136">A、90 B、100 C、910 D、901</p>
+<p id="p137">【笔试通】[解析]这道题表面看起来起来似乎有着明显的规律，12后是34，然后是 56，78，后面一项似乎应该是910，其实，这是一个等差数列，后一项减去前一项均为 22，所以括号内的数字应该是 78+22=100。故选B。</p></div>
 </main>
 
-<button id="toTop" title="回到顶部" aria-label="回到顶部">↑</button>
+<a id="home" href="index.html" title="返回总目录" aria-label="返回总目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 10.6 12 3.4l9 7.2"/>
+    <path d="M5.6 9.4V20.2h12.8V9.4"/>
+    <path d="M9.8 20.2v-5.6h4.4v5.6"/>
+  </svg>
+</a>
+<button id="totop" title="回到顶部">↑</button>
 <script>
 (function(){
-  var $=function(s,r){return (r||document).querySelector(s)};
-  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
-  var body=document.body, html=document.documentElement;
+  var HIDE_FROM=3;                       // 折叠时隐藏 toc-lN 及更深层级
+  var toc=document.getElementById('toc'), links=[].slice.call(toc.querySelectorAll('a'));
+  var content=document.getElementById('content');
+  var bar=document.querySelector('#progress i');
+  var totop=document.getElementById('totop');
+  var counter=document.getElementById('counter');
+  var q=document.getElementById('q');
 
-  /* ---------- 主题 ---------- */
-  var saved=localStorage.getItem('thm');
-  if(saved){html.setAttribute('data-theme',saved)}
-  $('#themeBtn').addEventListener('click',function(){
-    var cur=html.getAttribute('data-theme')==='dark'?'light':'dark';
-    html.setAttribute('data-theme',cur);localStorage.setItem('thm',cur);
-    this.textContent=cur==='dark'?'☀':'☾';
-  });
-  $('#themeBtn').textContent=html.getAttribute('data-theme')==='dark'?'☀':'☾';
+  // progress + back to top
+  function onScroll(){
+    var h=content.scrollHeight||document.body.scrollHeight;
+    var top=window.scrollY||document.documentElement.scrollTop;
+    bar.style.width=Math.min(100,top/(h-window.innerHeight||1)*100)+'%';
+    totop.style.display=top>500?'block':'none';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
 
-  /* ---------- 字体 ---------- */
-  var fs=localStorage.getItem('fnt')||'sans';
-  body.setAttribute('data-font',fs);
-  $('#fontBtn').addEventListener('click',function(){
-    fs=fs==='sans'?'serif':'sans';
-    body.setAttribute('data-font',fs);localStorage.setItem('fnt',fs);
-    this.textContent=fs==='sans'?'宋':'黑';
-  });
-  $('#fontBtn').textContent=fs==='sans'?'宋':'黑';
-
-  /* ---------- 字号 ---------- */
-  var fsz=parseInt(localStorage.getItem('fsz')||'0',10);
-  if(fsz){html.style.setProperty('--body-size',fsz+'px')}
-
-  /* ---------- 移动端目录 ---------- */
-  var side=$('#sidebar'), scrim=$('#scrim');
-  function closeSide(){side.classList.remove('open');scrim.classList.remove('show')}
-  $('#menuBtn').addEventListener('click',function(){
-    side.classList.toggle('open');
-    scrim.classList.toggle('show',side.classList.contains('open'));
-  });
-  scrim.addEventListener('click',closeSide);
-
-  /* ---------- 折叠子目录 ---------- */
-  $$('.caret').forEach(function(c){
-    c.addEventListener('click',function(e){
-      e.preventDefault();e.stopPropagation();
-      c.parentNode.parentNode.classList.toggle('open');
+  // scrollspy
+  var heads=[].slice.call(document.querySelectorAll('h1[id],h2[id],h3[id],h4[id]'));
+  var current=null;
+  function spy(){
+    var best=null,bestTop=-1e9;
+    var probe=window.scrollY+90;
+    heads.forEach(function(h){
+      var t=h.getBoundingClientRect().top+window.scrollY;
+      if(t<=probe&&t>bestTop){bestTop=t;best=h;}
     });
-  });
-  /* 默认展开含词条的分组 */
-  $$('.toc-list li').forEach(function(li){
-    if(li.querySelector(':scope > ul.fold')) li.classList.add('open');
-  });
-
-  /* ---------- 目录跳转 ---------- */
-  var links={};
-  $$('#sidebar a[href^="#"]').forEach(function(a){
-    links[a.getAttribute('href').slice(1)]=a;
-  });
-  $$('#sidebar a[href^="#"]').forEach(function(a){
-    a.addEventListener('click',function(e){
-      var id=a.getAttribute('href').slice(1);
-      var el=document.getElementById(id);
-      if(!el)return;
-      e.preventDefault();
-      var y=el.getBoundingClientRect().top+window.pageYOffset-72;
-      window.scrollTo({top:y,behavior:'smooth'});
-      history.replaceState(null,'','#'+id);
-      closeSide();
-    });
-  });
-
-  /* ---------- 滚动高亮 ---------- */
-  var heads=$$('.doc .blk.h1,.doc .blk.h2,.doc .blk.h3,.doc .blk.h4');
-  var cur=null;
-  function setActive(id){
-    if(id===cur)return;cur=id;
-    $$('#sidebar a.active').forEach(function(a){a.classList.remove('active')});
-    var a=links[id];
-    if(a){
-      a.classList.add('active');
-      if(!side.classList.contains('open')){
-        var r=a.getBoundingClientRect(), sr=side.getBoundingClientRect();
-        if(r.top<sr.top+40||r.bottom>sr.bottom-40){
-          side.scrollTop += (r.top - sr.top) - sr.height/2;
-        }
-      }
-      var p=a.closest('li');
-      while(p){ if(p.querySelector(':scope > ul.fold')) p.classList.add('open'); p=p.parentElement; }
+    if(!best)return;
+    if(best.id===current)return;
+    current=best.id;
+    links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+current);});
+    var act=toc.querySelector('a.active');
+    if(act){
+      var tb=toc.getBoundingClientRect(),ab=act.getBoundingClientRect();
+      if(ab.top<tb.top+40||ab.bottom>tb.bottom-40)
+        toc.scrollTop+=ab.top-tb.top-toc.clientHeight/2;
     }
   }
-  var io=new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting) setActive(e.target.id); });
-  },{rootMargin:'-70px 0px -72% 0px',threshold:0});
-  heads.forEach(function(h){io.observe(h)});
+  window.addEventListener('scroll',spy,{passive:true});
+  window.addEventListener('resize',spy);spy();
 
-  /* ---------- 回到顶部 ---------- */
-  var top=$('#toTop');
-  top.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
-  window.addEventListener('scroll',function(){
-    top.classList.toggle('show',window.pageYOffset>500);
-  },{passive:true});
+  // 目录筛选 + 章节折叠（筛选时忽略折叠状态）
+  function level(a){
+    var c=a.className;
+    if(c.indexOf('toc-l1')>=0)return 1;
+    if(c.indexOf('toc-l2')>=0)return 2;
+    if(c.indexOf('toc-l3')>=0)return 3;
+    return 4;
+  }
+  var collapsed=false;
+  function refresh(){
+    var v=(q.value||'').trim().toLowerCase();
+    var shown=0;
+    links.forEach(function(a){
+      var hit=!v||a.textContent.toLowerCase().indexOf(v)>=0;
+      var hide=!hit||(!v&&collapsed&&level(a)>=HIDE_FROM);
+      a.style.display=hide?'none':'';
+      if(!hide)shown++;
+    });
+    counter.textContent=(v||shown!==links.length)?shown+' / '+links.length:links.length+' 项';
+  }
+  q.addEventListener('input',refresh);
 
-  /* ---------- 搜索 ---------- */
-  var input=$('#q'), cnt=$('#cnt');
-  var marks=[];
-  function clearMarks(){
-    marks.forEach(function(m){var p=m.parentNode;p.replaceChild(document.createTextNode(m.textContent),m);p.normalize()});
-    marks=[];
-  }
-  function doSearch(){
-    clearMarks();
-    var q=input.value.trim().toLowerCase();
-    var items=$$('#sidebar .toc-list a');
-    if(!q){
-      cnt.textContent='';
-      items.forEach(function(a){a.parentNode.classList.remove('toc-hidden');a.classList.remove('toc-match')});
-      $$('.doc .blk').forEach(function(b){b.classList.remove('dimmed')});
-      return;
-    }
-    var n=0, nocc=0, first=null;
-    $$('.doc .blk').forEach(function(b){
-      var hit=b.textContent.toLowerCase().indexOf(q)>=0;
-      b.classList.toggle('dimmed',!hit);
-      if(hit){
-        n++;
-        if(!first)first=b;
-        /* 高亮 */
-        var walker=document.createTreeWalker(b,NodeFilter.SHOW_TEXT,null);
-        var nodes=[],nw;
-        while((nw=walker.nextNode())){nodes.push(nw)}
-        nodes.forEach(function(node){
-          var s=node.nodeValue, low=s.toLowerCase(), idx=low.indexOf(q);
-          if(idx<0)return;
-          var frag=document.createDocumentFragment();
-          var last=0,pos;
-          while((pos=low.indexOf(q,last))>=0){
-            if(pos>last)frag.appendChild(document.createTextNode(s.slice(last,pos)));
-            var m=document.createElement('mark');m.textContent=s.slice(pos,pos+q.length);
-            marks.push(m);frag.appendChild(m);nocc++;
-            last=pos+q.length;
-          }
-          if(last<s.length)frag.appendChild(document.createTextNode(s.slice(last)));
-          node.parentNode.replaceChild(frag,node);
-        });
-      }
-    });
-    cnt.textContent=nocc+' 处';
-    /* 目录过滤 */
-    items.forEach(function(a){
-      var tt=a.querySelector('.t');
-      var txt=(tt?tt.textContent:a.textContent).toLowerCase();
-      var m=txt.indexOf(q)>=0;
-      a.classList.toggle('toc-match',m);
-      var li=a.parentNode;
-      var keep=m;
-      if(!keep){ /* 祖先命中则保留 */
-        var p=li.parentNode;
-        while(p&&p.id!=='sidebar'){
-          var pl=p.querySelector(':scope > a > .t');
-          if(pl&&pl.textContent.toLowerCase().indexOf(q)>=0){keep=true;break}
-          p=p.parentNode;
-        }
-      }
-      li.classList.toggle('toc-hidden',!keep);
-    });
-    $$('#sidebar ul.fold').forEach(function(ul){
-      var any=ul.querySelector('li:not(.toc-hidden)');
-      ul.parentNode.classList.toggle('open',!!any);
-    });
-    if(first){
-      var y=first.getBoundingClientRect().top+window.pageYOffset-90;
-      window.scrollTo({top:y,behavior:'smooth'});
-    }
-  }
-  var timer=null;
-  input.addEventListener('input',function(){clearTimeout(timer);timer=setTimeout(doSearch,180)});
-  input.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){input.value='';doSearch();input.blur()}
-  });
-  document.addEventListener('keydown',function(e){
-    if(e.key==='/'&&document.activeElement!==input){e.preventDefault();input.focus()}
-  });
+  var exp=document.getElementById('expand');
+  exp.onclick=function(){
+    collapsed=!collapsed;
+    exp.textContent=collapsed?'展开全部':'仅看章节目';
+    refresh();
+  };
+
+  // mobile drawer
+  var sb=document.getElementById('sidebar'),mask=document.getElementById('mask');
+  document.getElementById('menubtn').onclick=function(){sb.classList.toggle('open');mask.style.display=sb.classList.contains('open')?'block':'none';};
+  mask.onclick=function(){sb.classList.remove('open');mask.style.display='none';};
+  toc.addEventListener('click',function(e){if(e.target.tagName==='A'&&window.innerWidth<=900){sb.classList.remove('open');mask.style.display='none';}});
+
+  totop.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+
+  exp.textContent=collapsed?'展开全部':'仅看章节目';
+  refresh();
 })();
 </script>
 </body>

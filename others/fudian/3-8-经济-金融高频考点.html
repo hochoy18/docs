@@ -34,8 +34,7 @@ body{margin:0;background:var(--bg);color:var(--ink);
 .toc-l1{font-size:13.5px;font-weight:700;color:var(--ink);margin-top:12px;padding-top:7px!important}
 .toc-l2{font-size:12.5px;color:#384049;margin-left:10px}
 .toc-l3{font-size:12px;color:var(--ink-3);margin-left:22px;padding-top:3px!important;padding-bottom:3px!important}
-.toc-l4{font-size:11.5px;color:#6a727c;margin-left:34px;padding-top:2px!important;padding-bottom:2px!important;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.toc-l4{font-size:11.5px;color:#6a727c;margin-left:34px;padding-top:2px!important;padding-bottom:2px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #toc a.active{background:#eaf1fb;color:var(--accent-2);border-left-color:var(--accent-2);font-weight:600}
 .toc-l1.active{color:var(--accent-2)}
 .sb-foot{padding:10px 16px;border-top:1px solid var(--line-2);font-family:var(--font-sans);
@@ -123,7 +122,14 @@ td figure.fig{margin:6px 0;padding:6px;border-radius:6px}
 #totop{position:fixed;right:26px;bottom:26px;width:42px;height:42px;border-radius:50%;
   border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
   cursor:pointer;font-size:17px;color:var(--ink-2);display:none;z-index:50}
-#totop:hover{color:var(--accent-2);border-color:#b9c6d6}
+#totop:hover{color:var(--accent-2);border-color:#b9c6d6}/* 返回总目录：叠在「回到顶部」上方，间距 8px */
+#home{position:fixed;right:26px;bottom:76px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;color:var(--ink-2);display:flex;align-items:center;justify-content:center;
+  z-index:50;text-decoration:none;transition:color .15s,border-color .15s}
+#home:hover{color:var(--accent-2);border-color:#b9c6d6}
+#home svg{width:19px;height:19px;display:block;pointer-events:none}
+
 #menubtn{display:none;position:fixed;left:14px;top:12px;z-index:60;width:38px;height:34px;
   border:1px solid var(--line);background:#fff;border-radius:6px;font-size:16px;cursor:pointer;
   box-shadow:0 2px 8px rgba(20,30,50,.1)}
@@ -143,7 +149,7 @@ td figure.fig{margin:6px 0;padding:6px;border-radius:6px}
   #toc a.toc-l4{font-size:11px;margin-left:26px}
 }
 @media print{
-  #sidebar,#totop,#menubtn,#mask,#progress{display:none!important}
+  #sidebar,#totop,#home,#menubtn,#mask,#progress{display:none!important}
   #main{margin:0}
   #content{max-width:none;padding:0}
   body{background:#fff;font-size:11pt}
@@ -351,7 +357,7 @@ td figure.fig{margin:6px 0;padding:6px;border-radius:6px}
   </nav>
   <div class="sb-foot">
     <span id="counter">—</span>
-    <button id="expand">展开全部</button>
+    <button id="expand">仅看章节目</button>
   </div>
 </aside>
 
@@ -470,14 +476,24 @@ td figure.fig{margin:6px 0;padding:6px;border-radius:6px}
 </div>
 </main>
 
+<a id="home" href="index.html" title="返回总目录" aria-label="返回总目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 10.6 12 3.4l9 7.2"/>
+    <path d="M5.6 9.4V20.2h12.8V9.4"/>
+    <path d="M9.8 20.2v-5.6h4.4v5.6"/>
+  </svg>
+</a>
 <button id="totop" title="回到顶部">↑</button>
 <script>
 (function(){
+  var HIDE_FROM=3;                       // 折叠时隐藏 toc-lN 及更深层级
   var toc=document.getElementById('toc'), links=[].slice.call(toc.querySelectorAll('a'));
   var content=document.getElementById('content');
   var bar=document.querySelector('#progress i');
   var totop=document.getElementById('totop');
   var counter=document.getElementById('counter');
+  var q=document.getElementById('q');
 
   // progress + back to top
   function onScroll(){
@@ -512,17 +528,34 @@ td figure.fig{margin:6px 0;padding:6px;border-radius:6px}
   window.addEventListener('scroll',spy,{passive:true});
   window.addEventListener('resize',spy);spy();
 
-  // search filter
-  var q=document.getElementById('q');
-  q.addEventListener('input',function(){
-    var v=q.value.trim().toLowerCase();
+  // 目录筛选 + 章节折叠（筛选时忽略折叠状态）
+  function level(a){
+    var c=a.className;
+    if(c.indexOf('toc-l1')>=0)return 1;
+    if(c.indexOf('toc-l2')>=0)return 2;
+    if(c.indexOf('toc-l3')>=0)return 3;
+    return 4;
+  }
+  var collapsed=false;
+  function refresh(){
+    var v=(q.value||'').trim().toLowerCase();
+    var shown=0;
     links.forEach(function(a){
       var hit=!v||a.textContent.toLowerCase().indexOf(v)>=0;
-      a.style.display=hit?'':'none';
+      var hide=!hit||(!v&&collapsed&&level(a)>=HIDE_FROM);
+      a.style.display=hide?'none':'';
+      if(!hide)shown++;
     });
-    counter.textContent=links.filter(function(a){return a.style.display!=='none';}).length+' / '+links.length;
-  });
-  counter.textContent=links.length+' 项';
+    counter.textContent=(v||shown!==links.length)?shown+' / '+links.length:links.length+' 项';
+  }
+  q.addEventListener('input',refresh);
+
+  var exp=document.getElementById('expand');
+  exp.onclick=function(){
+    collapsed=!collapsed;
+    exp.textContent=collapsed?'展开全部':'仅看章节目';
+    refresh();
+  };
 
   // mobile drawer
   var sb=document.getElementById('sidebar'),mask=document.getElementById('mask');
@@ -532,16 +565,8 @@ td figure.fig{margin:6px 0;padding:6px;border-radius:6px}
 
   totop.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
 
-  // toggle: only the parts and the chapters
-  var exp=document.getElementById('expand'),collapsed=false;
-  exp.onclick=function(){
-    collapsed=!collapsed;
-    links.forEach(function(a){
-      var l=a.className.indexOf('toc-l1')>=0?1:(a.className.indexOf('toc-l2')>=0?2:(a.className.indexOf('toc-l3')>=0?3:4));
-      if(l>=3)a.style.display=collapsed?'none':'';
-    });
-    exp.textContent=collapsed?'展开全部':'仅看章节目';
-  };
+  exp.textContent=collapsed?'展开全部':'仅看章节目';
+  refresh();
 })();
 </script>
 </body>

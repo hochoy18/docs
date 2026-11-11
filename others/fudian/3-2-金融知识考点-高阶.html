@@ -81,7 +81,14 @@ u.dbl{text-decoration-style:double;text-decoration-thickness:1.4px}
 #totop{position:fixed;right:26px;bottom:26px;width:42px;height:42px;border-radius:50%;
   border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
   cursor:pointer;font-size:17px;color:var(--ink-2);display:none;z-index:50}
-#totop:hover{color:var(--accent-2);border-color:#b9c6d6}
+#totop:hover{color:var(--accent-2);border-color:#b9c6d6}/* 返回总目录：叠在「回到顶部」上方，间距 8px */
+#home{position:fixed;right:26px;bottom:76px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;color:var(--ink-2);display:flex;align-items:center;justify-content:center;
+  z-index:50;text-decoration:none;transition:color .15s,border-color .15s}
+#home:hover{color:var(--accent-2);border-color:#b9c6d6}
+#home svg{width:19px;height:19px;display:block;pointer-events:none}
+
 #menubtn{display:none;position:fixed;left:14px;top:12px;z-index:60;width:38px;height:34px;
   border:1px solid var(--line);background:#fff;border-radius:6px;font-size:16px;cursor:pointer;
   box-shadow:0 2px 8px rgba(20,30,50,.1)}
@@ -99,7 +106,7 @@ u.dbl{text-decoration-style:double;text-decoration-thickness:1.4px}
   #progress{left:0}
 }
 @media print{
-  #sidebar,#totop,#menubtn,#mask,#progress{display:none!important}
+  #sidebar,#totop,#home,#menubtn,#mask,#progress{display:none!important}
   #main{margin:0}
   #content{max-width:none;padding:0}
   body{background:#fff;font-size:11pt}
@@ -708,7 +715,7 @@ u.dbl{text-decoration-style:double;text-decoration-thickness:1.4px}
   </nav>
   <div class="sb-foot">
     <span id="counter">—</span>
-    <button id="expand">仅看章节目</button>
+    <button id="expand">展开全部</button>
   </div>
 </aside>
 
@@ -1359,6 +1366,14 @@ u.dbl{text-decoration-style:double;text-decoration-thickness:1.4px}
 </div>
 </main>
 
+<a id="home" href="index.html" title="返回总目录" aria-label="返回总目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 10.6 12 3.4l9 7.2"/>
+    <path d="M5.6 9.4V20.2h12.8V9.4"/>
+    <path d="M9.8 20.2v-5.6h4.4v5.6"/>
+  </svg>
+</a>
 <button id="totop" title="回到顶部">↑</button>
 <script>
 (function(){
@@ -1406,6 +1421,12 @@ u.dbl{text-decoration-style:double;text-decoration-thickness:1.4px}
   window.addEventListener('scroll',spy,{passive:true});
   window.addEventListener('resize',function(){measure();spy();});
 
+  // 计数条：反映当前真正可见的条目数
+  function updateCounter(){
+    var n=links.filter(function(a){return a.style.display!=='none';}).length;
+    counter.textContent=n===links.length?links.length+' 项':n+' / '+links.length;
+  }
+
   // search filter
   var q=document.getElementById('q');
   var filterOn=false;
@@ -1416,9 +1437,10 @@ u.dbl{text-decoration-style:double;text-decoration-thickness:1.4px}
       var hit=!v||a.textContent.toLowerCase().indexOf(v)>=0;
       a.style.display=hit?'':'none';
     });
-    counter.textContent=links.filter(function(a){return a.style.display!=='none';}).length+' / '+links.length;
+    if(!filterOn)apply();      // 清空筛选后恢复折叠状态
+    updateCounter();
   });
-  counter.textContent=links.length+' 项';
+  updateCounter();
 
   // mobile drawer
   var sb=document.getElementById('sidebar'),mask=document.getElementById('mask');
@@ -1436,7 +1458,8 @@ u.dbl{text-decoration-style:double;text-decoration-thickness:1.4px}
       if(filterOn)return;
       a.style.display=collapsed?'none':'';
     });
-    exp.textContent=collapsed?'显示全部':'仅看章节目';
+    exp.textContent=collapsed?'展开全部':'仅看章节目';
+    updateCounter();
   }
   exp.onclick=function(){collapsed=!collapsed;apply();};
   apply();
