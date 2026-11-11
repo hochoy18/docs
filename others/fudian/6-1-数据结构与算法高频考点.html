@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数据结构与算法高频考点总结</title>
+<style>
+
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --ink:#1d2129; --ink-2:#4a5158; --ink-3:#828a94;
+  --line:#e3e6ea; --line-2:#eef0f3; --accent:#b3261e; --accent-2:#1a56a8;
+  --red:#c62828; --red-bg:#fff5f5; --sidebar:300px;
+  --font-serif:"Songti SC","STSong","SimSun","Source Han Serif SC",serif;
+  --font-sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-serif);font-size:16.5px;line-height:1.95;-webkit-font-smoothing:antialiased;}
+
+/* ---------- sidebar ---------- */
+#sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:var(--panel);
+  border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40}
+.sb-head{padding:18px 20px 12px;border-bottom:1px solid var(--line-2)}
+.sb-title{font-family:var(--font-sans);font-size:15px;font-weight:700;line-height:1.5;color:var(--ink)}
+.sb-sub{font-family:var(--font-sans);font-size:11.5px;color:var(--ink-3);margin-top:5px;letter-spacing:.3px}
+.sb-search{padding:12px 16px 10px}
+.sb-search input{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:6px;
+  font-family:var(--font-sans);font-size:12.5px;background:#fbfcfd;color:var(--ink);outline:none}
+.sb-search input:focus{border-color:#b9c6d6;background:#fff}
+#toc{flex:1;overflow-y:auto;padding:6px 10px 60px;scrollbar-width:thin}
+#toc a{display:block;font-family:var(--font-sans);text-decoration:none;color:var(--ink-2);
+  border-radius:5px;padding:5px 10px;line-height:1.5;border-left:2px solid transparent;transition:.14s}
+#toc a:hover{background:#f2f4f7;color:var(--ink)}
+.toc-l1{font-size:13.5px;font-weight:700;color:var(--ink);margin-top:12px;padding-top:7px!important}
+.toc-l2{font-size:12.5px;color:#384049;margin-left:10px}
+.toc-l3{font-size:12px;color:var(--ink-3);margin-left:22px;padding-top:3px!important;padding-bottom:3px!important}.toc-l4{font-size:11.5px;color:#6a727c;margin-left:34px;padding-top:2px!important;padding-bottom:2px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+#toc a.active{background:#eaf1fb;color:var(--accent-2);border-left-color:var(--accent-2);font-weight:600}
+.toc-l1.active{color:var(--accent-2)}
+.sb-foot{padding:10px 16px;border-top:1px solid var(--line-2);font-family:var(--font-sans);
+  font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;align-items:center}
+.sb-foot button{font-family:var(--font-sans);font-size:11px;border:1px solid var(--line);
+  background:#fff;border-radius:5px;padding:3px 8px;cursor:pointer;color:var(--ink-2)}
+.sb-foot button:hover{background:#f2f4f7}
+
+/* ---------- main ---------- */
+#main{margin-left:var(--sidebar);min-height:100vh}
+#progress{position:fixed;top:0;left:var(--sidebar);right:0;height:2px;background:transparent;z-index:45}
+#progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2f6fd0,#b3261e)}
+#content{max-width:900px;margin:0 auto;padding:34px 46px 120px}
+
+/* cover */
+.cover{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:46px 48px 38px;margin-bottom:26px}
+.cover h1{font-family:var(--font-sans);font-size:31px;font-weight:800;margin:0 0 10px;letter-spacing:.5px}
+.cover .cv-sub{font-family:var(--font-sans);font-size:14px;color:var(--ink-3);margin-bottom:22px}
+.cv-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.cv-meta span{font-family:var(--font-sans);font-size:12px;background:#f2f4f7;color:var(--ink-2);
+  border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+.cv-note{font-family:var(--font-sans);font-size:12.5px;line-height:1.85;color:var(--ink-3);
+  border-top:1px dashed var(--line);padding-top:16px}
+.cv-note b{color:var(--ink-2)}
+
+/* headings */
+h1,h2,h3,h4,h5,h6{font-family:var(--font-sans);scroll-margin-top:14px}
+.c-h1{font-size:25px;font-weight:800;margin:52px 0 20px;padding:14px 18px;color:#fff;
+  background:linear-gradient(100deg,#1f3f6d,#2f6fd0);border-radius:8px;letter-spacing:.5px}
+.c-h2{font-size:20px;font-weight:700;margin:40px 0 16px;padding:9px 0 9px 14px;
+  border-left:5px solid var(--accent-2);color:#123;line-height:1.5}
+.c-h3{font-size:17px;font-weight:700;margin:32px 0 13px;padding:7px 12px;background:#eef3fb;
+  color:#173f75;border-radius:6px;border:1px solid #dde7f6}
+.c-h4{font-size:16px;font-weight:700;margin:24px 0 10px;color:#1d2129}
+.c-h5{font-size:15.5px;font-weight:600;margin:18px 0 8px;color:#2b3138}
+.c-h6{font-size:15px;font-weight:600;margin:14px 0 6px;color:var(--ink-2)}
+
+p{margin:0 0 12px;text-align:justify}
+p.li{margin:0 0 7px;padding-left:1.5em;text-indent:-1.5em}
+p.li2{padding-left:3em;text-indent:-1.5em}
+.bul{color:var(--accent-2);font-weight:700;margin-right:.35em}
+p b{font-weight:700}
+.r{color:var(--red);font-weight:600}
+u{text-decoration-color:#c96;font-weight:600;text-underline-offset:3px}
+
+/* callout */
+.callout{background:var(--red-bg);border:1px solid #f3d3d3;border-left:4px solid var(--red);
+  border-radius:6px;padding:11px 16px;margin:14px 0}
+.callout .co-tag{font-family:var(--font-sans);font-weight:700;color:var(--red);margin-bottom:2px}
+.callout p{margin:4px 0}
+p.co-lead{margin:13px 0 7px}
+
+/* tables */
+.tw{overflow-x:auto;margin:16px 0 22px;border:1px solid var(--line);border-radius:8px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:15px;table-layout:fixed}
+td{border:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.85}
+tr:first-child td{background:#f7f9fc}
+td p{margin:0 0 6px}
+td p:last-child{margin-bottom:0}
+td:empty{background:#fafbfc}
+
+/* figures */
+figure.fig{margin:20px 0 24px;padding:14px 16px 10px;border:1px solid var(--line);
+  border-radius:10px;background:#fff;text-align:center}
+figure.fig img{max-width:100%;height:auto;display:block;margin:0 auto;
+  image-rendering:-webkit-optimize-contrast}
+figure.fig figcaption{font-family:var(--font-sans);font-size:13px;color:var(--ink-2);
+  margin-top:10px;letter-spacing:.3px}
+figure.fig .figtext{text-align:left;border-top:1px dashed var(--line);margin-top:10px;
+  padding-top:8px}
+figure.fig .figtext p{margin:4px 0;font-size:14.5px;color:var(--ink-2)}
+figure.fig .figtext h1,figure.fig .figtext h2,figure.fig .figtext h3,
+figure.fig .figtext h4,figure.fig .figtext h5,figure.fig .figtext h6{
+  font-size:15px;margin:6px 0 2px}
+
+/* page marker */
+.pagebreak{position:relative;height:0;margin:0}
+.pg-mark{position:absolute;right:4px;top:-14px;font-family:var(--font-sans);font-size:10.5px;
+  color:#b9c0c8;background:var(--bg);padding:0 6px;letter-spacing:.5px}
+/* tools */
+#totop{position:fixed;right:26px;bottom:26px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;font-size:17px;color:var(--ink-2);display:none;z-index:50}
+#totop:hover{color:var(--accent-2);border-color:#b9c6d6}/* 返回总目录：叠在「回到顶部」上方，间距 8px */
+#home{position:fixed;right:26px;bottom:76px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;color:var(--ink-2);display:flex;align-items:center;justify-content:center;
+  z-index:50;text-decoration:none;transition:color .15s,border-color .15s}
+#home:hover{color:var(--accent-2);border-color:#b9c6d6}
+#home svg{width:19px;height:19px;display:block;pointer-events:none}
+
+#menubtn{display:none;position:fixed;left:14px;top:12px;z-index:60;width:38px;height:34px;
+  border:1px solid var(--line);background:#fff;border-radius:6px;font-size:16px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(20,30,50,.1)}
+#mask{display:none;position:fixed;inset:0;background:rgba(20,28,40,.35);z-index:35}
+
+@media (max-width:900px){
+  :root{--sidebar:280px}
+  #menubtn{display:block}
+  #sidebar{transform:translateX(-100%);transition:transform .22s ease}
+  #sidebar.open{transform:none}
+  #main{margin-left:0}
+  #content{padding:22px 18px 90px}
+  .cover{padding:30px 24px 26px}
+  .cover h1{font-size:24px}
+  #progress{left:0}
+  #toc a.toc-l3{font-size:11.5px}
+      #toc a.toc-l4{font-size:11px;margin-left:26px}
+
+}
+@media print{
+  #sidebar,#totop,#home,#menubtn,#mask,#progress{display:none!important}
+  #main{margin:0}
+  #content{max-width:none;padding:0}
+  body{background:#fff;font-size:11pt}
+  .cover,.tw{break-inside:avoid}
+  .c-h1{background:#1f3f6d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .r,.callout .co-tag{color:var(--red)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+</style>
+</head>
+<body>
+<button id="menubtn" aria-label="目录">☰</button>
+<div id="mask"></div>
+<div id="progress"><i></i></div>
+
+<aside id="sidebar">
+  <div class="sb-head">
+    <div class="sb-title">数据结构与算法高频考点</div>
+    <div class="sb-sub">科技类 · 可复制 HTML 版</div>
+  </div>
+  <div class="sb-search"><input id="q" type="search" placeholder="筛选目录关键词…"></div>
+  <nav id="toc">
+<a class="toc-l1" href="#s-1数据结构基本概念" data-toc="0">第1章 数据结构基本概念</a>
+<a class="toc-l2" href="#s-1.1数据结构的核心定义" data-toc="1">1.1 数据结构的核心定义</a>
+<a class="toc-l2" href="#s-1.2数据结构的两大核心维度" data-toc="2">1.2 数据结构的两大核心维度</a>
+<a class="toc-l3" href="#s-1.2.1逻辑结构" data-toc="3">1.2.1 逻辑结构</a>
+<a class="toc-l3" href="#s-1.2.2物理结构存储结构" data-toc="4">1.2.2 物理结构（存储结构）</a>
+<a class="toc-l2" href="#s-1.3数据结构的基本操作" data-toc="5">1.3 数据结构的基本操作</a>
+<a class="toc-l2" href="#s-1.4算法的基本概念与评价指标" data-toc="6">1.4 算法的基本概念与评价指标</a>
+<a class="toc-l3" href="#s-1.4.1算法定义" data-toc="7">1.4.1 算法定义</a>
+<a class="toc-l3" href="#s-1.4.2算法评价指标" data-toc="8">1.4.2 算法评价指标</a>
+<a class="toc-l1" href="#s-2线性表与数组含字符串与压缩存储" data-toc="9">第2章 线性表与数组（含字符串与压缩存储）</a>
+<a class="toc-l2" href="#s-2.1线性表的基本概念" data-toc="10">2.1 线性表的基本概念</a>
+<a class="toc-l2" href="#s-2.2线性表的两种存储结构" data-toc="11">2.2 线性表的两种存储结构</a>
+<a class="toc-l3" href="#s-2.2.1顺序表顺序存储的线性表" data-toc="12">2.2.1 顺序表（顺序存储的线性表）</a>
+<a class="toc-l3" href="#s-2.2.2链表链式存储的线性表" data-toc="13">2.2.2 链表（链式存储的线性表）</a>
+<a class="toc-l2" href="#s-2.3数组" data-toc="14">2.3 数组</a>
+<a class="toc-l3" href="#s-2.3.1数组的基本概念" data-toc="15">2.3.1 数组的基本概念</a>
+<a class="toc-l3" href="#s-2.3.2数组的核心特性与操作" data-toc="16">2.3.2 数组的核心特性与操作</a>
+<a class="toc-l2" href="#s-2.4字符串" data-toc="17">2.4 字符串</a>
+<a class="toc-l3" href="#s-2.4.1字符串的基本概念" data-toc="18">2.4.1 字符串的基本概念</a>
+<a class="toc-l3" href="#s-2.4.2字符串的核心操作" data-toc="19">2.4.2 字符串的核心操作</a>
+<a class="toc-l2" href="#s-2.5压缩存储" data-toc="20">2.5 压缩存储</a>
+<a class="toc-l3" href="#s-2.5.1稀疏矩阵的压缩存储" data-toc="21">2.5.1 稀疏矩阵的压缩存储</a>
+<a class="toc-l3" href="#s-2.5.2字符串的压缩存储" data-toc="22">2.5.2 字符串的压缩存储</a>
+<a class="toc-l1" href="#s-3栈和队列的概念及应用分析" data-toc="23">第3章 栈和队列的概念及应用分析</a>
+<a class="toc-l2" href="#s-3.1栈的基本概念" data-toc="24">3.1 栈的基本概念</a>
+<a class="toc-l2" href="#s-3.2栈的存储结构" data-toc="25">3.2 栈的存储结构</a>
+<a class="toc-l3" href="#s-3.2.1顺序栈" data-toc="26">3.2.1 顺序栈</a>
+<a class="toc-l3" href="#s-3.2.2链栈" data-toc="27">3.2.2 链栈</a>
+<a class="toc-l2" href="#s-3.3栈的应用分析" data-toc="28">3.3 栈的应用分析</a>
+<a class="toc-l2" href="#s-3.4队列的基本概念" data-toc="29">3.4 队列的基本概念</a>
+<a class="toc-l2" href="#s-3.5队列的存储结构" data-toc="30">3.5 队列的存储结构</a>
+<a class="toc-l3" href="#s-3.5.1顺序队列" data-toc="31">3.5.1 顺序队列</a>
+<a class="toc-l3" href="#s-3.5.2链队列" data-toc="32">3.5.2 链队列</a>
+<a class="toc-l2" href="#s-3.6队列的应用分析" data-toc="33">3.6 队列的应用分析</a>
+<a class="toc-l2" href="#s-3.7特殊栈与队列" data-toc="34">3.7 特殊栈与队列</a>
+<a class="toc-l1" href="#s-4树与图及常用算法" data-toc="35">第4章 树与图及常用算法</a>
+<a class="toc-l2" href="#s-4.1树的基本概念" data-toc="36">4.1 树的基本概念</a>
+<a class="toc-l2" href="#s-4.2二叉树的基本概念与性质" data-toc="37">4.2 二叉树的基本概念与性质</a>
+<a class="toc-l3" href="#s-4.2.1二叉树的定义" data-toc="38">4.2.1 二叉树的定义</a>
+<a class="toc-l3" href="#s-4.2.2二叉树的性质" data-toc="39">4.2.2 二叉树的性质</a>
+<a class="toc-l3" href="#s-4.2.3二叉树的存储结构" data-toc="40">4.2.3 二叉树的存储结构</a>
+<a class="toc-l2" href="#s-4.3二叉树的遍历算法" data-toc="41">4.3 二叉树的遍历算法</a>
+<a class="toc-l3" href="#s-4.3.1深度优先遍历DFS" data-toc="42">4.3.1 深度优先遍历（DFS）</a>
+<a class="toc-l3" href="#s-4.3.2广度优先遍历BFS层序遍历" data-toc="43">4.3.2 广度优先遍历（BFS，层序遍历）</a>
+<a class="toc-l3" href="#s-4.3.3遍历算法复杂度分析" data-toc="44">4.3.3 遍历算法复杂度分析</a>
+<a class="toc-l2" href="#s-4.4树与森林的转换" data-toc="45">4.4 树与森林的转换</a>
+<a class="toc-l3" href="#s-4.4.1树转换为二叉树" data-toc="46">4.4.1 树转换为二叉树</a>
+<a class="toc-l3" href="#s-4.4.2森林转换为二叉树" data-toc="47">4.4.2 森林转换为二叉树</a>
+<a class="toc-l3" href="#s-4.4.3二叉树转换为树森林" data-toc="48">4.4.3 二叉树转换为树/森林</a>
+<a class="toc-l2" href="#s-4.5图的基本概念" data-toc="49">4.5 图的基本概念</a>
+<a class="toc-l3" href="#s-4.5.1核心概念" data-toc="50">4.5.1 核心概念</a>
+<a class="toc-l3" href="#s-4.5.2图的存储结构" data-toc="51">4.5.2 图的存储结构</a>
+<a class="toc-l2" href="#s-4.6图的遍历算法" data-toc="52">4.6 图的遍历算法</a>
+<a class="toc-l3" href="#s-4.6.1深度优先遍历DFS" data-toc="53">4.6.1 深度优先遍历（DFS）</a>
+<a class="toc-l3" href="#s-4.6.2广度优先遍历BFS" data-toc="54">4.6.2 广度优先遍历（BFS）</a>
+<a class="toc-l2" href="#s-4.7图的常用算法路径生成树拓扑排序" data-toc="55">4.7 图的常用算法（路径、生成树、拓扑排序）</a>
+<a class="toc-l3" href="#s-4.7.1最短路径算法" data-toc="56">4.7.1 最短路径算法</a>
+<a class="toc-l3" href="#s-4.7.2最小生成树MST算法" data-toc="57">4.7.2 最小生成树（MST）算法</a>
+<a class="toc-l3" href="#s-4.7.3拓扑排序" data-toc="58">4.7.3 拓扑排序</a>
+<a class="toc-l1" href="#s-5查找与排序的基本概念及应用分析" data-toc="59">第5章 查找与排序的基本概念及应用分析</a>
+<a class="toc-l2" href="#s-5.1查找的基本概念" data-toc="60">5.1 查找的基本概念</a>
+<a class="toc-l3" href="#s-5.1.1核心概念" data-toc="61">5.1.1 核心概念</a>
+<a class="toc-l3" href="#s-5.1.2查找算法的分类" data-toc="62">5.1.2 查找算法的分类</a>
+<a class="toc-l2" href="#s-5.2常用查找算法" data-toc="63">5.2 常用查找算法</a>
+<a class="toc-l3" href="#s-5.2.1顺序查找线性查找" data-toc="64">5.2.1 顺序查找（线性查找）</a>
+<a class="toc-l3" href="#s-5.2.2二分查找折半查找" data-toc="65">5.2.2 二分查找（折半查找）</a>
+<a class="toc-l3" href="#s-5.2.3树表查找二叉搜索树查找" data-toc="66">5.2.3 树表查找（二叉搜索树查找）</a>
+<a class="toc-l3" href="#s-5.2.4哈希查找散列查找" data-toc="67">5.2.4 哈希查找（散列查找）</a>
+<a class="toc-l2" href="#s-5.3排序的基本概念" data-toc="68">5.3 排序的基本概念</a>
+<a class="toc-l3" href="#s-5.3.1核心概念" data-toc="69">5.3.1 核心概念</a>
+<a class="toc-l2" href="#s-5.4常用排序算法详解" data-toc="70">5.4 常用排序算法详解</a>
+<a class="toc-l3" href="#s-5.4.1简单排序算法On²" data-toc="71">5.4.1 简单排序算法（O(n²)）</a>
+<a class="toc-l3" href="#s-5.4.2高效排序算法Onlog₂n" data-toc="72">5.4.2 高效排序算法（O(n log₂n)）</a>
+<a class="toc-l3" href="#s-5.4.3线性排序算法On" data-toc="73">5.4.3 线性排序算法（O(n)）</a>
+<a class="toc-l2" href="#s-5.5排序算法的选择与应用场景" data-toc="74">5.5 排序算法的选择与应用场景</a>
+<a class="toc-l2" href="#s-5.6查找与排序的关联" data-toc="75">5.6 查找与排序的关联</a>
+  </nav>
+  <div class="sb-foot">
+    <span id="counter">—</span>
+    <button id="expand">仅看章节目</button>
+  </div>
+</aside>
+<main id="main">
+<div id="content">
+  <section class="cover">
+    <h1>数据结构与算法高频考点总结</h1>
+    <div class="cv-sub">科技类基础知识讲义 · 紧扣考试大纲</div>
+    <div class="cv-meta">
+      <span>共 5 章</span><span>29 节</span><span>42 个知识点</span><span>原 PDF 27 页</span><span>文字可复制</span>
+    </div>
+    <div class="cv-note">
+      <b>说明：</b>本页由扫描版 PDF（<code>6-1-数据结构与算法高频考点.pdf</code>）经 OCR 转换而来，
+      文字内容可自由复制、检索；左栏为章节目录，可输入关键词筛选。
+      原资料来源：<a href="https://www.wuyouquizhi.com" target="_blank" rel="noopener">www.wuyouquizhi.com</a>（笔试通），
+      仅限购买用户个人学习使用，不得分享／转增／转卖。<br>
+      <b>校对提示：</b>OCR 可能存在个别错别字与上下标丢失（如形近字、罗马数字、O(n²) 中的上标），
+      请以原 PDF 为准。
+    </div>
+  </section>
+
+<div class="pagebreak" data-page="2"><span class="pg-mark">P2</span></div>
+<h1 id="s-1数据结构基本概念" class="c-h1">1 数据结构基本概念</h1>
+<h2 id="s-1.1数据结构的核心定义" class="c-h2">1.1 数据结构的核心定义</h2>
+<p>数据结构是指相互之间存在一种或多种特定关系的数据元素的集合，用于组织和存储数据，同时定义数据元素之间的逻辑关系、物理存储方式，以及对数据的操作（如插入、删除、查找、修改）。其核心价值是提升数据操作效率、降低存储空间消耗，适配不同场景的应用需求。</p>
+<p>核心关联概念：</p>
+<p class="li"><span class="bul">•</span><b>数据：</b>计算机可处理的各种符号的集合，是数据结构的基本组成单元，包括数值型数据（如整数、浮点数）和非数值型数据（如字符、字符串、图像）。</p>
+<p class="li"><span class="bul">•</span><b>数据元素：</b>数据的基本单位，也称为节点或记录，是数据结构中独立存在的个体，例如一个学生信息（姓名、学号、成绩）、一个整数都可作数据元素。</p>
+<p class="li"><span class="bul">•</span><b>数据项：</b>数据元素的最小组成单位，用于描述数据元素的某个属性，例如学生信息中的“姓名”“学号”就是数据项。</p>
+<p class="li"><span class="bul">•</span><b>数据对象：</b>具有相同性质的数据元素的集合，是数据的一个子集，例如所有学生信息的集合、所有整数的集合。</p>
+<h2 id="s-1.2数据结构的两大核心维度" class="c-h2">1.2 数据结构的两大核心维度</h2>
+<h3 id="s-1.2.1逻辑结构" class="c-h3">1.2.1 逻辑结构</h3>
+<p>逻辑结构是指数据元素之间的抽象关系，与数据的物理存储无关，仅描述数据元素的关联方式，分为四大类：</p>
+<p class="li"><span class="bul">•</span><b>集合结构：</b>数据元素之间仅存在“属于同一集合”的关系，无其他明确关联，例如一个班级的所有学生组成的集合，元素间无序、无层级。</p>
+<p class="li"><span class="bul">•</span><b>线性结构：</b>数据元素之间存在一对一的线性关系，除首尾元素外，每个元素有且仅有一个前驱和一个后继，例如排队的人群、一串数字序列，典型代表为线性表、栈、队列。</p>
+<p class="li"><span class="bul">•</span><b>树</b>形<b>结构：</b>数据元素之间存在一对多的层级关系，有一个根节点，其余节点分为多个子树，例如家族族谱、文件夹结构，典型代表为二叉树、红黑树。</p>
+<p class="li"><span class="bul">•</span><b>图形结构：</b>数据元素之间存在多对多的任意关系，每个元素可与多个元素关联，例如交通路网（节点为城市，边为道路）、社交网络（节点为人，边为好友关系），分为有向图和无向图。</p>
+<h3 id="s-1.2.2物理结构存储结构" class="c-h3">1.2.2 物理结构（存储结构）</h3>
+<p>物理结构是指数据元素及其关系在计算机内存中的实际存储方式，依赖于硬件环境，核心分为两类，决定了数据操作的效率：</p>
+<p class="li"><span class="bul">•</span><b>顺序存储结构：</b>将数据元素依次存储在连续的内存单元中，数据元素的物理位置与逻辑顺序一致，例如数组。优势是存储密度高、可随机访问；劣势是插入、删除操作需移动大量元素，效率较低。</p>
+<p class="li"><span class="bul">•</span><b>链式存储结构：</b>将数据元素存储在不连续的内存单元中，每个数据元素（节点）包含数据域（存储数据）和指针域（存储后续节点的内存地址），通过指针关联形成逻辑关系，例如链表。优势是插入、删除操作无需移动元素，效率高；劣势是存储密度低（需额外存储指针），无法随机访问，只能顺序遍历。补充<b>：</b>除上述两类核心存储结构外，还有索引存储（数据建立索引表，提升查找效率）、散列存储（通过散列函数映射存储，实现快速查找，也称哈希存储），均为基于前两类结构的优化存储方式。</p>
+<div class="pagebreak" data-page="3"><span class="pg-mark">P3</span></div>
+<h2 id="s-1.3数据结构的基本操作" class="c-h2">1.3 数据结构的基本操作</h2>
+<p>针对数据结构的核<b>心</b>操作围绕数据的增、删、改、查展开，不同数据结构的操作效率不同，是算法设计的重要依据：</p>
+<p class="li"><span class="bul">•</span><b>插入：</b>将新的数据元素添加到数据结构的指定位置，需维护数据元素之间的逻辑关系。</p>
+<p class="li"><span class="bul">•</span><b>删除：</b>移除数据结构中指定位置或指定值的数据元素，同样需维护逻辑关系。</p>
+<p class="li"><span class="bul">•</span><b>查找：</b>在数据结构中寻找满足指定条件的数据元素，返回其位置或值。</p>
+<p class="li"><span class="bul">•</span><b>修改：</b>更新指定数据元素的值，不改变其在数据结构中的位置和逻辑关系。</p>
+<p class="li"><span class="bul">•</span><b>遍历：</b>按某种顺序访问数据结构中的所有数据元素，且每个元素仅访问一次，分为线性遍历、深度优先遍历、广度优先遍历等。</p>
+<h2 id="s-1.4算法的基本概念与评价指标" class="c-h2">1.4 算法的基本概念与评价指标</h2>
+<h3 id="s-1.4.1算法定义" class="c-h3">1.4.1 算法定义</h3>
+<p>算法是解决特定问题的有限步骤集合，是操作数据结构的具体方法，需满足五大特性：</p>
+<p class="li"><span class="bul">•</span><b>有穷性：</b>算法执行有限步骤后必须终止，不能无限循环。</p>
+<p class="li"><span class="bul">•</span><b>确定性：</b>每个步骤的定义明确，无歧义，相同输入必产生相同输出。</p>
+<p class="li"><span class="bul">•</span><b>可</b>行<b>性：</b>每个步骤均可通过计算机可执行的操作实现（如算术运算、逻辑判断）。</p>
+<p class="li"><span class="bul">•</span><b>输入：</b>有零个或多个输入，输入来自特定的数据集合。</p>
+<p class="li"><span class="bul">•</span><b>输出：</b>有一个或多个输出，输出是算法执行的结果，与输入对应。</p>
+<h3 id="s-1.4.2算法评价指标" class="c-h3">1.4.2 算法评价指标</h3>
+<p>评价算法的核心是效率和空间开销，无需关注具体实现细节，重点衡量以下指标：</p>
+<p class="li"><span class="bul">•</span><b>时间复杂度：</b>描述算法执行时间随输入规模增长的变化趋势，用大O记号表示（忽略常数项、低次项和系数），反映算法的时间效率。常见复杂度从优到劣<b>：O(1)</b>（常数阶）&lt;<b>O(log₂n)</b>（对数阶）&lt;<b>O(n)</b>（线性阶）&lt;<b>O(n log₂n)</b>（线性对数阶）&lt;<b>O(n²)（平方阶）</b>&lt;O(n³)（立方阶）&lt;<b>O(2ⁿ)（指数阶）</b>&lt;<b>O(n!)（阶乘阶）</b>。其中<b>，O(1)</b>、<b>O(log₂n)</b>、O(n)、<b>O(n log₂n)</b>为高效算法，O(2ⁿ)<b>、O(n!)</b>为低效算法，仅适用于小规模输入。</p>
+<p class="li"><span class="bul">•</span><b>空间复杂度：</b>描述算法执行过程中所需存储空间随输入规模增长的变化趋势，同样用大O记号表示，包括程序本身占用的空间、输入数据占用的空间，以及算法执行过程中临时占用的空间（辅助空间）。常见空间复杂度<b>：O(1)</b>（常数空间）<b>、O(n)</b>（线性空间）、<b>O(n²)</b>（平方空间）等，优先选择空间复杂度低的算法（空间换时间或时间换空间需根据场景权衡）。</p>
+<p class="li"><span class="bul">•</span><b>稳定性：</b>排序算法的专属评价指标，指排序后，相同值的数据元素保持原有相对顺序。稳定排序适用于需保留原始顺序的场景（如按成绩排序后，保留同成绩学生的录入顺序）。</p>
+<div class="pagebreak" data-page="4"><span class="pg-mark">P4</span></div>
+<h1 id="s-2线性表与数组含字符串与压缩存储" class="c-h1">2 线性表与数组（含字符串与压缩存储）</h1>
+<h2 id="s-2.1线性表的基本概念" class="c-h2">2.1 线性表的基本概念</h2>
+<p>线性表是最基础的线性结构，定义为<b>：</b>由<b>n（n≥0）</b>个数据元素组成的有限序列，数据元素之间存在一对一的线性关系，<b>n</b>=0时称为空表，<b>n≥1时</b>称为非空表。线性表的逻辑结构清晰，首尾元素特殊（首元素无前驱，尾元素无后继），中间元素有唯一前驱和后继。</p>
+<p>线性表的核心操作：初始化、插入、删除、查找、遍历、求长度、清空，其操作效率依赖于存储结构（顺序存储或链式存储）。</p>
+<h2 id="s-2.2线性表的两种存储结构" class="c-h2">2.2 线性表的两种存储结构</h2>
+<h3 id="s-2.2.1顺序表顺序存储的线性表" class="c-h3">2.2.1 顺序表（顺序存储的线性表）</h3>
+<p>顺序表是将线性表的元素依次存储在连续的内存单元中，元素的物理位置与逻辑顺序一致，通常用数组实现（数组下标对应元素的逻辑位置）。</p>
+<p class="li"><span class="bul">•</span><b>结构特点：</b>存储连续，可通过下标随机访问（时间复杂度<b>O(1)</b>）；存储密度高（无额外指针开销）；需预先分配固定大小的存储空间，可能存在空间浪费或溢出问题。</p>
+<p class="li"><span class="bul">•</span><b>核心操作效率：</b></p>
+<p class="li li2"><span class="bul">○</span>查找（按下标）<b>：O(1)</b>，直接通过下标定位内存地址。</p>
+<p class="li li2"><span class="bul">○</span>插入/删除（中间位置）<b>：O(n)</b>，需移动插入位置后的所有元素（插入时向后移，删除时向前移），元素越多，移动次数越多。</p>
+<p class="li li2"><span class="bul">○</span>插入/删除（首尾位置）：插入尾部<b>O(1)</b>（无需移动元素），删除头部<b>O(n)</b>（需移动所有元素）。</p>
+<p class="li"><span class="bul">•</span><b>适用场景：</b>数据元素个数固定、频繁进行查找操作、较少进行插入/删除操作的场景，例如存储班级固定人数的成绩。</p>
+<h3 id="s-2.2.2链表链式存储的线性表" class="c-h3">2.2.2 链表（链式存储的线性表）</h3>
+<p>链表是将线性表的元素存储在不连续的内存单元中，每个元素（节点）由数据域和指针域组成，通过指针域关联形成线性逻辑关系，无需预先分配固定存储空间。根据指针域的数量和指向，分为多种类型<b>：</b></p>
+<p class="li"><span class="bul">•</span><b>单链表：</b></p>
+<p class="li li2"><span class="bul">○</span>结构特点：每个节点仅有一个指针域，指向后继节点；有一个头指针（指向首节点），尾节点的指针域为<b>null</b>（空指针）；可设置头节点（不存储数据，仅用于简化插入/删除操作，避免处理首节点特殊情况）。</p>
+<p class="li li2"><span class="bul">○</span>操作效率：查找<b>O(n)</b>（需从头部开始顺序遍历）；插入/删除<b>O(1)</b>（找到目标位置后，仅需修改指针指向，无需移动元素）；无法反向遍历。</p>
+<p class="li"><span class="bul">•</span><b>双链表：</b></p>
+<div class="pagebreak" data-page="5"><span class="pg-mark">P5</span></div>
+<p class="li li2"><span class="bul">○</span>结构特点<b>：</b>每个节点有两个指针域，一个指向后继节点（<b>n</b>ext），一个指向前驱节点（<b>pr</b>ev）；头节点的p<b>r</b>ev为<b>null</b>，尾节点的<b>n</b>ex<b>t</b>为<b>nul</b>l。</p>
+<p class="li li2"><span class="bul">○</span>优势：可双向遍历，便于查找前驱节点；插入/删除操作更灵活（无需从头遍历寻找前驱）；劣势：增加了指针域开销，存储密度低于单链表。</p>
+<p class="li"><span class="bul">•</span><b>循环链表：</b></p>
+<p class="li li2"><span class="bul">○</span>结构特点：基于单链表或双链表改造，尾节点的指针域不指向<b>nu</b>l<b>l</b>，而是指向头节点（单循环链表）或头节点的p<b>r</b>ev指向尾节点（双循环链表），形成闭环。</p>
+<p class="li li2"><span class="bul">○</span>优势：便于遍历所有节点（无明确尾节点，可从任意节点开始遍历）；适用于环形场景，例如循环队列、约瑟夫环问题。</p>
+<p class="li"><span class="bul">•</span><b>静态链表：</b></p>
+<p class="li li2"><span class="bul">○</span>结构特点：用数组模拟链表，每个数组元素包含数据域和指针域（指针域存储数组下标，而非内存地址），属于顺序存储与链式存储的结合。</p>
+<p class="li li2"><span class="bul">○</span>适用场景：不支持指针操作的编程语言（如早期<b>B</b>asic），或内存空间受限、需手动管理节点的场景。</p>
+<p>链表的适用场景：数据元素个数不固定、频繁进行插入/删除操作、较少进行查找操作的场景，例如动态任务列表（需频繁添加/删除任务）。</p>
+<h2 id="s-2.3数组" class="c-h2">2.3 数组</h2>
+<h3 id="s-2.3.1数组的基本概念" class="c-h3">2.3.1 数组的基本概念</h3>
+<p>数组是一种顺序存储的线性结构，由相同数据类型的元素组成，每个元素通过下标唯一标识，下标从0开始（多数编程语言）或从<b>1</b>开始。数组分为一维数组和多维数组，本质是线性表的扩展（多维数组可拆解多个一维数组）。</p>
+<p class="li"><span class="bul">•</span>一<b>维数组：</b>最基础的数组形式，元素呈线性排列，逻辑结构与顺序表一致，例如<b>int[] arr</b> =<b>{1,2,3,4,5}</b>，可直接通过下标访问元素。</p>
+<p class="li"><span class="bul">•</span><b>多维数组：</b>以二维数组为代表，逻辑上是行和列的矩阵结构，物理存储分为行优先存储（先存储第一行，再存储第二行，如C、<b>J</b>ava）和列优先存储（先存储第一列，再存储第二列，如Fort<b>r</b>a<b>n</b>）。例如<b>int[][] arr</b>=<b>{{1,2},{3,4}}</b>，物理存储顺序为<b>1</b>、2、3、4（行优先）。</p>
+<h3 id="s-2.3.2数组的核心特性与操作" class="c-h3">2.3.2 数组的核心特性与操作</h3>
+<p class="li"><span class="bul">•</span><b>特性：</b>存储连续、元素类型一致、<b>可随机访问（O(1)）、固定大小</b>（初始化后不可动态扩容，需扩容时需重新分配内存并复制元素）。</p>
+<p class="li"><span class="bul">•</span><b>核心操作：</b>访问（按下标）、修改（按下标）、遍历（顺序遍历或按维度遍历）、扩容（手动实现），插入/删除操作效率低（需移动大量元素<b>，O(n)</b>）。</p>
+<div class="pagebreak" data-page="6"><span class="pg-mark">P6</span></div>
+<p class="li"><span class="bul">•</span><b>与顺序表的</b>区<b>别：</b>数组的元素类型必须一致，顺序表的元素类型可自定义（如结构体、对象）；数组通常不可动态扩容，顺序表可通过封装实现动态扩容（如<b>J</b>ava中的A<b>r</b>ray<b>L</b>ist）。</p>
+<h2 id="s-2.4字符串" class="c-h2">2.4 字符串</h2>
+<h3 id="s-2.4.1字符串的基本概念" class="c-h3">2.4.1 字符串的基本概念</h3>
+<p>字符串是由零个或多个字符组成的有限序列，本质是一种特殊的线性表（数据元素字符），通常用数组或链表存储，分为定长字符串和可变长字符串。</p>
+<p class="li"><span class="bul">•</span><b>核心概念：</b></p>
+<p class="li li2"><span class="bul">○</span>空串<b>：</b>长度为0的字符串，不含任何字符，记为&quot;&quot;。</p>
+<p class="li li2"><span class="bul">○</span>空格串：由一个或多个空格字符组成的字符串，长度大于0，与空串不同。</p>
+<p class="li li2"><span class="bul">○</span>子串：字符串中连续的若干个字符组成的序列，例如“abc<b>d</b>e”的子串有<b>“a”“bc”“cde”等</b>。</p>
+<p class="li li2"><span class="bul">○</span>前缀/后缀：前缀是从字符串起始位置开始的子串，后缀是从字符串末尾位置结束的子串。</p>
+<p class="li li2"><span class="bul">○</span>字符串长度：字符串中字符的个数（空串长度为0）。</p>
+<p class="li"><span class="bul">•</span><b>存储方式：</b></p>
+<p class="li li2"><span class="bul">○</span>定长存储：用固定大小的数组存储，字符串末尾添加结束标志（如C语言中的\0），存在空间浪费或字符串过长溢出的问题。</p>
+<p class="li li2"><span class="bul">○</span>可变长存储：用链表或动态数组存储，可根据字符串长度动态扩容，避免空间浪费（如<b>J</b>ava中的S<b>tr</b>i<b>n</b>g<b>Buf</b>fer、S<b>tr</b>i<b>n</b>g<b>Bu</b>i<b>l</b>de<b>r</b>）。</p>
+<h3 id="s-2.4.2字符串的核心操作" class="c-h3">2.4.2 字符串的核心操作</h3>
+<p class="li"><span class="bul">•</span><b>拼接</b>（<b>连接</b>）：将两个或多个字符串合并为一个字符串，定长字符串拼接需考虑空间是否足够，可变长字符串可动态扩容。</p>
+<p class="li"><span class="bul">•</span><b>比较：</b>按字符的ASC<b>II</b>码值逐位比较，判断两个字符串是否相等，或比较大小<b>（如“abc”&lt;“abd”）</b>。</p>
+<p class="li"><span class="bul">•</span><b>查找：</b></p>
+<p class="li li2"><span class="bul">○</span>子串查找：在主串中寻找指定子串的位置，核心算法有暴力匹配算法（<b>BF</b>算法）、<b>KMP</b>算法、<b>BM</b>算法。</p>
+<p class="li li2"><span class="bul">○</span>字符查找<b>：</b>在字符串中寻找指定字符的位置，可顺序遍历或利用哈希表优化。</p>
+<p class="li"><span class="bul">•</span><b>替换：</b>将字符串中指定的子串或字符替换其他子串或字符，需处理替换后字符串长度变化的问题。</p>
+<div class="pagebreak" data-page="7"><span class="pg-mark">P7</span></div>
+<p class="li"><span class="bul">•</span><b>截取：</b>从字符串中截取指定范围的子串，返回新的字符串，不修改原字符串。</p>
+<p class="li"><span class="bul">•</span><b>反转：</b>将字符串的字符顺序颠倒（如“a<b>b</b>c”<b>反转后为“cba”</b>），可通过双指针法高效实现。</p>
+<h2 id="s-2.5压缩存储" class="c-h2">2.5 压缩存储</h2>
+<p>压缩存储是指针对特定数据（如稀疏矩阵、重复字符串），通过减少冗余数据的存储，节省存储空间的存储方式，核心思路是仅存储有效数据，忽略无效或重复数据。</p>
+<h3 id="s-2.5.1稀疏矩阵的压缩存储" class="c-h3">2.5.1 稀疏矩阵的压缩存储</h3>
+<p>稀疏矩阵是指矩阵中大多数元素为0（或其他无效值），非零元素占比极低的矩阵（通常非零元素占比&lt;5%），直接用二维数组存储会浪费大量空间，常用压缩存储方式<b>：</b></p>
+<p class="li"><span class="bul">•</span>三<b>元组表：</b></p>
+<p class="li li2"><span class="bul">○</span>存储方式<b>：</b>用一个二维数组存储所有非零元素，每个非零元素存储三个信息：行号、列号、元素值，同时记录原矩阵的行数、列数和非零元素个数。</p>
+<p class="li li2"><span class="bul">○</span>优势：结构简单，节省空间；劣势：查找、修改非零元素需顺序遍历三元组表，效率较低，适用于非零元素较少且操作不频繁的场景。</p>
+<p class="li"><span class="bul">•</span><b>十字链表：</b></p>
+<p class="li li2"><span class="bul">○</span>存储方式<b>：</b>用链表存储非零元素，每个非零元素节点包含行号、列号、元素值，以及两个指针域（行指针指向同一行的下一个非零元素，列指针指向同一列的下一个非零元素），同时设置行头指针数组和列头指针数组，分别指向每行、每列的第一个非零元素。</p>
+<p class="li li2"><span class="bul">○</span>优势：便于查找、插入、删除非零元素，可快速定位同一行或同一列的非零元素；劣势：结构复杂，实现难度高，适用于频繁操作非零元素的场景。</p>
+<h3 id="s-2.5.2字符串的压缩存储" class="c-h3">2.5.2 字符串的压缩存储</h3>
+<p>针对包含大量重复字符的字符串（如“aaaaabb<b>bbb</b>c<b>c</b>cc<b>c</b>”），常用压缩存储方式，核心是记录重复字符的个数，减少重复字符的存储<b>：</b></p>
+<p class="li"><span class="bul">•</span><b>行程长度编码</b>（<b>RLE</b>）<b>：</b></p>
+<p class="li li2"><span class="bul">○</span>编码规则：将连续重复的字符替换为“字符+重复次数”，例如“aaaaa<b>b</b>b<b>b</b>b<b>b</b>ccccc”编码为“a5<b>b</b>5c5”。</p>
+<p class="li li2"><span class="bul">○</span>优势：实现简单，对重复度高的字符串压缩效果好；劣势：对无重复或重复度低的字符串，可能导致编码后长度增加（如“a<b>b</b>c<b>d</b>e”<b>编码为“a1b1c1d1e1”</b>）。</p>
+<p class="li"><span class="bul">•</span><b>哈夫曼编码：</b></p>
+<p class="li li2"><span class="bul">○</span>编码规则<b>：</b>基于哈夫曼树，为出现频率高的字符分配短编码，频率低的字符分配长编码，无前缀编码（避免解码歧义），是一种无损压缩方式。</p>
+<div class="pagebreak" data-page="8"><span class="pg-mark">P8</span></div>
+<p class="li li2"><span class="bul">○</span>优势：压缩效率高，适用于任意字符串，尤其适合字符频率差异大的场景（如文本文件压缩）；劣势：需先统计字符频率、构建哈夫曼树，实现复杂度高于<b>RLE</b>。</p>
+<h1 id="s-3栈和队列的概念及应用分析" class="c-h1">3 栈和队列的概念及应用分析</h1>
+<h2 id="s-3.1栈的基本概念" class="c-h2">3.1 栈的基本概念</h2>
+<p>栈是一种特殊的线性表，遵循“后进先出”（<b>LIF</b>O，Las<b>t</b> <b>In</b> Fi<b>r</b>s<b>t</b> O<b>ut</b>）的原则，仅允许在表的一端（称为栈顶）进行插入和删除操作，另一端（称为栈底）固定不变。栈的核心特点是操作受限，仅栈顶元素可被访问、插入、删除。</p>
+<p class="li"><span class="bul">•</span><b>核心概</b>念<b>：</b></p>
+<p class="li li2"><span class="bul">○</span>栈顶：允许插入、删除、访问的一端，栈顶元素是最后插入的元素。</p>
+<p class="li li2"><span class="bul">○</span>栈底<b>：</b>固定不变的一端，栈底元素是最先插入的元素。</p>
+<p class="li li2"><span class="bul">○</span>空栈：栈中无任何元素，栈顶指针与栈底指针重合。</p>
+<p class="li li2"><span class="bul">○</span>栈满：栈的存储空间被占满，无法再插入元素（仅顺序栈存在栈满问题，链栈无栈满限制）。</p>
+<p class="li"><span class="bul">•</span><b>核心操作：</b></p>
+<p class="li li2"><span class="bul">○</span>pus<b>h</b>（入栈）<b>：</b>将元素插入栈顶，栈顶指针上移（顺序栈）或新增节点（链栈）。</p>
+<p class="li li2"><span class="bul">○</span><b>p</b>o<b>p</b>（出栈）：将栈顶元素删除，返回该元素，栈顶指针下移（顺序栈）或删除栈顶节点（链栈），空栈无法出栈。</p>
+<p class="li li2"><span class="bul">○</span>peek（取栈顶元素）：访问栈顶元素，不删除该元素，空栈无法取栈顶元素。</p>
+<p class="li li2"><span class="bul">○</span>is<b>E</b>mpty（判断空栈）：判断栈中是否无元素，返回布尔值。</p>
+<p class="li li2"><span class="bul">○</span>size（求栈的大小）：返回栈中元素的个数。</p>
+<h2 id="s-3.2栈的存储结构" class="c-h2">3.2 栈的存储结构</h2>
+<h3 id="s-3.2.1顺序栈" class="c-h3">3.2.1 顺序栈</h3>
+<p>顺序栈是用数组实现的栈，栈底固定在数组下标为0的位置，栈顶指针（<b>t</b>op）记录栈顶元素的下标，初始化时<b>t</b>op=-<b>1</b>（表示空栈），入栈时<b>top++</b>，出栈时<b>t</b>o<b>p</b>--。</p>
+<p class="li"><span class="bul">•</span><b>特点：</b>存储连续，访问效率高（<b>O(1)</b>）；需预先分配存储空间，存在栈满溢出问题；实现简单，适合元素个数固定的场景。</p>
+<div class="pagebreak" data-page="9"><span class="pg-mark">P9</span></div>
+<p class="li"><span class="bul">•</span><b>栈满与栈</b>空<b>判断：</b></p>
+<p class="li li2"><span class="bul">○</span>栈空：top==<b>-1</b>。</p>
+<p class="li li2"><span class="bul">○</span>栈满：top==数组长度<b>-1</b>。</p>
+<p class="li"><span class="bul">•</span><b>扩容方式：</b>当栈满时，重新分配一个更大的数组，将原栈中的元素复制到新数组中，实现动态扩容（如<b>J</b>ava中的Stack类）。</p>
+<h3 id="s-3.2.2链栈" class="c-h3">3.2.2 链栈</h3>
+<p>链栈是用单链表实现的栈，栈顶对应链表的首节点，栈底对应链表的尾节点，头指针指向栈顶元素，无需预先分配存储空间，无栈满问题。</p>
+<p class="li"><span class="bul">•</span><b>特点：</b>存储不连续，插入/删除效率高（<b>O(1)</b>）；无栈满溢出问题，可动态扩容；存储密度低于顺序栈（需额外存储指针）；实现复杂度略高于顺序栈。</p>
+<p class="li"><span class="bul">•</span><b>栈空判断：</b>头指针为<b>null</b>（无栈顶节点）。</p>
+<p class="li"><span class="bul">•</span><b>适用场景：</b>元素个数不固定、频繁进行入栈/出栈操作的场景。</p>
+<h2 id="s-3.3栈的应用分析" class="c-h2">3.3 栈的应用分析</h2>
+<p>栈因“后进先出”的特性，广泛应用于需要临时存储、回溯、匹配的场景，核心应用如下：</p>
+<p class="li"><span class="bul">•</span><b>括号匹配：</b></p>
+<p class="li li2"><span class="bul">○</span>应用场景：判断表达式中的括号（圆括号、方括号、花括号）是否匹配，<b>如“{[()]}”匹配，“{[)]}”不匹配</b>。</p>
+<p class="li li2"><span class="bul">○</span>实现思路：遍历表达式，遇到左括号则入栈；遇到右括号则出栈，判断出栈的左括号与当前右括号是否匹配，不匹配则返回fa<b>l</b>se；遍历结束后，若栈为空则匹配成功，否则匹配失败。</p>
+<p class="li"><span class="bul">•</span><b>表达式求值：</b></p>
+<p class="li li2"><span class="bul">○</span>应用场景：计算后缀表达式（逆波兰表达式）、中缀表达式转后缀表达式，是计算器的核心实现逻辑。</p>
+<p class="li li2"><span class="bul">○</span>实现思路<b>：</b>中缀转后缀时，用栈存储运算符，根据运算符优先级处理，优先级高的运算符优先出栈；后缀表达式求值时，用栈存储操作数，遇到运算符则弹出两个操作数计算，将结果入栈，最终栈中剩余元素即为结果。</p>
+<p class="li"><span class="bul">•</span><b>函数调用与递归：</b></p>
+<p class="li li2"><span class="bul">○</span>应用场景：程序执行时的函数调用栈，递归函数的实现（递归本质是利用系统栈存储函数调用信息）。</p>
+<div class="pagebreak" data-page="10"><span class="pg-mark">P10</span></div>
+<p class="li li2"><span class="bul">○</span>实现原理<b>：</b>函数调用时，将函数的参数、返回地址等信息入栈；函数执行完毕后，出栈恢复上一层函数的执行环境，继续执行。递归深度过大会导致栈溢出（系统栈空间有限）。</p>
+<p class="li"><span class="bul">•</span><b>回溯算法：</b></p>
+<p class="li li2"><span class="bul">○</span>应用场景：迷宫求解、全排列、子集问题等，需要回溯到上一步的场景。</p>
+<p class="li li2"><span class="bul">○</span>实现思路<b>：</b>用栈存储已探索的路径和状态，当探索到死胡同或完成当前路径时，出栈回溯到上一步，尝试其他路径。</p>
+<p class="li"><span class="bul">•</span><b>字符串反转：</b>将字符串的字符依次入栈，再依次出栈，即可得到反转后的字符串（简单场景适用，高效实现用双指针法）。</p>
+<h2 id="s-3.4队列的基本概念" class="c-h2">3.4 队列的基本概念</h2>
+<p>队列是一种特殊的线性表，遵循“先进先出”（<b>FIF</b>O,Fi<b>r</b>s<b>t</b> <b>In</b> First O<b>u</b>t）的原则，仅允许在表的一端（称为队尾）进行插入操作，在另一端（称为队头）进行删除操作，队列的核心特点是操作受限，队头元素最先被删除，队尾元素最后被插入。</p>
+<p class="li"><span class="bul">•</span><b>核心概念：</b></p>
+<p class="li li2"><span class="bul">○</span>队头（<b>f</b>ro<b>n</b>t）：允许删除、访问的一端，队头元素是最先插入的元素。</p>
+<p class="li li2"><span class="bul">○</span>队尾（rear）：允许插入的一端，队尾元素是最后插入的元素。</p>
+<p class="li li2"><span class="bul">○</span>空队列<b>：</b>队列中无任何元素，队头指针与队尾指针重合。</p>
+<p class="li li2"><span class="bul">○</span>队满：队列的存储空间被占满，无法再插入元素（仅顺序队列存在队满问题，链队列无队满限制）。</p>
+<p class="li"><span class="bul">•</span><b>核心操作：</b></p>
+<p class="li li2"><span class="bul">○</span>e<b>n</b>q<b>u</b>e<b>u</b>e（入队）<b>：</b>将元素插入队尾，队尾指针后移（顺序队列）或新增节点（链队列）。</p>
+<p class="li li2"><span class="bul">○</span><b>d</b>e<b>qu</b>e<b>u</b>e（出队）：将队头元素删除<b>，</b>返回该元素，队头指针后移（顺序队列）或删除队头节点（链队列），空队列无法出队。</p>
+<p class="li li2"><span class="bul">○</span><b>p</b>eek（取队头元素）：访问队头元素，不删除该元素，空队列无法取队头元素。</p>
+<p class="li li2"><span class="bul">○</span>is<b>Em</b>p<b>t</b>y（判断空队列）<b>：</b>判断队列中是否无元素，返回布尔值。</p>
+<p class="li li2"><span class="bul">○</span>size（求队列的大小）：返回队列中元素的个数。</p>
+<h2 id="s-3.5队列的存储结构" class="c-h2">3.5 队列的存储结构</h2>
+<div class="pagebreak" data-page="11"><span class="pg-mark">P11</span></div>
+<h3 id="s-3.5.1顺序队列" class="c-h3">3.5.1 顺序队列</h3>
+<p>顺序队列是用数组实现的队列，队头指针（f<b>r</b>o<b>nt</b>）记录队头元素的下标，队尾指针（<b>r</b>ea<b>r</b>）记录队尾元素的下一个位置，初始化时<b>fr</b>o<b>nt</b>=<b>r</b>ea<b>r</b>=0（表示空队列）。</p>
+<p class="li"><span class="bul">•</span><b>问题与优化：</b></p>
+<p class="li li2"><span class="bul">○</span>假溢出问题：当队尾指针到达数组末尾（<b>r</b>e<b>a</b>r=数组长度），但队列前方仍有空闲空间时，无法入队，称为假溢出（并非真的队满）。</p>
+<p class="li li2"><span class="bul">○</span>解决方案：循环队列，将数组视为环形结构，队尾指针到达数组末尾时，若前方有空闲空间，可绕回数组起始位置，避免假溢出。</p>
+<p class="li"><span class="bul">•</span><b>循环队列的判断：</b></p>
+<p class="li li2"><span class="bul">○</span>队空<b>：</b>f<b>r</b>o<b>nt</b> =rea<b>r</b>。</p>
+<p class="li li2"><span class="bul">○</span>队满：（<b>r</b>ear+ <b>1</b>）%数组长度=f<b>r</b>o<b>nt</b>（预留一个空闲位置，用于区分队空和队满）。</p>
+<p class="li"><span class="bul">•</span><b>特点：</b>存储连续，访问效率高（<b>O(1)</b>）；解决假溢出问题后，空间利用率提升；需预先分配存储空间，存在真队满问题。</p>
+<h3 id="s-3.5.2链队列" class="c-h3">3.5.2 链队列</h3>
+<p>链队列是用单链表实现的队列，队头对应链表的首节点<b>，</b>队尾对应链表的尾节点，设置队头指针（指向队头节点）和队尾指针（指向队尾节点），无需预先分配存储空间，无队满问题。</p>
+<p class="li"><span class="bul">•</span><b>特点：</b>存储不连续，插入/删除效率高（<b>O(1)</b>）；无队满溢出问题，可动态扩容；存储密度低于顺序队列；实现简单，适合元素个数不固定的场景。</p>
+<p class="li"><span class="bul">•</span>空<b>队列判断：</b>队头指针为<b>nu</b>l<b>l</b>（无队头节点），此时队尾指针也为<b>nul</b>l。</p>
+<p class="li"><span class="bul">•</span><b>优化：</b>设置头节点（不存储数据），简化入队/出队操作，避免处理队头节点为空的特殊情况。</p>
+<h2 id="s-3.6队列的应用分析" class="c-h2">3.6 队列的应用分析</h2>
+<p>队列因“先进先出”的特性，广泛应用于需要按顺序处理数据、缓冲的场景，核心应用如下：</p>
+<p class="li"><span class="bul">•</span><b>任务调度：</b></p>
+<p class="li li2"><span class="bul">○</span>应用场景：操作系统的进程调度、线程池任务调度、打印机队列（按顺序处理打印任务）。</p>
+<p class="li li2"><span class="bul">○</span>实现思路：将待处理的任务依次入队，调度器按顺序从队头取出任务执行，执行完毕后再取下一个任务，保证任务按提交顺序处理。</p>
+<p class="li"><span class="bul">•</span><b>缓冲处理：</b></p>
+<p class="li li2"><span class="bul">○</span>应用场景：<b>IO缓冲</b>（如键盘输入缓冲、文件读写缓冲）、网络数据传输缓冲（<b>T</b>C<b>P</b>协议中的滑动窗口本质是队列结构）。</p>
+<div class="pagebreak" data-page="12"><span class="pg-mark">P12</span></div>
+<p class="li li2"><span class="bul">○</span>实现原理：当数据产生速度与处理速度不匹配时，用队列存储临时数据，产生方入队，处理方出队，避免数据丢失或处理阻塞。</p>
+<p class="li"><span class="bul">•</span><b>广度优先搜索</b>（<b>BFS</b>）<b>：</b></p>
+<p class="li li2"><span class="bul">○</span>应用场景：树的层序遍历、图的广度优先遍历、最短路径求解（无权图）。</p>
+<p class="li li2"><span class="bul">○</span>实现思路：用队列存储待访问的节点，先访问当前节点，再将其邻接节点依次入队，循环执行直到队列为空，保证按层级或距离顺序访问节点。</p>
+<p class="li"><span class="bul">•</span><b>消息队列：</b></p>
+<p class="li li2"><span class="bul">○</span>应用场景<b>：</b>分布式系统中的异步通信（如订单提交后，通过消息队列通知库存系统、支付系统处理）。</p>
+<p class="li li2"><span class="bul">○</span>实现原理：消息发送方将消息入队，消息接收方从队头取出消息处理，实现系统解耦，提升系统稳定性和吞吐量。</p>
+<h2 id="s-3.7特殊栈与队列" class="c-h2">3.7 特殊栈与队列</h2>
+<p class="li"><span class="bul">•</span><b>双栈实现队列：</b>用两个栈（栈A负责入队，栈<b>B</b>负责出队）模拟队列，入队时压入栈A；出队时，若栈<b>B</b>为空，则将栈A的所有元素弹出压入栈<b>B</b>，再从栈<b>B</b>弹出元素，实现“先进先出”。</p>
+<p class="li"><span class="bul">•</span><b>双队列</b>实<b>现栈：</b>用两个队列（队列A和队列<b>B</b>）模拟栈，入队时压入队列A；出队时，将队列A的所有元素（除最后一个）弹出压入队列<b>B</b>，再弹出队列A的最后一个元素，实现“后进先出”。</p>
+<p class="li"><span class="bul">•</span><b>单调栈：</b>栈中元素保持单调递增或单调递减的特性，<b>用于解决next greater element</b>问题、直方图最大矩形面积、接雨水等算法题，核心是维护栈的单调性，减少遍历次数。</p>
+<p class="li"><span class="bul">•</span><b>单调队列：</b>队列中元素保持单调递增或单调递减的特性，用于解决滑动窗口最大值/最小值问题，核心是维护队列的单调性，移除窗口外的元素和无效元素，提升查询效率。</p>
+<h1 id="s-4树与图及常用算法" class="c-h1">4 树与图及常用算法</h1>
+<h2 id="s-4.1树的基本概念" class="c-h2">4.1 树的基本概念</h2>
+<p>树是一种非线性结构，由<b>n（n≥0）</b>个节点组成，<b>n</b>=0时称为空树；<b>n≥1时</b>，有一个唯一的根节点，其余节点分为若干个互不相交的子树，每个子树也是一棵树，节点之间存在一对多的层级关系，无环路。</p>
+<p class="li"><span class="bul">•</span><b>核心概</b>念<b>：</b></p>
+<p class="li li2"><span class="bul">○</span>根节点：树的顶层节点，无父节点，唯一。</p>
+<p class="li li2"><span class="bul">○</span>父节点/子节点：若节点A的子树包含节点<b>B</b>，则A是<b>B</b>的父节点，<b>B</b>是A的子节点，一个父节点可有多个子节点，一个子节点仅有一个父节点。</p>
+<div class="pagebreak" data-page="13"><span class="pg-mark">P13</span></div>
+<p class="li li2"><span class="bul">○</span>兄弟节点：具有相同父节点的节点互称兄弟节点。</p>
+<p class="li li2"><span class="bul">○</span>叶子节点<b>：</b>无子女节点的节点，位于树的最底层。</p>
+<p class="li li2"><span class="bul">○</span>节点的度：节点拥有的子节点个数，叶子节点的度为0，根节点的度为子树个数。</p>
+<p class="li li2"><span class="bul">○</span>树的度：树中所有节点的度的最大值。</p>
+<p class="li li2"><span class="bul">○</span>节点的深度<b>：</b>从根节点到该节点的路径长度（根节点深度为<b>1</b>或0，根据定义不同）。</p>
+<p class="li li2"><span class="bul">○</span>节点的高度：从该节点到最远叶子节点的路径长度（叶子节点高度为<b>1</b>或0）。</p>
+<p class="li li2"><span class="bul">○</span>树的高度（深度）：根节点的高度（或深度），即树的最大层级。</p>
+<p class="li li2"><span class="bul">○</span>子树：由节点及其所有后代节点组成的树，是原树的一部分，子树之间互不相交。</p>
+<p class="li"><span class="bul">•</span><b>树的性质：</b></p>
+<p class="li li2"><span class="bul">○</span>树中节点个数=所有节点的度之和＋<b>1</b>（根节点无父节点，需加<b>1</b>）。</p>
+<p class="li li2"><span class="bul">○</span>度为k的树，第i层最多有<b>k^(i-1)</b>个节点（根节点为第<b>1</b>层）。</p>
+<p class="li li2"><span class="bul">○</span>高度为<b>h</b>、度为<b>k</b>的树，最多有<b>(k^h - 1)/(k-1)</b>个节点（满k叉树）。</p>
+<p class="li li2"><span class="bul">○</span>任意一棵树，叶子节点个数≥树的度（当树为满k叉树时，叶子节点个数最多）。</p>
+<p class="li"><span class="bul">•</span><b>树的存储结构：</b></p>
+<p class="li li2"><span class="bul">○</span><b>双亲表</b>示<b>法：</b>用数组存储节点，每个节点包含数据域和父节点下标，根节点的父节点下标为-<b>1</b>。优势：便于查找父节点；劣势：查找子节点需遍历整个数组，效率低。</p>
+<p class="li li2"><span class="bul">○</span><b>孩</b>子<b>表示法：</b>用数组存储节点，每个节点的子节点用链表存储（孩子链表），优势：便于查找子节点；劣势：查找父节点效率低。</p>
+<p class="li li2"><span class="bul">○</span>孩<b>子兄弟表</b>示<b>法</b>（二<b>叉树表</b>示<b>法</b>）：每个节点包含数据域、第一个孩子指针、右兄弟指针，可将任意树转换二叉树（左孩子，右兄弟），是最常用的树存储方式，便于后续遍历和操作。</p>
+<h2 id="s-4.2二叉树的基本概念与性质" class="c-h2">4.2 二叉树的基本概念与性质</h2>
+<h3 id="s-4.2.1二叉树的定义" class="c-h3">4.2.1 二叉树的定义</h3>
+<div class="pagebreak" data-page="14"><span class="pg-mark">P14</span></div>
+<p>二叉树是一种特殊的树，每个节点最多有两个子节点，分别称为左子节点和右子节点，左子树和右子树互不相交，且有顺序（左子树、右子树，即使节点只有一个子节点，也要区分左、右）。二叉树是树结构中最常用的类型，可方便地实现遍历、查找等操作。</p>
+<p>特殊二叉树类型：</p>
+<p class="li"><span class="bul">•</span><b>空</b>二叉<b>树：</b>节点个数为0的二叉树。</p>
+<p class="li"><span class="bul">•</span><b>满</b>二叉<b>树：</b>除叶子节点外，每个节点都有两个子节点，且叶子节点都在同一层，是高度为<b>h</b>时节点个数最多的二叉树（节点个数为<b>2^h - 1</b>）。</p>
+<p class="li"><span class="bul">•</span>完<b>全</b>二<b>叉树：</b>除最后一层外，每一层的节点个数都达到最大值，最后一层的节点从左到右连续排列，无空缺。满二叉树是完全二叉树的特殊情况，完全二叉树可高效用数组存储（父节点下标<b>i</b>，左子节点下标2i+<b>1</b>，右子节点下标2<b>i</b>+2）。</p>
+<p class="li"><span class="bul">•</span><b>斜树：</b>所有节点都只有左子节点（左斜树）或只有右子节点（右斜树），本质是线性表（顺序结构），遍历效率低。</p>
+<p class="li"><span class="bul">•</span><b>平衡</b>二叉<b>树</b>（<b>AVL树</b>）：左右两个子树的高度差（平衡因子）的绝对值不超过<b>1</b>，且左右两个子树都是平衡二叉树，用于提升查找效率，避免斜树导致的查找效率下降。</p>
+<h3 id="s-4.2.2二叉树的性质" class="c-h3">4.2.2 二叉树的性质</h3>
+<p class="li"><span class="bul">•</span>性质<b>1：</b>在二叉树的第i层（根节点为第<b>1</b>层），最多有<b>2^(i-1)</b>个节点。</p>
+<p class="li"><span class="bul">•</span>性质2<b>：</b>高度为<b>h</b>的二叉树，最多有<b>2^h - 1</b>个节点（满二叉树）。</p>
+<p class="li"><span class="bul">•</span>性质3：任意一棵二叉树，叶子节点个数=度为2的节点个数+<b>1</b>（<b>设叶子节点数为n₀，度为1的节点数为n₁，度为2的节点数为n₂</b>，<b>则n₀ = n₂ + 1</b>）。</p>
+<p class="li"><span class="bul">•</span>性质4<b>：</b>具有<b>n</b>个节点的完全二叉树，高度<b>h = ⌊log₂n⌋ + 1（⌊x⌋表示向下取整），或h = ceil(log₂(n+1))（ceil(x)表示向上取整）</b>。</p>
+<p class="li"><span class="bul">•</span>性质5：具有n个节点的完全二叉树，对于下标为i（0开始）的节点：</p>
+<p class="li li2"><span class="bul">○</span>左子节点下标：2i+<b>1</b>（若2i+<b>1</b>&lt;<b>n</b>）。</p>
+<p class="li li2"><span class="bul">○</span>右子节点下标：2i+2（若2i+2&lt;<b>n</b>）。</p>
+<p class="li li2"><span class="bul">○</span>父节点下标<b>：（i-1）/2（向下取整，若i&gt;0）</b>。</p>
+<h3 id="s-4.2.3二叉树的存储结构" class="c-h3">4.2.3 二叉树的存储结构</h3>
+<p class="li"><span class="bul">•</span><b>顺序存储结构：</b></p>
+<p class="li li2"><span class="bul">○</span>存储方式：用数组存储节点，按完全二叉树的节点顺序排列，空缺节点用特殊值标记（如<b>null</b>）。</p>
+<p class="li li2"><span class="bul">○</span>优势：存储密度高、可快速查找父节点和子节点（通过下标计算）；劣势<b>：</b>对于斜树等非完全二叉树，浪费大量存储空间，插入/删除效率低。</p>
+<div class="pagebreak" data-page="15"><span class="pg-mark">P15</span></div>
+<p class="li li2"><span class="bul">○</span>适用场景<b>：</b>完全二叉树、满二叉树。</p>
+<p class="li"><span class="bul">•</span><b>链式存储结构</b>（二叉<b>链表</b>）：</p>
+<p class="li li2"><span class="bul">○</span>存储方式：每个节点包含数据域、左子节点指针（<b>lchild</b>）、右子节点指针（<b>r</b>c<b>hil</b>d），根节点指针指向二叉树的顶层节点，叶子节点的<b>lchild</b>和<b>r</b>c<b>h</b>i<b>l</b>d均为n<b>ul</b>l。</p>
+<p class="li li2"><span class="bul">○</span>优势：存储灵活，适用于任意二叉树，插入/删除效率高（仅需修改指针）；劣势：无法直接查找父节点，需额外遍历或存储父节点指针（三叉链表）。</p>
+<p class="li li2"><span class="bul">○</span>扩展<b>：</b>三叉链表，每个节点增加父节点指针（pa<b>r</b>e<b>n</b>t），便于查找父节点，适用于需频繁访问父节点的场景。</p>
+<h2 id="s-4.3二叉树的遍历算法" class="c-h2">4.3 二叉树的遍历算法</h2>
+<p>二叉树的遍历是指按某种顺序访问二叉树的所有节点，且每个节点仅访问一次，是二叉树操作的基础，核心分为深度优先遍历（<b>DF</b>S）和广度优先遍历（<b>B</b>FS）两大类。</p>
+<h3 id="s-4.3.1深度优先遍历DFS" class="c-h3">4.3.1 深度优先遍历（DFS）</h3>
+<p>深度优先遍历优先访问子树，再回溯访问其他节点，根据访问根节点、左子树、右子树的顺序，分为三种遍历方式，均可用递归或迭代（栈实现）方式实现：</p>
+<p class="li"><span class="bul">•</span><b>前序遍历（根→左→右）：</b></p>
+<p>遍历顺序：先访问根节点，再递归遍历左子树，最后递归遍历右子树，每个节点的访问时机在左、右子树之前。</p>
+<p class="li"><span class="bul">•</span>实现方式：递归：终止条件为当前节点为空；递归逻辑为访问根节点→递归左子树→递归右子树。</p>
+<p>迭代：用栈存储节点，先将根节点入栈；循环出栈节点并访问，再将右子节点入栈（因栈后进先出，右子节点后访问需先入栈），最后将左子节点入栈，直至栈为空。</p>
+<p>示例：对于根为A、左子树为<b>B</b>（左C右<b>D</b>）、右子树为E（右F）的二叉树，<b>前序遍历结果为A→B→C→D→E→F</b>。</p>
+<h4 class="c-h4"><b>中</b>序<b>遍历（左→根→右）：</b></h4>
+<p>遍历顺序：先递归遍历左子树，再访问根节点，最后递归遍历右子树，每个节点的访问时机在左子树之后、右子树之前。</p>
+<p>实现方式：递归：终止条件为当前节点为空；递归逻辑为递归左子树→访问根节点→递归右子树。</p>
+<p>迭代：用栈存储节点，先将根节点及所有左子节点依次入栈；出栈节点并访问，再将当前节点的右子节点及该右子节点的所有左子节点入栈，直至栈为空。</p>
+<p>特性<b>：</b>二叉搜索树的中序遍历结果为有序序列（升序或降序），可用于验证二叉搜索树的合法性。</p>
+<p>示例：上述二叉树的<b>中序遍历结果C→B→D→A→E→F</b>。</p>
+<h4 class="c-h4"><b>后序遍历（左→右→根）：</b></h4>
+<div class="pagebreak" data-page="16"><span class="pg-mark">P16</span></div>
+<p>遍历顺序<b>：</b>先递归遍历左子树，再递归遍历右子树，最后访问根节点，每个节点的访问时机在左、右子树之后。</p>
+<p>实现方式<b>：</b>递归：终止条件为当前节点为空；递归逻辑为递归左子树→递归右子树→访问根节点。</p>
+<p>迭代：用栈存储节点，需额外记录节点是否已被访问（或利用栈的特性，先入根、再入右、最后入左，访问时判断是否为叶子节点或右子节点已访问），避免重复处理。</p>
+<p>示例：上述二叉树的<b>后序遍历结果为C→D→B→F→E→A</b>。</p>
+<h3 id="s-4.3.2广度优先遍历BFS层序遍历" class="c-h3">4.3.2 广度优先遍历（BFS，层序遍历）</h3>
+<p>广度优先遍历优先访问当前层级的所有节点，再依次访问下一层级的节点，遵循“从上到下、从左到右”的顺序，核心用队列实现，是树的层序遍历的标准方式。</p>
+<p class="li"><span class="bul">•</span><b>遍历顺序：</b>先访问根节点（第<b>1</b>层），再依次访问根节点的左、右子节点（第2层），接着访问第2层所有节点的左、右子节点（第3层），直至所有层级访问完毕。</p>
+<p class="li"><span class="bul">•</span><b>实现</b>方<b>式：</b>初始化队列，将根节点入队；循环出队队头节点并访问，再将该节点的左子节点、右子节点依次入队（左在前、右在后），直至队列为空。</p>
+<p class="li"><span class="bul">•</span>应<b>用场景：</b>求二叉树的高度、判断二叉树是否为完全二叉树、寻找树中某一层的节点、二叉树的层序构建。</p>
+<p class="li"><span class="bul">•</span>示<b>例：</b>上述二叉树的层序遍历结果为A <b>B</b> E C <b>D</b> F。</p>
+<h3 id="s-4.3.3遍历算法复杂度分析" class="c-h3">4.3.3 遍历算法复杂度分析</h3>
+<p class="li"><span class="bul">•</span><b>时间复杂度：</b>无论哪种遍历方式，每个节点都仅访问一次，时间复杂度均为<b>O(n)</b>，<b>n</b>为二叉树的节点个数。</p>
+<p class="li"><span class="bul">•</span><b>空间复</b>杂<b>度：</b></p>
+<p>递归实现：空间复杂度由递归栈深度决定，最坏情况（斜树）为O(n)，最好情况（完全二叉树）为<b>O(log₂n)</b>（递归栈深度为树的高度）。</p>
+<p>迭代实现：栈/队列的最大存储空间不超过树的最大节点数，最坏情况（满二叉树，最后一层节点数为（<b>n</b>+<b>1</b>）/2）为<b>O(n)</b>。</p>
+<h2 id="s-4.4树与森林的转换" class="c-h2">4.4 树与森林的转换</h2>
+<p>树和森林可通过“孩子兄弟表示法”转换为二叉树，二叉树也可反向转换为树或森林，转换的核心是保留原树的层级和节点关联关系，便于利用二叉树的算法处理树和森林问题。</p>
+<h3 id="s-4.4.1树转换为二叉树" class="c-h3">4.4.1 树转换为二叉树</h3>
+<p class="li">1. 将树中每个节点的所有子节点，按从左到右的顺序，依次作为当前节点的左子节点、左子节点的右兄弟节点（即第一个子节点为左孩子，后续子节点依次为前一个子节点的右兄弟）。</p>
+<p class="li">2. 仅保留每个节点与第一个子节点的“父子关系”，以及各兄弟节点之间的“右兄弟关系”，删除原有的其他父子关联。</p>
+<p>特性：树转换后的二叉树，左子树对应原节点的子树，右子树对应原节点的兄弟节点，无右子树的二叉树对应原树为单支树。</p>
+<div class="pagebreak" data-page="17"><span class="pg-mark">P17</span></div>
+<h3 id="s-4.4.2森林转换为二叉树" class="c-h3">4.4.2 森林转换为二叉树</h3>
+<p class="li">1. 将森林中的每棵树分别转换为二叉树，得到若干棵独立的二叉树。</p>
+<p class="li">2. 将第二棵二叉树作为第一棵二叉树的根节点的右子树，第三棵二叉树作为第二棵二叉树的根节点的右子树，依次串联，形成一棵完整的二叉树。</p>
+<h3 id="s-4.4.3二叉树转换为树森林" class="c-h3">4.4.3 二叉树转换为树/森林</h3>
+<p class="li">1. 若二叉树为空，转换结果为空树/森林。</p>
+<p class="li">2. 将二叉树的根节点作为第一棵树的根节点，根节点的左子树转换为该根节点的子树（按树转换为二叉树的逆过程，左孩子为第一个子节点，右兄弟为后续子节点）。</p>
+<p class="li">3. 根节点的右子树，重复步骤2，转换为另一棵树，依次处理，最终形成森林；若仅得到一棵树，则结果为单棵树。</p>
+<h2 id="s-4.5图的基本概念" class="c-h2">4.5 图的基本概念</h2>
+<p>图是一种复杂的非线性结构，由顶点集V和边集E组成，<b>记为G=(V,E)</b>，顶点之间存在多对多的任意关联关系，无层级限制，可用于描述任意元素之间的关联场景（如路网、社交网络）。</p>
+<h3 id="s-4.5.1核心概念" class="c-h3">4.5.1 核心概念</h3>
+<p class="li"><span class="bul">•</span><b>顶</b>点（<b>Vertex</b>）：图中的基本元素，也称为节点，用于表示具体的对象（如城市、人），顶点集V是非空集合（空图无实际意义）。</p>
+<p class="li"><span class="bul">•</span><b>边</b>（<b>Edg</b>e）：用于连接两个顶点的线段，表示顶点之间的关联关系，边集E可为空（仅含顶点，无边的图称为零图）。</p>
+<p class="li"><span class="bul">•</span><b>有向图与无向图：</b></p>
+<p>无向图：边无方向，连接顶点<b>u</b>和v的边记为（<b>u</b>,v），<b>（uv）与（v,u）为同一条边</b>，顶点之间的关联是双向的。</p>
+<p>有向图：边有方向，连接顶点<b>u</b>（起点）和v（终点）的边记为&lt;u，v&gt;，称为弧，<b>&lt;u,v&gt;与&lt;v,w&gt;为两条不同的边</b>，顶点之间的关联是单向的。</p>
+<h4 class="c-h4"><b>顶点的度：</b></h4>
+<p>无向图：顶点v的度是与v关联的边的个数，<b>记为d(v)</b>，所有顶点的度之和等于边数的2倍（每条边贡献两个顶点的度）。</p>
+<p>有向图：分为入度和出度，<b>入度ID(v)</b>是指向v的弧的个数，<b>出度OD(v)</b>是从v出发的弧的个数，顶点v的总度<b>d(v)=ID(v)+OD(v)</b>，所有顶点的入度之和等于出度之和，且等于边数。</p>
+<h4 class="c-h4">完<b>全图：</b></h4>
+<p>无向完全图：任意两个不同顶点之间都存在一条边，<b>n个顶点的无向完全图有n(n-1)/2条边</b>。</p>
+<p>有向完全图：任意两个不同顶点之间都存在两条方向相反的弧，<b>n个顶点的有向完全图有n(n-1)条边</b>。</p>
+<p><b>子图：设G=(V,E)、G&#x27;=(V&#x27;,E&#x27;)</b>，若V&#x27;⊆V且E&#x27;⊆E（有向图需保持边的方向一致），则G&#x27;是G的子图；若V&#x27;=V，则G是G的生成子图。</p>
+<h4 class="c-h4"><b>路径与回路：</b></h4>
+<div class="pagebreak" data-page="18"><span class="pg-mark">P18</span></div>
+<p>路径：从顶点<b>u</b>到顶点v的顶点序列，相邻顶点之间存在边/弧，路径长度为路径中边/弧的个数。</p>
+<p>简单路径：路径中所有顶点不重复的路径。</p>
+<p>回路（环）：起点和终点相同的路径，简单回路是除起点和终点外，其他顶点不重复的回路。</p>
+<h4 class="c-h4"><b>连通图与强连通图：</b></h4>
+<p>无向图：若任意两个顶点之间都存在路径，则为连通图；无向图的极大连通子图称为连通分量（不可再添加顶点保持连通）。</p>
+<p>有向图：若<b>任意两个顶点u、v</b>，都存在从<b>u</b>到v和从v到<b>u</b>的路径，则为强连通图；有向图的极大强连通子图称为强连通分量。</p>
+<p><b>权与网：</b>若给图的边赋予一个数值（称为权，可表示距离、成本、时间等），则该图称为网，分为无向网和有向网。</p>
+<h3 id="s-4.5.2图的存储结构" class="c-h3">4.5.2 图的存储结构</h3>
+<p>图的存储需兼顾顶点和边的关联关系，核心存储方式有四种，适用于不同场景（顶点数量、边的密度等）：</p>
+<p class="li"><span class="bul">•</span>邻<b>接矩阵：</b></p>
+<p>存储方式：用<b>n×n</b>的二维数组（<b>n</b>为顶点个数）存储图，数组元素<b>A[i][j]表示顶点i和顶点j之间</b>的边/弧关系：无向图中，<b>A[i][j]=A[j][i]</b>，<b>1</b>表示有边，0表示无边；有向图中，<b>A[i][j]</b>=<b>1</b>表示有从<b>i</b>到j的弧，0表示无；网的<b>A[i][j]存储边</b>/弧的权值，无边时设为∞（无穷大）。</p>
+<p class="li"><span class="bul">•</span>优势：结构简单，便于判断两个顶点之间<b>是否有边/弧（O(1)）</b>，便于计算顶点的度（无向图遍历行/列，有向图遍历行算给出度、列算入度）。</p>
+<p class="li"><span class="bul">•</span>劣势：空间复杂度<b>O(n)</b>，适用于顶点数量少、边密度高的图（如完全图），稀疏图会浪费大量存储空间。</p>
+<h4 class="c-h4">邻<b>接表：</b></h4>
+<p>存储方式：分为顶点表和边表，顶点表存储所有顶点，每个顶点对应一个边表（链表），边表存储与该顶点关联的所有顶点及边/弧的权值（网）。无向图中，每条边对应两个边表节点（双向关联）；有向图中，每条弧仅对应一个边表节点（从起点指向终点）。</p>
+<p>优势：空间复杂度<b>O(n+e)</b>（<b>n</b>为顶点数，e为边数），适用于稀疏图，节省存储空间；便于遍历顶点的所有邻接顶点。</p>
+<p>劣势：判断两个顶点之间是否有边/弧，需遍历对应边表，效率<b>O(n)</b>；有向图中计算入度需遍历所有边表，效率较低。</p>
+<h4 class="c-h4"><b>十字链表：</b></h4>
+<p>存储方式：专为有向图设计，每个顶点有两个指针（入边表头指针、出边表头指针），每个边节点包含起点、终点、权值，以及两个指针（入边指针、出边指针），分别串联同一顶点的所有入边和出边。</p>
+<p>优势<b>：</b>便于查找顶点的入边和出边，计算入度和出度效率高；适用于频繁操作有向图边的场景。</p>
+<p>劣势：结构复杂，实现难度高，不适用于无向图。</p>
+<h4 class="c-h4"><b>邻接多重表：</b></h4>
+<p>存储方式<b>：</b>专为无向图设计，改进邻接表的冗余问题（无向图每条边存储两个节点），每个边节点存储两个关联顶点，以及两个指针（分别指向与两个顶点关联的下一条边）。优势：每条边仅存储一个节点，节省存储空间；便于删除边、遍历边，适用于频繁操作无向图边的场景。</p>
+<div class="pagebreak" data-page="19"><span class="pg-mark">P19</span></div>
+<p>劣势<b>：</b>结构复杂，不适用于有向图。</p>
+<h2 id="s-4.6图的遍历算法" class="c-h2">4.6 图的遍历算法</h2>
+<p>图的遍历是指从图中某个顶点出发，按某种顺序访问图中所有顶点，且每个顶点仅访问一次，核心分为深度优先遍历（<b>DF</b>S）和广度优先遍历（<b>B</b>FS），需处理回路问题（避免重复访问顶点）。</p>
+<h3 id="s-4.6.1深度优先遍历DFS" class="c-h3">4.6.1 深度优先遍历（DFS）</h3>
+<p>与二叉树<b>D</b>FS思路一致，优先访问当前顶点的邻接顶点，再回溯访问其他邻接顶点，用访问标记数组记录已访问顶点，避免回路重复访问。</p>
+<p class="li"><span class="bul">•</span><b>实现步骤：</b></p>
+<p>初始化<b>访问标记数组visited[]，</b>所有元素设为fa<b>l</b>se（未访问）。</p>
+<p>从指定起点顶点v出发，标记visi<b>t</b>ed<b>[</b>v]=<b>tru</b>e，访问该顶点。</p>
+<p>遍历顶点v的所有邻接顶点<b>u</b>，<b>若visited[u]=false</b>，则递归（或迭代）对u执行<b>D</b>FS。</p>
+<p>若图为非连通图（无向图）或非强连通图（有向图），需遍历所有未访问顶点，依次执行<b>DF</b>S，确保所有顶点被访问。</p>
+<p class="li"><span class="bul">•</span>实<b>现方式：</b>递归（简洁，适用于顶点数少的场景）、迭代（用栈模拟递归，避免递归栈溢出）。</p>
+<p class="li"><span class="bul">•</span><b>复杂度分析：</b></p>
+<p>邻接矩阵存储<b>：</b>时间复杂度<b>O(n²)</b>（遍历每个顶点的邻接顶点需遍历一行数组）。</p>
+<p>邻接表存储：时间复杂度<b>O(n+e)</b>（遍历所有顶点和边）。</p>
+<p>空间复杂度<b>：O(n)</b>（访问标记数组+递归栈/迭代栈，最大存储n个顶点）。</p>
+<h3 id="s-4.6.2广度优先遍历BFS" class="c-h3">4.6.2 广度优先遍历（BFS）</h3>
+<p>与二叉树层序遍历思路一致，优先访问当前顶点的所有邻接顶点，再依次访问邻接顶点的邻接顶点，用队列存储待访问顶点，访问标记数组避免重复访问。</p>
+<p class="li"><span class="bul">•</span>实<b>现步骤：</b></p>
+<p>初始化访问标记数组<b>visited[]</b>，所有元素设为fa<b>l</b>se（未访问）。</p>
+<p>从指定起点顶点v出发，标记visi<b>t</b>ed<b>[</b>v]=<b>tru</b>e，访问该顶点并将其入队。</p>
+<p>循环出队队头顶点<b>u</b>，遍历<b>u</b>的所有邻接顶点w，若v<b>i</b>sited<b>[</b>w<b>]</b>=f<b>al</b>se，则标记为t<b>ru</b>e、访问该顶点并入队。</p>
+<p>若图为非连通/非强连通图，遍历所有未访问顶点，依次执行<b>B</b>FS，确保所有顶点被访问。</p>
+<p class="li"><span class="bul">•</span><b>复杂度分析：</b>与<b>DF</b>S一致，邻接矩阵<b>O(n²)，</b>邻接表<b>O(n+e)</b>，空间复杂度<b>O(n)</b>（访问标记数组+队列）。</p>
+<h2 id="s-4.7图的常用算法路径生成树拓扑排序" class="c-h2">4.7 图的常用算法（路径、生成树、拓扑排序）</h2>
+<h3 id="s-4.7.1最短路径算法" class="c-h3">4.7.1 最短路径算法</h3>
+<p>最短路径是指从图中一个顶点（起点）到另一个顶点（终点）的路径中，边/弧的权值之和最小的路径，适用网（带权图），核心算法有两种<b>：</b></p>
+<div class="pagebreak" data-page="20"><span class="pg-mark">P20</span></div>
+<p class="li"><span class="bul">•</span><b>Dijkstra算</b>法：</p>
+<p>适用场景<b>：</b>有向网或无向网，权值为非负数（若存在负权值，算法会失效），求从一个起点到其他所有顶点的最短路径（单源最短路径）。</p>
+<p>核心思路：用数组<b>dist[]</b>存储起点到各顶点的当前最短路径长度，初始化dist[起点]<b>=</b>0，其他∞；用集合S存储已确定最短路径的顶点，循环选择<b>dist[]</b>中最小的未确定顶点，加入S，更新该顶点邻接顶点的<b>dist[]</b>值（若经过当前顶点的路径更短，则更新），直至所有顶点加入S。</p>
+<p>复杂度：邻接矩阵存储O(n²)，邻接表存储<b>O(n+e)</b>（用优先队列优化后可降至<b>O((n+e) log n)</b>）。</p>
+<h4 class="c-h4"><b>Flo</b>y<b>d-War</b>s<b>hall算法：</b></h4>
+<p>适用场景：有向网或无向网，可处理负权值（但不能有负权回路），求所有顶点之间的最短路径（多源最短路径）。</p>
+<p>核心思路：用<b>n×n</b>的矩阵<b>dist[][]存储顶点之间的最短路径长度</b>，初始化<b>dist[i][j]为边&lt;i,j&gt;的权值</b>（无边为∞，视为0）；通过中间顶点k，循环更新<b>dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])</b>，遍历所有中间顶点，最终得到所有顶点对的最短路径。</p>
+<p>复杂度：时间复杂度<b>O(n²)</b>，空间复杂度<b>O(n²)</b>，适用于顶点数量少的场景。</p>
+<h3 id="s-4.7.2最小生成树MST算法" class="c-h3">4.7.2 最小生成树（MST）算法</h3>
+<p>最小生成树是指连通无向网中，包含所有顶点、边数为<b>n-1</b>（<b>n</b>为顶点数）、且边的权值之和最小的生成子树，核心用于网络布线、路径规划等场景（最小成本连接所有节点），仅适用于连通无向网。</p>
+<p class="li"><span class="bul">•</span><b>Prim算法：</b></p>
+<p>核心思路：从一个起点顶点出发，逐步添加边，每次选择连接“已选顶点集合”和“未选顶点集合”的权值最小的边，将未选顶点加入已选集合，直至所有顶点加入，形成最小生成树。</p>
+<p>特点：适用于边密度高的网，邻接矩阵存储效率更高，<b>时间复杂度O(n²)。</b></p>
+<h4 class="c-h4"><b>Kru</b>s<b>kal算法：</b></h4>
+<p>核心思路：将所有边按权值从小到大排序，依次选择权值最小的边，若该边连接的两个顶点不在同一连通分量（用并查集判断），则加入最小生成树，直至加入<b>n-1</b>条边（所有顶点连通）。</p>
+<p>特点：适用于边密度低的网，邻接表存储效率更高，时间复杂度<b>O(e log e)</b>（排序边的时间）。</p>
+<h3 id="s-4.7.3拓扑排序" class="c-h3">4.7.3 拓扑排序</h3>
+<p>拓扑排序是对有向无环图（<b>D</b>AG）的顶点进行排序，使得对于每一条有向边&lt;<b>u</b>，v&gt;，顶点<b>u</b>在排序结果中都位于顶点v之前，仅适用于有向无环图（存在环则无法拓扑排序，如循环依赖问题）。</p>
+<p class="li"><span class="bul">•</span><b>核心</b>应<b>用：</b>任务调度（避免循环依赖）、课程安排（先修课程优先）、编译依赖处理。</p>
+<p class="li"><span class="bul">•</span><b>实现步骤</b>（<b>Kahn算法，基于入度</b>）：</p>
+<p>计算所有顶点的入度，将入度为0的顶点入队。</p>
+<p>循环出队队头顶点<b>u</b>，将其加入拓扑排序结果列表，遍历<b>u</b>的所有邻接顶点v，将v的入度减<b>1（删除u→v的</b>弧）。若v的入度变为0，则将v入队。</p>
+<div class="pagebreak" data-page="21"><span class="pg-mark">P21</span></div>
+<p>遍历结束后，若拓扑排序结果列表的长度等于顶点数，则排序成功（无环）；否则存在环，排序失败。</p>
+<p>复杂度：邻接表存储<b>O(n+e)</b>，邻接矩阵存储<b>O(n²)</b>。</p>
+<h1 id="s-5查找与排序的基本概念及应用分析" class="c-h1">5 查找与排序的基本概念及应用分析</h1>
+<h2 id="s-5.1查找的基本概念" class="c-h2">5.1 查找的基本概念</h2>
+<p>查找是指在给定的数据结构中，寻找满足指定条件（如值等于目标值）的数据元素，若找到则返回该元素的位置或值，否则返回查找失败的标识（如<b>null</b>、<b>-1</b>）。查找的效率直接取决于数据结构的类型和查找算法的选择。</p>
+<h3 id="s-5.1.1核心概念" class="c-h3">5.1.1 核心概念</h3>
+<p class="li"><span class="bul">•</span><b>查找表：</b>用于存储待查找数据元素的集合，可分静态查找表（仅支持查找操作，不修改数据）和动态查找表（支持查找、插入、删除操作）。</p>
+<p class="li"><span class="bul">•</span>关<b>键字：</b>用于标识数据元素的属性值，分为主关键字（唯一标识数据元素，如学号）和次关键字（不唯一，如姓名）。</p>
+<p class="li"><span class="bul">•</span><b>平均查找长度</b>（<b>ASL</b>）：衡量查找算法效率的核心指标，指查找过程中，平均比较的关键字次数，计算公式为<b>ASL = Σ（第i个元素的查找概率×第i个元素的查找长度）</b>，查找概率通常假设为等概率（每个元素被查找的概率相同）。</p>
+<p class="li"><span class="bul">•</span><b>查找成功</b>/<b>失败：</b>找到目标元素为查找成功，未找到为查找失败，两者的平均查找长度需分别计算。</p>
+<h3 id="s-5.1.2查找算法的分类" class="c-h3">5.1.2 查找算法的分类</h3>
+<p>根据数据结构的类型，查找算法分为两大类<b>：</b></p>
+<p class="li"><span class="bul">•</span><b>线性查找：</b>适用于线性结构（顺序表、链表），无需对数据排序，如顺序查找。</p>
+<p class="li"><span class="bul">•</span><b>非线性查找：</b>适用于非线性结构（树、哈希表），或有序线性结构，效率高于线性查找，如二分查找、树表查找、哈希查找。</p>
+<h2 id="s-5.2常用查找算法" class="c-h2">5.2 常用查找算法</h2>
+<h3 id="s-5.2.1顺序查找线性查找" class="c-h3">5.2.1 顺序查找（线性查找）</h3>
+<p>最简单的查找算法，适用于任意线性结构（顺序表、链表），无需对数据排序，核心是逐一遍历数据元素，对比关键字。</p>
+<p class="li"><span class="bul">•</span>实<b>现步骤：</b>从数据结构的一端（如顺序表的起始位置）出发，依次将每个元素的关键字与目标值对比，若相等则返回位置；遍历结束未找到则返回失败。</p>
+<p class="li"><span class="bul">•</span><b>优化：</b>设置哨兵（将目标值放在数据结构的末尾），避免每次对比都判断是否遍历结束，减少比较次数。</p>
+<p class="li"><span class="bul">•</span><b>复杂度分析：</b></p>
+<p>时间复杂度：<b>O(n)</b>，最好情况<b>O(1)</b>（目标元素在第一个位置），最坏情况<b>O(n)</b>（目标元素在最后或不存在）。</p>
+<p>空间复杂度<b>：O(1)</b>（无需额外辅助空间）。<b>适用场景：</b>数据量小、无序的线性结构，或链表（无法随机访问，只能顺序遍历）。</p>
+<div class="pagebreak" data-page="22"><span class="pg-mark">P22</span></div>
+<h3 id="s-5.2.2二分查找折半查找" class="c-h3">5.2.2 二分查找（折半查找）</h3>
+<p>高效的查找算法，仅适用于<b>有序的顺序表</b>（支持随机访问，链表无法使用），核心是通过不断缩小查找范围，实现快速查找。</p>
+<p class="li"><span class="bul">•</span><b>实现步骤：</b></p>
+<p>初始化左指针<b>l</b>ow=0，右指针<b>h</b>igh=<b>n</b>-<b>1</b>（<b>n为数据元素个数</b>）。</p>
+<p>循环条件：<b>l</b>ow≤<b>hi</b>g<b>h</b>，计算中间指针<b>mid = (low+high)/2（向下取整）</b>。</p>
+<p>对比中间元素关键字与目标值：相等则返回<b>m</b>i<b>d</b>；目标值小于中间元素，调整<b>h</b>igh=m<b>i</b>d<b>-1</b>（缩小到左半区）；目标值大于中间元素，调整<b>l</b>ow=<b>m</b>i<b>d</b>+<b>1</b>（缩小到右半区）。</p>
+<p>循环结束未找到，返回失败。</p>
+<p class="li"><span class="bul">•</span><b>复杂度</b>分<b>析：</b></p>
+<p>时间复杂度<b>：O(log₂n)</b>，查找范围每次减半，效率远高于顺序查找。</p>
+<p>空间复杂度：<b>O(1)</b>（迭代实现），递归实现<b>O(log₂n)</b>（递归栈深度）。</p>
+<p><b>局限性：</b>仅适用于有序顺序表，插入/删除操作会破坏有序性，需重新排序，不适用于动态数据；无法处理无序数据和链表。</p>
+<h3 id="s-5.2.3树表查找二叉搜索树查找" class="c-h3">5.2.3 树表查找（二叉搜索树查找）</h3>
+<p>树表查找适用于动态查找表（支持插入、删除），核心是利用二叉搜索树（<b>B</b>S<b>T</b>）的有序性，实现高效查找，二叉搜索树是一种特殊的二叉树，满足“左子树所有节点值&lt;根节点值&lt;右子树所有节点值”，且左右子树均为二叉搜索树。</p>
+<p class="li"><span class="bul">•</span><b>查找步骤：</b>从根节点<b>出</b>发，将目标值与根节点值对比；相等则查找成功；目标值小于根节点值，递归查找左子树；目标值大于根节点值，递归查找右子树；子树为空则查找失败。</p>
+<p class="li"><span class="bul">•</span><b>复杂度分析：</b></p>
+<p>理想情况（平衡二叉搜索树）：时间复杂度<b>O(log₂n)</b>，与二分查找相当。</p>
+<p>最坏情况（斜树）：时间复杂度<b>O(n)</b>，与顺序查找一致，需通过平衡二叉树（AV<b>L</b>树、红黑树）优化。</p>
+<h4 class="c-h4"><b>扩展树表查找：</b></h4>
+<p>AV<b>L</b>树查找：平衡二叉树，左右子树高度差不超过<b>1</b>，保证查找效率稳定在<b>O(log₂n)</b>。</p>
+<p>红黑树查找：近似平衡二叉树，通过颜色规则（红节点不相邻、根和叶子为黑）维持平衡，查找、插入、删除效率均为<b>O(log₂n)</b>，适用于大规模动态数据（如<b>J</b>ava中的<b>Tr</b>ee<b>M</b>ap）。</p>
+<p><b>B</b>树/<b>B</b>+树查找<b>：</b>适用于磁盘存储（大规模数据），减少<b>磁盘IO次数</b>，<b>B</b>+树所有数据存储在叶子节点，便于范围查找（数据库索引常用）。</p>
+<h3 id="s-5.2.4哈希查找散列查找" class="c-h3">5.2.4 哈希查找（散列查找）</h3>
+<p>基于哈希表（散列表）的查找算法，核心是通过哈希函数将关键字映射到哈希表的指定位置，实现“键值对”快速查找，无需遍历，是效率最高的查找算法之一。</p>
+<div class="pagebreak" data-page="23"><span class="pg-mark">P23</span></div>
+<p class="li"><span class="bul">•</span><b>核心要素：</b></p>
+<p>哈希函数：将关键字转换为哈希表下标（地址），需满足均匀分布（减少冲突）、计算简单，常用哈希函数有取余法、平方取中法、折叠法。</p>
+<p>哈希冲突：不同关键字通过哈希函数得到相同下标，是不可避免的，需通过冲突解决方法处理。</p>
+<p class="li"><span class="bul">•</span>冲突解决方法：开放定址法：冲突时，按某种规则寻找下一个空闲位置（如线性探测、二次探测、伪随机探测），适用于哈希表装载因子较小的场景。</p>
+<p>链地址法：每个哈希表下标对应一个链表，冲突的关键字存入对应链表，适用于装载因子较大的场景，是最常用的冲突解决方法。</p>
+<p><b>查找</b>步<b>骤：</b>通过哈希函数计算目标关键字的哈希地址，对比该地址的元素；若相等则成功；若存在冲突，按冲突解决方法遍历查找，直至找到或确定失败。</p>
+<h4 class="c-h4"><b>复杂度分析：</b></h4>
+<p>理想情况（无冲突）：时间复杂度<b>O(1)</b>，直接定位地址。</p>
+<p>最坏情况（所有关键字冲突）：时间复杂度<b>O(n)</b>，需遍历链表或探测所有位置。</p>
+<p>空间复杂度<b>：O(m)</b>（<b>m</b>为哈希表长度），需额外分配存储空间。</p>
+<p><b>适用场景：</b>大规模数据、频繁查找的场景（如缓存、字典），不适用于需要范围查找的场景。</p>
+<h2 id="s-5.3排序的基本概念" class="c-h2">5.3 排序的基本概念</h2>
+<p>排序是指将一组无序的数据元素，按指定的关键字（如数值大小、字母顺序）重新排列为有序序列（升序或降序）的操作，是数据处理的基础操作，排序算法的选择取决于数据量、数据分布、稳定性需求等。</p>
+<h3 id="s-5.3.1核心概念" class="c-h3">5.3.1 核心概念</h3>
+<p class="li"><span class="bul">•</span><b>排序对象：</b>通常为线性结构（顺序表、数组），排序过程中可分为内排序（所有数据在内存中完成排序，适用于小规模数据）和外排序（数据量过大，需借助磁盘等外部存储完成排序，适用于大规模数据）。</p>
+<p class="li"><span class="bul">•</span><b>稳定性：</b>排序后，相同关键字的数据元素保持原有相对顺序，称为稳定排序；否则为不稳定排序。稳定排序适用于需保留原始顺序的场景（如同成绩学生保留录入顺序）。</p>
+<p class="li"><span class="bul">•</span><b>时间复杂度：</b>描述排序算法执行时间随数据量<b>n</b>增长的变化趋势，分为O(n²)（简单排序）<b>、O(n log₂n)</b>（高效排序）<b>、O(n)</b>（线性排序，需满足特定条件）。</p>
+<p class="li"><span class="bul">•</span><b>空间复杂度：</b>描述排序算法所需辅助存储空间的大小，分为原地排序（<b>O(1)</b>，无需额外空间或仅需少量空间）和非原地排序（<b>O(n)</b>或<b>O(log₂n)</b>，需额外空间）。</p>
+<p class="li"><span class="bul">•</span><b>比较排序与非比较排序：</b>比较排序通过对比关键字确定顺序（如冒泡、快排），时间复杂度下限为<b>O(n log₂n)</b>；非比较排序无需对比关键字（如计数、基数排序），可达到<b>O(n)</b>，但需满足特定条件。</p>
+<h2 id="s-5.4常用排序算法详解" class="c-h2">5.4 常用排序算法详解</h2>
+<h3 id="s-5.4.1简单排序算法On²" class="c-h3">5.4.1 简单排序算法（O(n²)）</h3>
+<p>简单排序算法实现简洁，适用于小规模数据，时间复杂度均为<b>O(n²)</b>，空间复杂度多为<b>O(1)</b>（原地排序）。<b>冒泡排序：</b></p>
+<div class="pagebreak" data-page="24"><span class="pg-mark">P24</span></div>
+<p>核心思路：重复遍历待排序序列，每次对比相邻两个元素，若顺序错误则交换，将最大（或最小）的元素逐步“冒泡”到序列末尾，遍历<b>n-1</b>次完成排序。</p>
+<p>优化<b>：</b>设置标志位，若某一轮未发生交换，说明序列已有序，直接终止排序，提升最好情况效率至<b>O(n)</b>。</p>
+<p>特性：稳定排序、原地排序，<b>最好情况O(n)，最坏情况O(n²)，</b>适用于接近有序的小规模数据。</p>
+<h4 class="c-h4"><b>选择排序：</b></h4>
+<p>核心思路：每次从待排序序列中找到最小（或最大）的元素，与序列的起始位置交换，再从剩余元素中重复操作，直至所有元素排序完成。</p>
+<p>特性：不稳定排序（交换会破坏相同元素的相对顺序）、原地排序，最好/最坏/平均时间复杂度均为O(n²)，适用于数据量小、对稳定性无要求的场景。</p>
+<h4 class="c-h4"><b>插入排序：</b></h4>
+<p>核心思路：将序列分为有序区和无序区，初始有序区仅含第一个元素，依次将无序区的元素插入到有序区的合适位置，逐步扩大有序区，直至排序完成。</p>
+<p>优化：折半插入排序（利用有序区特性，用二分查找确定插入位置，减少比较次数），但交换次数不变，时间复杂度仍为<b>O(n²)</b>。</p>
+<p>特性：稳定排序、原地排序，最好情况<b>O(n)</b>（接近有序），最坏情况<b>O(n²)</b>，适用于小规模数据或接近有序的数据。</p>
+<h3 id="s-5.4.2高效排序算法Onlog₂n" class="c-h3">5.4.2 高效排序算法（O(n log₂n)）</h3>
+<p>高效排序算法适用于大规模数据，时间复杂度均为<b>O(n log₂n)</b>，是实际应用中最常用的排序算法。</p>
+<h4 class="c-h4"><b>快速排序：</b></h4>
+<p>核心思路：分治法，选择一个基准元素（如序列第一个、最后一个或中间元素），将序列分为两部分，小于基准的元素放在左侧，大于基准的元素放在右侧（分区操作），再递归对左右两部分执行快速排序，直至子序列长度为<b>1</b>。</p>
+<p>优化：基准元素选择优化（三数取中，避免极端情况）、小规模子序列用插入排序，提升效率。</p>
+<p>特性<b>：</b>不稳定排序、原地排序（递归栈空间除外），平均时间复杂度<b>O(n log₂n)</b>，最坏情况<b>O(n²)</b>（基准选择不当，如有序序列），是实际应用中最快的排序算法之一。</p>
+<h4 class="c-h4"><b>归并排序：</b></h4>
+<p>核心思路：分治法，将序列逐步拆分为两个长度相等的子序列，递归对子序列排序，再将两个有序子序列合并为一个有序序列，直至合并为完整序列。</p>
+<p>分类<b>：</b>内部归并排序（内存中完成）、外部归并排序（适用于大规模数据，借助磁盘存储）。</p>
+<p>特性：稳定排序、非原地排序（需<b>O(n)</b>辅助空间），最好/最坏/平均时间复杂度均为<b>O(n log₂n)</b>，适用于对稳定性有要求、大规模数据的场景。</p>
+<h4 class="c-h4"><b>堆排序：</b></h4>
+<p>核心思路<b>：</b>利用堆（完全二叉树）的特性，将待排序序列构建大根堆（最大元素在根节点）或小根堆（最小元素在根节点），将根节点与序列末尾元素交换，再调整堆结构，重复操作，直至排序完成。关键操作<b>：</b>堆的构建、堆的调整（筛选操作），均为<b>O(log₂n)</b>时间复杂度。</p>
+<div class="pagebreak" data-page="25"><span class="pg-mark">P25</span></div>
+<p>特性：不稳定排序、原地排序，最好/最坏/平均时间复杂度均为<b>O(n log₂n)</b>，适用于对稳定性无要求、大规模数据的场景。</p>
+<h3 id="s-5.4.3线性排序算法On" class="c-h3">5.4.3 线性排序算法（O(n)）</h3>
+<p>线性排序算法无需对比关键字，时间复杂度为<b>O(n)</b>，但需满足特定条件（如关键字范围有限），适用于特定场景。</p>
+<p class="li"><span class="bul">•</span><b>计数排序：</b></p>
+<p>核心思路<b>：</b>假设关键字的范围是<b>[</b>0,<b>k]</b>（k为最大关键字），创建一个大小为k+<b>1</b>的计数数组，统计每个关键字出现的次数，再根据计数数组，依次输出关键字，得到有序序列。</p>
+<p>适用条件：关键字为非负整数、关键字范围k不大于数据量n（否则空间复杂度过高）。</p>
+<p>特性：稳定排序、非原地排序（需O(k)辅助空间），时间复杂度<b>O(n+k)</b>，适用于关键字范围小的场景（如学生成绩排序）。</p>
+<h4 class="c-h4"><b>基数排序：</b></h4>
+<p>核心思路：按关键字的每一位（从低位到高位或从高位到低位）依次排序<b>，</b>每一位排序采用计数排序或桶排序，逐步将关键字排序完成，适用于多位数、字符串等关键字。</p>
+<p>适用条件：关键字可按位拆分，每一位的取值范围有限（如0<b>-</b>9）。</p>
+<p>特性：稳定排序、非原地排序（需<b>O(n)</b>辅助空间），时间复杂度<b>O(d×(n+r))</b>（d为位数，r为每一位的取值范围），适用于多位数排序（如手机号、身份证号）。</p>
+<h4 class="c-h4"><b>桶排序：</b></h4>
+<p>核心思路：将关键字范围划分为若干个桶，将待排序元素分配到对应的桶中，对每个桶内的元素进行排序（如插入排序、快速排序），再将所有桶的元素依次输出，得到有序序列。</p>
+<p>适用条件<b>：</b>关键字分布均匀（避免单个桶内元素过多，导致时间复杂度退化）。</p>
+<p>特性：稳定排序（取决于桶内排序算法）、非原地排序（需<b>O(n)</b>辅助空间），平均时间复杂度<b>O(n)</b>，最坏情况<b>O(n²)</b>（元素集中在一个桶），适用于分布均匀的大规模数据。</p>
+<h2 id="s-5.5排序算法的选择与应用场景" class="c-h2">5.5 排序算法的选择与应用场景</h2>
+<p>排序算法的选择需综合考虑数据量、数据分布、稳定性需求、空间限制等因素，核心选择原则如下：</p>
+<p class="li"><span class="bul">•</span><b>小规模数据</b>（<b>n</b>≤<b>100</b>）：优先选择简单排序算法，如插入排序（接近有序）、冒泡排序，实现简洁，效率足够。</p>
+<p class="li"><span class="bul">•</span>大<b>规模数据</b>（<b>n</b>&gt;<b>1000</b>）<b>：</b>优先选择高效排序算法，如快速排序（通用最优）、归并排序（需稳定性）、堆排序（空间紧张、无稳定性需求）。</p>
+<p class="li"><span class="bul">•</span><b>接近有序的数据：</b>优先选择插入排序、冒泡排序（优化后），最好情况效率<b>O(n)</b>，优于快速排序。</p>
+<p class="li"><span class="bul">•</span><b>对稳定性有要求的场景：</b>选择归并排序、插入排序、冒泡排序、计数排序、基数排序，避免快速排序、选择排序、堆排序。</p>
+<div class="pagebreak" data-page="26"><span class="pg-mark">P26</span></div>
+<p class="li"><span class="bul">•</span>空<b>间紧张的场景：</b>选择原地排序算法，如快速排序、堆排序、插入排序、冒泡排序、选择排序，避免归并排序、计数排序、基数排序、桶排序。</p>
+<p class="li"><span class="bul">•</span><b>关键字范围有限的场景：</b>选择计数排序（非负整数）、基数排序（多位数），效率高于<b>O(n log₂n)</b>的算法。</p>
+<p class="li"><span class="bul">•</span><b>外部排序</b>（<b>大规模数据，内存不足</b>）：选择归并排序（外部归并）、桶排序，适配磁盘存储，<b>减少IO次数</b>。</p>
+<h2 id="s-5.6查找与排序的关联" class="c-h2">5.6 查找与排序的关联</h2>
+<p>查找与排序密切相关，有序数据的查找效率远高于无序数据，二者相辅相成，排序是提升查找效率的重要预处理手段，而查找算法也可辅助优化排序过程，核心关联如下：</p>
+<p class="li"><span class="bul">•</span><b>排序为高效查找提供前提：</b>多数高效查找算法依赖有序数据结构，无序数据经排序后，可适配二分查找、树表查找等高效算法，大幅降低查找时间复杂度。例如，无序数组的顺序查找时间复杂度为<b>O(n)</b>，经排序后可使用二分查找，时间复杂度降至<b>O(log₂n)</b>；二叉搜索树的构建本质是对数据的有序组织，其查找效率依赖于树的有序性，而树的有序性源于输入数据的排序逻辑。</p>
+<p class="li"><span class="bul">•</span><b>查找辅助优化排序过程：</b>部分排序算法的执行过程中会嵌入查找操作，通过高效查找定位元素位置，减少排序的比较和移动次数。例如，插入排序中，为确定待插入元素的合适位置，可使用二分查找替代顺序查找，将比较次数从<b>O(n)</b>降至<b>O(log₂n)</b>，优化排序效率；归并排序的合并过程中，需通过对比查找两个有序子序列中的最小元素，逐步完成合并，查找的准确性直接影响排序结果的正确性。</p>
+<p class="li"><span class="bul">•</span>二<b>者共享数据结构适配逻辑：</b>查找和排序均依赖特定数据结构，同一数据结构的特性同时影响二者的效率。例如，顺序表适合排序（支持随机访问，便于元素移动和对比），也适合有序后的二分查找；链表不适合排序（元素移动效率低），也不适合二分查找（无法随机访问），仅适配顺序查找；哈希表无需排序即可实现<b>O(1)</b>的查找效率，但其无序性导致无法适配依赖有序性的查找和排序算法。</p>
+<p class="li"><span class="bul">•</span><b>动态场景下的协同优化：</b>在动态数据场景中（频繁插入、删除数据），需兼顾排序的动态维护和查找的高效性。例如，红黑树、AV<b>L</b>树等平衡二叉树，可在插入、删除操作中动态维持树的有序性，既保证排序结构的稳定性，又确保查找、插入、删除的时间复杂度均为<b>O(log₂n)</b>，实现二者的协同优化；跳表通过分层索引结构，兼顾有序性和高效操作，同时适配有序查找和动态排序维护。</p>
+<p>补充说明：并非所有查找场景都需要排序，无序数据可使用顺序查找、哈希查找等算法，适用于数据频繁修改、无需多次查找的场景；而对于需多次查找、数据相对稳定的场景，先排序再使用高效查找算法，整体性价比更高，是实际应用中的主流选择。</p>
+
+<div class="callout"><div class="co-tag">【声明】</div><p>鉴于本资料不断发现被转卖/倒卖/分享/转赠。</p><p>这是对我们劳动成果的亵渎，因此我们极不愿意却不得不做恶毒的声明以保护我们资料的价值；保证从我们处购买该资料的权益（付出的价格）本资料由www.wuyouqiuzhi.com及旗下淘宝店：天天向上求职工作室（唯一客服：galerjim）或职场精英工作室（唯一客服：蔚蓝小小天使）提供，或者下载移动端刷题软件（名称为：笔试通）亦可购买；若发现你的资料不是以上渠道获得，请前往以上渠道购买祝所有从该处购买资料的用户顺利通过各个公司招聘笔试面试取得心仪offer，一堆offer。</p><p>祝所有从别处购买/分享获得/获赠该资料却仍然不通过上述渠道购买的用户笔试面试统统挂掉，祝所有转卖/倒卖/分享/转赠我们资料的商家/机构/个人的全家人灭绝，户口销户</p></div>
+</div>
+</main>
+
+<a id="home" href="index.html" title="返回总目录" aria-label="返回总目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 10.6 12 3.4l9 7.2"/>
+    <path d="M5.6 9.4V20.2h12.8V9.4"/>
+    <path d="M9.8 20.2v-5.6h4.4v5.6"/>
+  </svg>
+</a>
+<button id="totop" title="回到顶部">↑</button>
+<script>
+(function(){
+  var HIDE_FROM=2;                       // 折叠时隐藏 toc-lN 及更深层级
+  var toc=document.getElementById('toc'), links=[].slice.call(toc.querySelectorAll('a'));
+  var content=document.getElementById('content');
+  var bar=document.querySelector('#progress i');
+  var totop=document.getElementById('totop');
+  var counter=document.getElementById('counter');
+  var q=document.getElementById('q');
+
+  // progress + back to top
+  function onScroll(){
+    var h=content.scrollHeight||document.body.scrollHeight;
+    var top=window.scrollY||document.documentElement.scrollTop;
+    bar.style.width=Math.min(100,top/(h-window.innerHeight||1)*100)+'%';
+    totop.style.display=top>500?'block':'none';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // scrollspy
+  var heads=[].slice.call(document.querySelectorAll('h1[id],h2[id],h3[id],h4[id]'));
+  var current=null;
+  function spy(){
+    var best=null,bestTop=-1e9;
+    var probe=window.scrollY+90;
+    heads.forEach(function(h){
+      var t=h.getBoundingClientRect().top+window.scrollY;
+      if(t<=probe&&t>bestTop){bestTop=t;best=h;}
+    });
+    if(!best)return;
+    if(best.id===current)return;
+    current=best.id;
+    links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+current);});
+    var act=toc.querySelector('a.active');
+    if(act){
+      var tb=toc.getBoundingClientRect(),ab=act.getBoundingClientRect();
+      if(ab.top<tb.top+40||ab.bottom>tb.bottom-40)
+        toc.scrollTop+=ab.top-tb.top-toc.clientHeight/2;
+    }
+  }
+  window.addEventListener('scroll',spy,{passive:true});
+  window.addEventListener('resize',spy);spy();
+
+  // 目录筛选 + 章节折叠（筛选时忽略折叠状态）
+  function level(a){
+    var c=a.className;
+    if(c.indexOf('toc-l1')>=0)return 1;
+    if(c.indexOf('toc-l2')>=0)return 2;
+    if(c.indexOf('toc-l3')>=0)return 3;
+    return 4;
+  }
+  var collapsed=false;
+  function refresh(){
+    var v=(q.value||'').trim().toLowerCase();
+    var shown=0;
+    links.forEach(function(a){
+      var hit=!v||a.textContent.toLowerCase().indexOf(v)>=0;
+      var hide=!hit||(!v&&collapsed&&level(a)>=HIDE_FROM);
+      a.style.display=hide?'none':'';
+      if(!hide)shown++;
+    });
+    counter.textContent=(v||shown!==links.length)?shown+' / '+links.length:links.length+' 项';
+  }
+  q.addEventListener('input',refresh);
+
+  var exp=document.getElementById('expand');
+  exp.onclick=function(){
+    collapsed=!collapsed;
+    exp.textContent=collapsed?'展开全部':'仅看章节目';
+    refresh();
+  };
+
+  // mobile drawer
+  var sb=document.getElementById('sidebar'),mask=document.getElementById('mask');
+  document.getElementById('menubtn').onclick=function(){sb.classList.toggle('open');mask.style.display=sb.classList.contains('open')?'block':'none';};
+  mask.onclick=function(){sb.classList.remove('open');mask.style.display='none';};
+  toc.addEventListener('click',function(e){if(e.target.tagName==='A'&&window.innerWidth<=900){sb.classList.remove('open');mask.style.display='none';}});
+
+  totop.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+
+  exp.textContent=collapsed?'展开全部':'仅看章节目';
+  refresh();
+})();
+</script>
+</body>
+</html>

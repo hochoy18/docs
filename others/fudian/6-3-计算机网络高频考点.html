@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>计算机网络高频考点</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --ink:#1d2129; --ink-2:#4a5158; --ink-3:#828a94;
+  --line:#e3e6ea; --line-2:#eef0f3; --accent:#b3261e; --accent-2:#1a56a8;
+  --red:#c62828; --red-bg:#fff5f5; --sidebar:300px;
+  --font-serif:"Songti SC","STSong","SimSun","Source Han Serif SC",serif;
+  --font-sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"SF Mono","Menlo","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-serif);font-size:16.5px;line-height:1.95;-webkit-font-smoothing:antialiased;}
+
+/* ---------- sidebar ---------- */
+#sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:var(--panel);
+  border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40}
+.sb-head{padding:18px 20px 12px;border-bottom:1px solid var(--line-2)}
+.sb-title{font-family:var(--font-sans);font-size:15px;font-weight:700;line-height:1.5;color:var(--ink)}
+.sb-sub{font-family:var(--font-sans);font-size:11.5px;color:var(--ink-3);margin-top:5px;letter-spacing:.3px}
+.sb-search{padding:12px 16px 10px}
+.sb-search input{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:6px;
+  font-family:var(--font-sans);font-size:12.5px;background:#fbfcfd;color:var(--ink);outline:none}
+.sb-search input:focus{border-color:#b9c6d6;background:#fff}
+#toc{flex:1;overflow-y:auto;padding:6px 10px 60px;scrollbar-width:thin}
+#toc a{display:block;font-family:var(--font-sans);text-decoration:none;color:var(--ink-2);
+  border-radius:5px;padding:5px 10px;line-height:1.5;border-left:2px solid transparent;transition:.14s}
+#toc a:hover{background:#f2f4f7;color:var(--ink)}
+.toc-l1{font-size:13.5px;font-weight:700;color:var(--ink);margin-top:12px;padding-top:7px!important}
+.toc-l2{font-size:12.5px;color:#384049;margin-left:10px}
+.toc-l3{font-size:12px;color:var(--ink-3);margin-left:22px;padding-top:3px!important;padding-bottom:3px!important}
+.toc-l4{font-size:11.5px;color:#6a727c;margin-left:34px;padding-top:2px!important;padding-bottom:2px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.toc-l5{font-size:11px;color:#8b939d;margin-left:46px;padding-top:2px!important;padding-bottom:2px!important}
+#toc a.active{background:#eaf1fb;color:var(--accent-2);border-left-color:var(--accent-2);font-weight:600}
+.toc-l1.active{color:var(--accent-2)}
+.sb-foot{padding:10px 16px;border-top:1px solid var(--line-2);font-family:var(--font-sans);
+  font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;align-items:center}
+.sb-foot button{font-family:var(--font-sans);font-size:11px;border:1px solid var(--line);
+  background:#fff;border-radius:5px;padding:3px 8px;cursor:pointer;color:var(--ink-2)}
+.sb-foot button:hover{background:#f2f4f7}
+
+/* ---------- main ---------- */
+#main{margin-left:var(--sidebar);min-height:100vh}
+#progress{position:fixed;top:0;left:var(--sidebar);right:0;height:2px;background:transparent;z-index:45}
+#progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2f6fd0,#b3261e)}
+#content{max-width:900px;margin:0 auto;padding:34px 46px 120px}
+
+/* cover */
+.cover{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:46px 48px 38px;margin-bottom:26px}
+.cover h1{font-family:var(--font-sans);font-size:31px;font-weight:800;margin:0 0 10px;letter-spacing:.5px}
+.cover .cv-sub{font-family:var(--font-sans);font-size:14px;color:var(--ink-3);margin-bottom:22px}
+.cv-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.cv-meta span{font-family:var(--font-sans);font-size:12px;background:#f2f4f7;color:var(--ink-2);
+  border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+.cv-note{font-family:var(--font-sans);font-size:12.5px;line-height:1.85;color:var(--ink-3);
+  border-top:1px dashed var(--line);padding-top:16px}
+.cv-note b{color:var(--ink-2)}
+
+/* headings */
+h1,h2,h3,h4,h5,h6{font-family:var(--font-sans);scroll-margin-top:14px}
+.c-h1{font-size:25px;font-weight:800;margin:52px 0 20px;padding:14px 18px;color:#fff;
+  background:linear-gradient(100deg,#1f3f6d,#2f6fd0);border-radius:8px;letter-spacing:.5px}
+.c-h2{font-size:20px;font-weight:700;margin:40px 0 16px;padding:9px 0 9px 14px;
+  border-left:5px solid var(--accent-2);color:#123;line-height:1.5}
+.c-h3{font-size:17px;font-weight:700;margin:32px 0 13px;padding:7px 12px;background:#eef3fb;
+  color:#173f75;border-radius:6px;border:1px solid #dde7f6}
+.c-h4{font-size:16px;font-weight:700;margin:24px 0 10px;color:#1d2129}
+.c-h5{font-size:15.5px;font-weight:600;margin:18px 0 8px;color:#2b3138}
+.c-h6{font-size:15px;font-weight:600;margin:14px 0 6px;color:var(--ink-2)}
+
+p{margin:0 0 12px;text-align:justify}
+p.li{margin:0 0 7px;padding-left:1.5em;text-indent:-1.5em}
+p.li1{padding-left:1.7em;text-indent:-1.7em}
+p.li2{padding-left:3.3em;text-indent:-1.6em;color:var(--ink-2)}
+p.li3{padding-left:4.9em;text-indent:-1.6em;color:var(--ink-3)}
+p.li4{padding-left:6.5em;text-indent:-1.6em;color:#a2aab4}
+.mk{color:var(--accent-2);font-weight:700;margin-right:.4em}
+.mk2{color:#7a9cc4}
+.mk3{color:#a9b4c2}
+.mk4{color:#c6ccd4}
+.mkn{color:var(--accent-2);font-weight:700;margin-right:.5em;font-variant-numeric:tabular-nums}
+b,strong{font-family:var(--font-sans);font-weight:700;color:#101418}
+.r{color:var(--red);font-weight:600}
+u{text-decoration-color:#c96;font-weight:600;text-underline-offset:3px}
+.ann{color:var(--ink-2);font-size:15.5px;padding-left:1.2em;border-left:2px solid var(--line-2);
+  margin:0 0 10px}
+
+/* callout */
+.callout{background:var(--red-bg);border:1px solid #f3d3d3;border-left:4px solid var(--red);
+  border-radius:6px;padding:11px 16px;margin:14px 0}
+.callout .co-tag{font-family:var(--font-sans);font-weight:700;color:var(--red);margin-bottom:2px}
+.callout p{margin:4px 0}
+p.co-lead{margin:13px 0 7px}
+
+/* code */
+.codeblock{margin:14px 0 20px;border:1px solid var(--line);border-radius:8px;background:#fbfcfd;
+  overflow:hidden}
+.codeblock .code-cap{font-family:var(--font-sans);font-size:11.5px;font-weight:700;
+  letter-spacing:.8px;color:var(--accent-2);padding:8px 15px 0}
+.code-cap.solo{font-family:var(--font-sans);font-size:11.5px;font-weight:700;
+  letter-spacing:.8px;color:var(--accent-2);margin:16px 0 -4px;padding-left:2px}
+.codeblock pre{margin:0;padding:9px 15px 13px;font-family:var(--font-mono);font-size:13.5px;
+  line-height:1.8;white-space:pre-wrap;word-break:break-word;color:#26313f;
+  font-family:var(--font-mono),"SF Mono","Menlo","Consolas",monospace}
+.codeblock pre .cm{color:#7b8798}
+.codeblock pre .kw{color:#123f8c;font-weight:600}
+.codeblock pre .st{color:#a4361f}
+
+/* tables */
+.tw{overflow-x:auto;margin:16px 0 22px;border:1px solid var(--line);border-radius:8px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:15px;table-layout:fixed}
+td{border:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.85}
+tr:first-child td{background:#f7f9fc}
+td p{margin:0 0 6px}
+td p:last-child{margin-bottom:0}
+td:empty{background:#fafbfc}
+
+/* figures */
+figure.fig{margin:20px 0 24px;padding:14px 16px 10px;border:1px solid var(--line);
+  border-radius:10px;background:#fff;text-align:center}
+figure.fig img{max-width:100%;height:auto;display:block;margin:0 auto;
+  image-rendering:-webkit-optimize-contrast}
+figure.fig figcaption{font-family:var(--font-sans);font-size:13px;color:var(--ink-2);
+  margin-top:10px;letter-spacing:.3px}
+figure.fig .figtext{text-align:left;border-top:1px dashed var(--line);margin-top:10px;
+  padding-top:8px}
+figure.fig .figtext p{margin:4px 0;font-size:14.5px;color:var(--ink-2)}
+figure.fig .figtext h1,figure.fig .figtext h2,figure.fig .figtext h3,
+figure.fig .figtext h4,figure.fig .figtext h5,figure.fig .figtext h6{
+  font-size:15px;margin:6px 0 2px}
+
+/* page marker */
+.pagebreak{position:relative;height:0;margin:0}
+.pg-mark{position:absolute;right:4px;top:-14px;font-family:var(--font-sans);font-size:10.5px;
+  color:#b9c0c8;background:var(--bg);padding:0 6px;letter-spacing:.5px}
+/* tools */
+#totop{position:fixed;right:26px;bottom:26px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;font-size:17px;color:var(--ink-2);display:none;z-index:50}
+#totop:hover{color:var(--accent-2);border-color:#b9c6d6}/* 返回总目录：叠在「回到顶部」上方，间距 8px */
+#home{position:fixed;right:26px;bottom:76px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;color:var(--ink-2);display:flex;align-items:center;justify-content:center;
+  z-index:50;text-decoration:none;transition:color .15s,border-color .15s}
+#home:hover{color:var(--accent-2);border-color:#b9c6d6}
+#home svg{width:19px;height:19px;display:block;pointer-events:none}
+
+#menubtn{display:none;position:fixed;left:14px;top:12px;z-index:60;width:38px;height:34px;
+  border:1px solid var(--line);background:#fff;border-radius:6px;font-size:16px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(20,30,50,.1)}
+#mask{display:none;position:fixed;inset:0;background:rgba(20,28,40,.35);z-index:35}
+
+@media (max-width:900px){
+  :root{--sidebar:280px}
+  #menubtn{display:block}
+  #sidebar{transform:translateX(-100%);transition:transform .22s ease}
+  #sidebar.open{transform:none}
+  #main{margin-left:0}
+  #content{padding:22px 18px 90px}
+  .cover{padding:30px 24px 26px}
+  .cover h1{font-size:24px}
+  #progress{left:0}
+  #toc a.toc-l3{font-size:11.5px}
+      #toc a.toc-l4{font-size:11px;margin-left:26px}
+
+}
+@media print{
+  #sidebar,#totop,#home,#menubtn,#mask,#progress{display:none!important}
+  #main{margin:0}
+  #content{max-width:none;padding:0}
+  body{background:#fff;font-size:11pt}
+  .cover,.tw,.codeblock{break-inside:avoid}
+  .c-h1{background:#1f3f6d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .r,.callout .co-tag{color:var(--red)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<button id="menubtn" aria-label="目录">☰</button>
+<div id="mask"></div>
+<div id="progress"><i></i></div>
+<aside id="sidebar">
+  <div class="sb-head">
+    <div class="sb-title">计算机网络高频考点</div>
+    <div class="sb-sub">科技类 · 可复制 HTML 版</div>
+  </div>
+  <div class="sb-search"><input id="q" type="search" placeholder="筛选目录关键词…"></div>
+  <nav id="toc">
+<a class="toc-l1" href="#s-1计算机网络体系结构的概念及应用分析" data-toc="0">1 计算机网络体系结构的概念及应用分析</a>
+<a class="toc-l2" href="#s-11计算机网络体系结构核心概念" data-toc="1">1.1 计算机网络体系结构核心概念</a>
+<a class="toc-l3" href="#s-111计算机网络定义" data-toc="2">1.1.1 计算机网络定义</a>
+<a class="toc-l3" href="#s-112网络体系结构定义" data-toc="3">1.1.2 网络体系结构定义</a>
+<a class="toc-l3" href="#s-113协议的核心概念" data-toc="4">1.1.3 协议的核心概念</a>
+<a class="toc-l3" href="#s-114接口与服务" data-toc="5">1.1.4 接口与服务</a>
+<a class="toc-l2" href="#s-12两种核心网络体系结构" data-toc="6">1.2 两种核心网络体系结构</a>
+<a class="toc-l3" href="#s-121OSIRM开放系统互连参考模型" data-toc="7">1.2.1 OSI/RM 开放系统互连参考模型</a>
+<a class="toc-l3" href="#s-122TCPIP协议簇实际主流体系结构" data-toc="8">1.2.2 TCP/IP 协议簇（实际主流体系结构）</a>
+<a class="toc-l2" href="#s-13网络体系结构的应用分析" data-toc="9">1.3 网络体系结构的应用分析</a>
+<a class="toc-l3" href="#s-131分层架构的核心优势" data-toc="10">1.3.1 分层架构的核心优势</a>
+<a class="toc-l3" href="#s-132实际应用场景" data-toc="11">1.3.2 实际应用场景</a>
+<a class="toc-l3" href="#s-133分层架构的局限" data-toc="12">1.3.3 分层架构的局限</a>
+<a class="toc-l1" href="#s-2物理层与数据链路层的基本概念及应用分析" data-toc="13">2 物理层与数据链路层的基本概念及应用分析</a>
+<a class="toc-l2" href="#s-21物理层" data-toc="14">2.1 物理层</a>
+<a class="toc-l3" href="#s-211物理层核心定义与功能" data-toc="15">2.1.1 物理层核心定义与功能</a>
+<a class="toc-l3" href="#s-212关键概念" data-toc="16">2.1.2 关键概念</a>
+<a class="toc-l4" href="#s-2121物理传输介质" data-toc="17">2.1.2.1 物理传输介质</a>
+<a class="toc-l4" href="#s-2122信号与编码" data-toc="18">2.1.2.2 信号与编码</a>
+<a class="toc-l4" href="#s-2123传输方式" data-toc="19">2.1.2.3 传输方式</a>
+<a class="toc-l4" href="#s-2124信道容量" data-toc="20">2.1.2.4 信道容量</a>
+<a class="toc-l3" href="#s-213物理层协议与设备" data-toc="21">2.1.3 物理层协议与设备</a>
+<a class="toc-l4" href="#s-2131核心协议" data-toc="22">2.1.3.1 核心协议</a>
+<a class="toc-l4" href="#s-2132核心设备" data-toc="23">2.1.3.2 核心设备</a>
+<a class="toc-l3" href="#s-214物理层应用分析" data-toc="24">2.1.4 物理层应用分析</a>
+<a class="toc-l2" href="#s-22数据链路层" data-toc="25">2.2 数据链路层</a>
+<a class="toc-l3" href="#s-221数据链路层核心定义与功能" data-toc="26">2.2.1 数据链路层核心定义与功能</a>
+<a class="toc-l3" href="#s-222关键概念" data-toc="27">2.2.2 关键概念</a>
+<a class="toc-l4" href="#s-2221帧结构" data-toc="28">2.2.2.1 帧结构</a>
+<a class="toc-l4" href="#s-2222MAC地址" data-toc="29">2.2.2.2 MAC 地址</a>
+<a class="toc-l4" href="#s-2223差错控制" data-toc="30">2.2.2.3 差错控制</a>
+<a class="toc-l4" href="#s-2224流量控制" data-toc="31">2.2.2.4 流量控制</a>
+<a class="toc-l4" href="#s-2225介质访问控制MAC协议" data-toc="32">2.2.2.5 介质访问控制（MAC）协议</a>
+<a class="toc-l3" href="#s-223数据链路层协议与设备" data-toc="33">2.2.3 数据链路层协议与设备</a>
+<a class="toc-l4" href="#s-2231核心协议" data-toc="34">2.2.3.1 核心协议</a>
+<a class="toc-l4" href="#s-2232核心设备" data-toc="35">2.2.3.2 核心设备</a>
+<a class="toc-l3" href="#s-224数据链路层应用分析" data-toc="36">2.2.4 数据链路层应用分析</a>
+<a class="toc-l1" href="#s-3网络层与传输层的基本概念及应用分析" data-toc="37">3 网络层与传输层的基本概念及应用分析</a>
+<a class="toc-l2" href="#s-31网络层" data-toc="38">3.1 网络层</a>
+<a class="toc-l3" href="#s-311网络层核心定义与功能" data-toc="39">3.1.1 网络层核心定义与功能</a>
+<a class="toc-l3" href="#s-312关键概念" data-toc="40">3.1.2 关键概念</a>
+<a class="toc-l4" href="#s-3121IP地址与子网划分" data-toc="41">3.1.2.1 IP 地址与子网划分</a>
+<a class="toc-l4" href="#s-3122路由选择与路由表" data-toc="42">3.1.2.2 路由选择与路由表</a>
+<a class="toc-l4" href="#s-3123分组转发流程" data-toc="43">3.1.2.3 分组转发流程</a>
+<a class="toc-l4" href="#s-3124拥塞控制" data-toc="44">3.1.2.4 拥塞控制</a>
+<a class="toc-l4" href="#s-3125辅助协议" data-toc="45">3.1.2.5 辅助协议</a>
+<a class="toc-l3" href="#s-313网络层协议与设备" data-toc="46">3.1.3 网络层协议与设备</a>
+<a class="toc-l4" href="#s-3131核心协议" data-toc="47">3.1.3.1 核心协议</a>
+<a class="toc-l4" href="#s-3132核心设备" data-toc="48">3.1.3.2 核心设备</a>
+<a class="toc-l3" href="#s-314网络层应用分析" data-toc="49">3.1.4 网络层应用分析</a>
+<a class="toc-l2" href="#s-32传输层" data-toc="50">3.2 传输层</a>
+<a class="toc-l3" href="#s-321传输层核心定义与功能" data-toc="51">3.2.1 传输层核心定义与功能</a>
+<a class="toc-l3" href="#s-322关键概念" data-toc="52">3.2.2 关键概念</a>
+<a class="toc-l4" href="#s-3221端口号" data-toc="53">3.2.2.1 端口号</a>
+<a class="toc-l4" href="#s-3222面向连接与无连接传输" data-toc="54">3.2.2.2 面向连接与无连接传输</a>
+<a class="toc-l4" href="#s-3223报文段结构" data-toc="55">3.2.2.3 报文段结构</a>
+<a class="toc-l3" href="#s-323核心协议TCP与UDP" data-toc="56">3.2.3 核心协议（TCP 与 UDP）</a>
+<a class="toc-l4" href="#s-3231TCP协议传输控制协议" data-toc="57">3.2.3.1 TCP 协议（传输控制协议）</a>
+<a class="toc-l4" href="#s-3232UDP协议用户数据报协议" data-toc="58">3.2.3.2 UDP 协议（用户数据报协议）</a>
+<a class="toc-l4" href="#s-3233TCP与UDP的对比" data-toc="59">3.2.3.3 TCP 与 UDP 的对比</a>
+<a class="toc-l3" href="#s-324传输层应用分析" data-toc="60">3.2.4 传输层应用分析</a>
+<a class="toc-l1" href="#s-4应用层的基本概念及应用分析" data-toc="61">4 应用层的基本概念及应用分析</a>
+<a class="toc-l2" href="#s-41应用层核心定义与功能" data-toc="62">4.1 应用层核心定义与功能</a>
+<a class="toc-l2" href="#s-42应用层关键概念" data-toc="63">4.2 应用层关键概念</a>
+<a class="toc-l3" href="#s-421客户服务器CS架构" data-toc="64">4.2.1 客户/服务器（C/S）架构</a>
+<a class="toc-l3" href="#s-422对等P2P架构" data-toc="65">4.2.2 对等（P2P）架构</a>
+<a class="toc-l3" href="#s-423应用层协议与端口号的关联" data-toc="66">4.2.3 应用层协议与端口号的关联</a>
+<a class="toc-l2" href="#s-43核心应用层协议详解" data-toc="67">4.3 核心应用层协议详解</a>
+<a class="toc-l3" href="#s-431HTTP协议超文本传输协议" data-toc="68">4.3.1 HTTP 协议（超文本传输协议）</a>
+<a class="toc-l4" href="#s-4311核心功能" data-toc="69">4.3.1.1 核心功能</a>
+<a class="toc-l4" href="#s-4312HTTP请求与响应结构" data-toc="70">4.3.1.2 HTTP 请求与响应结构</a>
+<a class="toc-l4" href="#s-4313HTTP的局限性与HTTPS优化" data-toc="71">4.3.1.3 HTTP 的局限性与 HTTPS 优化</a>
+<a class="toc-l3" href="#s-432DNS协议域名系统" data-toc="72">4.3.2 DNS 协议（域名系统）</a>
+<a class="toc-l4" href="#s-4321核心功能" data-toc="73">4.3.2.1 核心功能</a>
+<a class="toc-l4" href="#s-4322域名结构" data-toc="74">4.3.2.2 域名结构</a>
+<a class="toc-l4" href="#s-4323域名解析流程" data-toc="75">4.3.2.3 域名解析流程</a>
+<a class="toc-l3" href="#s-433FTP协议文件传输协议" data-toc="76">4.3.3 FTP 协议（文件传输协议）</a>
+<a class="toc-l4" href="#s-4331核心特征" data-toc="77">4.3.3.1 核心特征</a>
+<a class="toc-l4" href="#s-4332FTP传输模式" data-toc="78">4.3.3.2 FTP 传输模式</a>
+<a class="toc-l3" href="#s-434电子邮件相关协议" data-toc="79">4.3.4 电子邮件相关协议</a>
+<a class="toc-l4" href="#s-4341SMTP协议简单邮件传输协议" data-toc="80">4.3.4.1 SMTP 协议（简单邮件传输协议）</a>
+<a class="toc-l4" href="#s-4342POP3协议邮局协议版本3" data-toc="81">4.3.4.2 POP3 协议（邮局协议版本 3）</a>
+<a class="toc-l4" href="#s-4343IMAP协议互联网邮件访问协议" data-toc="82">4.3.4.3 IMAP 协议（互联网邮件访问协议）</a>
+<a class="toc-l2" href="#s-44应用层应用分析" data-toc="83">4.4 应用层应用分析</a>
+<a class="toc-l1" href="#s-5无线网络与移动网络的基本概念及应用分析" data-toc="84">5 无线网络与移动网络的基本概念及应用分析</a>
+<a class="toc-l2" href="#s-51无线网络核心定义与分类" data-toc="85">5.1 无线网络核心定义与分类</a>
+<a class="toc-l3" href="#s-511核心定义" data-toc="86">5.1.1 核心定义</a>
+<a class="toc-l3" href="#s-512核心分类" data-toc="87">5.1.2 核心分类</a>
+<a class="toc-l2" href="#s-52无线网络关键概念" data-toc="88">5.2 无线网络关键概念</a>
+<a class="toc-l3" href="#s-521无线传输介质与频段" data-toc="89">5.2.1 无线传输介质与频段</a>
+<a class="toc-l3" href="#s-522无线接入技术" data-toc="90">5.2.2 无线接入技术</a>
+<a class="toc-l3" href="#s-523无线信道与干扰" data-toc="91">5.2.3 无线信道与干扰</a>
+<a class="toc-l4" href="#s-5231无线信道" data-toc="92">5.2.3.1 无线信道</a>
+<a class="toc-l4" href="#s-5232无线干扰" data-toc="93">5.2.3.2 无线干扰</a>
+<a class="toc-l3" href="#s-524无线安全" data-toc="94">5.2.4 无线安全</a>
+<a class="toc-l2" href="#s-53主流无线网络技术详解" data-toc="95">5.3 主流无线网络技术详解</a>
+<a class="toc-l3" href="#s-531WiFi技术80211系列协议" data-toc="96">5.3.1 WiFi 技术（802.11 系列协议）</a>
+<a class="toc-l4" href="#s-5311主流WiFi版本对比" data-toc="97">5.3.1.1 主流 WiFi 版本对比</a>
+<a class="toc-l4" href="#s-5312核心技术特性" data-toc="98">5.3.1.2 核心技术特性</a>
+<a class="toc-l3" href="#s-532蓝牙技术" data-toc="99">5.3.2 蓝牙技术</a>
+<a class="toc-l4" href="#s-5321主流蓝牙版本" data-toc="100">5.3.2.1 主流蓝牙版本</a>
+<a class="toc-l4" href="#s-5322核心应用场景" data-toc="101">5.3.2.2 核心应用场景</a>
+<a class="toc-l3" href="#s-533移动网络技术2G3G4G5G" data-toc="102">5.3.3 移动网络技术（2G/3G/4G/5G）</a>
+<a class="toc-l4" href="#s-5331各代移动网络技术对比" data-toc="103">5.3.3.1 各代移动网络技术对比</a>
+<a class="toc-l4" href="#s-53325G核心技术与应用场景" data-toc="104">5.3.3.2 5G 核心技术与应用场景</a>
+<a class="toc-l3" href="#s-534物联网无线技术" data-toc="105">5.3.4 物联网无线技术</a>
+<a class="toc-l2" href="#s-54无线网络与移动网络的应用分析" data-toc="106">5.4 无线网络与移动网络的应用分析</a>
+<a class="toc-l2" href="#s-55无线网络与移动网络的发展趋势" data-toc="107">5.5 无线网络与移动网络的发展趋势</a>
+</nav>
+  <div class="sb-foot">
+    <span id="counter">—</span>
+    <button id="expand">仅看章节目</button>
+  </div>
+</aside>
+<main id="main">
+<div id="content">
+  <section class="cover">
+    <h1>计算机网络高频考点</h1>
+    <div class="cv-sub">科技类考点精讲 · 计算机网络</div>
+    <div class="cv-meta">
+      <span>共 5 章</span><span>16 节</span><span>108 个标题</span><span>原 PDF 34 页</span><span>文字可复制</span>
+    </div>
+    <div class="cv-note">
+      <b>说明：</b>本页由扫描版 PDF（<code>6-3-计算机网络高频考点.pdf</code>）经 OCR 转换而来，
+      文字内容可自由复制、检索；表格与红字重点均按原页还原，便于对照记忆。<br>
+      <b>校对提示：</b>OCR 可能存在个别错别字（如形近字、罗马数字），请以原 PDF 为准。
+    </div>
+  </section>
+<div class="pagebreak" data-page="1"><span class="pg-mark">P1</span></div>
+<p>计算机网络知识高频考点讲义</p>
+<div class="pagebreak" data-page="2"><span class="pg-mark">P2</span></div>
+<h1 id="s-1计算机网络体系结构的概念及应用分析" class="c-h1">1 计算机网络体系结构的概念及应用分析</h1>
+<h2 id="s-11计算机网络体系结构核心概念" class="c-h2">1.1 计算机网络体系结构核心概念</h2>
+<h3 id="s-111计算机网络定义" class="c-h3">1.1.1 计算机网络定义</h3>
+<p>将地理上分散、具有独立功能的多台计算机（及其他终端设备），通过通信设备和通信线路连接起来，由完善的网络软件（包括协议）实现资源共享和信息交换的系统。核心要素包括：终端设备、通信子网（通信设备＋线路）、资源子网（主机＋软件+数据资源）、网络协议。</p>
+<h3 id="s-112网络体系结构定义" class="c-h3">1.1.2 网络体系结构定义</h3>
+<p>实现计算机网络的互联互通和资源共享，将网络功能划分为若干个层次，每个层次完成特定的功能，相邻层次通过接口通信，不同层次遵循对应的协议，这种分层架构及协议的集合称为网络体系结构。核心作用是解耦复杂网络功能，降低开发和维护成本，实现标准化。</p>
+<h3 id="s-113协议的核心概念" class="c-h3">1.1.3 协议的核心概念</h3>
+<p>协议（Protocol）是计算机网络中两台或多台设备之间进行通信时必须遵循的一组规则、标准或约定的集合，用于规范数据的格式、传输时序、差错处理、同步控制等。协议的三要素：</p>
+<p class="li li1"><span class="mk">•</span><b>语法</b>：规定数据的结构和格式（如帧的头部长度、字段顺序），以及信号电平的表示方式，解决“怎么传”的格式问题。</p>
+<p class="li li1"><span class="mk">•</span><b>语义</b>：规定通信双方需完成的操作和对应的响应（如请求、确认、差错通知），解决“传什么”和“做什么”的逻辑问题。</p>
+<p class="li li1"><span class="mk">•</span><b>时序（同步）</b>：规定数据传输的先后顺序、速率匹配和超时处理，解决“何时传”的节奏问题。</p>
+<h3 id="s-114接口与服务" class="c-h3">1.1.4 接口与服务</h3>
+<p>接口（Interface）是相邻两层之间的通信边界，上层通过接口调用下层提供的服务，下层通过接口向上层反馈结果，接口仅定义交互规则，不涉及具体实现。</p>
+<p>服务（Service）是下层为上层提供的功能集合，分为两类：</p>
+<p class="li li1"><span class="mk">•</span><b>面向连接服务</b>：通信前需建立连接，通信过程中保持连接，通信结束后释放连接，可靠性高（如电话通信），适用于对数据完整性要求高的场景。</p>
+<p class="li li1"><span class="mk">•</span><b>无连接服务</b>：通信前无需建立连接，直接发送数据，无需释放连接，效率高但可靠性低（如邮件、短信），适用于对实时性要求高、可容忍少量数据丢失的场景。</p>
+<h2 id="s-12两种核心网络体系结构" class="c-h2">1.2 两种核心网络体系结构</h2>
+<h3 id="s-121OSIRM开放系统互连参考模型" class="c-h3">1.2.1 OSI/RM 开放系统互连参考模型</h3>
+<p>由国际标准化组织（ISO）制定的七层分层模型，是理论上的网络体系结构，用于统一各类网络的设计标准，实现不同厂商设备的互联互通。从下到上分为 7 层，每层功能独立且相互协作：</p>
+<p class="li li1"><span class="mkn">1.</span><b>物理层（第 1 层）</b>：负责实现计算机和通信设备之间的物理介质连接，传输原始比特流（0 和 1），定义物理介质的规格、接口类型、信号电平、传输速率等。</p>
+<div class="pagebreak" data-page="3"><span class="pg-mark">P3</span></div>
+<p class="li li1"><span class="mkn">2.</span><b>数据链路层（第 2 层）</b>：将物理层传输的比特流封装为帧，负责帧的发送与接收、差错检测与纠正、流量控制，解决相邻节点间的可靠通信问题。</p>
+<p class="li li1"><span class="mkn">3.</span><b>网络层（第 3 层）</b>：负责跨网段的路由选择和分组转发，为数据包分配逻辑地址（IP 地址），实现不同网络之间的互联互通，解决“端到端”的路径选择问题。</p>
+<p class="li li1"><span class="mkn">4.</span><b>传输层（第 4 层）</b>：为应用程序提供端到端的通信服务，负责数据的分段与重组、差错控制、流量控制、拥塞控制，屏蔽下层网络的差异，保障数据的可靠传输。</p>
+<p class="li li1"><span class="mkn">5.</span><b>会话层（第 5 层）</b>：负责建立、维护和终止通信双方的会话连接，管理会话中的数据交换（如分段传输、同步控制），解决“何时通信、如何通信”的会话管理问题。</p>
+<p class="li li1"><span class="mkn">6.</span><b>表示层（第 6 层）</b>：负责数据的格式转换、加密与解密、压缩与解压，将应用层数据转换为适合网络传输的格式，或反之，确保通信双方能理解对方传输的数据。</p>
+<p class="li li1"><span class="mkn">7.</span><b>应用层（第 7 层）</b>：直接为用户应用程序提供网络服务（如文件传输、邮件收发、网页浏览），是网络与用户应用的接口，包含各类应用协议。</p>
+<p><b>OSI 模型的特点</b>：分层清晰、标准化程度高，但过于繁琐，实际落地难度大，仅作为理论参考，未被广泛应用于实际网络中。</p>
+<h3 id="s-122TCPIP协议簇实际主流体系结构" class="c-h3">1.2.2 TCP/IP 协议簇（实际主流体系结构）</h3>
+<p>由美国国防部主导开发，是互联网的核心协议体系，采用四层分层结构（或简化五层，兼容 OSI 模型），注重实用性和兼容性，已成为全球计算机网络的通用标准。四层结构（从下到上）：</p>
+<p class="li li1"><span class="mkn">1.</span><b>网络接口层（对应 OSI 物理层＋数据链路层）</b>：负责将 IP 数据包封装为帧，通过物理介质传输，对接各类底层物理网络（如以太网、无线网络），无统一标准，适配不同的物理传输场景。</p>
+<p class="li li1"><span class="mkn">2.</span><b>网络层（对应 OSI 网络层）</b>：核心协议为 IP 协议（网际协议），负责路由选择、分组转发，分配 IP 地址，是 TCP/IP 体系的核心层次；辅助协议包括 ICMP（互联网控制消息协议）、ARP（地址解析协议）、RARP（反向地址解析协议）。</p>
+<p class="li li1"><span class="mkn">3.</span><b>传输层（对应 OSI 传输层）</b>：核心协议为 TCP（传输控制协议）和 UDP（用户数据报协议），TCP 提供可靠的面向连接服务，UDP 提供不可靠的无连接服务，满足不同应用的通信需求。</p>
+<p class="li li1"><span class="mkn">4.</span><b>应用层（对应 OSI 会话层＋表示层＋应用层）</b>：包含各类应用协议，直接为用户提供服务，如 HTTP（超文本传输协议）、FTP（文件传输协议）、SMTP（简单邮件传输协议）、DNS（域名系统）等。</p>
+<p><b>TCP/IP 模型与 OSI 模型的差异</b>：</p>
+<p class="li li1"><span class="mk">•</span>OSI 是七层理论模型，TCP/IP 是四层实际模型，TCP/IP 更简洁，贴合实际应用场景。</p>
+<p class="li li1"><span class="mk">•</span>OSI 注重标准化，TCP/IP 注重实用性，TCP/IP 先有协议后有模型，OSI 先有模型后有协议。</p>
+<p class="li li1"><span class="mk">•</span>TCP/IP 的网络接口层无统一标准，适配多种物理网络，OSI 的物理层和数据链路层有明确的标准化定义。</p>
+<h2 id="s-13网络体系结构的应用分析" class="c-h2">1.3 网络体系结构的应用分析</h2>
+<h3 id="s-131分层架构的核心优势" class="c-h3">1.3.1 分层架构的核心优势</h3>
+<div class="pagebreak" data-page="4"><span class="pg-mark">P4</span></div>
+<p class="li li1"><span class="mkn">1.</span><b>解耦与模块化</b>：将复杂的网络功能拆分为独立的层次，每个层次仅关注自身功能，降低开发和维护难度，某一层的修改不会影响其他层次。</p>
+<p class="li li1"><span class="mkn">2.</span><b>标准化</b>：分层架构定义了各层次的功能和接口标准，不同厂商可按照标准开发设备和协议，实现设备互联互通（如不同品牌的路由器、交换机可协同工作）。</p>
+<p class="li li1"><span class="mkn">3.</span><b>灵活性与可扩展性</b>：可根据业务需求，替换或升级某一层的协议或设备，无需重构整个网络架构（如将有线网络升级为无线网络，仅需修改网络接口层相关配置）。</p>
+<p class="li li1"><span class="mkn">4.</span><b>便于故障排查</b>：分层架构可定位故障所在的层次（如通信失败时，可依次排查物理层、数据链路层、网络层等），提升故障处理效率。</p>
+<h3 id="s-132实际应用场景" class="c-h3">1.3.2 实际应用场景</h3>
+<p class="li li1"><span class="mkn">1.</span><b>互联网架构适配</b>：全球互联网均基于 TCP/IP 协议簇构建，网络接口层适配以太网、光纤、无线网络等多种物理介质，网络层通过 IP 地址实现跨网段通信，传输层通过 TCP/UDP 保障数据传输，应用层支撑各类互联网应用（网页、社交、电商）。</p>
+<p class="li li1"><span class="mkn">2.</span><b>企业局域网设计</b>：企业局域网采用分层架构设计，核心层（网络层，负责路由转发）、汇聚层（数据链路层＋网络层，负责流量汇聚与分发）、接入层（物理层＋数据链路层，负责终端接入），各层次分工明确，提升网络稳定性和可扩展性。</p>
+<p class="li li1"><span class="mkn">3.</span><b>设备开发与兼容</b>：网络设备（路由器、交换机、网卡）的开发均遵循 TCP/IP 分层标准，如路由器专注于网络层的路由转发功能，交换机专注于数据链路层的帧转发功能，确保不同设备之间的兼容性。</p>
+<p class="li li1"><span class="mkn">4.</span><b>应用程序开发</b>：应用程序开发无需关注底层网络细节，可直接调用传输层的 TCP/UDP 服务或应用层协议，快速实现网络通信功能（如开发即时通讯软件，可基于 UDP 实现实时消息传输，基于 TCP 实现文件传输）。</p>
+<h3 id="s-133分层架构的局限" class="c-h3">1.3.3 分层架构的局限</h3>
+<p class="li li1"><span class="mk">•</span>层次间的接口调用存在开销，过多的分层会降低网络传输效率（如 OSI 七层模型的开销高于 TCP/IP 四层模型）。</p>
+<p class="li li1"><span class="mk">•</span>不同层次的协议协同存在复杂度，某一层的故障可能扩散到其他层次，增加故障排查的难度。</p>
+<p class="li li1"><span class="mk">•</span>TCP/IP 协议簇的网络接口层无统一标准，导致不同物理网络的适配存在差异，增加了跨网络兼容的复杂度。</p>
+<h1 id="s-2物理层与数据链路层的基本概念及应用分析" class="c-h1">2 物理层与数据链路层的基本概念及应用分析</h1>
+<h2 id="s-21物理层" class="c-h2">2.1 物理层</h2>
+<h3 id="s-211物理层核心定义与功能" class="c-h3">2.1.1 物理层核心定义与功能</h3>
+<p>物理层是计算机网络的最底层，直接对接物理传输介质，核心功能是实现计算机与通信设备之间的比特流（二进制数据 0 和 1）传输，不关注数据的含义和格式，仅负责“将数据从一台设备的物理端口传输到另一台设备的物理端口”。</p>
+<p><b>物理层的核心任务</b>：</p>
+<p class="li li1"><span class="mk">•</span>定义物理传输介质的规格（如光纤、双绞线、同轴电缆的传输特性）。</p>
+<div class="pagebreak" data-page="5"><span class="pg-mark">P5</span></div>
+<p class="li li1"><span class="mk">•</span>定义物理接口标准（如接口类型、引脚数量、引脚功能）。</p>
+<p class="li li1"><span class="mk">•</span>定义信号特性（如模拟信号与数字信号的转换、信号电平、传输速率、编码方式）。</p>
+<p class="li li1"><span class="mk">•</span>实现比特流的同步传输与异步传输，确保发送方和接收方的速率匹配。</p>
+<h3 id="s-212关键概念" class="c-h3">2.1.2 关键概念</h3>
+<h4 id="s-2121物理传输介质" class="c-h4">2.1.2.1 物理传输介质</h4>
+<p>物理传输介质是数据传输的载体，分为有线介质和无线介质两类：</p>
+<p class="li li1"><span class="mkn">1.</span><b>有线介质</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>双绞线</b>：由两根绝缘铜导线绞合而成，分为屏蔽双绞线（STP）和非屏蔽双绞线（UTP），成本低、易安装，适用于局域网（如 UTP CatSe 支持 1000Mbps 传输速率），传输距离较短（百米内）。</p>
+<p class="li li2"><span class="mk2">○</span><b>同轴电缆</b>：由内导体、绝缘层、外导体、护套组成，抗干扰能力强于双绞线，分为粗同轴电缆和细同轴电缆，曾用于局域网，现多用于有线电视、监控系统，传输距离中等（千米级）。</p>
+<p class="li li2"><span class="mk2">○</span><b>光纤</b>：以光信号为传输载体，由纤芯、包层、护套组成，分为单模光纤和多模光纤，带宽大、抗干扰能力极强、传输距离远（数十千米），适用于广域网和高速局域网，成本较高。</p>
+<p class="li li1"><span class="mkn">2.</span><b>无线介质</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>无线电波</b>：覆盖范围广，适用于长距离无线通信（如广播、电视、4G/5G 移动网络），易受干扰，带宽中等。</p>
+<p class="li li2"><span class="mk2">○</span><b>微波</b>：频率高于无线电波，分为地面微波和卫星微波，传输速率高、抗干扰能力较强，适用于点对点长距离通信（如卫星通信），需直线传播，易受天气影响。</p>
+<p class="li li2"><span class="mk2">○</span><b>红外线</b>：频率高于微波，传输速率较高，适用于短距离无线通信（如红外遥控器、近距离设备互联），需直线传播，易受障碍物遮挡。</p>
+<p class="li li2"><span class="mk2">○</span><b>激光</b>：以激光信号为传输载体，传输速率极高、抗干扰能力极强，适用于短距离高速无线通信（如实验室设备互联），需直线传播，易受天气和障碍物影响。</p>
+<h4 id="s-2122信号与编码" class="c-h4">2.1.2.2 信号与编码</h4>
+<p>信号是数据的电/光表示形式，分为模拟信号和数字信号：</p>
+<p class="li li1"><span class="mk">•</span><b>模拟信号</b>：连续变化的信号（如声波、正弦波），可通过调制将数字数据转换为模拟信号传输（如调制解调器），适用于长距离有线/无线通信，易受干扰导致失真。</p>
+<p class="li li1"><span class="mk">•</span><b>数字信号</b>：离散的信号（如高低电平，对应 0 和 1），传输精度高、不易失真，适用于短距离通信（如局域网），可通过编码优化传输效率。</p>
+<div class="pagebreak" data-page="6"><span class="pg-mark">P6</span></div>
+<p>编码是将数字数据转换为数字信号的过程，核心编码方式：</p>
+<p class="li li1"><span class="mk">•</span><b>不归零码（NRZ）</b>：高电平表示 1，低电平表示 0，无同步信号，易出现同步偏差（时钟漂移），仅适用于低速传输。</p>
+<p class="li li1"><span class="mk">•</span><b>曼彻斯特编码</b>：每个比特的中间有一个跳变，跳变既表示数据（上升沿为 0，下降沿为 1，或反之），又作为同步信号，适用于以太网（10Mbps），传输效率较低。</p>
+<p class="li li1"><span class="mk">•</span><b>差分曼彻斯特编码</b>：每个比特的中间有一个跳变（仅用于同步），比特开始处的跳变表示数据（有跳变为 0，无跳变力 1），抗干扰能力强于曼彻斯特编码，适用于高速传输。</p>
+<h4 id="s-2123传输方式" class="c-h4">2.1.2.3 传输方式</h4>
+<p>按传输方向，分为三类：</p>
+<p class="li li1"><span class="mk">•</span><b>单工传输</b>：数据仅能从发送方传输到接收方，无法反向传输（如广播、电视）。</p>
+<p class="li li1"><span class="mk">•</span><b>半双工传输</b>：数据可双向传输，但同一时刻只能单向传输（如对讲机），需解决冲突问题。</p>
+<p class="li li1"><span class="mk">•</span><b>全双工传输</b>：数据可同时双向传输（如电话、以太网），无需担心冲突，传输效率最高。</p>
+<p>按同步方式，分为两类：</p>
+<p class="li li1"><span class="mk">•</span><b>同步传输</b>：发送方和接收方采用统一的时钟信号，数据按固定速率连续传输，适用于高速传输（如光纤通信），需额外传输同步时钟。</p>
+<p class="li li1"><span class="mk">•</span><b>异步传输</b>：发送方和接收方无需统一时钟，每个数据帧前加起始位、后加停止位，用于同步和帧边界识别，适用于低速传输（如串口通信），传输效率低于同步传输。</p>
+<h4 id="s-2124信道容量" class="c-h4">2.1.2.4 信道容量</h4>
+<p>信道容量是指信道单位时间内可传输的最大数据量（比特率），受信道带宽、信噪比、传输介质等因素影响，核心公式：</p>
+<p class="li li1"><span class="mk">•</span><b>奈奎斯特准则</b>：无噪声信道的最大比特率 =2BlogzV（B 为信道带宽，单位 Hz:V 为信号的离散电平数），仅考虑带宽对信道容量的影响。</p>
+<p class="li li1"><span class="mk">•</span><b>香农公式</b>：有噪声信道的最大比特率 =B log：（1+S/N）（S 为信号功率，N 为噪声功率，SAN 为信噪比），考虑噪声对信道容量的影响，信噪比越高，信道容量越大。</p>
+<h3 id="s-213物理层协议与设备" class="c-h3">2.1.3 物理层协议与设备</h3>
+<h4 id="s-2131核心协议" class="c-h4">2.1.3.1 核心协议</h4>
+<p>物理层协议主要定义物理接口和传输特性，常见协议：</p>
+<p class="li li1"><span class="mk">•</span>RS-232：串口通信协议，适用于短距离异步传输（如电脑与路由器控制台连接），传输速率低（最高 115200bps）。</p>
+<p class="li li1"><span class="mk">•</span>RJ45：以太网物理层接口协议，适配双绞线，支持 10Mbps、100Mbps、1000Mbps 传输速率，是局域网最常用的物理接口协议。</p>
+<p class="li li1"><span class="mk">•</span>SDH/SONET：同步数字体系协议，适用于光纤传输，支持高速、大容量的数据传输，是广域网的核心物理层协议之一。</p>
+<div class="pagebreak" data-page="7"><span class="pg-mark">P7</span></div>
+<h4 id="s-2132核心设备" class="c-h4">2.1.3.2 核心设备</h4>
+<p>物理层设备仅负责比特流的传输，不处理数据格式或协议，常见设备：</p>
+<p class="li li1"><span class="mk">•</span><b>中继器（Repeater）</b>：放大信号、再生信号，解决信号传输过程中的衰减问题，延长传输距离，仅用于同一网段的信号放大，无法实现路由转发。</p>
+<p class="li li1"><span class="mk">•</span><b>集线器（Hub）</b>：多端口中继器，可连接多个终端设备，将某一端口接收的比特流广播到所有其他端口，属于共享式设备，所有端口共享带宽，易产生冲突，现逐渐被交换机替代。</p>
+<h3 id="s-214物理层应用分析" class="c-h3">2.1.4 物理层应用分析</h3>
+<p class="li li1"><span class="mkn">1.</span><b>局域网物理层部署</b>：企业/校园局域网多采用双绞线（R.J45 接口）作为传输介质，集线器或交换机作为接入设备，传输速率为 100Mbps 或 1000Mbps，覆盖范围百米内；高速局域网可采用光纤作为核心传输介质，提升带宽和传输距离。</p>
+<p class="li li1"><span class="mkn">2.</span><b>广域网物理层部署</b>：广域网多采用光纤、卫星微波作为传输介质，SDH/SONET 协议作为物理层协议，实现跨城市、跨国家的长距离数据传输，支撑互联网骨干网的运行。</p>
+<p class="li li1"><span class="mkn">3.</span><b>无线通信物理层适配</b>：移动网络（4G/5G）、无线网络（WiFi）的物理层适配对应的无线介质，通过调制编码技术提升传输速率和抗干扰能力，如 5G 物理层采用正交频分复用（OFDM）技术，实现高速率、低时延传输。</p>
+<p class="li li1"><span class="mkn">4.</span><b>特殊场景应用</b>：工业控制网络的物理层需适配工业环境，采用屏蔽双绞线或光纤，提升抗干扰能力；监控系统可采用同轴电缆或无线微波，实现远距离监控数据传输。</p>
+<h2 id="s-22数据链路层" class="c-h2">2.2 数据链路层</h2>
+<h3 id="s-221数据链路层核心定义与功能" class="c-h3">2.2.1 数据链路层核心定义与功能</h3>
+<p>数据链路层位于物理层之上、网络层之下，核心功能是将物理层传输的原始比特流封装为帧（数据链路层的传输单元），实现相邻节点（同一网段内的两台设备）之间的可靠通信，屏蔽物理层的传输差异，为网络层提供可靠的帧传输服务。</p>
+<p><b>数据链路层的核心任务</b>：</p>
+<p class="li li1"><span class="mk">•</span><b>帧封装与解封</b>：将网络层的数据包（分组）封装帧（添加帧头、帧尾），接收方解封帧，提取数据包并提交给网络层。</p>
+<p class="li li1"><span class="mk">•</span><b>差错控制</b>：检测并纠正帧传输过程中出现的差错（如比特翻转），常用方法为奇偶校验、循环冗余校验（CRC）。</p>
+<p class="li li1"><span class="mk">•</span><b>流量控制</b>：调节发送方的发送速率，使接收方能够及时接收帧，避免帧丢失（如滑动窗口协议）。</p>
+<p class="li li1"><span class="mk">•</span><b>帧同步</b>：识别帧的起始和结束位置，确保接收方能够正确提取每一个帧。</p>
+<p class="li li1"><span class="mk">•</span><b>介质访问控制（MAC）</b>：解决多个设备共享同一传输介质时的冲突问题（如以太网的 CSMA/CD 协议）。</p>
+<h3 id="s-222关键概念" class="c-h3">2.2.2 关键概念</h3>
+<div class="pagebreak" data-page="8"><span class="pg-mark">P8</span></div>
+<h4 id="s-2221帧结构" class="c-h4">2.2.2.1 帧结构</h4>
+<p>帧是数据链路层的传输单元，不同协议的帧结构略有差异，但核心组成部分一致：</p>
+<p class="li li1"><span class="mk">•</span><b>帧头（Header）</b>：包含源 MAC 地址、目的 MAC 地址、帧类型（标识上层协议，如 IP 协议）等信息，用于标识通信双方和数据类型。</p>
+<p class="li li1"><span class="mk">•</span><b>数据字段（Data）</b>：来自网络层的数据包，长度可变（通常为 46-1500 字节，不同协议有差异）。</p>
+<p class="li li1"><span class="mk">•</span><b>帧尾（Trailer）</b>：包含差错检测字段（如 CRC 校验码），用于接收方检测帧是否受损。</p>
+<p><b>示例</b>：以太网帧结构，帧头包含 6 字节目的 MAC 地址、6 字节源 MAC 地址、2 字节帧类型，数据字段 46-1500 字节，帧尾 4 字节 CRC 校验码，总长度 64-1518 字节。</p>
+<h4 id="s-2222MAC地址" class="c-h4">2.2.2.2 MAC 地址</h4>
+<p>MAC 地址（介质访问控制地址）是数据链路层的物理地址，用于唯一标识网络设备的网络接口（如网卡），由 48 位二进制数组成，分为前 24 位（厂商标识，由 IEEE 分配）和后 24 位（设备标识，由厂商分配），通常表示力 6 组十六进制数（如 00:1A:2B:3C:4D:5E）。</p>
+<p><b>MAC 地址的特点</b>：全球唯一，固化在网卡中（可通过软件修改，但不推荐），用于相邻节点间的帧传输，无法跨网段路由（跨网段需依赖 IP 地址）。</p>
+<h4 id="s-2223差错控制" class="c-h4">2.2.2.3 差错控制</h4>
+<p>差错控制是数据链路层保障帧传输可靠性的核心机制，分为差错检测和差错纠正两类：</p>
+<p class="li li1"><span class="mkn">1.</span><b>差错检测</b>：仅检测帧是否受损，不纠正差错，受损帧直接丢弃，由发送方重传，常用方法：</p>
+<p class="li li2"><span class="mk2">○</span><b>奇偶校验</b>：在数据末尾添加 1 位校验位，使数据中 1 的个数为奇数（奇校验）或偶数（偶校验），适用于低速传输，检测能力弱（无法检测偶数位比特翻转）。</p>
+<p class="li li2"><span class="mk2">○</span><b>循环冗余校验（CRC）</b>：通过多项式运算生成校验码，接收方通过相同的多项式运算验证帧的完整性，检测能力强（可检测出绝大多数比特翻转、帧丢失、帧重复等差错），是目前应用最广泛的差错检测方法。</p>
+<p class="li li1"><span class="mkn">2.</span><b>差错纠正</b>：检测到差错后，直接纠正差错，无需发送方重传，适用于差错率较高的场景（如无线通信），常用方法海明码，通过添加多个校验位，实现单比特差错纠正、多比特差错检测，开销高于差错检测。</p>
+<h4 id="s-2224流量控制" class="c-h4">2.2.2.4 流量控制</h4>
+<p>流量控制的核心是解决“发送方发送速率过快，接收方无法及时处理”的问题，避免帧丢失，常用协议：</p>
+<p class="li li1"><span class="mk">•</span><b>停止-等待协议</b>：发送方发送一个帧后，停止发送，等待接收方的确认帧（ACK），收到确认后再发送下一个帧，适用于低速、低误码率的场景，传输效率低。</p>
+<p class="li li1"><span class="mk">•</span><b>滑动窗口协议</b>：发送方和接收方各维护一个窗口（可连续发送/接收的帧的数量），发送方可连续发送窗口内的多个帧，无需等待每个帧的确认，接收方接收帧后发送累计确认，大幅提升传输效率，分为 Go-Back-N 协议和选择重传协议：</p>
+<p class="li li2"><span class="mk2">○</span><b>Go-Back-N 协议</b>：接收方仅接收有序帧，若某一帧丢失，接收方丢弃后续所有帧，发送方重传丢失帧及后续所有帧，开销较小，适用于误码率低的场景。</p>
+<div class="pagebreak" data-page="9"><span class="pg-mark">P9</span></div>
+<p class="li li2"><span class="mk2">○</span><b>选择重传协议</b>：接收方可接收无序帧，缓存正确的帧，仅要求发送方重传丢失的帧，传输效率高，但缓存开销大，适用于误码率高的场景。</p>
+<h4 id="s-2225介质访问控制MAC协议" class="c-h4">2.2.2.5 介质访问控制（MAC）协议</h4>
+<p>MAC 协议用于解决多个设备共享同一传输介质时的冲突问题，分两类：</p>
+<p class="li li1"><span class="mkn">1.</span><b>随机访问协议</b>：设备可随机发送帧，若发生冲突，采用退避机制重新发送，适用于节点数量不确定、通信量不均匀的场景（如以太网）：</p>
+<p class="li li2"><span class="mk2">○</span><b>CSMA/CD 协议（载波监听多路访问/冲突检测）</b>：以太网核心 MAC 协议，发送前监听介质（载波监听），若介质空闲则发送，发送过程中检测是否发生冲突（冲突检测），若冲突则立即停止发送，发送干扰信号，等待随机退避时间后重新发送，适用于半双工传输。</p>
+<p class="li li2"><span class="mk2">○</span><b>CSMA/CA 协议（载波监听多路访问/冲突避免）</b>：无线网络（WiFi）核心 MAC 协议，由于无线介质无法检测冲突，采用冲突避免机制，发送前监听介质，空闲则发送请求发送帧（RTS），接收方回应允许发送帧（CTS），之后再发送数据，避免冲突，适用于全双工无线传输。</p>
+<p class="li li1"><span class="mkn">2.</span><b>受控访问协议</b>：设备需获得许可后才能发送帧，无冲突，适用于节点数量固定、通信量均匀的场景：</p>
+<p class="li li2"><span class="mk2">○</span><b>令牌传递协议</b>：环形网络核心协议，令牌（特帧）在节点间循环传递，持有令牌的节点可发送帧，发送完成后将令牌传递给下一个节点，无冲突，传输效率高，但令牌丢失会导致网络瘫痪。</p>
+<p class="li li2"><span class="mk2">○</span><b>轮询协议</b>：由主节点依次轮询每个从节点，询问是否有数据发送，从节点仅在被轮询时才能发送数据，无冲突，但主节点故障会导致网络瘫痪，传输效率受轮询速度影响。</p>
+<h3 id="s-223数据链路层协议与设备" class="c-h3">2.2.3 数据链路层协议与设备</h3>
+<h4 id="s-2231核心协议" class="c-h4">2.2.3.1 核心协议</h4>
+<p class="li li1"><span class="mkn">1.</span><b>以太网协议 （Ethernet）</b>：局域网最常用的数据链路层协议，采用 CSMA/CD MAC 协议，帧结构固定，支持双绞线、光纤等传输介质，传输速率从 10Mbps 到 100Gbps 不等，分为传统以太网（10Mbps）、快速以太网（100Mbps）、千兆以太网（1000Mbps）等。</p>
+<p class="li li1"><span class="mkn">2.</span><b>PPP 协议（点对点协议）</b>：适用于点对点的串行通信（如拨号上网、路由器之间的专线连接），支持全双工传输，包含链路建立、认证、帧封装、差错控制等功能，无 MAC 地址字段（无需解决冲突），支持多种上层协议。</p>
+<p class="li li1"><span class="mkn">3.</span><b>HDLC 协议（高级数据链路控制协议）</b>：面向比特的同步数据链路层协议，适用于点对点、点对多点的同步传输，支持全双工传输，采用滑动窗口协议实现流量控制和差错控制，无认证功能，多用于广域网。</p>
+<p><b>4. 802.11 协议（WiFi 协议）</b>：无线网络的数据链路层协议，采用 CSMA/CA MAC 协议，支持多终端无线接入，传输速率从几 Mbps 到数百 Mbps 不等，常见版本有 802.11b、802.11g、802.11n、802.11ac（WiFi5）、802.11ax（WiFi6）。</p>
+<div class="pagebreak" data-page="10"><span class="pg-mark">P10</span></div>
+<h4 id="s-2232核心设备" class="c-h4">2.2.3.2 核心设备</h4>
+<p>数据链路层设备负责帧的转发、过滤和处理，核心设备：</p>
+<p class="li li1"><span class="mkn">1.</span><b>交换机（Switch）</b>：局域网核心设备，多端口二层设备，每个端口对应一个网段（或终端），通过学习 MAC 地址构建 MAC 地址表，根据帧的目的 MAC 地址转发帧（仅转发到目标端口，不广播），属于交换式设备，各端口独占带宽，无冲突，提升局域网传输效率。</p>
+<p class="li li2"><span class="mk2">○</span><b>核心功能</b>：MAC 地址学习、帧转发、帧过滤、冲突域隔离（每个端口为一个独立冲突域）。</p>
+<p class="li li1"><span class="mkn">2.</span><b>网桥（Bridge）</b>：早期二层设备，用于连接两个相同类型的局域网，通过学习 MAC 地址转发帧，隔离冲突域，提升网络性能，现多被交换机替代（交换机可看作多端口网桥）。</p>
+<h3 id="s-224数据链路层应用分析" class="c-h3">2.2.4 数据链路层应用分析</h3>
+<p class="li li1"><span class="mkn">1.</span><b>局域网构建</b>：企业/校园局域网的核心是交换机，终端设备（电脑、打印机）通过双绞线连接到交换机，交换机通过 MAC 地址表实现帧的精准转发，隔离冲突域，提升传输效率；采用以太网协议，实现局域网内的可靠通信。</p>
+<p class="li li1"><span class="mkn">2.</span><b>点对点通信</b>：路由器之间的专线连接、拨号上网等场景，采用 PPP 协议，实现点对点的帧传输，支持认证功能（如 PAP、CHAP 认证），保障通信安全；广域网中，路由器之间可通过 HDLC 协议实现同步数据传输。</p>
+<p class="li li1"><span class="mkn">3.</span><b>无线网络接入</b>：WiFi 网络通过无线路由器（集成交换机功能）实现终端接入，无线路由器采用 802.11 协议，通过 CSMA/CA 协议避免无线信号冲突，终端设备（手机、电脑）通过无线网卡接入网络，实现无线通信。</p>
+<p class="li li1"><span class="mkn">4.</span><b>工业控制网络</b>：工业环境中，采用以太网或专用数据链路层协议，通过交换机隔离工业设备的通信冲突，提升工业控制数据的传输可靠性，保障工业设备的稳定运行。</p>
+<p class="li li1"><span class="mkn">5.</span><b>网络故障排查</b>：数据链路层故障是局域网常见故障（如帧丢失、冲突频繁），可通过查看交换机 MAC 地址表、检测帧校验结果、排查物理连接等方式，定位故障（如 MAC 地址冲突、网线损坏、交换机端口故障）。</p>
+<h1 id="s-3网络层与传输层的基本概念及应用分析" class="c-h1">3 网络层与传输层的基本概念及应用分析</h1>
+<h2 id="s-31网络层" class="c-h2">3.1 网络层</h2>
+<h3 id="s-311网络层核心定义与功能" class="c-h3">3.1.1 网络层核心定义与功能</h3>
+<p>网络层位于数据链路层之上、传输层之下，核心功能是实现跨网段的路由选择和分组转发，为传输层提供端到端的数据包传输服务，屏蔽底层数据链路层和物理层的差异，解决“不同网络之间如何互联互通”的问题。</p>
+<p><b>网络层的核心任务</b>：</p>
+<p class="li li1"><span class="mk">•</span><b>逻辑地址分配</b>：为网络中的终端设备分配唯一的逻辑地址（IP 地址），用于标识设备的网络归属和身份，区别于数据链路层的 MAC 地址（物理地址）。</p>
+<p class="li li1"><span class="mk">•</span><b>路由选择</b>：根据网络拓扑和路由协议，选择一条从源网络到目标网络的最优路径，由路由器完成。</p>
+<p class="li li1"><span class="mk">•</span><b>分组转发</b>：将传输层的报文段封装数据包（分组），根据路由表将数据包转发到下一跳路由器，直至到达目标网络。</p>
+<div class="pagebreak" data-page="11"><span class="pg-mark">P11</span></div>
+<p class="li li1"><span class="mk">•</span><b>拥塞控制</b>：检测网络拥塞状态，采取措施缓解拥塞（如丢弃数据包、调整转发速率），避免网络性能恶化。</p>
+<p class="li li1"><span class="mk">•</span><b>异构网络互联</b>：适配不同类型的数据链路层协议（如以太网、PPP），实现不同网络（局域网、广域网）之间的互联互通。</p>
+<h3 id="s-312关键概念" class="c-h3">3.1.2 关键概念</h3>
+<h4 id="s-3121IP地址与子网划分" class="c-h4">3.1.2.1 IP 地址与子网划分</h4>
+<p>IP 地址是网络层的逻辑地址，用于唯一标识网络中的主机（终端设备或路由器端口），分为 IPv4 和 IPv6 两个版本，目前互联网主流使用 IPv4，IPv6 用于解决 IPv4 地址枯竭问题。</p>
+<p class="li li1"><span class="mkn">1.</span><b>IPv4 地址</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>结构</b>：由 32 位二进制数组成，通常表示为 4 组十进制数（点分十进制），每组取值范围 0-255（如 192.168.1.1）。</p>
+<p class="li li2"><span class="mk2">○</span><b>分类</b>：根据前几位二进制数分为 A、B、C、D、E 五类，其中 A、B、C 类为单播地址（用于标识单个主机），D 类为组播地址，E 类为保留地址：</p>
+<p class="li li3"><span class="mk3">•</span><b>A 类地址</b>：前 1 位为 0，网络位 8 位，主机位 24 位，范围 1.0.0.0-126.255.255.255，适用于大型网络。</p>
+<p class="li li3"><span class="mk3">•</span><b>B 类地址</b>：前 2 位 10，网络位 16 位，主机位 16 位，范围 128.0.0.0-191.255.255.255，适用于中型网络。</p>
+<p class="li li3"><span class="mk3">•</span><b>C 类地址</b>：前 3 位 110，网络位 24 位，主机位 8 位，范围 192.0.0.0-223.255.255.255，适用于小型网络。</p>
+<p class="li li2"><span class="mk2">○</span><b>特殊地址</b>：</p>
+<p class="li li3"><span class="mk3">•</span><b>网络地址</b>：主机位全为 0 的地址（如 192.168.1.0），用于标识一个网络。</p>
+<p class="li li3"><span class="mk3">•</span><b>广播地址</b>：主机位全为 1 的地址（如 192.168.1.255），用于向同一网络内的所有主机发送数据。</p>
+<p class="li li3"><span class="mk3">•</span><b>回环地址</b>：127.0.0.0-127.255.255.255，用于本机测试（如 127.0.0.1）。</p>
+<p class="li li3"><span class="mk3">•</span><b>私有地址</b>：未分配给公网的地址，用于局域网内部使用，无法直接访问公网，需通过 NAT 转换：</p>
+<p class="li li4"><span class="mk4">•</span><b>A 类私有地址</b>：10.0.0.0-10.255.255.255</p>
+<p class="li li4"><span class="mk4">•</span><b>B 类私有地址</b>：172.16.0.0-172.31.255.255</p>
+<p class="li li4"><span class="mk4">•</span><b>C 类私有地址</b>：192.168.0.0-192.168.255.255</p>
+<p class="li li1"><span class="mkn">2.</span><b>IPv6 地址</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>结构</b>：由 128 位二进制数组成，通常表示 8 组十六进制数（冒分十六进制），每组取值范围 O-FFFF，可省略前导零，连续的零组可简化为：：（如 2001:0db8:85a3:0000:0000:8a2e:0370:7334 可简化</p>
+<p>2001:db8:85a3：：8a2e:370:7334）。</p>
+<div class="pagebreak" data-page="12"><span class="pg-mark">P12</span></div>
+<p class="li li2"><span class="mk2">○</span><b>特点</b>：地址数量极多（解决 IPv4 地址枯竭），支持无状态地址自动配置，内置 IPsec 加密功能，提升通信安全，支持组播和任播。</p>
+<p class="li li1"><span class="mkn">3.</span><b>子网划分</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>定义</b>：将一个大的网络（如 A、B、C 类网络）划分为多个小的子网，通过子网掩码区分网络位和主机位，提升 IP 地址利用率，减少网络广播范围。</p>
+<p class="li li2"><span class="mk2">○</span><b>子网掩码</b>：与 IP 地址配套使用，32 位二进制数，网络位为 1，主机位为 0，用于判断两个 IP 地址是否属于同一子网（如 C 类地址的子网掩码 255.255.255.224，对应网络位 27 位，主机位 5 位）。</p>
+<p class="li li2"><span class="mk2">○</span><b>无类域间路由（CIDR）</b>：打破传统 IP 地址分类，用斜线记法表示网络位（如 192.168.1.0/24，表示网络位 24 位），灵活分配 IP 地址，提升地址利用率。</p>
+<h4 id="s-3122路由选择与路由表" class="c-h4">3.1.2.2 路由选择与路由表</h4>
+<p>路由选择是网络层的核心功能，由路由器完成，核心是根据路由协议生成路由表，再根据路由表转发数据包。</p>
+<p class="li li1"><span class="mkn">1.</span><b>路由表</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>定义</b>：路由器中存储的路由信息表，用于记录到达不同目标网络的路径、下一跳路由器地址、路由优先级、路由度量值等信息。</p>
+<p class="li li2"><span class="mk2">○</span><b>核心条目</b>：目标网络地址、子网掩码、下一跳地址、出接口（路由器转发数据包的端口）、度量值（用于判断路径优劣，如跳数、带宽、时延）。</p>
+<p class="li li2"><span class="mk2">○</span><b>路由表生成方式</b>：静态路由（手动配置）、动态路由（通过路由协议自动生成）。</p>
+<p class="li li1"><span class="mk">•</span><b>路由类型</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>静态路由</b>：由网络管理员手动配置路由条目，适用于小型网络，配置简单、稳定，但无法自动适应网络拓扑变化，需手动更新。</p>
+<p class="li li2"><span class="mk2">○</span><b>动态路由</b>：路由器通过路由协议与其他路由器交换路由信息，自动生成和更新路由表，适用于大型网络，可自动适应网络拓扑变化，配置复杂，占用一定网络带宽。</p>
+<p class="li li1"><span class="mkn">3.</span><b>核心路由协议</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>内部网关协议（IGP）</b>：用于自治系统（AS，一组由同一机构管理、使用同一路由协议的网络）内部的路由选择，常见协议：</p>
+<p class="li li3"><span class="mk3">•</span><b>RIP（路由信息协议）</b>：基于距离向量算法，以跳数为度量值，最大跳数为 15（超过 15 视为不可达），适用于小型局域网，收敛速度慢。</p>
+<div class="pagebreak" data-page="13"><span class="pg-mark">P13</span></div>
+<p class="li li3"><span class="mk3">•</span><b>OSPF（开放式最短路径优先）</b>：基于链路状态算法，以带宽为度量值，计算最短路径，适用于大型局域网，收敛速度快、路由可靠，无最大跳数限制。</p>
+<p class="li li2"><span class="mk2">○</span><b>外部网关协议（EGP）</b>：用于不同自治系统之间的路由选择，核心协议为 BGP（边界网关协议），适用于互联网骨干网，基于路径向量算法，选择最优的跨自治系统路径。</p>
+<h4 id="s-3123分组转发流程" class="c-h4">3.1.2.3 分组转发流程</h4>
+<p>分组转发是路由器根据路由表，将数据包从源网络转发到目标网络的过程，核心流程：</p>
+<p class="li li1"><span class="mkn">1.</span>路由器接收来自数据链路层的帧，解封帧，提取网络层的数据包，获取目标 IP 地址。</p>
+<p class="li li1"><span class="mkn">2.</span>路由器查询路由表，根据目标 IP 地址和子网掩码，判断目标网络是否在路由表中：</p>
+<p class="li li2"><span class="mk2">○</span>若存在对应路由条目，获取下一跳地址和出接口。</p>
+<p class="li li2"><span class="mk2">○</span>若不存在对应路由条目，丢弃数据包（或转发到默认网关）。</p>
+<p class="li li1"><span class="mkn">3.</span>路由器将数据包封装为对应数据链路层的帧（根据出接口的链路类型，如以太网帧、PPP 帧），添加源 MAC 地址和目的 MAC 地址（下一跳路由器的 MAC 地址）。</p>
+<p class="li li1"><span class="mkn">4.</span>路由器通过出接口将帧转发到下一跳路由器，重复上述流程，直至数据包到达目标网络。</p>
+<p class="li li1"><span class="mkn">5.</span>目标网络的路由器接收数据包，解封后将数据包转发到目标主机（根据目标 IP 地址）。</p>
+<h4 id="s-3124拥塞控制" class="c-h4">3.1.2.4 拥塞控制</h4>
+<p>拥塞是指网络中数据包数量过多，超过网络设备的处理能力，导致数据包延迟增加、丢失、传输效率下降的现象，网络层通过拥塞控制机制缓解拥塞：</p>
+<p class="li li1"><span class="mkn">1.</span><b>拥塞检测</b>：路由器通过监控端口队列长度、数据包时延、丢包率等指标，判断是否发生拥塞（如队列长度超过阈值、丢包率上升）。</p>
+<p class="li li1"><span class="mkn">2.</span><b>拥塞控制策略</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>开环控制</b>：提前预防拥塞，如合理规划网络拓扑、分配带宽，避免网络负载过大，适用于固定带宽、固定业务量的场景。</p>
+<p class="li li2"><span class="mk2">○</span><b>闭环控制</b>：检测到拥塞后，采取措施缓解拥塞，如丢弃优先级低的数据包、调整路由路径（避开拥塞链路）、降低数据包转发速率，适用于动态业务量的场景。</p>
+<h4 id="s-3125辅助协议" class="c-h4">3.1.2.5 辅助协议</h4>
+<p class="li li1"><span class="mkn">1.</span><b>ICMP 协议（互联网控制消息协议）</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>核心功能</b>：用于在 IP 主机、路由器之间传递控制消息（如差错通知、状态查询），不传输用户数据。</p>
+<p class="li li2"><span class="mk2">○</span><b>常见应用</b>：</p>
+<div class="pagebreak" data-page="14"><span class="pg-mark">P14</span></div>
+<p class="li li3"><span class="mk3">•</span><b>ping 命令</b>：基于 ICMP 请求/应答报文，检测两台主机之间的网络连通性。</p>
+<p class="li li3"><span class="mk3">•</span><b>traceroute 命令</b>：基于 ICMP 超时报文，追踪数据包从源主机到目标主机的转发路径，定位网络故障。</p>
+<p class="li li1"><span class="mkn">2.</span><b>ARP 协议（地址解析协议）</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>核心功能</b>：将网络层的 IP 地址转换为数据链路层的 MAC 地址，用于相邻节点间的帧传输（如主机发送数据包时，需通过 ARP 获取网关的 MAC 地址）。</p>
+<p class="li li2"><span class="mk2">○</span><b>工作流程</b>：主机发送 ARP 请求（广播），询问目标 IP 地址对应的 MAC 地址，目标设备回应 ARP 应答（单播），告知自身 MAC 地址，主机缓存 ARP 条目（ARP 缓存表），后续通信直接使用。</p>
+<p class="li li1"><span class="mkn">3.</span><b>RARP 协议（反向地址解析协议）</b>：将 MAC 地址转换 IP 地址，适用于无盘工作站（无本地存储，无法预先配置 IP 地址），现多被 DHCP 协议替代。</p>
+<p class="li li1"><span class="mkn">4.</span><b>DHCP 协议（动态主机配置协议）</b>：</p>
+<p class="li li2"><span class="mk2">○</span><b>核心功能</b>：自动为网络中的终端设备分配 IP 地址、子网掩码、网关、DNS 服务器地址等网络配置，避免手动配置的繁琐，提升网络管理效率。</p>
+<p class="li li2"><span class="mk2">○</span><b>工作流程</b>：终端设备发送 DHCP 发现报文（广播） DHCP 服务器回应 DHCP 提供报文（广播），告知可分配的 IP 地址等配置 一终端设备发送 DHCP 请求报文（广播），确认选择某一 DHCP 服务器的配置</p>
+<p>DHCP 服务器回应 DHCP 确认报文（广播），正式分配 IP 地址（包含租期），终端设备完成网络配置。</p>
+<p class="li li2"><span class="mk2">○</span><b>IP 地址租期</b>：DHCP 分配的 IP 地址有固定租期（如 24 小时），租期到期前终端设备会发送续租请求，未续租则 IP 地址会被 DHCP 服务器回收，重新分配给其他设备。</p>
+<h3 id="s-313网络层协议与设备" class="c-h3">3.1.3 网络层协议与设备</h3>
+<h4 id="s-3131核心协议" class="c-h4">3.1.3.1 核心协议</h4>
+<p>网络层核心协议以 IP 协议为核心，搭配辅助协议实现完整功能，主流协议如下：</p>
+<p class="li li1"><span class="mkn">1.</span><b>IP 协议（网际协议）</b>：TCP/IP 体系网络层的核心协议，面向无连接，仅负责分组转发和路由选择，不提供差错控制、流量控制和拥塞控制，属于不可靠传输协议。IP 协议的核心作用是为数据包分配 IP 地址，定义数据包的格式，确保数据包能够跨网段传输。</p>
+<p class="li li1"><span class="mkn">2.</span><b>ICMP 协议（互联网控制消息协议）</b>：依赖 IP 协议传输，用于传递控制消息和差错通知，不传输用户数据，是网络故障排查的核心支撑协议，常见报文类型包括请求/应答报文（用于 ping 命令）、超时报文（用于 traceroute 命令）、差错报文（如目标不可达、数据包过大）。</p>
+<p class="li li1"><span class="mkn">3.</span><b>ARP 协议（地址解析协议）</b>：解决“IP 地址到 MAC 地址”的映射问题，仅用于同一网段内的地址解析，跨网段通信时需解析网关的 MAC 地址。</p>
+<p class="li li1"><span class="mkn">4.</span><b>DHCP 协议（动态主机配置协议）</b>：用于动态分配 IP 地址及网络配置，降低网络管理成本，适用于局域网、企业网等终端设备较多的场景。</p>
+<div class="pagebreak" data-page="15"><span class="pg-mark">P15</span></div>
+<p class="li li1"><span class="mkn">5.</span><b>BGP 协议（边界网关协议）</b>：外部网关协议，用于不同自治系统（AS）之间的路由选择，基子路径向量算法，不追求最短路径，而是选择最优路径（考虑路由优先级、带宽、时延等因素），是互联网骨干网的核心路由协议。</p>
+<p class="li li1"><span class="mkn">6.</span><b>RIP 协议（路由信息协议）</b>：内部网关协议，基于距离向量算法，以跳数为度量值，最大跳数为 15，适用于小型局域网，收敛速度慢，易产生路由环路（需通过水平分割、毒性逆转等机制解决）。</p>
+<p class="li li1"><span class="mkn">7.</span><b>OSPF 协议（开放式最短路径优先）</b>：内部网关协议，基于链路状态算法，以带宽度量值，无最大跳数限制，收敛速度快，支持大型局域网，通过划分区域（Area）减少路日信息交换量，提升网络稳定性。</p>
+<h4 id="s-3132核心设备" class="c-h4">3.1.3.2 核心设备</h4>
+<p>网络层设备负责路由选择、分组转发和异构网络互联，核心设备如下：</p>
+<p class="li li1"><span class="mkn">1.</span><b>路由器（Router）</b>：网络层核心设备，用于连接不同网段（局域网、广域网），实现跨网段分组转发。核心功能包括：维护路由表、执行路由选择算法、转发 IP 数据包、隔离广播域（每个端口对应一个独立广播域）、实现异构网络互联（适配不同数据链路层协议）。路由器工作流程：接收帧一解封帧提取 IP 数据包一查询路由表一封装帧一转发到下一跳。</p>
+<p class="li li1"><span class="mkn">2.</span><b>三层交换机</b>：集成二层交换机（数据链路层）和路由器（网络层）的功能，既支持 MAC 地址转发（局域网内帧转发），又支持 IP 地址路由转发（跨网段分组转发），适用于大型局域网的核心层和汇聚层，转发速率高于传统路由器，兼顾灵活性和高效性。</p>
+<h3 id="s-314网络层应用分析" class="c-h3">3.1.4 网络层应用分析</h3>
+<p class="li li1"><span class="mkn">1.</span><b>互联网骨干网构建</b>：互联网骨干网由多台高性能路由器和光纤传输介质组成，通过 BGP 协议实现不同自治系统之间的路由互联，IP 协议负责分组转发，确保全球范围内的数据包跨网段传输，支撑各类互联网应用的正常运行。</p>
+<p class="li li1"><span class="mkn">2.</span><b>企业网分层架构部署</b>：企业网采用“核心层-汇聚层-接入层”架构，核心层部署三层交换机或路由器，负责跨网段路由转发和骨干流量传输：汇聚层部署三层交换机，负责流量汇聚、路由汇总，减少核心层负载：接入层部署二层交换机，负责终端设备接入，实现局域网内通信与跨网段访问的衔接。</p>
+<p class="li li1"><span class="mkn">3.</span><b>IP 地址管理与分配</b>：大型企业、校园网等场景通过 DHCP 服务器动态分配 IP 地址，避免手动配置错误，提升管理效率；同时通过子网划分和 CIDR 技术，合理规划 IP 地址，提升地址利用率，隔离广播域，减少网络拥塞。</p>
+<p class="li li1"><span class="mkn">4.</span><b>网络故障排查</b>：网络层故障多涉及路由异常、IP 地址冲突、数据包转发失败等，可通过 ping 命令检测连通性、traceroute 命令追踪转发路径、查看路由器路由表等方式定位故障；通过 ARP 缓存表排查 IP 与 MAC 地址映射异常问题。</p>
+<p class="li li1"><span class="mkn">5.</span><b>异构网络互联</b>：路由器可连接以太网、PPP 专线、无线网络等不同类型的网络，适配不同数据链路层协议，实现异构网络的互联互通，例如企业局域网通过路由器连接广域网，实现与互联网的对接。</p>
+<h2 id="s-32传输层" class="c-h2">3.2 传输层</h2>
+<h3 id="s-321传输层核心定义与功能" class="c-h3">3.2.1 传输层核心定义与功能</h3>
+<p>传输层位于网络层之上、应用层之下，是 OSI 模型和 TCP/IP 模型的核心层次之一，核心功能是为应用程序提供端到端的通信服务，屏蔽底层网络层（如路由转发、拥塞）的差异，弥补网络层不可靠传输的不足，保障数据的可靠或高效传输。</p>
+<div class="pagebreak" data-page="16"><span class="pg-mark">P16</span></div>
+<p><b>传输层的核心任务</b>：</p>
+<p class="li li1"><span class="mk">•</span><b>端到端通信标识</b>：通过端口号标识同一主机上的不同应用程序，实现应用程序之间的精准通信（网络层通过 IP 地址标识主机，传输层通过端口号标识应用，二者结合实现“主机-应用”的端到端定位）。</p>
+<p class="li li1"><span class="mk">•</span><b>数据分段与重组</b>：将应用层发送的大数据块分割为多个小的报文段（适配网络层数据包的长度限制），发送到目标主机后，再将报文段重组为原始数据，提交给应用层。</p>
+<p class="li li1"><span class="mk">•</span><b>差错控制</b>：检测并纠正报文段传输过程中的差错（如比特翻转、报文段丢失、重复），确保数据的完整性，核心通过校验和、确认机制、重传机制实现。</p>
+<p class="li li1"><span class="mk">•</span><b>流量控制</b>：调节发送方的发送速率，使接收方能够及时处理报文段，避免接收方缓冲区溢出导致报文段丢失，与数据链路层流量控制的区别是：传输层面向端到端，数据链路层面向相邻节点。</p>
+<p class="li li1"><span class="mk">•</span><b>拥塞控制</b>：检测网络拥塞状态，调整发送方的发送速率，缓解网络拥塞，避免因拥塞导致的报文段丢失和传输效率下降（仅 TCP 协议支持，UDP 协议不支持）。</p>
+<h3 id="s-322关键概念" class="c-h3">3.2.2 关键概念</h3>
+<h4 id="s-3221端口号" class="c-h4">3.2.2.1 端口号</h4>
+<p>端口号是传输层用于标识主机上不同应用程序的逻辑地址，由 16 位二进制数组成，取值范围 0-65535，分二类：</p>
+<p class="li li1"><span class="mkn">1.</span><b>熟知端口号（0-1023）</b>：分配给常用的应用层协议，由 IANA（互联网号码分配机构）统一管理，例如：HTTP 协议 80 端口、HTTPS 协议 443 端口、FTP 协议 21 端口、SMTP 协议 25 端口、DNS 协议 53 端口。</p>
+<p class="li li1"><span class="mkn">2.</span><b>登记端口号（1024-49151）</b>：用于登记的应用程序，可由企业或组织申请使用，无需 IANA 强制分配，例如：MySQL 数据库 3306 端口、Tomcat 服务器 8080 端口。</p>
+<p class="li li1"><span class="mkn">3.</span><b>临时端口号（49152-65535）</b>：由操作系统动态分配，用于客户端应用程序与服务器通信时的临时标识，通信结束后释放，避免端口号占用。</p>
+<p>端口号与 IP 地址的组合称为“套接字（Socket）”，即 Socket=（源 IP 地址，源端口号，目的 IP 地址，目的端口号），用于唯一标识一次端到端的通信连接，确保数据能够准确送达目标应用程序。</p>
+<h4 id="s-3222面向连接与无连接传输" class="c-h4">3.2.2.2 面向连接与无连接传输</h4>
+<p class="li li1"><span class="mkn">1.</span><b>面向连接传输</b>：通信前需建立连接，通信过程中保持连接，通信结束后释放连接，可靠性高，适用于对数据完整性要求高的场景（如文件传输、网页加载），核心特征：三次握手建立连接、四次挥手释放连接、有序传输、差错重传、流量控制、拥塞控制。</p>
+<p class="li li1"><span class="mkn">2.</span><b>无连接传输</b>：通信前无需建立连接，直接发送报文段，通信结束后无需释放连接，效率高但可靠性低，适用于对实时性要求高、可容忍少量数据丢失的场景（如视频直播、语音通话），核心特征：无连接建立/释放过程、无序传输、无差错重传、无流量控制和拥塞控制。</p>
+<h4 id="s-3223报文段结构" class="c-h4">3.2.2.3 报文段结构</h4>
+<div class="pagebreak" data-page="17"><span class="pg-mark">P17</span></div>
+<p>传输层的传输单元为报文段，TCP 和 UDP 的报文段结构不同，核心组成如下：</p>
+<p><b>TCP 报文段结构</b>：包含头部和数据字段，头部长度可变（20-60 字节），核心字段：源端口号（16 位）：标识发送方应用程序。</p>
+<p><b>目的端口号（16 位）</b>：标识接收方应用程序。</p>
+<p><b>序号（32 位）</b>：标识报文段中的数据在整个数据流中的位置，用于有序重组和重复检测。</p>
+<p><b>确认号（32 位）</b>：标识期望接收的下一个报文段的序号，用于确认已接收的报文段。</p>
+<p><b>头部长度（4 位）</b>：标识 TCP 头部的长度（以 4 字节为单位）。</p>
+<p><b>标志位（6 位）</b>：包含 SYN（建立连接）、ACK（确认）、FIN（释放连接）、RST（重置连接）、PSH（推送数据）、URG（紧急数据），用于控制连接和数据传输。</p>
+<p><b>窗口大小（16 位）</b>：用于流量控制，标识接收方当前可接收的最大数据量（字节数）。</p>
+<p><b>校验和（16 位）</b>：用于差错检测，校验 TCP 头部和数据字段的完整性。</p>
+<p><b>紧急指针（16 位）</b>：标识紧急数据在报文段中的位置（仅 URG 标志位为 1 时有效）。</p>
+<p><b>UDP 报文段结构</b>：结构简单，头部固定为 8 字节，核心字段：</p>
+<p><b>源端口号（16 位）</b>：标识发送方应用程序。</p>
+<p><b>目的端口号（16 位）</b>：标识接收方应用程序。</p>
+<p><b>长度（16 位）</b>：标识 UDP 报文段的总长度（头部+数据）。</p>
+<p><b>校验和（16 位）</b>：用于差错检测，校验 UDP 头部和数据字段的完整性（可选，IPv4 中可省略，IPv6 中必须存在）。</p>
+<h3 id="s-323核心协议TCP与UDP" class="c-h3">3.2.3 核心协议（TCP 与 UDP）</h3>
+<h4 id="s-3231TCP协议传输控制协议" class="c-h4">3.2.3.1 TCP 协议（传输控制协议）</h4>
+<p>TCP 是面向连接的可靠传输协议，基于字节流传输，适用于对数据完整性、有序性要求高的场景，核心机制如下：</p>
+<p><b>连接建立（三次握手）</b>：确保发送方和接收方的发送/接收能力正常，流程：</p>
+<p><b>第一次握手</b>：客户端发送 SYN 报文段（SYN=1，序号=x），请求建立连接。</p>
+<p><b>第二次握手</b>：服务器接收后，回应 SYN+ACK 报文段（SYN=1,ACK=1，序号=y，确认号=x+1），确认客户端请求，并发起自身连接请求。</p>
+<p><b>第三次握手</b>：客户端接收后，回应 ACK 报文段（ACK=1，序号=x+1，确认号=y+1），确认服务器请求，连接建立完成。</p>
+<p><b>连接释放（四次挥手）</b>：确保双方都已完成数据传输，正常释放连接，流程：</p>
+<p><b>第一次挥手</b>：客户端发送 FIN 报文段（FIN=1，序号=x），告知服务器已完成数据传输，请求释放连接。</p>
+<p><b>第二次挥手</b>：服务器接收后，回应 ACK 报文段（ACK=1，序号=y，确认号=x+1），确认客户端的释放请求，此时服务器仍可向客户端发送数据。</p>
+<div class="pagebreak" data-page="18"><span class="pg-mark">P18</span></div>
+<p><b>第三次挥手</b>：服务器完成数据传输后，发送 FIN+ACK 报文段（FIN=1，ACK=1，序号=z，确认号=x+1），告知客户端已完成数据传输，请求释放连接。</p>
+<p><b>第四次挥手</b>：客户端接收后，回应 ACK 报文段（ACK=1，序号=x+1，确认号=z+1），确认服务器的释放请求，等待超时后释放连接（确保服务器接收确认报文段）。</p>
+<p><b>差错控制机制</b>：通过校验和检测报文段是否受损，通过序号和确认号检测报文段是否丢失、重复、无序，丢失的报文段通过重传机制重新发送，常用重传机制：</p>
+<p><b>超时重传</b>：发送方发送报文段后，启动超时计时器，若超时未收到确认，重新发送该报文段，超时时间动态调整（根据网络时延）。</p>
+<p><b>快速重传</b>：接收方收到无序报文段时，立即发送重复确认（确认号期望接收的序号），发送方收到 3 次重复确认后，无需等待超时，立即重传对应的报文段，提升重传效率。</p>
+<p><b>流量控制机制</b>：基于滑动窗口协议实现，接收方通过 TCP 头部的“窗口大小”字段，告知发送方自己当前可接收的最大数据量，发送方根据窗口大小调整发送速率，避免接收方缓冲区溢出。窗口大小动态调整，接收方缓冲区空闲空间越多，窗口越大，发送速率越快。</p>
+<p><b>拥塞控制机制</b>：TCP 通过四种状态动态调整发送方的拥塞窗口（发送方当前可发送的最大报文段数量），缓解网络拥塞：</p>
+<p><b>慢开始</b>：连接建立初期，拥塞窗口从 1 开始，每经过一个往返时间（RTT），拥塞窗口翻倍，快速提升发送速率，直至达到慢开始阈值。</p>
+<p><b>拥塞避免</b>：达到慢开始阈值后，拥塞窗口每经过一个 RTT，增加 1，缓慢提升发送速率，避免网络拥塞。</p>
+<p><b>快重传与快恢复</b>：检测到报文段丢失（收到 3 次重复确认）后，将慢开始阈值调整当前拥塞窗口的一半，拥塞窗口设置为新的慢开始阈值，进入拥塞避免状态，快速恢复发送速率，无需重新进入慢开始阶段。</p>
+<p><b>超时重传</b>：检测到超时后，认为网络严重拥塞，将慢开始阈值调整为 1，拥塞窗口设置为 1，重新进入慢开始阶段，大幅降低发送速率。</p>
+<h4 id="s-3232UDP协议用户数据报协议" class="c-h4">3.2.3.2 UDP 协议（用户数据报协议）</h4>
+<p>UDP 是无连接的不可靠传输协议，基于数据报传输，适用于对实时性要求高、可容忍少量数据丢失的场景，核心特点如下：</p>
+<p class="li li1"><span class="mkn">1.</span><b>无连接</b>：无需建立和释放连接，直接发送数据报，减少连接开销，提升传输效率。</p>
+<p class="li li1"><span class="mkn">2.</span><b>不可靠传输</b>：无差错控制、无流量控制、无拥塞控制，不保证数据报的有序性、完整性，丢失的数据报不重传，仅通过校验和可选检测差错（受损数据报直接丢弃）。</p>
+<p class="li li1"><span class="mkn">3.</span><b>面向数据报</b>：每次发送一个完整的数据报，数据报大小固定（由应用层决定），接收方原样接收，不进行分段与重组（若数据报过大，网络层会分片，接收方重组分片）。</p>
+<p class="li li1"><span class="mkn">4.</span><b>开销小</b>：UDP 头部仅 8 字节，远小于 TCP 头部（20-60 字节），传输开销低，适合传输少量数据或实时数据。</p>
+<p><b>UDP 的典型应用</b>：视频直播、语音通话、DNS 查询、DHCP 报文传输、实时游戏等，这些场景对实时性的要求高于数据完整性，少量数据丢失不会影响整体使用体验。</p>
+<h4 id="s-3233TCP与UDP的对比" class="c-h4">3.2.3.3 TCP 与 UDP 的对比</h4>
+<div class="pagebreak" data-page="19"><span class="pg-mark">P19</span></div>
+<div class="tw"><table><tr><td>对比维度</td><td>TCP 协议</td><td>UDP 协议</td></tr><tr><td>连接类型</td><td>面向连接</td><td>无连接</td></tr><tr><td>传输可靠性</td><td>可靠（有序、无丢失、无重复）</td><td>不可靠（无序、可能丢失、重复）</td></tr><tr><td>传输方式</td><td>面向字节流</td><td>面向数据报</td></tr><tr><td>头部开销</td><td>大（20-60 字节）</td><td>小（固定 8 字节）</td></tr><tr><td>流量控制</td><td>支持（滑动窗口协议）</td><td>不支持</td></tr><tr><td>拥塞控制</td><td>支持（慢开始、拥塞避免等）</td><td>不支持</td></tr><tr><td>适用场景</td><td>文件传输、网页加载、邮件收发等对可靠性要求高的场景</td><td>视频直播、语音通话、实时游戏等对实时性要求高的场景</td></tr></table></div>
+<h3 id="s-324传输层应用分析" class="c-h3">3.2.4 传输层应用分析</h3>
+<p class="li li1"><span class="mkn">1.</span><b>互联网应用协议适配</b>：各类应用层协议根据自身需求选择 TCP 或 UDP 协议，例如：HTTP/HTTPS、FTP、SMTP 等协议依赖 TCP 协议，确保数据可靠传输；DNS、DHCP、RTP（实时传输协议，用于视频/语音）等协议依赖 UDP 协议，追求传输效率和实时性。</p>
+<p class="li li1"><span class="mkn">2.</span><b>企业应用部署</b>：企业内部的核心业务（如数据库访问、文件共享、办公系统）多采用 TCP 协议，确保业务数据的完整性和可靠性；实时监控、语音调度等业务采用 UDP 协议，满足实时通信需求。</p>
+<p class="li li1"><span class="mkn">3.</span><b>网络性能优化</b>：针对不同应用场景选择合适的传输层协议，提升网络性能。例如：大文件传输采用 TCP 协议，通过调整 TCP 窗口大小、超时时间等参数，优化传输速率；实时直播采用 UDP 协议，搭配应用层差错控制（如局部重传），兼顾实时性和数据完整性。</p>
+<p class="li li1"><span class="mkn">4.</span><b>网络故障排查</b>：传输层故障多涉及 TCP 连接异常、UDP 数据丢失等，可通过 netstat 命令查看端口占用和连接状态、通过 wireshark 抓包分析 TCP 报文段的标志位、序号、确认号，定位连接建立/释放失败、报文段丢失等问题；UDP 故障可通过抓包检测数据报是否被正确发送和接收。</p>
+<p class="li li1"><span class="mkn">5.</span><b>分布式系统通信</b>：分布式系统中，节点之间的通信根据需求选择 TCP 或 UDP 协议，例如：节点间的可靠数据同步采用 TCP 协议，节点间的实时心跳检测采用 UDP 协议（轻量化、低时延）。</p>
+<h1 id="s-4应用层的基本概念及应用分析" class="c-h1">4 应用层的基本概念及应用分析</h1>
+<h2 id="s-41应用层核心定义与功能" class="c-h2">4.1 应用层核心定义与功能</h2>
+<p>应用层是 TCP/IP 协议簇的最顶层，直接面向用户和应用程序，是网络与用户应用的接口。其核心功能是为各类应用程序提供特定的网络通信服务，屏蔽底层网络（传输层、网络层等）的实现细节，让应用程序无需关注数据传输的底层逻辑，仅需调用应用层协议即可完成网络通信。</p>
+<div class="pagebreak" data-page="20"><span class="pg-mark">P20</span></div>
+<p><b>应用层的核心特征</b>：</p>
+<p class="li li1"><span class="mk">•</span><b>面向应用</b>：针对不同的用户需求（如文件传输、网页浏览、邮件收发），设计对应的协议和服务，适配各类应用场景。</p>
+<p class="li li1"><span class="mk">•</span><b>依赖底层服务</b>：应用层的数据需通过传输层（TCP 或 UDP）、网络层、数据链路层和物理层完成传输，需调用下层提供的端到端或点到点通信服务。</p>
+<p class="li li1"><span class="mk">•</span><b>协议标准化</b>：主流应用层协议均由 IANA（互联网号码分配机构）统一规范，确保不同厂商的应用程序和设备能够互联互通。</p>
+<p class="li li1"><span class="mk">•</span><b>数据单元</b>：应用层的传输单元称次“应用数据单元（ADU）”，向下传递时会被传输层封装为报文段（TCP）或数据报（UDP），逐层向下封装直至物理层的比特流。</p>
+<h2 id="s-42应用层关键概念" class="c-h2">4.2 应用层关键概念</h2>
+<h3 id="s-421客户服务器CS架构" class="c-h3">4.2.1 客户/服务器（C/S）架构</h3>
+<p>C/S 架构是应用层最主流的通信架构之一，由客户端（Client）和服务器（Server）两个核心角色组成，二者协同完成数据交互，适用于需要可靠通信、集中管理的场景。</p>
+<p class="li li1"><span class="mk">•</span><b>服务器</b>：长期运行的设备（如阿里云服务器、企业内部服务器），提供固定的网络服务（如网页服务、文件服务），拥有固定的 IP 地址和端口号（熟知端口号），可同时响应多个客户端的请求。</p>
+<p class="li li1"><span class="mk">•</span><b>客户端</b>：临时运行的终端设备（如电脑、手机），主动向服务器发起请求，获取所需服务，通信结束后可释放连接，IP 地址可动态分配（如通过 DHCP）。</p>
+<p class="li li1"><span class="mk">•</span><b>核心流程</b>：客户端发起连接请求（基于 TCP 或 UDP） 服务器接收请求并处理 一服务器向客户端返回响应数据- 客户端接收数据并展示给用户，完成一次通信。</p>
+<p class="li li1"><span class="mk">•</span><b>优势</b>：服务集中管理，安全性高，响应速度稳定，适用于大型应用（如电商平台、办公系统）；劣势：客户端需安装专用软件，维护成本高，服务器负载压力大。</p>
+<h3 id="s-422对等P2P架构" class="c-h3">4.2.2 对等（P2P）架构</h3>
+<p>P2P 架构无需固定的服务器，网络中的每个节点（Peer）既可以作为客户端，向其他节点发起请求，也可以作服务器，其他节点提供服务，节点之间可直接通信，适用于分布式、去中心化的场景。</p>
+<p class="li li1"><span class="mk">•</span><b>核心特征</b>：去中心化，无中心服务器依赖：节点地位平等，均可提供和获取服务；网络弹性强，单个节点下线不影响整体网络运行。</p>
+<p class="li li1"><span class="mk">•</span><b>优势</b>：无需搭建专用服务器，部署成本低；节点分布式存储和传输，可分担负载，提升传输效率（如文件下载）；扩展性强，新增节点即可提升网络服务能力。</p>
+<p class="li li1"><span class="mk">•</span><b>劣势</b>：节点动态变化（上线、下线频繁），通信稳定性差；缺乏集中管理，安全性较低（易遭受攻击）；适用于对可靠性要求不高的场景（如点对点文件传输、即时通讯）。</p>
+<p class="li li1"><span class="mk">•</span><b>典型应用</b>：BitTorrent（BT 下载）、微信点对点聊天、迅雷下载等。</p>
+<div class="pagebreak" data-page="21"><span class="pg-mark">P21</span></div>
+<h3 id="s-423应用层协议与端口号的关联" class="c-h3">4.2.3 应用层协议与端口号的关联</h3>
+<p>应用层协议需与传输层的端口号绑定，确保数据能够准确送达对应的应用程序。服务器端使用熟知端口号（0-1023），客户端使用临时端口号（49152-65535），常见应用层协议与端口号的对应关系如下：</p>
+<p class="li li1"><span class="mk">•</span><b>HTTP 协议</b>：80 端口，基于 TCP，用于网页浏览。</p>
+<p class="li li1"><span class="mk">•</span><b>HTTPS 协议</b>：443 端口，基于 TCP，用于加密的网页浏览（如电商支付、网银）。</p>
+<p class="li li1"><span class="mk">•</span><b>FTP 协议</b>：21 端口（控制连接）、20 端口（数据连接），基于 TCP，用于文件传输。</p>
+<p class="li li1"><span class="mk">•</span><b>SMTP 协议</b>：25 端口，基于 TCP，用于发送电子邮件。</p>
+<p class="li li1"><span class="mk">•</span><b>POP3 协议</b>：110 端口，基于 TCP，用于接收电子邮件。</p>
+<p class="li li1"><span class="mk">•</span><b>IMAP 协议</b>：143 端口，基于 TCP，用于接收电子邮件（功能比 POP3 更强大，支持邮件同步）。</p>
+<p class="li li1"><span class="mk">•</span><b>DNS 协议</b>：53 端口，基于 UDP（优先）或 TCP，用于域名解析（将域名转换力 IP 地址）。</p>
+<p class="li li1"><span class="mk">•</span><b>Telnet 协议</b>：23 端口，基于 TCP，用于远程登录服务器（未加密，安全性低，现多被 SSH 替代）。</p>
+<p class="li li1"><span class="mk">•</span><b>SSH 协议</b>：22 端口，基于 TCP，用于加密的远程登录和文件传输（替代 Telnet）。</p>
+<h2 id="s-43核心应用层协议详解" class="c-h2">4.3 核心应用层协议详解</h2>
+<h3 id="s-431HTTP协议超文本传输协议" class="c-h3">4.3.1 HTTP 协议（超文本传输协议）</h3>
+<p>HTTP 是用于从万维网（wwW）服务器传输超文本到本地浏览器的应用层协议，基于 TCP 协议，采用无状态连接（每次请求-响应后释放连接，服务器不记录客户端状态），是网页浏览的核心协议，目前主流版本为 HTTP/1.1 和 HTTP/2。</p>
+<h4 id="s-4311核心功能" class="c-h4">4.3.1.1 核心功能</h4>
+<p class="li li1"><span class="mk">•</span><b>超文本传输</b>：传输 HTML（超文本标记语言）、CSS、JavaScript、图片、视频等各类资源，支撑网页的展示。</p>
+<p class="li li1"><span class="mk">•</span><b>请求-响应模型</b>：客户端发送 HTTP 请求，服务器返回 HTTP 响应，一次请求对应一次响应。</p>
+<p class="li li1"><span class="mk">•</span><b>无状态通信</b>：服务器不保存客户端的会话信息（如登录状态），需通过 Cookie、Session 等技术实现状态保持。</p>
+<p class="li li1"><span class="mk">•</span><b>可扩展</b>：支持自定义请求头、响应头，适配各类扩展需求（如缓存控制、跨域访问）。</p>
+<h4 id="s-4312HTTP请求与响应结构" class="c-h4">4.3.1.2 HTTP 请求与响应结构</h4>
+<p><b>HTTP 请求报文</b>：由请求行、请求头、空行、请求体四部分组成：</p>
+<p class="li li2"><span class="mk2">○</span><b>请求行</b>：包含请求方法、请求 URI（统一资源标识符）、HTTP 版本，例如：GET/index.html HTTP/1.1。</p>
+<p class="li li2"><span class="mk2">○</span><b>请求方法</b>：常用方法有 GET（获取资源）、POST（提交数据，如表单提交）、PUT（更新资源）、DELETE（删除资源）、HEAD（获取响应头，不返回响应体）。</p>
+<div class="pagebreak" data-page="22"><span class="pg-mark">P22</span></div>
+<p class="li li2"><span class="mk2">○</span><b>请求头</b>：包含客户端信息、请求参数等，如 User-Agent（客户端浏览器信息）、Host（服务器域名）、Cookie（会信息）、Accept（可接收的资源类型）。</p>
+<p class="li li2"><span class="mk2">○</span><b>请求体</b>：仅 POST、PUT 等方法有，用于提交数据（如表单数据、JSON 数据），GET 方法的数据通过 URI 拼接传递，无请求体。</p>
+<p class="li li1"><span class="mkn">2.</span><b>HTTP 响应报文</b>：由状态行、响应头、空行、响应体四部分组成：</p>
+<p class="li li2"><span class="mk2">○</span><b>状态行</b>：包含 HTTP 版本、状态码、状态描述，例如：HTTP/1.1 200 OK。</p>
+<p class="li li2"><span class="mk2">○</span><b>状态码</b>：用于标识响应结果，分为 5 类：</p>
+<p class="li li3"><span class="mk3">•</span><b>Ixx（信息性）</b>：请求已接收，正在处理（如 100 Continue）。</p>
+<p class="li li3"><span class="mk3">•</span><b>2xx（成功）</b>：请求处理成功（如 200 OK、201 Created）。</p>
+<p class="li li3"><span class="mk3">•</span><b>3xx（重定向）</b>：需客户端进一步操作才能获取资源（如 301 永久重定向、302 临时重定向、304 Not Modified，缓存命中）。</p>
+<p class="li li3"><span class="mk3">•</span><b>4xx（客户端错误）</b>：请求存在错误（如 404 Not Found，资源不存在；403 Forbidden，禁止访问；400 Bad Request，请求参数错误）。</p>
+<p class="li li3"><span class="mk3">•</span><b>5xx（服务器错误）</b>：服务器处理请求失败（如 500 Internal Server Error，服务器内部错误；503 Service Unavailable，服务器不可用）。</p>
+<p class="li li2"><span class="mk2">○</span><b>响应头</b>：包含服务器信息、资源信息等，如 Server（服务器软件，如 Apache、Nginx）、Content-Type（资源类型，如 text/html、image/jpeg）、Content-Length（资源大小）、Set-Cookie（设置 Cookie）、Cache-Control（缓存控制）。</p>
+<p class="li li2"><span class="mk2">○</span><b>响应体</b>：服务器返回的具体资源（如 HTML 代码、图片数据、JSON 数据）。</p>
+<h4 id="s-4313HTTP的局限性与HTTPS优化" class="c-h4">4.3.1.3 HTTP 的局限性与 HTTPS 优化</h4>
+<p class="li li1"><span class="mk">•</span><b>HTTP 的局限性</b>：传输数据未加密，易被窃听、篡改（如中间人攻击）：无身份认证，易遭受伪装攻击；无状态连接，频繁请求会增加服务器负载。</p>
+<p class="li li1"><span class="mk">•</span><b>HTTPS 协议</b>：基于 HTTP 协议，添加了 SSL/TLS 加密层，实现加密传输、身份认证和数据完整性校验，解决 HTTP 的安全问题：</p>
+<p class="li li2"><span class="mk2">○</span><b>加密传输</b>：采用对称加密（传输数据）和非对称加密（交换对称密钥）结合的方式，确保数据传输过程中不被窃听、篡改。</p>
+<p class="li li2"><span class="mk2">○</span><b>身份认证</b>：通过数字证书验证服务器（或客户端）的身份，避免伪装攻击（数字证书由 CA 机构颁发）。</p>
+<p class="li li2"><span class="mk2">○</span><b>数据完整性</b>：通过校验和验证数据是否被篡改，确保接收的数据与发送的数据一致。</p>
+<div class="pagebreak" data-page="23"><span class="pg-mark">P23</span></div>
+<h3 id="s-432DNS协议域名系统" class="c-h3">4.3.2 DNS 协议（域名系统）</h3>
+<p>DNS 是用于将域名（如 www.baidu.com）转换为 IP 地址的应用层协议，基于 UDP 协议（优先，传输效率高），若查询数据量大则使用 TCP 协议，解决“IP 地址难记忆、易变更”的问题，是互联网通信的基础协议（所有应用层协议均依赖 DNS 解析）。</p>
+<h4 id="s-4321核心功能" class="c-h4">4.3.2.1 核心功能</h4>
+<p class="li li1"><span class="mk">•</span><b>域名解析</b>：将用户易记忆的域名转换为计算机可识别的 IP 地址（正向解析），也可将 IP 地址转换为域名（反向解析，用于故障排查、日志分析）。</p>
+<p class="li li1"><span class="mk">•</span><b>分布式域名管理</b>：采用分层分布式架构，将域名空间划分为不同的区域，由不同的 DNS 服务器负责管理，避免单点故障，提升解析效率。</p>
+<p class="li li1"><span class="mk">•</span><b>缓存机制</b>：DNS 服务器和客户端会缓存解析结果，减少重复解析，缩短解析时间（缓存有过期时间，避免 IP 地址变更后解析失效）。</p>
+<h4 id="s-4322域名结构" class="c-h4">4.3.2.2 域名结构</h4>
+<p>域名采用分层结构，从右到左为顶级域名、二级域名、三级域名（主机名），各层级之间用“”分隔，最右侧为根域名（通常省略）。</p>
+<p class="li li1"><span class="mk">•</span><b>根域名</b>：最高层级，由 ICANN 管理，全球共 13 组根服务器，负责解析顶级域名。</p>
+<p class="li li1"><span class="mk">•</span><b>顶级域名（TLD）</b>：分为通用顶级域名（如.com、.org、net、cn）和国家/地区顶级域名（如.cn 中国、us 美国、jp 日本）。</p>
+<p class="li li1"><span class="mk">•</span><b>二级域名</b>：由企业或组织申请，在顶级域名下注册（如 baidu.com 中的 baidu）。</p>
+<p class="li li1"><span class="mk">•</span><b>三级域名（主机名）</b>：用于标识同一域名下的不同服务器（如 www.baidu.com 中的 www，用于网页服务；mail.baidu.com 中的 mail，用于邮件服务）。</p>
+<p><b>示例</b>：www.baidu.com 的域名结构为：主机名（www） 二级域名（baidu） 顶级域名（com）一 根域名（.）。</p>
+<h4 id="s-4323域名解析流程" class="c-h4">4.3.2.3 域名解析流程</h4>
+<p>域名解析采用递归查询和迭代查询结合的方式，核心流程如下：</p>
+<p class="li li1"><span class="mkn">1.</span>客户端向本地 DNS 服务器（如运营商 DNS、路由器 DNS）发起域名解析请求（如解析 www.baidu.com）。</p>
+<p class="li li1"><span class="mkn">2.</span>本地 DNS 服务器查询自身缓存，若有解析结果，直接返回给客户端（缓存命中）；若无，执行下一步。</p>
+<p class="li li1"><span class="mkn">3.</span>本地 DNS 服务器向根服务器发起请求，查询.com 顶级域名对应的 DNS 服务器地址。</p>
+<p class="li li1"><span class="mkn">4.</span>根服务器返回.com 顶级域名的 DNS 服务器地址给本地 DNS 服务器。</p>
+<p class="li li1"><span class="mkn">5.</span>本地 DNS 服务器向.com 顶级域名 DNS 服务器发起请求，查询 baidu.com 二级域名对应的 DNS 服务器地址。</p>
+<p class="li li1"><span class="mkn">6.</span>.com 顶级域名 DNS 服务器返回 baidu.com 的 DNS 服务器地址给本地 DNS 服务器。</p>
+<p class="li li1"><span class="mkn">7.</span>本地 DNS 服务器向 baidu.com 的 DNS 服务器发起请求，查询 www.baidu.com 对应的 IP 地址。</p>
+<p class="li li1"><span class="mkn">8.</span>baidu.com 的 DNS 服务器返回 www.baidu.com 的 IP 地址给本地 DNS 服务器。</p>
+<div class="pagebreak" data-page="24"><span class="pg-mark">P24</span></div>
+<p class="li li1"><span class="mkn">9.</span>本地 DNS 服务器将 IP 地址缓存后，返回给客户端，完成解析。</p>
+<h3 id="s-433FTP协议文件传输协议" class="c-h3">4.3.3 FTP 协议（文件传输协议）</h3>
+<p>FTP 是用于在客户端和服务器之间进行文件传输的应用层协议，基于 TCP 协议，支持文件的上传、下载、删除、重命名等操作，适用于大量文件的批量传输（如网站文件部署、数据备份）。</p>
+<h4 id="s-4331核心特征" class="c-h4">4.3.3.1 核心特征</h4>
+<p class="li li1"><span class="mk">•</span><b>双连接模式</b>：FTP 通信需建立两个 TCP 连接，分别负责控制和数据传输，互不干扰：</p>
+<p class="li li2"><span class="mk2">○</span><b>控制连接</b>：端口 21，用于传输控制指令（如登录、上传、下载、退出）和响应信息，连接建立后持续保持，直至客户端退出。</p>
+<p class="li li2"><span class="mk2">○</span><b>数据连接</b>：端口 20（主动模式）或随机端口（被动模式），用于传输文件数据（上传、下载）和目录列表，每次传输数据时建立，传输完成后释放。</p>
+<p class="li li1"><span class="mk">•</span><b>支持认证</b>：客户端登录 FTP 服务器时，需输入用户名和密码，服务器验证通过后才能获取文件传输权限（也支持匿名登录，无需用户名密码）。</p>
+<p class="li li1"><span class="mk">•</span><b>支持多种文件类型</b>：可传输文本文件、二进制文件（如图片、视频、软件），需在传输前指定文件类型，避免文件损坏。</p>
+<p class="li li1"><span class="mk">•</span><b>局限性</b>：传输数据未加密，用户名、密码和文件数据易被窃听；不支持断点续传（需依赖第三方工具或扩展协议）。</p>
+<h4 id="s-4332FTP传输模式" class="c-h4">4.3.3.2 FTP 传输模式</h4>
+<p class="li li1"><span class="mkn">1.</span><b>主动模式</b>：由服务器主动向客户端发起数据连接，流程：</p>
+<p class="li li2"><span class="mk2">○</span>客户端向服务器 21 端口发起控制连接，登录成功后，告知服务器自己的临时端口。</p>
+<p class="li li2"><span class="mk2">○</span>服务器通过 20 端口，向客户端的临时端口发起数据连接，完成文件传输。</p>
+<p class="li li2"><span class="mk2">○</span><b>优势</b>：服务器控制数据连接，逻辑简单；劣势：客户端若开启防火墙，可能拦截服务器的主动连接。</p>
+<p class="li li1"><span class="mkn">2.</span><b>被动模式</b>：由客户端主动向服务器发起数据连接，流程：</p>
+<p class="li li2"><span class="mk2">○</span>客户端向服务器 21 端口发起控制连接，登录成功后，请求服务器进入被动模式。</p>
+<p class="li li2"><span class="mk2">○</span>服务器生成一个随机端口，告知客户端，随后等待客户端连接。</p>
+<p class="li li2"><span class="mk2">○</span>客户端向服务器的随机端口发起数据连接，完成文件传输。</p>
+<p class="li li2"><span class="mk2">○</span><b>优势</b>：适配客户端防火墙场景，应用更广泛：劣势：服务器需管理多个随机端口，负载略高。</p>
+<div class="pagebreak" data-page="25"><span class="pg-mark">P25</span></div>
+<h3 id="s-434电子邮件相关协议" class="c-h3">4.3.4 电子邮件相关协议</h3>
+<p>电子邮件的传输依赖多个应用层协议协同完成，核心包括 SMTP（发送协议）、POP3/IMAP（接收协议），基于 TCP 协议，实现电子邮件的发送、接收和同步，是企业和个人的核心通信方式之一。</p>
+<h4 id="s-4341SMTP协议简单邮件传输协议" class="c-h4">4.3.4.1 SMTP 协议（简单邮件传输协议）</h4>
+<p>SMTP 的核心功能是将客户端发送的电子邮件传递到接收方的邮件服务器，仅负责邮件发送，不负责邮件接收，支持文本邮件和带附件的邮件（需通过 MIME 协议扩展）。</p>
+<p class="li li1"><span class="mk">•</span><b>核心流程</b>：客户端（邮件客户端，如 Outlook、Foxmail）向发送方邮件服务器的 25 端口发起 SMTP 连接 一客户端登录并发送邮件内容（含发件人、收件人、邮件主题、正文） 发送方邮件服务器通过 SMTP 协议，将邮件转发到接收方邮件服务器一接收方邮件服务器存储邮件，等待接收方获取。</p>
+<p class="li li1"><span class="mk">•</span><b>MIME 扩展</b>：SMTP 默认仅支持 ASCII 编码的文本邮件，通过 MIME（多用途互联网邮件扩展）协议，可传输二进制文件（附件）、非 ASCII 编码的文本（如中文）、图片等内容，丰富邮件格式。</p>
+<h4 id="s-4342POP3协议邮局协议版本3" class="c-h4">4.3.4.2 POP3 协议（邮局协议版本 3）</h4>
+<p>POP3 的核心功能是让客户端从接收方邮件服务器下载电子邮件，适用于单设备接收邮件的场景，下载后邮件可保存在客户端，也可删除服务器上的邮件。</p>
+<p class="li li1"><span class="mk">•</span><b>核心特点</b>：采用“下载-删除”或“下载-保留”模式，下载邮件后，服务器上的邮件可根据设置选择保留或删除；不支持邮件同步，多设备登录时无法同步已读/未读状态、邮件文件夹等信息。</p>
+<p class="li li1"><span class="mk">•</span><b>核心流程</b>：客户端向接收方邮件服务器的 110 端口发起 POP3 连接-客户端输入用户名和密码登录一客户端请求下载邮件 一服务器将邮件发送给客户端—客户端完成下载，可选择删除服务器上的邮件。</p>
+<h4 id="s-4343IMAP协议互联网邮件访问协议" class="c-h4">4.3.4.3 IMAP 协议（互联网邮件访问协议）</h4>
+<p>IMAP 是比 POP3 更强大的邮件接收协议，核心功能是实现客户端与邮件服务器的邮件同步，适用于多设备接收邮件的场景（如电脑、手机同时登录），支持邮件文件夹管理、已读/未读状态同步等功能。</p>
+<p class="li li1"><span class="mk">•</span><b>核心特点</b>：邮件默认保存在服务器上，客户端仅同步邮件列表和摘要，查看邮件时再下载完整内容；支持多设备同步，某一设备标记邮件为已读，其他设备同步更新；支持创建、删除、移动邮件文件夹，同步到服务器。</p>
+<p class="li li1"><span class="mk">•</span><b>优势</b>：功能强大，适配多设备使用；劣势：对网络带宽要求略高，需持续与服务器同步。</p>
+<h2 id="s-44应用层应用分析" class="c-h2">4.4 应用层应用分析</h2>
+<p class="li li1"><span class="mkn">1.</span><b>网页浏览场景</b>：用户通过浏览器（客户端）输入域名，经 DNS 解析获取网页服务器的 IP 地址，客户端与服务器建立 TCP 连接，通过 HTTP/HTTPS 协议发送请求，服务器返回 HTML、CSS、JavaScript 等资源，浏览器解析并展示网页。核心依赖 HTTP/HTTPS、DNS 协议，采用 C/S 架构，注重数据传输的安全性（尤其是支付、网银场景，采用 HTTPS）。</p>
+<p class="li li1"><span class="mkn">2.</span><b>文件传输场景</b>：企业部署网站时，通过 FTP 协议将网页文件上传到服务器：个人用户下载软件、视频等资源时，可通过 FTP 或基于 HTTP 的下载协议（如 HTTP 下载、BT 下载）。FTP 适用于批量文件传输，BT 下载采用 P2P 架构，分担服务器负载。</p>
+<div class="pagebreak" data-page="26"><span class="pg-mark">P26</span></div>
+<p class="li li1"><span class="mkn">3.</span><b>电子邮件场景</b>：企业和个人通过邮件客户端（如 Outlook）或网页邮箱，发送邮件时依赖 SMTP 协议，接收邮件时依赖 POP3/IMAP 协议，DNS 协议负责解析邮件服务器的域名。多设备使用场景优先采用 IMAP 协议，单设备场景可采用 POP3 协议。</p>
+<p class="li li1"><span class="mkn">4.</span><b>远程管理场景</b>：网络管理员通过 SSH 协议（加密）远程登录服务器，进行配置管理、故障排查，替代传统的 Telnet 协议（未加密）；家用场景中，可通过远程桌面协议（RDP），基于 TCP 协议实现远程控制电脑，依赖应用层的远程控制协议。</p>
+<p class="li li1"><span class="mkn">5.</span><b>即时通讯场景</b>：微信、QQ 等即时通讯软件，点对点聊天采用 P2P 架构，群聊、文件传输可结合 C/S 架构（通过服务器转发）：实时消息传输基于 UDP 协议（追求实时性），文件传输基于 TCP 协议（追求可靠性），同时依赖 DNS 解析服务器地址。</p>
+<p class="li li1"><span class="mkn">6.</span><b>电商场景</b>：电商平台（如淘宝、京东）的网页浏览依赖 HTTPS 协议（加密传输，保障用户信息安全），订单提交、支付过程依赖 HTTP/HTTPS 的 POST 方法提交数据，DNS 协议确保域名解析准确，后台服务器通过 C/S 架构响应大量客户端请求，支撑高并发访问。</p>
+<h1 id="s-5无线网络与移动网络的基本概念及应用分析" class="c-h1">5 无线网络与移动网络的基本概念及应用分析</h1>
+<h2 id="s-51无线网络核心定义与分类" class="c-h2">5.1 无线网络核心定义与分类</h2>
+<h3 id="s-511核心定义" class="c-h3">5.1.1 核心定义</h3>
+<p>无线网络是指无需通过有线传输介质（如双绞线、光纤），而是通过无线电磁波（无线电波、微波、红外线等）实现设备之间通信的网络，本质是将有线网络的传输介质替换为无线介质，适配移动终端（手机、笔记本、平板）的通信需求，支持设备的移动性和灵活性。</p>
+<p><b>无线网络的核心要素</b>：</p>
+<p class="li li1"><span class="mk">•</span><b>无线传输介质</b>：核心是电磁波，包括无线电波、微波、红外线、激光等，不同介质的传输距离、带宽、抗干扰能力不同。</p>
+<p class="li li1"><span class="mk">•</span><b>无线节点</b>：包括无线终端（手机、笔记本）、无线接入点（AP）、无线路由器、无线网关等，负责发送和接收无线信号。</p>
+<p class="li li1"><span class="mk">•</span><b>无线协议</b>：用于规范无线信号的传输、编码、接入控制等，确保不同设备之间的互联互通（如 WiFi 协议、蓝牙协议）。</p>
+<p class="li li1"><span class="mk">•</span><b>拓扑结构</b>：常见的有星型（如家庭 WiFi，以无线路由器为中心）、网状（如企业无线 Mesh 网络，节点之间相互连接）、点对点（如两个设备通过蓝牙连接）。</p>
+<h3 id="s-512核心分类" class="c-h3">5.1.2 核心分类</h3>
+<p>按覆盖范围和应用场景，无线网络可分为四类：</p>
+<p class="li li1"><span class="mkn">1.</span><b>无线局域网（WLAN）</b>：覆盖范围较小（几十米到几百米），适用于室内外近距离场景（如家庭、办公室、校园），核心协议为 802.11 系列（WiFi），传输速率较高（从几 Mbps 到千兆以上），采用 2.4GHz 或 5GHz 频段，支持多终端同时接入。</p>
+<p class="li li1"><span class="mkn">2.</span><b>无线广域网（WWAN）</b>：覆盖范围极广（几公里到几十公里），适用于远距离移动通信场景（如户外、跨城市），核心为移动网络（2G、3G、4G、5G），由运营商部署基站，支持终端设备的移动性（如手机户外<span class="r">上</span>网）。</p>
+<div class="pagebreak" data-page="27"><span class="pg-mark">P27</span></div>
+<p class="li li1"><span class="mkn">3.</span><b>无线城域网（WMAN）</b>：覆盖范围城市级（几公里到几十公里），适用于城市内的无线接入场景（如城市公共 WiFi、企业跨园区通信），核心协议为 WiMAX（802.16），传输速率较高，可替代有线宽带，支撑城域范围内的多终端接入。</p>
+<p class="li li1"><span class="mkn">4.</span><b>无线个人局域网（WPAN）</b>：覆盖范围极小（10 米以内），适用于个人设备之间的近距离通信（如手机与耳机、电脑与打印机），核心协议为蓝牙、红外、ZigBee，传输速率较低，功耗小，适用于低速率、低功耗的场景。</p>
+<h2 id="s-52无线网络关键概念" class="c-h2">5.2 无线网络关键概念</h2>
+<h3 id="s-521无线传输介质与频段" class="c-h3">5.2.1 无线传输介质与频段</h3>
+<p>无线网络的传输依赖电磁波，不同频段的电磁波具有不同的传输特性，适配不同的应用场景，核心传输介质及频段如下：</p>
+<p class="li li1"><span class="mkn">1.</span><b>无线电波</b>：应用最广泛的无线传输介质，覆盖范围广，可穿透障碍物，分为多个频段：</p>
+<p class="li li2"><span class="mk2">•</span><b>2.4GHz 频段</b>：WiFi、蓝牙的常用频段，覆盖范围广，穿透能力强，但带宽有限（最大几十 Mbps），易受干扰（如微波炉、其他无线设备）。</p>
+<p class="li li2"><span class="mk2">○</span><b>SGHz 频段</b>：WiFi 的常用频段，带宽大（可达到千兆以上），干扰少，传输速率高，但覆盖范围小，穿透能力弱（易被墙壁、障碍物阻挡）。</p>
+<p class="li li2"><span class="mk2">○</span><b>蜂窝频段</b>：移动网络（2G、3G、4G、5G）的专用频段，由运营商分配，不同频段对应不同的传输速率和覆盖范围（低频段覆盖广，高速率低；高频段覆盖小，速率高）。</p>
+<p class="li li1"><span class="mkn">2.</span><b>微波</b>：频率高于无线电波，分为地面微波和卫星微波：</p>
+<p class="li li2"><span class="mk2">○</span><b>地面微波</b>：适用于点对点远距离通信（如两个城市之间的通信），传输速率高，抗干扰能力较强，但需直线传播，易受天气影响（如暴雨、大雾）。</p>
+<p class="li li2"><span class="mk2">○</span><b>卫星微波</b>：通过通信卫星转发信号，覆盖范围极广（全球覆盖），适用于偏远地区、海上、空中的通信，传输速率高，但延迟大（约 200ms），成本高。</p>
+<p class="li li1"><span class="mkn">3.</span><b>红外线</b>：频率高于微波，适用于短距离通信（10 米以内），传输速率较高，功耗小，但需直线传播，易被障碍物遮挡，抗干扰能力弱（如阳光、灯光），典型应用为红外遥控器、电脑与打印机的近距离连接。</p>
+<p class="li li1"><span class="mkn">4.</span><b>激光</b>：以激光信号为传输载体，传输速率极高，抗干扰能力极强，适用于短距离高速通信（如实验室设备互联），但需直线传播，易受天气和障碍物影响，成本高，应用场景有限。</p>
+<h3 id="s-522无线接入技术" class="c-h3">5.2.2 无线接入技术</h3>
+<p>无线接入技术是指终端设备通过无线方式接入网络的技术，核心分为两类：基础设施模式和自组织模式。</p>
+<p class="li li1"><span class="mkn">1.</span><b>基础设施模式</b>：需依赖无线接入点（AP）或无线路由器，终端设备通过连接 AP 接入网络，AP 负责转发终端与有线网络、终端与终端之间的数据，是最主流的接入模式（如家庭 WiFi、办公室 WiFi）。</p>
+<div class="pagebreak" data-page="28"><span class="pg-mark">P28</span></div>
+<p class="li li2"><span class="mk2">○</span><b>核心组件</b>：AP（无线接入点，负责发送和接收无线信号，连接有线网络和无线终端）、无线路由器（集成 AP 和路由器功能，可连接互联网，实现无线终端的上网）、无线终端（手机、笔记本等）。</p>
+<p class="li li2"><span class="mk2">○</span><b>优势</b>：覆盖范围广，可支持多终端同时接入，稳定性高；劣势：依赖 AP，AP 故障会导致终端无法接入。</p>
+<p class="li li1"><span class="mkn">2.</span><b>自组织模式（Ad Hoc 模式）</b>：无需依赖 AP，无线终端之间直接通信，形成临时的无线网络，适用于无 AP 的场景（如户外多人共享文件、应急通信）。</p>
+<p class="li li2"><span class="mk2">○</span><b>核心特征</b>：去中心化，终端之间相互转发数据，形成网状拓扑；网络动态变化，终端上线、下线会改变网络拓扑；适用于临时场景，无需提前部署设备。</p>
+<p class="li li2"><span class="mk2">○</span><b>优势</b>：部署灵活，无需 AP；劣势：传输速率低，稳定性差，支持的终端数量有限。</p>
+<h3 id="s-523无线信道与干扰" class="c-h3">5.2.3 无线信道与干扰</h3>
+<h4 id="s-5231无线信道" class="c-h4">5.2.3.1 无线信道</h4>
+<p>无线信道是指无线信号传输的通道，分为时分多址（TDMA）、频分多址（FDMA）、码分多址（CDMA）、正交频分复用（OFDM）等，核心作用是实现多终端同时接入，避免信号冲突。</p>
+<p class="li li1"><span class="mk">•</span><b>OFDM（正交频分复用）</b>：WiFi、4G、5G 的核心信道技术，将一个宽频段划分为多个窄子信道，多个子信道同时传输数据，提升传输速率，抗干扰能力强，适用于高速无线通信。</p>
+<p class="li li1"><span class="mk">•</span>TDMA：将时间划分为多个时隙，不同终端占用不同的时隙传输数据，适用于低速率场景（如 2G 网络），避免同一时间的信号冲突。</p>
+<p class="li li1"><span class="mk">•</span>FDMA：将频段划分为多个子频段，不同终端占用不同的子频段传输数据，适用于模拟通信和早期数字通信（如 1G 网络），带宽利用率低。</p>
+<p class="li li1"><span class="mk">•</span>CDMA：不同终端使用不同的编码序列传输数据，多个终端可同时占用同一频段，带宽利用率高，抗干扰能力强，适用于 3G 网络。</p>
+<h4 id="s-5232无线干扰" class="c-h4">5.2.3.2 无线干扰</h4>
+<p>无线信号易受外界干扰，导致传输速率下降、数据丢失，是无线网络的核心痛点，常见干扰类型及应对措施如下：</p>
+<p class="li li1"><span class="mk">•</span><b>同频段干扰</b>：多个无线设备使用同一频段（如 2.4GHz），导致信号冲突（如多个家庭的 WiFi、蓝牙设备），应对措施：切换至 5GHz 频段、修改 WiFi 信道、降低设备发射功率。</p>
+<p class="li li1"><span class="mk">•</span><b>环境干扰</b>：墙壁、金属障碍物、阳光、暴雨等环境因素，会削弱无线信号强度，应对措施：合理部署 AP（避开障碍物）、增加 AP 数量、使用信号放大器。</p>
+<p class="li li1"><span class="mk">•</span><b>设备干扰</b>：微波炉、无绳电话、雷达等设备，会发射电磁波干扰无线信号，应对措施：远离干扰设备、调整 AP 位置。</p>
+<div class="pagebreak" data-page="29"><span class="pg-mark">P29</span></div>
+<h3 id="s-524无线安全" class="c-h3">5.2.4 无线安全</h3>
+<p>无线网络的信号是开放传播的，易被窃听、篡改、伪造，安全性低于有线网络，核心安全机制和协议如下：</p>
+<p class="li li1"><span class="mkn">1.</span><b>身份认证</b>：确保只有授权设备才能接入无线网络，常见方式：</p>
+<p class="li li2"><span class="mk2">○</span><b>密码认证</b>：WiFi 的核心认证方式，用户需输入正确的密码才能接入，常见密码加密协议有 WEP、WPA、WPA2、WPA3。</p>
+<p class="li li2"><span class="mk2">○</span><b>MAC 地址过滤</b>：仅允许指定 MAC 地址的设备接入无线网络，提升安全性，但 MAC 地址可伪造，需搭配其他安全机制。</p>
+<p class="li li1"><span class="mkn">2.</span><b>数据加密</b>：对传输的数据进行加密，避免被窃听、篡改，常见加密协议：</p>
+<p class="li li2"><span class="mk2">○</span>WEP：早期加密协议，加密强度低，易被破解，现不推荐使用。</p>
+<p class="li li2"><span class="mk2">○</span>WPA/WPA2：主流加密协议，加密强度高，采用 AES 加密算法，适用于家庭、企业 WiFi, WPA2 比 WPA 更安全。</p>
+<p class="li li2"><span class="mk2">○</span>WPA3：最新加密协议，进一步提升加密强度，防范暴力破解，适配新一代 WiFi 设备。</p>
+<p class="li li1"><span class="mkn">3.</span><b>其他安全措施</b>：隐藏 WiFi 名称（SSID），避免被非法设备扫描：关闭 AP 的广播功能：定期修改 WiFi 密码；使用 VPN 加密远程接入的无线数据。</p>
+<h2 id="s-53主流无线网络技术详解" class="c-h2">5.3 主流无线网络技术详解</h2>
+<h3 id="s-531WiFi技术80211系列协议" class="c-h3">5.3.1 WiFi 技术（802.11 系列协议）</h3>
+<p>WiFi 是无线局域网（WLAN）的核心技术，基于 IEEE 802.11 系列协议，适用于室内外近距离无线接入，支持多终端同时接入，是家庭、办公室、校园最常用的无线网络技术，主流版本有 802.11b、802.11g、802.11n、802.11ac（WiFi5）、802.11ax（WiFi6）。</p>
+<h4 id="s-5311主流WiFi版本对比" class="c-h4">5.3.1.1 主流 WiFi 版本对比</h4>
+<div class="tw"><table><tr><td>WiFi 版本</td><td>频段</td><td>最大传输速率</td><td>核心优势</td><td>应用场景</td></tr><tr><td>802.11b（WiFi1）</td><td>2.4GHz</td><td>11Mbps</td><td>覆盖范围广，穿透能力强</td><td>早期低速场景，现基本淘汰</td></tr><tr><td>802.11g（WiFi2）</td><td>2.4GHz</td><td>54Mbps</td><td>兼容 802.11b，速率提升</td><td>早期家庭、办公室场景</td></tr><tr><td>802.11n（WiFi4）</td><td>2.4GHz/5GHz</td><td>600Mbps</td><td>双频段，支持 MIMO 技术，速率大幅提升</td><td>主流家庭、办公室场景，应用广泛</td></tr><tr><td>802.11ac（WiFi5）</td><td>5GHz</td><td>3.5Gbps</td><td>带宽大，干扰少，支持多用户 MIMO</td><td>高速场景（如 4K 视频、大型文件下载）</td></tr><tr><td>802.11ax（WiFi6）</td><td>2.4GHz/5GHz</td><td>9.6Gbps</td><td>双频段，低延迟、高并发，抗干扰能力强，支持 OFDMA 技术</td><td>新一代高速场景（如智能家居、企业高并发接入）</td></tr></table></div>
+<div class="pagebreak" data-page="30"><span class="pg-mark">P30</span></div>
+<h4 id="s-5312核心技术特性" class="c-h4">5.3.1.2 核心技术特性</h4>
+<p class="li li1"><span class="mk">•</span><b>MIMO 技术（多输入多输出）</b>：通过多个天线同时发送和接收无线信号，提升传输速率和信号稳定性，WiFi 4 及以上版本支持，WiFi6 支持多用户 MIIMO，可同时为多个终端提供高速传输。</p>
+<p class="li li1"><span class="mk">•</span><b>OFDMA 技术（正交频分多址）</b>：WiFi6 的核心技术，将频段划分多个子信道，多个终端可同时占用不同子信道传输数据，提升并发能力，降低延迟。</p>
+<p class="li li1"><span class="mk">•</span><b>双频段支持</b>：WiFi4、WiFi6 支持 2.4GHz 和 5GHz 双频段，用户可根据需求切换（2.4GHz 覆盖广，5GHz 速率高）。</p>
+<p class="li li1"><span class="mk">•</span><b>漫游功能</b>：终端设备在多个 AP 覆盖范围内移动时，可自动切换到信号更强的 AP，保持网络连接不中断（如校园、商场的 WiFi 漫游）。</p>
+<h3 id="s-532蓝牙技术" class="c-h3">5.3.2 蓝牙技术</h3>
+<p>蓝牙是无线个人局域网（WPAN）的核心技术，基于 IEEE 802.15.1 协议，适用于 10 米以内的近距离设备互联，传输速率较低，功耗小，支持点对点和点对多通信，是个人设备互联的主流技术。</p>
+<h4 id="s-5321主流蓝牙版本" class="c-h4">5.3.2.1 主流蓝牙版本</h4>
+<p class="li li1"><span class="mk">•</span><b>蓝牙 1.0/2.0</b>：早期版本，传输速率低（最高 3Mbps），仅支持点对点通信，适用于简单数据传输（如文件传输）。</p>
+<p class="li li1"><span class="mk">•</span><b>蓝牙 3.0</b>：支持高速传输（最高 24Mbps），兼容 WiFi 技术，适用于大量数据传输（如图片、视频）。</p>
+<p class="li li1"><span class="mk">•</span><b>蓝牙 4.0（BLE，低功耗蓝牙）</b>：分为经典蓝牙和低功耗蓝牙，低功耗版本功耗极低，传输速率适中（最高 1Mbps），适用于物联网设备（如智能手环、传感器）。</p>
+<p class="li li1"><span class="mk">•</span><b>蓝牙 5.0/5.2</b>：提升传输距离（最远 100 米）和速率（最高 2Mbps），支持多设备连接，低功耗，适用于智能家居、可穿戴设备、车载蓝牙等场景。</p>
+<h4 id="s-5322核心应用场景" class="c-h4">5.3.2.2 核心应用场景</h4>
+<p class="li li1"><span class="mk">•</span><b>个人设备互联</b>：手机与耳机、音箱、智能手表连接，实现音频传输、数据同步。</p>
+<div class="pagebreak" data-page="31"><span class="pg-mark">P31</span></div>
+<p class="li li1"><span class="mk">•</span><b>办公设备互联</b>：电脑与打印机、键盘、鼠标连接，替代有线连接，提升灵活性。</p>
+<p class="li li1"><span class="mk">•</span><b>物联网场景</b>：智能手环、传感器等低功耗设备，通过蓝牙与手机或网关连接，传输数据（如心率、步数）。</p>
+<p class="li li1"><span class="mk">•</span><b>车载场景</b>：手机与车载蓝牙连接，实现通话、音频播放、导航投屏等功能。</p>
+<h3 id="s-533移动网络技术2G3G4G5G" class="c-h3">5.3.3 移动网络技术（2G/3G/4G/5G）</h3>
+<p>移动网络是无线广域网（WWAN）的核心，由运营商部署基站，覆盖广域范围，支持终端设备的移动性（如于机户外<span class="r">上</span>网、高速移动中的通信），从 2G 到 5G，传输速率、延迟、并发能力逐步提升，适配不同的应用场景。</p>
+<h4 id="s-5331各代移动网络技术对比" class="c-h4">5.3.3.1 各代移动网络技术对比</h4>
+<div class="tw"><table><tr><td>网络代际</td><td>核心技术/协议</td><td>最大传输速率</td><td>核心优势</td><td>核心应用</td></tr><tr><td>2G（第二代）</td><td>GSM（全球移动通信系统），TDMA/FDMA</td><td>100Kbps 以内</td><td>覆盖广，功耗低，稳定性强</td><td>语音通话、短信、低速数据传输（如 GPRS）</td></tr><tr><td>3G（第三代）</td><td>WCDMA、CDMA2000，CDMA</td><td>1-10Mbps</td><td>支持高速数据传输，实现移动互联网</td><td>网页浏览、手机 QQ、短视频（低清晰度）</td></tr><tr><td>4G（第四代）</td><td>LTE、OFDM/MIMO</td><td>100Mbps-1Gbps</td><td>高速率、低延迟、高并发，支持全 IP 通信</td><td>4K 视频、移动支付、直播、手游、物联网</td></tr><tr><td>5G（第五代）</td><td>NR（新空口），OFDM/MIMO</td><td>10Gbps 以上</td><td>超高速率、超低延迟（1ms 以内）、超高并发，支持广连接</td><td>自动驾驶、工业互联网、VR/AR、远程医疗、智慧城市</td></tr></table></div>
+<h4 id="s-53325G核心技术与应用场景" class="c-h4">5.3.3.2 5G 核心技术与应用场景</h4>
+<p>5G 是新一代移动网络技术，核心分为三大应用场景，适配不同的行业需求：</p>
+<p class="li li1"><span class="mkn">1.</span><b>eMBB（增强移动宽带）</b>：聚焦高速率场景，传输速率可达 10Gbps 以上，支持 4K/8K 视频、VR/AR、超高清直播等，满足个人和家庭的高速<span class="r">上</span>网需求。</p>
+<p class="li li1"><span class="mkn">2.</span><b>uRLLC（超高可靠超低时延通信）</b>：聚焦低延迟、高可靠场景，延迟低于 1ms，可靠性接近 100%，适用于自动驾驶、远程医疗、工业控制等对时延和可靠性要求极高的场景。</p>
+<p class="li li1"><span class="mkn">3.</span><b>mMTC（海量机器类通信）</b>：聚焦广连接场景，支持每平方公里 100 万个设备同时接入，功耗低，适用于物联网、智慧城市、智能农业等场景（如大量传感器、智能设备联网）。</p>
+<p><b>5G 的核心技术</b>：Massive MIIMO（大规模天线）、网络切片（将一个物理网络划分为多个虚拟网络，适配不同场景）、边缘计算（降低延迟，提升数据处理效率）、全频谱接入（利用各类频段，提升带宽）。</p>
+<div class="pagebreak" data-page="32"><span class="pg-mark">P32</span></div>
+<h3 id="s-534物联网无线技术" class="c-h3">5.3.4 物联网无线技术</h3>
+<p>物联网无线技术聚焦低功耗、广连接、低速率的场景，适用于各类智能设备（传感器、智能电表、智能门锁）的联网，核心技术包括 ZigBee、LoRa、NB-LOT 等。</p>
+<p class="li li1"><span class="mkn">1.</span>ZigBee：基于 IEEE 802.15.4 协议，覆盖范围 10-100 米，传输速率低（最高 250Kbps），功耗极低，支持多设备组网（最多 65535 个设备），适用于智能家居（如智能灯光、窗帘、门窗传感器）、工业传感器组网等低速率、低功耗、短距离的物联网场景。核心优势是组网灵活、成本低，可实现设备间的联动控制；劣势是传输速率低，不适合大量数据传输，抗干扰能力一般。</p>
+<p class="li li1"><span class="mkn">2.</span><b>LoRa（远距离无线电）</b>：基于扩频通信技术，属于低功耗广域网（LPWAN）核心技术之一，覆盖范围极广（几公里到十几公里），传输速率较低（最高 50Kbps），功耗极低，支持单基站连接大量终端设备（上千至上万个），适用于远距离、低速率、低功耗的物联网场景，如智能电表、智能水表、环境监测（户外空气质量、土壤湿度监测）、智慧农业等。核心优势是远距离传输、低功耗、抗干扰能力强，无需频繁更换设备电池：劣势是传输速率低，数据传输延迟较高，不支持实时通信。</p>
+<p class="li li1"><span class="mkn">3.</span><b>NB-IoT（窄带物联网）</b>：基于蜂窝网络的低功耗广域网技术，由运营商部署，覆盖范围与移动网络相当（几公里），传输速率低（最高 100Kbps），功耗极低，支持海量设备接入（每平方公里可达 10 万个设备），适用于需广覆盖、低功耗的物联网场景，如智能抄表、智慧停车、资产追踪、老人/宠物定位等。核心优势是依托运营商网络，无需额外搭建基站，稳定性高、覆盖广，支持深度休眠以延长设备续航（电池寿命可达 10 年）；劣势是传输速率低，仅支持小数据包传输，成本略高于 ZigBee 和 LoRa。</p>
+<p class="li li1"><span class="mkn">4.</span><b>蓝牙 BLE（低功耗蓝牙）</b>：前文蓝牙技术中已提及，作为物联网无线技术的重要分支，区别于经典蓝牙，专注于低功耗、短距离通信，覆盖范围 1-10 米，传输速率适中（最高 1Mbps），适用于近距离物联网设备，如可穿戴设备（智能手环、手表）、智能门锁、蓝牙信标（商场导航、客流统计）、医疗设备（心率监测仪）等。</p>
+<p>核心优势是功耗低、设备兼容性强、成本低：劣势是覆盖范围有限，不支持远距离传输。</p>
+<p class="li li1"><span class="mkn">5.</span>WiFiIOT： 基于 WiFi 协议的物联网适配版本，在传统 WiFi 基础上优化了功耗，覆盖范围 10-50 米，传输速率较高（最高数百 Mbps），适用于需传输少量数据、且已部署 WiFi 网络的场景，如智能摄像头、智能音箱、智能家电（冰箱、空调）等。核心优势是兼容性强，可复用现有 WiFi 网络，无需额外部署设备，支持少量实时数据传输；劣势是功耗高于 ZigBee、LoRa、NB-IoT，不适合远距离、低功耗场景，设备续航较短。</p>
+<p><b>物联网无线技术核心对比</b>：ZigBee 侧重短距离组网，LoRa 和 NB-IoT 侧重远距离、海量接入，蓝牙 BLE 侧重近距离低功耗设备，WiFi IOT 侧重已有 WiFi 场景的快速适配，需根据覆盖范围、功耗需求、传输速率、设备数量选择合适的技术。</p>
+<h2 id="s-54无线网络与移动网络的应用分析" class="c-h2">5.4 无线网络与移动网络的应用分析</h2>
+<p>无线网络与移动网络凭借灵活性、移动性的优势，已渗透到个人生活、企业办公、行业生产等各类场景，结合不同无线技术的特性，实现多样化的通信需求，核心应用场景如下：</p>
+<p class="li li1"><span class="mkn">1.</span><b>个人消费场景</b>：以 WiFi、蓝牙、移动网络核心，支撑日常便捷通信与娱乐。例如，家庭通过 WiFi6 实现多终端（手机、电脑、电视、智能家居）同时联网，观看超高清视频、玩网游；手机通过蓝牙连接耳机、智能手表，实现音频传输与健康数据同步；户外通过 4G/5G 网络实现移动上网、直播、移动支付，满足出行中的网络需求。</p>
+<p class="li li1"><span class="mkn">2.</span><b>企业办公场景</b>：依托 WiFi、SSH 远程控制、物联网无线技术，提升办公效率与灵活性。例如，办公室部署 WiFi6 网络，支持员工移动办公（笔记本、平板无线接入），实现文件共享、视频会议；通过 SSH 协议远程管理企业服务器，排查故障：工业企业通过 ZigBee、LoRa 组建传感器网络，监测生产设备运行状态，实现智能化运维。</p>
+<div class="pagebreak" data-page="33"><span class="pg-mark">P33</span></div>
+<p class="li li1"><span class="mkn">3.</span><b>智慧城市场景</b>：整合 5G、NB-IoT、WiFi 等多种无线技术，构建城市智能化管理体系。例如，通过 NB-IoT 实现智能抄表、智慧停车（车位占用检测）、智能路灯控制（根据光线自动调节亮度）；通过 5G+物联网实现交通信号灯智能调控、道路拥堵监测：城市公共区域部署 WiFi，为市民提供免费无线接入，提升城市服务水平。</p>
+<p class="li li1"><span class="mkn">4.</span><b>智慧农业场景</b>：利用 LoRa、NB-IoT、5G 技术，实现农业生产智能化、精细化管理。例如，通过 LoRa 传感器监测土壤湿度、温度、光照，自动触发灌溉设备，节约水资源：通过 NB-IoT 追踪农产品运输轨迹，保障食品安全；通过 5G+无人机实现农田病虫害监测，提升农业生产效率。</p>
+<p class="li li1"><span class="mkn">5.</span><b>医疗健康场景</b>：依托 5G、蓝牙 BLE、NB-IoT 等技术，实现远程医疗与健康监测。例如，通过 5G 的 uRLLC 特性，开展远程手术、远程会诊（低延迟、高可靠传输医疗影像与手术指令）；通过蓝牙 BLE、NB-IoT 连接便携式医疗设备（心率监测仪、血压计），实时传输患者健康数据，方便医护人员远程监护，尤其适配老年群体与慢性病患者。</p>
+<p class="li li1"><span class="mkn">6.</span><b>自动驾驶与工业互联网场景</b>：以 5G 核心，结合 WiFi、物联网技术，支撑高要求的无线通信需求。例如，自动驾驶汽车通过 5G 实现车与车（V2V）、车与路（V21）、车与云（V2C）的高速通信，获取路况信息，保障行驶安全；工业互联网通过 5G+边缘计算，实现生产设备的实时数据传输与智能控制，提升生产自动化水平，降低人工成本。</p>
+<h2 id="s-55无线网络与移动网络的发展趋势" class="c-h2">5.5 无线网络与移动网络的发展趋势</h2>
+<p>随着物联网、人工智能、大数据等技术的发展，无线网络与移动网络正朝着高速率、低延迟、广连接、高安全、低功耗的方向演进，核心发展趋势如下：</p>
+<p class="li li1"><span class="mk">•</span><b>WiFi 技术迭代升级</b>：WiFi6 之后，WiFi7 持续提升传输速率（最高可达 30Gbps）、并发能力与抗干扰能力，适配更密集的终端接入场景（如大型商场、写字楼），同时优化功耗，支撑更多物联网设备联网。</p>
+<p class="li li1"><span class="mk">•</span><b>5G 规模化普及与 6G 研发</b>：5G 将进一步渗透到工业、医疗、自动驾驶等行业，实现“万物互联”；6G 技术逐步研发，聚焦空天地一体化通信（卫星与地面设备互联），实现全球无死角覆盖，提升传输速率与时延性能，支撑更复杂的物联网场景（如全息通信、元宇宙）。</p>
+<p class="li li1"><span class="mk">•</span><b>低功耗广域网（LPWAN）融合发展</b>：LORa、NB-IoT 等 LPWAN 技术将进一步融合，互补各自优势，同时与 5G、WiFi 协同，构建“广覆盖+短距离”“高速率＋低速率”的全域物联网通信网络，适配更多行业需求。</p>
+<p class="li li1"><span class="mk">•</span><b>无线安全持续强化</b>：针对无线网络的安全隐患，新型加密协议（如 WPA3 升级版本）、身份认证技术（如多因子认证、设备指纹认证）将广泛应用，同时结合人工智能实现恶意攻击的实时检测与防御，提升无线网络的安全性与可靠性。</p>
+<p class="li li1"><span class="mk">•</span><b>绿色低碳化发展</b>：无线设备（基站、AP、物联网终端）将进一步优化功耗设计，结合智能休眠、动态调节发射功率等技术，降低能源消耗，实现无线网络与移动网络的绿色低碳运行，适配“双碳”发展需求。</p>
+<div class="pagebreak" data-page="34"><span class="pg-mark">P34</span></div>
+</div>
+</main>
+<a id="home" href="index.html" title="返回总目录" aria-label="返回总目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 10.6 12 3.4l9 7.2"/>
+    <path d="M5.6 9.4V20.2h12.8V9.4"/>
+    <path d="M9.8 20.2v-5.6h4.4v5.6"/>
+  </svg>
+</a>
+<button id="totop" title="回到顶部">↑</button>
+<script>
+(function(){
+  var HIDE_FROM=2;                       // 折叠时隐藏 toc-lN 及更深层级
+  var toc=document.getElementById('toc'), links=[].slice.call(toc.querySelectorAll('a'));
+  var content=document.getElementById('content');
+  var bar=document.querySelector('#progress i');
+  var totop=document.getElementById('totop');
+  var counter=document.getElementById('counter');
+  var q=document.getElementById('q');
+
+  // progress + back to top
+  function onScroll(){
+    var h=content.scrollHeight||document.body.scrollHeight;
+    var top=window.scrollY||document.documentElement.scrollTop;
+    bar.style.width=Math.min(100,top/(h-window.innerHeight||1)*100)+'%';
+    totop.style.display=top>500?'block':'none';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // scrollspy
+  var heads=[].slice.call(document.querySelectorAll('h1[id],h2[id],h3[id],h4[id]'));
+  var current=null;
+  function spy(){
+    var best=null,bestTop=-1e9;
+    var probe=window.scrollY+90;
+    heads.forEach(function(h){
+      var t=h.getBoundingClientRect().top+window.scrollY;
+      if(t<=probe&&t>bestTop){bestTop=t;best=h;}
+    });
+    if(!best)return;
+    if(best.id===current)return;
+    current=best.id;
+    links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+current);});
+    var act=toc.querySelector('a.active');
+    if(act){
+      var tb=toc.getBoundingClientRect(),ab=act.getBoundingClientRect();
+      if(ab.top<tb.top+40||ab.bottom>tb.bottom-40)
+        toc.scrollTop+=ab.top-tb.top-toc.clientHeight/2;
+    }
+  }
+  window.addEventListener('scroll',spy,{passive:true});
+  window.addEventListener('resize',spy);spy();
+
+  // 目录筛选 + 章节折叠（筛选时忽略折叠状态）
+  function level(a){
+    var c=a.className;
+    if(c.indexOf('toc-l1')>=0)return 1;
+    if(c.indexOf('toc-l2')>=0)return 2;
+    if(c.indexOf('toc-l3')>=0)return 3;
+    return 4;
+  }
+  var collapsed=false;
+  function refresh(){
+    var v=(q.value||'').trim().toLowerCase();
+    var shown=0;
+    links.forEach(function(a){
+      var hit=!v||a.textContent.toLowerCase().indexOf(v)>=0;
+      var hide=!hit||(!v&&collapsed&&level(a)>=HIDE_FROM);
+      a.style.display=hide?'none':'';
+      if(!hide)shown++;
+    });
+    counter.textContent=(v||shown!==links.length)?shown+' / '+links.length:links.length+' 项';
+  }
+  q.addEventListener('input',refresh);
+
+  var exp=document.getElementById('expand');
+  exp.onclick=function(){
+    collapsed=!collapsed;
+    exp.textContent=collapsed?'展开全部':'仅看章节目';
+    refresh();
+  };
+
+  // mobile drawer
+  var sb=document.getElementById('sidebar'),mask=document.getElementById('mask');
+  document.getElementById('menubtn').onclick=function(){sb.classList.toggle('open');mask.style.display=sb.classList.contains('open')?'block':'none';};
+  mask.onclick=function(){sb.classList.remove('open');mask.style.display='none';};
+  toc.addEventListener('click',function(e){if(e.target.tagName==='A'&&window.innerWidth<=900){sb.classList.remove('open');mask.style.display='none';}});
+
+  totop.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+
+  exp.textContent=collapsed?'展开全部':'仅看章节目';
+  refresh();
+})();
+</script>
+</body>
+</html>
