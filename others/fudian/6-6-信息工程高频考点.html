@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>信息工程高频考点</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b4232a'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E4%BF%A1%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --ink:#1d2129; --ink-2:#4a5158; --ink-3:#828a94;
+  --line:#e3e6ea; --line-2:#eef0f3; --accent:#b3261e; --accent-2:#1a56a8;
+  --red:#c62828; --red-bg:#fff5f5; --sidebar:300px;
+  --font-serif:"Songti SC","STSong","SimSun","Source Han Serif SC",serif;
+  --font-sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"SF Mono","Menlo","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-serif);font-size:16.5px;line-height:1.95;-webkit-font-smoothing:antialiased;}
+
+/* ---------- sidebar ---------- */
+#sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:var(--panel);
+  border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40}
+.sb-head{padding:18px 20px 12px;border-bottom:1px solid var(--line-2)}
+.sb-title{font-family:var(--font-sans);font-size:15px;font-weight:700;line-height:1.5;color:var(--ink)}
+.sb-sub{font-family:var(--font-sans);font-size:11.5px;color:var(--ink-3);margin-top:5px;letter-spacing:.3px}
+.sb-search{padding:12px 16px 10px}
+.sb-search input{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:6px;
+  font-family:var(--font-sans);font-size:12.5px;background:#fbfcfd;color:var(--ink);outline:none}
+.sb-search input:focus{border-color:#b9c6d6;background:#fff}
+#toc{flex:1;overflow-y:auto;padding:6px 10px 60px;scrollbar-width:thin}
+#toc a{display:block;font-family:var(--font-sans);text-decoration:none;color:var(--ink-2);
+  border-radius:5px;padding:5px 10px;line-height:1.5;border-left:2px solid transparent;transition:.14s}
+#toc a:hover{background:#f2f4f7;color:var(--ink)}
+.toc-l1{font-size:13.5px;font-weight:700;color:var(--ink);margin-top:12px;padding-top:7px!important}
+.toc-l2{font-size:12.5px;color:#384049;margin-left:10px}
+.toc-l3{font-size:12px;color:var(--ink-3);margin-left:22px;padding-top:3px!important;padding-bottom:3px!important}
+.toc-l4{font-size:11.5px;color:#6b7480;margin-left:34px;padding-top:2px!important;padding-bottom:2px!important}
+#toc a.active{background:#eaf1fb;color:var(--accent-2);border-left-color:var(--accent-2);font-weight:600}
+.toc-l1.active{color:var(--accent-2)}
+.sb-foot{padding:10px 16px;border-top:1px solid var(--line-2);font-family:var(--font-sans);
+  font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;align-items:center}
+.sb-foot button{font-family:var(--font-sans);font-size:11px;border:1px solid var(--line);
+  background:#fff;border-radius:5px;padding:3px 8px;cursor:pointer;color:var(--ink-2)}
+.sb-foot button:hover{background:#f2f4f7}
+
+/* ---------- main ---------- */
+#main{margin-left:var(--sidebar);min-height:100vh}
+#progress{position:fixed;top:0;left:var(--sidebar);right:0;height:2px;background:transparent;z-index:45}
+#progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2f6fd0,#b3261e)}
+#content{max-width:900px;margin:0 auto;padding:34px 46px 120px}
+
+/* cover */
+.cover{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:46px 48px 38px;margin-bottom:26px}
+.cover h1{font-family:var(--font-sans);font-size:31px;font-weight:800;margin:0 0 10px;letter-spacing:.5px}
+.cover .cv-sub{font-family:var(--font-sans);font-size:14px;color:var(--ink-3);margin-bottom:22px}
+.cv-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.cv-meta span{font-family:var(--font-sans);font-size:12px;background:#f2f4f7;color:var(--ink-2);
+  border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+.cv-note{font-family:var(--font-sans);font-size:12.5px;line-height:1.85;color:var(--ink-3);
+  border-top:1px dashed var(--line);padding-top:16px}
+.cv-note b{color:var(--ink-2)}
+.cv-note code{font-family:var(--font-mono);font-size:11.5px;background:#f2f4f7;padding:1px 5px;border-radius:4px}
+.cv-note a{color:var(--accent-2);text-decoration:underline}
+
+/* headings */
+h1,h2,h3,h4,h5,h6{font-family:var(--font-sans);scroll-margin-top:14px}
+.c-h1{font-size:25px;font-weight:800;margin:52px 0 20px;padding:14px 18px;color:#fff;
+  background:linear-gradient(100deg,#1f3f6d,#2f6fd0);border-radius:8px;letter-spacing:.5px}
+.c-h2{font-size:20px;font-weight:700;margin:40px 0 16px;padding:9px 0 9px 14px;
+  border-left:5px solid var(--accent-2);color:#123;line-height:1.5}
+.c-h3{font-size:17px;font-weight:700;margin:32px 0 13px;padding:7px 12px;background:#eef3fb;
+  color:#173f75;border-radius:6px;border:1px solid #dde7f6}
+.c-h4{font-size:16px;font-weight:700;margin:24px 0 10px;color:#1d2129}
+.c-h5{font-size:15.5px;font-weight:600;margin:18px 0 8px;color:#2b3138}
+.c-h6{font-size:15px;font-weight:600;margin:14px 0 6px;color:var(--ink-2)}
+
+p{margin:0 0 12px;text-align:justify}
+p.li{margin:0 0 7px;padding-left:1.5em;text-indent:-1.5em}
+p.li1{padding-left:1.7em;text-indent:-1.7em}
+p.li2{padding-left:3.3em;text-indent:-1.6em;color:var(--ink-2)}
+p.li3{padding-left:4.9em;text-indent:-1.6em;color:var(--ink-3)}
+.mk{color:var(--accent-2);font-weight:700;margin-right:.4em}
+.mk2{color:#7a9cc4}
+.mk3{color:#a9b4c2}
+.mkn{color:var(--accent-2);font-weight:700;margin-right:.5em;font-variant-numeric:tabular-nums}
+b,strong{font-family:var(--font-sans);font-weight:700;color:#101418}
+.r{color:var(--red);font-weight:600}
+u{text-decoration-color:#c96;font-weight:600;text-underline-offset:3px}
+.ann{color:var(--ink-2);font-size:15.5px;padding-left:1.2em;border-left:2px solid var(--line-2);
+  margin:0 0 10px}
+
+/* callout */
+.callout{background:var(--red-bg);border:1px solid #f3d3d3;border-left:4px solid var(--red);
+  border-radius:6px;padding:11px 16px;margin:14px 0}
+.callout .co-tag{font-family:var(--font-sans);font-weight:700;color:var(--red);margin-bottom:2px}
+.callout p{margin:4px 0}
+p.co-lead{margin:13px 0 7px}
+
+
+/* tables */
+.tw{overflow-x:auto;margin:16px 0 22px;border:1px solid var(--line);border-radius:8px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:15px;table-layout:fixed}
+td{border:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.85}
+tr:first-child td{background:#f7f9fc}
+td p{margin:0 0 6px}
+td p:last-child{margin-bottom:0}
+td:empty{background:#fafbfc}
+
+/* figures */
+figure.fig{margin:20px 0 24px;padding:14px 16px 10px;border:1px solid var(--line);
+  border-radius:10px;background:#fff;text-align:center}
+figure.fig img{max-width:100%;height:auto;display:block;margin:0 auto;
+  image-rendering:-webkit-optimize-contrast}
+figure.fig figcaption{font-family:var(--font-sans);font-size:13px;color:var(--ink-2);
+  margin-top:10px;letter-spacing:.3px}
+
+/* page marker */
+.pagebreak{position:relative;height:0;margin:0}
+.pg-mark{position:absolute;right:4px;top:-14px;font-family:var(--font-sans);font-size:10.5px;
+  color:#b9c0c8;background:var(--bg);padding:0 6px;letter-spacing:.5px}
+
+/* tools */
+#totop{position:fixed;right:26px;bottom:26px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;font-size:17px;color:var(--ink-2);display:none;z-index:50}
+#totop:hover{color:var(--accent-2);border-color:#b9c6d6}/* 返回总目录：叠在「回到顶部」上方，间距 8px */
+#home{position:fixed;right:26px;bottom:76px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;box-shadow:0 3px 14px rgba(20,30,50,.12);
+  cursor:pointer;color:var(--ink-2);display:flex;align-items:center;justify-content:center;
+  z-index:50;text-decoration:none;transition:color .15s,border-color .15s}
+#home:hover{color:var(--accent-2);border-color:#b9c6d6}
+#home svg{width:19px;height:19px;display:block;pointer-events:none}
+
+#menubtn{display:none;position:fixed;left:14px;top:12px;z-index:60;width:38px;height:34px;
+  border:1px solid var(--line);background:#fff;border-radius:6px;font-size:16px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(20,30,50,.1)}
+#mask{display:none;position:fixed;inset:0;background:rgba(20,28,40,.35);z-index:35}
+
+@media (max-width:900px){
+  :root{--sidebar:280px}
+  #menubtn{display:block}
+  #sidebar{transform:translateX(-100%);transition:transform .22s ease}
+  #sidebar.open{transform:none}
+  #main{margin-left:0}
+  #content{padding:22px 18px 90px}
+  .cover{padding:30px 24px 26px}
+  .cover h1{font-size:24px}
+  #progress{left:0}
+  #toc a.toc-l3{font-size:11.5px}
+}
+@media print{
+  #sidebar,#totop,#home,#menubtn,#mask,#progress{display:none!important}
+  #main{margin:0}
+  #content{max-width:none;padding:0}
+  body{background:#fff;font-size:11pt}
+  .cover,.tw{break-inside:avoid}
+  .c-h1{background:#1f3f6d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .r,.callout .co-tag{color:var(--red)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<button id="menubtn" aria-label="目录">☰</button>
+<div id="mask"></div>
+<div id="progress"><i></i></div>
+<aside id="sidebar">
+  <div class="sb-head">
+    <div class="sb-title">信息工程高频考点</div>
+    <div class="sb-sub">科技类考点精讲 · 信息工程</div>
+  </div>
+  <div class="sb-search"><input id="q" type="search" placeholder="筛选目录关键词…"></div>
+  <nav id="toc">
+<a class="toc-l1" href="#s-1软件安全的基本概念及应用分析" data-toc="0">1 软件安全的基本概念及应用分析</a>
+<a class="toc-l2" href="#s-11基本概念" data-toc="1">1.1 基本概念</a>
+<a class="toc-l2" href="#s-12核心安全属性" data-toc="2">1.2 核心安全属性</a>
+<a class="toc-l2" href="#s-13常见安全威胁与漏洞" data-toc="3">1.3 常见安全威胁与漏洞</a>
+<a class="toc-l3" href="#s-131常见安全威胁" data-toc="4">1.3.1 常见安全威胁</a>
+<a class="toc-l3" href="#s-132常见软件漏洞" data-toc="5">1.3.2 常见软件漏洞</a>
+<a class="toc-l2" href="#s-14软件安全防护技术" data-toc="6">1.4 软件安全防护技术</a>
+<a class="toc-l3" href="#s-141开发阶段防护事前防护" data-toc="7">1.4.1 开发阶段防护（事前防护）</a>
+<a class="toc-l3" href="#s-142部署与运行阶段防护事中防护" data-toc="8">1.4.2 部署与运行阶段防护（事中防护）</a>
+<a class="toc-l3" href="#s-143运维阶段防护事后防护" data-toc="9">1.4.3 运维阶段防护（事后防护）</a>
+<a class="toc-l2" href="#s-15应用分析" data-toc="10">1.5 应用分析</a>
+<a class="toc-l3" href="#s-151互联网软件领域" data-toc="11">1.5.1 互联网软件领域</a>
+<a class="toc-l3" href="#s-152金融软件领域" data-toc="12">1.5.2 金融软件领域</a>
+<a class="toc-l3" href="#s-153政务软件领域" data-toc="13">1.5.3 政务软件领域</a>
+<a class="toc-l3" href="#s-154工业软件领域" data-toc="14">1.5.4 工业软件领域</a>
+<a class="toc-l3" href="#s-155移动软件领域" data-toc="15">1.5.5 移动软件领域</a>
+<a class="toc-l1" href="#s-2信息内容安全的基本概念及应用分析" data-toc="16">2 信息内容安全的基本概念及应用分析</a>
+<a class="toc-l2" href="#s-21基本概念" data-toc="17">2.1 基本概念</a>
+<a class="toc-l2" href="#s-22核心防护目标" data-toc="18">2.2 核心防护目标</a>
+<a class="toc-l2" href="#s-23常见信息内容安全风险" data-toc="19">2.3 常见信息内容安全风险</a>
+<a class="toc-l3" href="#s-231违法违规有害信息" data-toc="20">2.3.1 违法违规有害信息</a>
+<a class="toc-l3" href="#s-232虚假信息与谣言" data-toc="21">2.3.2 虚假信息与谣言</a>
+<a class="toc-l3" href="#s-233隐私与敏感信息泄露" data-toc="22">2.3.3 隐私与敏感信息泄露</a>
+<a class="toc-l3" href="#s-234内容篡改与伪造" data-toc="23">2.3.4 内容篡改与伪造</a>
+<a class="toc-l2" href="#s-24信息内容安全防护技术" data-toc="24">2.4 信息内容安全防护技术</a>
+<a class="toc-l3" href="#s-241内容识别技术" data-toc="25">2.4.1 内容识别技术</a>
+<a class="toc-l3" href="#s-242内容过滤与拦截技术" data-toc="26">2.4.2 内容过滤与拦截技术</a>
+<a class="toc-l3" href="#s-243虚假信息检测技术" data-toc="27">2.4.3 虚假信息检测技术</a>
+<a class="toc-l3" href="#s-244隐私保护技术" data-toc="28">2.4.4 隐私保护技术</a>
+<a class="toc-l3" href="#s-245人工审核与应急处置" data-toc="29">2.4.5 人工审核与应急处置</a>
+<a class="toc-l2" href="#s-25应用分析" data-toc="30">2.5 应用分析</a>
+<a class="toc-l3" href="#s-251互联网平台领域" data-toc="31">2.5.1 互联网平台领域</a>
+<a class="toc-l3" href="#s-252政务信息领域" data-toc="32">2.5.2 政务信息领域</a>
+<a class="toc-l3" href="#s-253教育领域" data-toc="33">2.5.3 教育领域</a>
+<a class="toc-l3" href="#s-254金融领域" data-toc="34">2.5.4 金融领域</a>
+<a class="toc-l3" href="#s-255医疗领域" data-toc="35">2.5.5 医疗领域</a>
+<a class="toc-l1" href="#s-3数据库与操作系统安全" data-toc="36">3 数据库与操作系统安全</a>
+<a class="toc-l2" href="#s-31数据库安全" data-toc="37">3.1 数据库安全</a>
+<a class="toc-l3" href="#s-311基本概念" data-toc="38">3.1.1 基本概念</a>
+<a class="toc-l3" href="#s-312常见安全威胁" data-toc="39">3.1.2 常见安全威胁</a>
+<a class="toc-l3" href="#s-313安全防护技术" data-toc="40">3.1.3 安全防护技术</a>
+<a class="toc-l2" href="#s-32操作系统安全" data-toc="41">3.2 操作系统安全</a>
+<a class="toc-l3" href="#s-321基本概念" data-toc="42">3.2.1 基本概念</a>
+<a class="toc-l3" href="#s-322常见安全威胁" data-toc="43">3.2.2 常见安全威胁</a>
+<a class="toc-l3" href="#s-323安全防护技术" data-toc="44">3.2.3 安全防护技术</a>
+<a class="toc-l2" href="#s-33协同防护要点" data-toc="45">3.3 协同防护要点</a>
+<a class="toc-l2" href="#s-34应用分析" data-toc="46">3.4 应用分析</a>
+<a class="toc-l3" href="#s-341企业信息系统领域" data-toc="47">3.4.1 企业信息系统领域</a>
+<a class="toc-l3" href="#s-342金融领域" data-toc="48">3.4.2 金融领域</a>
+<a class="toc-l3" href="#s-343政务领域" data-toc="49">3.4.3 政务领域</a>
+<a class="toc-l3" href="#s-344互联网领域" data-toc="50">3.4.4 互联网领域</a>
+<a class="toc-l3" href="#s-345工业领域" data-toc="51">3.4.5 工业领域</a>
+<a class="toc-l1" href="#s-4信息系统工程与标准规范" data-toc="52">4 信息系统工程与标准规范</a>
+<a class="toc-l2" href="#s-41信息系统工程基本概念" data-toc="53">4.1 信息系统工程基本概念</a>
+<a class="toc-l3" href="#s-411核心定义" data-toc="54">4.1.1 核心定义</a>
+<a class="toc-l3" href="#s-412核心生命周期阶段" data-toc="55">4.1.2 核心生命周期阶段</a>
+<a class="toc-l3" href="#s-413核心管理要素" data-toc="56">4.1.3 核心管理要素</a>
+<a class="toc-l2" href="#s-42信息系统安全标准规范" data-toc="57">4.2 信息系统安全标准规范</a>
+<a class="toc-l3" href="#s-421国际标准" data-toc="58">4.2.1 国际标准</a>
+<a class="toc-l3" href="#s-422国家标准" data-toc="59">4.2.2 国家标准</a>
+<a class="toc-l3" href="#s-423行业标准" data-toc="60">4.2.3 行业标准</a>
+<a class="toc-l3" href="#s-424企业标准" data-toc="61">4.2.4 企业标准</a>
+<a class="toc-l2" href="#s-43标准规范的应用要点" data-toc="62">4.3 标准规范的应用要点</a>
+<a class="toc-l2" href="#s-44应用分析" data-toc="63">4.4 应用分析</a>
+<a class="toc-l3" href="#s-441企业信息系统建设" data-toc="64">4.4.1 企业信息系统建设</a>
+<a class="toc-l3" href="#s-442政务信息系统建设" data-toc="65">4.4.2 政务信息系统建设</a>
+<a class="toc-l3" href="#s-443金融信息系统建设" data-toc="66">4.4.3 金融信息系统建设</a>
+<a class="toc-l3" href="#s-444工业信息系统建设" data-toc="67">4.4.4 工业信息系统建设</a>
+<a class="toc-l3" href="#s-445互联网平台建设" data-toc="68">4.4.5 互联网平台建设</a>
+<a class="toc-l2" href="#s-45信息系统工程与标准规范的发展趋势" data-toc="69">4.5 信息系统工程与标准规范的发展趋势</a>
+<a class="toc-l2" href="#s-46核心总结" data-toc="70">4.6 核心总结</a>
+</nav>
+  <div class="sb-foot">
+    <span id="counter">—</span>
+    <button id="expand">仅看章节目</button>
+  </div>
+</aside>
+
+<main id="main">
+<div id="content">
+  <section class="cover">
+    <h1>信息工程高频考点</h1>
+    <div class="cv-sub">科技类考点精讲 · 信息工程知识高频考点讲义</div>
+    <div class="cv-meta">
+      <span>共 4 章</span><span>20 节</span><span>47 个三级标题</span><span>原 PDF 14 页</span><span>文字可复制</span>
+    </div>
+    <div class="cv-note">
+      <b>说明：</b>本页由扫描版 PDF（<code>6-6-信息工程.pdf</code>）经 OCR 转换而来，
+      文字内容可自由复制、检索；红色重点、层级标题与原文一致，便于对照记忆。<br>
+      原 PDF 共 14 页，全部为纯文字排版（<b>无图表、无插图</b>，仅有页眉页脚水印与文字），故本页为纯文字还原版，未嵌入图片。<br>
+      <b>校对提示：</b>本页文字已逐页与原 PDF 图像比对校订；原文自带的笔误（如「从属<i>与</i>关联关系」「根源<i>的是</i>软件存在安全漏洞或设计缺陷」）按原样保留，未作擅改，请以原 PDF 为准。
+    </div>
+  </section>
+
+<div class="pagebreak" data-page="1"><span class="pg-mark">P1</span></div>
+<p style="text-align:center"><b>信息工程知识高频考点讲义</b></p>
+<p style="text-align:center"><b>（紧扣考试大纲）</b></p>
+
+<div class="pagebreak" data-page="2"><span class="pg-mark">P2</span></div>
+<h1 id="s-1软件安全的基本概念及应用分析" class="c-h1">1 软件安全的基本概念及应用分析</h1>
+<h2 id="s-11基本概念" class="c-h2">1.1 基本概念</h2>
+<p>软件安全是指通过技术手段和管理措施，保障软件在生命周期（需求分析、设计、开发、测试、部署、运维）的各个阶段，能够抵御各类安全威胁，避免软件出现功能失效、数据泄露、被篡改或被非法控制等问题，确保软件持续、稳定、合规地运行。其核心目标是保护软件本身、软件所处理的数据以及软件运行环境的安全性、完整性和可用性。</p>
+<p>软件安全与网络安全、信息安全是从属与关联关系：信息安全是广义范畴，涵盖数据、软件、硬件、网络等全维度安全；网络安全聚焦网络传输和网络环境的安全；软件安全是信息安全的核心组成部分，是保障数据和系统安全的基础——多数信息安全事件的根源的是软件存在安全漏洞或设计缺陷。</p>
+<h2 id="s-12核心安全属性" class="c-h2">1.2 核心安全属性</h2>
+<p class="li li1"><span class="mk">•</span><b>保密性</b>：确保软件处理和存储的敏感数据仅能被授权主体访问，未授权用户无法获取或解读数据。例如，用户密码、银行卡信息等敏感数据需通过加密处理，防止泄露。</p>
+<p class="li li1"><span class="mk">•</span><b>完整性</b>：保障软件的数据和功能不被未授权篡改、破坏或伪造，确保数据在传输、存储和处理过程中保持原始状态。例如，通过校验码、哈希值验证等方式，检测数据是否被篡改。</p>
+<p class="li li1"><span class="mk">•</span><b>可用性</b>：确保授权用户在需要时能够正常访问和使用软件的功能及数据，避免软件因攻击、故障或配置错误导致无法服务。例如，抵御拒绝服务攻击（DoS），保障软件持续响应请求。</p>
+<p class="li li1"><span class="mk">•</span><b>可控性</b>：对软件的访问权限、运行状态、数据流转进行全程管控，确保软件的操作和行为可追溯、可监管。例如，通过权限分级管理，限制不同用户的操作范围。</p>
+<p class="li li1"><span class="mk">•</span><b>不可否认性</b>：针对软件中的交互操作（如交易、指令下发），确保操作主体无法否认其执行的行为，为后续审计和追责提供依据。例如，通过数字签名技术，确认操作发起者的身份并留存证据。</p>
+<h2 id="s-13常见安全威胁与漏洞" class="c-h2">1.3 常见安全威胁与漏洞</h2>
+<h3 id="s-131常见安全威胁" class="c-h3">1.3.1 常见安全威胁</h3>
+<p class="li li1"><span class="mk">•</span><b>恶意代码攻击</b>：包括病毒、蠕虫、木马、ransomware（勒索病毒）、间谍软件等，通过植入软件或系统，窃取数据、破坏功能或控制设备。例如，勒索病毒加密用户数据，索要赎金后才提供解密密钥。</p>
+<p class="li li1"><span class="mk">•</span><b>注入攻击</b>：攻击者将恶意代码注入软件的输入环节，绕过验证机制执行非法操作，常见类型有 SQL 注入、命令注入、XSS（跨站脚本）注入等。例如，SQL 注入通过构造恶意 SQL 语句，窃取数据库中的敏感数据。</p>
+<p class="li li1"><span class="mk">•</span><b>权限滥用攻击</b>：包括越权访问、权限提升等，攻击者利用软件的权限管理缺陷，获取超出自身授权的操作权限，访问或篡改敏感数据。例如，普通用户通过漏洞提升为管理员权限，控制整个软件系统。</p>
+<p class="li li1"><span class="mk">•</span><b>拒绝服务攻击（DoS/DDoS）</b>：攻击者通过大量恶意请求占用软件的服务器资源（如带宽、内存、CPU），导致软件无法响应正常用户的请求，陷入瘫痪状态。DDoS 是分布式拒绝服务攻击，通过多个节点同时发起攻击，破坏力更强。</p>
+<p class="li li1"><span class="mk">•</span><b>数据泄露</b>：由于软件漏洞、配置不当或人为操作失误，导致敏感数据被未授权主体获取，包括用户信息、商业机密、政务数据等。例如，软件未对用户密码进行加密存储，导致密码明文泄露。</p>
+
+<div class="pagebreak" data-page="3"><span class="pg-mark">P3</span></div>
+<h3 id="s-132常见软件漏洞" class="c-h3">1.3.2 常见软件漏洞</h3>
+<p class="li li1"><span class="mk">•</span><b>缓冲区溢出漏洞</b>：软件开发中未对输入数据的长度进行校验，导致过量数据写入缓冲区，覆盖相邻内存空间，攻击者可利用该漏洞植入恶意代码，控制软件或系统。</p>
+<p class="li li1"><span class="mk">•</span><b>身份认证漏洞</b>：包括弱密码、无验证码、会话管理不当等，攻击者可通过暴力破解、会话劫持等方式，冒充合法用户登录软件。</p>
+<p class="li li1"><span class="mk">•</span><b>输入验证缺失漏洞</b>：软件未对用户输入的数据进行合法性校验，导致恶意数据注入或非法操作，是注入攻击、数据篡改的主要诱因。</p>
+<p class="li li1"><span class="mk">•</span><b>配置错误漏洞</b>：软件部署或运维过程中，配置参数不当（如开启不必要的端口、开放过高权限），导致安全隐患，攻击者可利用这些漏洞发起攻击。</p>
+<h2 id="s-14软件安全防护技术" class="c-h2">1.4 软件安全防护技术</h2>
+<h3 id="s-141开发阶段防护事前防护" class="c-h3">1.4.1 开发阶段防护（事前防护）</h3>
+<p class="li li1"><span class="mk">•</span><b>安全开发生命周期（SDL）</b>：将安全理念融入软件生命周期的各个阶段，从需求分析阶段明确安全需求，设计阶段进行安全架构设计，开发阶段遵循安全编码规范，测试阶段开展安全测试，确保软件从源头规避安全漏洞。</p>
+<p class="li li1"><span class="mk">•</span><b>安全编码规范</b>：开发者遵循行业通用的安全编码标准（如 OWASP 安全编码指南），避免使用存在安全隐患的编码方式，减少缓冲区溢出、注入攻击等漏洞。</p>
+<p class="li li1"><span class="mk">•</span><b>静态应用安全测试（SAST）</b>：在软件开发过程中，通过工具扫描源代码、字节码，提前发现潜在的安全漏洞，无需运行软件即可完成测试，适合在开发早期排查问题。</p>
+<h3 id="s-142部署与运行阶段防护事中防护" class="c-h3">1.4.2 部署与运行阶段防护（事中防护）</h3>
+<p class="li li1"><span class="mk">•</span><b>动态应用安全测试（DAST）</b>：在软件运行状态下，模拟攻击者发起攻击，检测软件的运行时安全漏洞，例如注入攻击、越权访问等，适合在软件部署后、上线前进行全面检测。</p>
+<p class="li li1"><span class="mk">•</span><b>加密技术</b>：对敏感数据进行加密处理，包括传输加密（如 SSL/TLS 协议）、存储加密（如 AES 加密算法）、数据脱敏（对身份证、手机号等敏感信息进行部分隐藏），防止数据泄露。</p>
+<p class="li li1"><span class="mk">•</span><b>访问控制技术</b>：采用基于角色的访问控制（RBAC）、基于属性的访问控制（ABAC）等机制，对用户权限进行分级管理，明确不同角色的操作范围，防止权限滥用。</p>
+<p class="li li1"><span class="mk">•</span><b>入侵检测与防御系统（IDS/IPS）</b>：IDS 用于监测软件运行过程中的异常行为和攻击迹象，及时发出告警；IPS 在 IDS 的基础上，可主动阻断恶意攻击，防止攻击对软件造成破坏。</p>
+<p class="li li1"><span class="mk">•</span><b>漏洞补丁管理</b>：及时收集软件的安全漏洞信息，发布并安装补丁，修复已知漏洞，避免攻击者利用漏洞发起攻击。</p>
+<h3 id="s-143运维阶段防护事后防护" class="c-h3">1.4.3 运维阶段防护（事后防护）</h3>
+<p class="li li1"><span class="mk">•</span><b>安全审计</b>：记录软件的所有操作行为（如用户登录、数据修改、指令执行），形成审计日志，便于后续追溯安全事件、排查问题和追责。</p>
+<p class="li li1"><span class="mk">•</span><b>应急响应</b>：制定安全应急预案，当发生安全事件（如数据泄露、恶意攻击）时，快速启动预案，采取［隔离攻击源、恢复数据、修复漏洞］等措施，降低事件造成的损失。</p>
+
+<div class="pagebreak" data-page="4"><span class="pg-mark">P4</span></div>
+<p class="li li1"><span class="mk">•</span><b>安全监控</b>：实时监控软件的运行状态、网络流量、数据流转情况，及时发现异常，快速处置安全隐患。</p>
+<h2 id="s-15应用分析" class="c-h2">1.5 应用分析</h2>
+<h3 id="s-151互联网软件领域" class="c-h3">1.5.1 互联网软件领域</h3>
+<p>互联网软件（如电商平台、社交 APP、在线支付软件）是软件安全防护的重点场景，需兼顾用户数据安全和交易安全。例如，电商平台采用加密技术保护用户银行卡信息和交易数据，通过入侵防御系统抵御注入攻击和 DDoS 攻击；社交 APP 采用数据脱敏技术隐藏用户敏感信息，通过权限管理限制用户访问范围，防止用户信息泄露。</p>
+<h3 id="s-152金融软件领域" class="c-h3">1.5.2 金融软件领域</h3>
+<p>金融软件（如银行核心系统、证券交易软件、支付软件）对安全性要求极高，需满足合规要求（如银保监会的安全规范）。例如，银行核心系统采用双重身份认证、数字签名技术，确保交易的安全性和不可否认性；证券交易软件通过漏洞补丁管理和安全审计，防范恶意攻击，保障交易数据的完整性和可用性。</p>
+<h3 id="s-153政务软件领域" class="c-h3">1.5.3 政务软件领域</h3>
+<p>政务软件（如电子政务平台、政务审批系统）涉及大量政务数据和公众信息，需保障数据安全和系统稳定。例如，政务审批系统采用访问控制技术，限制不同部门的权限，防止政务数据泄露；通过安全监控和应急响应机制，应对恶意攻击，确保政务服务正常开展。</p>
+<h3 id="s-154工业软件领域" class="c-h3">1.5.4 工业软件领域</h3>
+<p>工业软件（如工业控制系统、智能制造软件）直接关系到工业生产的安全，需防范恶意攻击导致的生产中断或设备损坏。例如，工业控制系统采用隔离防护技术，将生产网络与互联网隔离，防止外部攻击；通过漏洞扫描和补丁管理，修复工业软件的安全漏洞，保障生产过程的稳定。</p>
+<h3 id="s-155移动软件领域" class="c-h3">1.5.5 移动软件领域</h3>
+<p>移动 APP（如手机银行、社交软件、办公 APP）面临恶意代码、权限滥用、数据泄露等安全威胁。例如，移动 APP 采用权限申请分级机制，仅获取必要的用户权限，避免过度收集用户信息；通过加密存储用户数据，防止手机丢失后数据泄露；集成安全检测模块，监测恶意代码注入行为。</p>
+<h1 id="s-2信息内容安全的基本概念及应用分析" class="c-h1">2 信息内容安全的基本概念及应用分析</h1>
+<h2 id="s-21基本概念" class="c-h2">2.1 基本概念</h2>
+<p>信息内容安全是指对信息的内容进行管控、防护和治理，确保信息内容的合法性、真实性、完整性和安全性，抵御不良信息、有害信息和虚假信息的传播，保护用户权益、社会公共利益和国家安全。其核心是“内容管控＋风险防范”，聚焦信息的内容本身，区别于网络安全（聚焦传输和网络环境）、软件安全（聚焦软件载体）。</p>
+<p>信息内容安全的覆盖范围包括文本、图像、音频、视频、动画等形式的信息，涉及信息的生成、传输、存储、传播、使用等全流程，核心目标是遏制有害信息传播、防范虚假信息误导、保护隐私信息、维护网络空间秩序。</p>
+
+<div class="pagebreak" data-page="5"><span class="pg-mark">P5</span></div>
+<h2 id="s-22核心防护目标" class="c-h2">2.2 核心防护目标</h2>
+<p class="li li1"><span class="mk">•</span><b>遏制有害信息传播</b>：阻止暴力、色情、恐怖主义、极端主义、仇恨言论等违法违规有害信息的生成和传播，净化网络空间。</p>
+<p class="li li1"><span class="mk">•</span><b>防范虚假信息误导</b>：识别和处置谣言、虚假宣传、虚假新闻等内容，避免虚假信息误导公众、扰乱社会秩序。</p>
+<p class="li li1"><span class="mk">•</span><b>保护隐私信息安全</b>：防止个人隐私信息（如身份证号、手机号、住址、肖像）被非法收集、传播和滥用，保障用户隐私权益。</p>
+<p class="li li1"><span class="mk">•</span><b>维护内容真实性与完整性</b>：确保信息内容不被篡改、伪造，保障信息的可信度，尤其是政务信息、新闻信息、金融信息等关键内容。</p>
+<p class="li li1"><span class="mk">•</span><b>保障国家安全与公共利益</b>：防范利用有害信息危害国家安全、破坏社会稳定、损害公共利益，筑牢信息内容安全防线。</p>
+<h2 id="s-23常见信息内容安全风险" class="c-h2">2.3 常见信息内容安全风险</h2>
+<h3 id="s-231违法违规有害信息" class="c-h3">2.3.1 违法违规有害信息</h3>
+<p class="li li1"><span class="mk">•</span><b>色情低俗信息</b>：包括色情文本、图片、视频、动画等，违背公序良俗，危害青少年身心健康。</p>
+<p class="li li1"><span class="mk">•</span><b>暴力恐怖信息</b>：宣扬暴力、恐怖主义、极端主义的内容，诱导违法犯罪，破坏社会稳定。</p>
+<p class="li li1"><span class="mk">•</span><b>仇恨与歧视信息</b>：煽动民族仇恨、种族歧视、性别歧视等内容，破坏社会和谐。</p>
+<p class="li li1"><span class="mk">•</span><b>违法宣传信息</b>：传播赌博、吸毒、传销、虚假药品广告等违法内容，诱导用户参与违法活动。</p>
+<h3 id="s-232虚假信息与谣言" class="c-h3">2.3.2 虚假信息与谣言</h3>
+<p class="li li1"><span class="mk">•</span><b>社会谣言</b>：关于疫情、灾害、社会事件的虚假信息，如虚假疫情防控政策、虚假灾害预警等，容易引发公众恐慌。</p>
+<p class="li li1"><span class="mk">•</span><b>商业虚假信息</b>：虚假广告、虚假产品宣传、虚假企业资质等内容，误导消费者，损害消费者权益。</p>
+<p class="li li1"><span class="mk">•</span><b>政务虚假信息</b>：伪造政务通知、政策文件等内容，误导公众对政务工作的认知，损害政府公信力。</p>
+<h3 id="s-233隐私与敏感信息泄露" class="c-h3">2.3.3 隐私与敏感信息泄露</h3>
+<p class="li li1"><span class="mk">•</span><b>个人隐私泄露</b>：非法收集、传播用户的身份证号、手机号、住址、肖像、消费记录等隐私信息，导致用户遭受骚扰、诈骗。</p>
+<p class="li li1"><span class="mk">•</span><b>敏感数据泄露</b>：政务敏感数据、商业机密、军事机密等被非法传播，危害国家安全和企业利益。</p>
+<h3 id="s-234内容篡改与伪造" class="c-h3">2.3.4 内容篡改与伪造</h3>
+<p>攻击者篡改新闻报道、政务通知、学术论文等信息内容，或伪造图像、视频（如深度伪造技术），误导公众、抹黑他人或破坏社会秩序。例如，利用深度伪造技术伪造名人言论视频，引发舆论风波。</p>
+
+<div class="pagebreak" data-page="6"><span class="pg-mark">P6</span></div>
+<h2 id="s-24信息内容安全防护技术" class="c-h2">2.4 信息内容安全防护技术</h2>
+<h3 id="s-241内容识别技术" class="c-h3">2.4.1 内容识别技术</h3>
+<p class="li li1"><span class="mk">•</span><b>文本识别技术</b>：基于自然语言处理（NLP），对文本内容进行关键词提取、语义分析、情感判断，识别色情、暴力、谣言等有害文本。例如，通过关键词匹配和语义分析，筛选出包含恐怖主义言论的文本。</p>
+<p class="li li1"><span class="mk">•</span><b>图像/视频识别技术</b>：基于计算机视觉（CV），对图像、视频中的人物、场景、动作进行识别，检测色情、暴力、恐怖等有害内容。例如，通过图像识别技术，识别色情图片和暴力画面；通过视频帧分析，检测恐怖主义相关视频。</p>
+<p class="li li1"><span class="mk">•</span><b>音频识别技术</b>：对音频内容进行语音转文字、语义分析，识别有害语音信息（如暴力威胁、极端主义言论）。例如，识别音频中的仇恨言论，阻止其传播。</p>
+<h3 id="s-242内容过滤与拦截技术" class="c-h3">2.4.2 内容过滤与拦截技术</h3>
+<p class="li li1"><span class="mk">•</span><b>关键词过滤</b>：设置有害关键词库，对信息内容进行关键词匹配，拦截包含有害关键词的信息。适合快速筛选简单的有害内容。</p>
+<p class="li li1"><span class="mk">•</span><b>语义过滤</b>：基于 NLP 语义分析，不仅匹配关键词，还能理解语句的上下文和语义，避免误判和漏判，提升过滤准确性。</p>
+<p class="li li1"><span class="mk">•</span><b>分级过滤</b>：根据信息内容的风险等级，采取不同的过滤措施，例如对严重违法信息直接拦截，对疑似有害信息进行人工审核。</p>
+<h3 id="s-243虚假信息检测技术" class="c-h3">2.4.3 虚假信息检测技术</h3>
+<p class="li li1"><span class="mk">•</span><b>溯源验证技术</b>：对信息的来源进行追溯，验证信息发布者的身份和资质，判断信息的可信度。例如，验证新闻信息的发布主体是否为正规媒体。</p>
+<p class="li li1"><span class="mk">•</span><b>内容比对技术</b>：将疑似虚假信息与权威信息库进行比对，识别信息中的虚假内容。例如，将疫情相关信息与官方发布的疫情数据比对，排查谣言。</p>
+<p class="li li1"><span class="mk">•</span><b>深度伪造检测技术</b>：针对伪造的图像、视频，通过分析图像纹理、面部特征、动作连贯性等，识别深度伪造内容，避免虚假内容传播。</p>
+<h3 id="s-244隐私保护技术" class="c-h3">2.4.4 隐私保护技术</h3>
+<p class="li li1"><span class="mk">•</span><b>数据脱敏技术</b>：对身份证号、手机号、住址等敏感信息进行处理，隐藏部分内容（如手机号隐藏中间 4 位），既保留信息的可用性，又防止隐私泄露。</p>
+<p class="li li1"><span class="mk">•</span><b>隐私计算技术</b>：在不泄露原始隐私数据的前提下，实现数据的分析和共享，包括联邦学习、差分隐私等技术，适合政务、医疗等需要共享数据但需保护隐私的场景。</p>
+<p class="li li1"><span class="mk">•</span><b>访问控制技术</b>：对敏感内容设置访问权限，仅授权用户可访问，防止未授权用户获取隐私信息。</p>
+<h3 id="s-245人工审核与应急处置" class="c-h3">2.4.5 人工审核与应急处置</h3>
+<p class="li li1"><span class="mk">•</span><b>人工审核</b>：对技术筛选出的疑似有害信息、模糊信息进行人工审核，提升内容识别的准确性，避免误判。</p>
+<p class="li li1"><span class="mk">•</span><b>应急处置</b>：建立信息内容安全应急响应机制，对突发的有害信息传播事件（如谣言扩散、深度伪视频传播），快速采取删除、拦截、澄清等措施，降低影响。</p>
+
+<div class="pagebreak" data-page="7"><span class="pg-mark">P7</span></div>
+<h2 id="s-25应用分析" class="c-h2">2.5 应用分析</h2>
+<h3 id="s-251互联网平台领域" class="c-h3">2.5.1 互联网平台领域</h3>
+<p>互联网平台（如社交平台、短视频平台、新闻平台、电商平台）是信息内容安全防护的核心场景，需承担内容审核责任。例如，短视频平台通过图像/视频识别技术，检测色情、暴力、恐怖等有害内容，自动拦截并删除；新闻平台通过溯源验证和内容比对，排查虚假新闻，保障新闻真实性；社交平台通过关键词过滤和语义分析，拦截仇恨言论和谣言，净化社交环境。</p>
+<h3 id="s-252政务信息领域" class="c-h3">2.5.2 政务信息领域</h3>
+<p>政务信息平台（如政府官网、政务公众号、政务 APP）需保障政务信息的真实性、完整性和安全性，防范虚假政务信息传播。例如，政府官网通过内容审核和溯源验证，确保发布的政策文件、通知公告真实有效；通过隐私保护技术，保护政务数据中的公众隐私信息，避免泄露。</p>
+<h3 id="s-253教育领域" class="c-h3">2.5.3 教育领域</h3>
+<p>教育领域（如在线教育平台、校园论坛、学生社交群）需防范有害信息对青少年的危害，营造健康的教育环境。例如，在线教育平台通过内容过滤技术，拦截色情、暴力等有害内容，保护青少年身心健康；校园论坛通过人工审核和关键词过滤，规范学生发言，避免传播谣言和不良信息。</p>
+<h3 id="s-254金融领域" class="c-h3">2.5.4 金融领域</h3>
+<p>金融领域（如银行 APP、证券平台、支付平台）需保障金融信息的真实性和隐私性，防范虚假金融信息和隐私泄露。例如，支付平台通过隐私保护技术，加密存储用户的银行卡信息和交易记录，防止隐私泄露；证券平台通过内容审核，拦截虚假理财广告和金融谣言，避免误导投资者。</p>
+<h3 id="s-255医疗领域" class="c-h3">2.5.5 医疗领域</h3>
+<p>医疗领域（如医疗信息平台、在线问诊平台）需保护患者的隐私信息，防范虚假医疗信息传播。例如，在线问诊平台通过数据脱敏技术，隐藏患者的个人隐私信息，避免泄露；通过内容比对和溯源验证，排查虚假医疗广告和虚假医疗信息，保障患者的就医安全。</p>
+<h1 id="s-3数据库与操作系统安全" class="c-h1">3 数据库与操作系统安全</h1>
+<h2 id="s-31数据库安全" class="c-h2">3.1 数据库安全</h2>
+<h3 id="s-311基本概念" class="c-h3">3.1.1 基本概念</h3>
+<p>数据库安全是指通过技术手段和管理措施，保障数据库系统、数据库中的数据以及数据库运行环境的安全性，抵御各类安全威胁，确保数据的保密性、完整性、可用性和可控性。数据库是信息系统的核心数据存储载体，存储着大量敏感数据（如用户信息、商业机密、政务数据），是安全防护的重点对象。</p>
+<p>数据库安全涵盖数据库系统安全、数据安全、访问安全、运维安全等多个维度，核心是防范数据泄露、数据篡改、数据库入侵等安全事件。</p>
+
+<div class="pagebreak" data-page="8"><span class="pg-mark">P8</span></div>
+<h3 id="s-312常见安全威胁" class="c-h3">3.1.2 常见安全威胁</h3>
+<p class="li li1"><span class="mk">•</span><b>SQL 注入攻击</b>：攻击者通过构造恶意 SQL 语句，注入到数据库查询环节，绕过验证机制，窃取、篡改或删除数据库中的数据，甚至控制数据库服务器。</p>
+<p class="li li1"><span class="mk">•</span><b>数据泄露</b>：由于数据库配置不当、漏洞未修复、权限管理松散等原因，导致数据库中的敏感数据被未授权主体获取，包括明文存储密码、未加密敏感数据被窃取。</p>
+<p class="li li1"><span class="mk">•</span><b>数据篡改</b>：攻击者通过非法手段修改数据库中的数据，破坏数据的完整性，例如篡改金融交易数据、政务数据、用户信息等，造成严重损失。</p>
+<p class="li li1"><span class="mk">•</span><b>数据库入侵</b>：攻击者利用数据库系统的漏洞（如缓冲区溢出漏洞、身份认证漏洞），入侵数据库服务器，获取数据库控制权，执行非法操作。</p>
+<p class="li li1"><span class="mk">•</span><b>权限滥用</b>：数据库用户超出自身授权范围，访问或修改敏感数据，例如普通用户通过权限提升，获取管理员权限，操作核心数据。</p>
+<h3 id="s-313安全防护技术" class="c-h3">3.1.3 安全防护技术</h3>
+<p class="li li1"><span class="mk">•</span><b>身份认证与授权管理</b>：采用强身份认证（如双重认证、数字证书），验证数据库用户的身份；通过基于角色的访问控制（RBAC），为不同用户分配对应的操作权限，限制用户的访问范围，防止权限滥用。</p>
+<p class="li li1"><span class="mk">•</span><b>数据加密技术</b>：包括存储加密（对数据库中的敏感数据进行加密存储，如 AES、RSA 加密算法）、传输加密（对数据库与应用程序之间的数据传输进行加密，如 SSL/TLS 协议），防止数据泄露。</p>
+<p class="li li1"><span class="mk">•</span><b>SQL 注入防护</b>：采用参数化查询、预编译语句，避免直接拼接 SQL 语句；通过输入验证，过滤恶意 SQL 语句；部署数据库防火墙，拦截注入攻击请求。</p>
+<p class="li li1"><span class="mk">•</span><b>数据库审计</b>：记录数据库的所有操作行为（如用户登录、数据查询、修改、删除），形成审计日志，便于后续追溯安全事件、排查问题和追责。</p>
+<p class="li li1"><span class="mk">•</span><b>漏洞补丁管理</b>：及时收集数据库系统的安全漏洞信息，发布并安装补丁，修复已知漏洞，避免攻击者利用漏洞入侵数据库。</p>
+<p class="li li1"><span class="mk">•</span><b>数据备份与恢复</b>：定期对数据库数据进行备份，制定数据恢复预案，当发生数据丢失、数据篡改时，可快速恢复数据，降低损失。</p>
+<h2 id="s-32操作系统安全" class="c-h2">3.2 操作系统安全</h2>
+<h3 id="s-321基本概念" class="c-h3">3.2.1 基本概念</h3>
+<p>操作系统安全是指保障操作系统本身、操作系统上的应用程序以及操作系统管理的硬件、数据和资源的安全性，抵御各类安全威胁，确保操作系统持续、稳定、安全地运行。操作系统是计算机系统的核心，是所有应用程序运行的基础，其安全性直接影响整个信息系统的安全。</p>
+<p>操作系统安全涵盖系统内核安全、用户安全、文件安全、进程安全、网络安全等多个维度，核心目标是防范系统入侵、恶意代码攻击、权限滥用等安全事件。</p>
+
+<div class="pagebreak" data-page="9"><span class="pg-mark">P9</span></div>
+<h3 id="s-322常见安全威胁" class="c-h3">3.2.2 常见安全威胁</h3>
+<p class="li li1"><span class="mk">•</span><b>恶意代码攻击</b>：病毒、蠕虫、木马、勒索病毒等恶意代码入侵操作系统，破坏系统文件、窃取数据、控制设备，导致操作系统瘫痪或无法正常运行。</p>
+<p class="li li1"><span class="mk">•</span><b>系统入侵</b>：攻击者利用操作系统的漏洞（如缓冲区溢出漏洞、权限管理漏洞），入侵操作系统，获取系统控制权，执行非法操作（如创建管理员账户、删除系统文件）。</p>
+<p class="li li1"><span class="mk">•</span><b>权限滥用</b>：用户超出自身授权范围，操作操作系统的核心资源，例如普通用户提升为管理员权限，修改系统配置、删除核心文件。</p>
+<p class="li li1"><span class="mk">•</span><b>文件破坏与篡改</b>：攻击者修改或删除操作系统的核心文件（如系统内核文件、配置文件），导致操作系统无法正常启动或运行异常。</p>
+<p class="li li1"><span class="mk">•</span><b>拒绝服务攻击</b>：攻击者通过大量恶意请求，占用操作系统的 CPU、内存、带宽等资源，导致操作系统无法响应正常请求，陷入瘫痪。</p>
+<h3 id="s-323安全防护技术" class="c-h3">3.2.3 安全防护技术</h3>
+<p class="li li1"><span class="mk">•</span><b>身份认证与访问控制</b>：采用强密码策略、双重认证、生物识别（指纹、人脸）等身份认证方式，验证用户身份；通过用户分组、权限分级，限制用户对系统资源的访问范围，防止权限滥用。</p>
+<p class="li li1"><span class="mk">•</span><b>系统漏洞防护</b>：及时安装操作系统的安全补丁，修复已知漏洞；关闭不必要的端口、服务和进程，减少攻击面，避免攻击者利用漏洞入侵。</p>
+<p class="li li1"><span class="mk">•</span><b>恶意代码防护</b>：安装杀毒软件、防火墙，实时监测和拦截恶意代码；定期对操作系统进行病毒扫描，清除已感染的恶意代码；禁止运行未知来源的程序，防范恶意代码植入。</p>
+<p class="li li1"><span class="mk">•</span><b>文件与数据保护</b>：对操作系统的核心文件进行加密存储和权限保护，防止文件被篡改或删除；开启系统还原功能，当系统出现故障时，可快速恢复到正常状态。</p>
+<p class="li li1"><span class="mk">•</span><b>系统审计与监控</b>：记录操作系统的所有操作行为（如用户登录、进程启动、文件修改），形成审计日志；实时监控系统运行状态、资源占用情况，及时发现异常行为和攻击迹象。</p>
+<p class="li li1"><span class="mk">•</span><b>安全配置优化</b>：优化操作系统的安全配置，例如关闭文件共享、开启密码复杂度要求、设置账户锁定策略（多次密码错误锁定账户），提升操作系统的安全性。</p>
+<h2 id="s-33协同防护要点" class="c-h2">3.3 协同防护要点</h2>
+<p>数据库与操作系统是信息系统的核心组成部分，两者的安全防护需协同推进，形成完整的安全防线。一方面，操作系统是数据库运行的基础，操作系统的安全直接影响数据库的安全，需先筑牢操作系统的安全屏障，防止攻击者通过操作系统入侵数据库；另一方面，数据库的安全防护需结合操作系统的安全机制，例如利用操作系统的权限管理，限制数据库用户的操作范围，利用操作系统的加密功能，保障数据库数据的存储和传输安全。</p>
+<p>此外，需建立统一的安全管理体系，定期对数据库和操作系统进行安全检测、漏洞扫描和风险评估，及时排查安全隐患，制定协同应急响应预案，当发生安全事件时，快速处置，降低损失。</p>
+<h2 id="s-34应用分析" class="c-h2">3.4 应用分析</h2>
+<h3 id="s-341企业信息系统领域" class="c-h3">3.4.1 企业信息系统领域</h3>
+
+<div class="pagebreak" data-page="10"><span class="pg-mark">P10</span></div>
+<p>企业信息系统（如 ERP 系统、CRM 系统）依赖数据库存储企业核心数据，依赖操作系统保障系统运行，需加强两者的协同防护。例如，企业通过优化操作系统安全配置、安装补丁，防范系统入侵；通过数据库加密、权限管理，保护企业商业机密和客户信息，防止数据泄露和篡改；定期进行安全审计，排查权限滥用和异常操作，保障企业信息系统的安全稳定运行。</p>
+<h3 id="s-342金融领域" class="c-h3">3.4.2 金融领域</h3>
+<p>金融机构的核心系统（如银行核心业务系统、证券交易系统）对数据库和操作系统的安全性要求极高，需满足合规要求。例如，银行通过双重身份认证、数据库加密，保护用户的账户信息和交易数据；通过操作系统漏洞防护和恶意代码防护，抵御攻击，确保核心系统持续运行；定期进行数据备份和恢复演练，防止数据丢失，保障金融交易的安全。</p>
+<h3 id="s-343政务领域" class="c-h3">3.4.3 政务领域</h3>
+<p>政务信息系统（如电子政务平台、政务数据中心）存储大量政务数据，需保障数据安全和系统稳定。例如，政务数据中心通过操作系统安全加固、数据库审计，防范政务数据泄露和篡改；通过协同防护机制，确保政务系统的核心数据库和操作系统安全，保障政务服务正常开展，维护政府公信力。</p>
+<h3 id="s-344互联网领域" class="c-h3">3.4.4 互联网领域</h3>
+<p>互联网平台（如电商平台、社交平台）的数据库存储海量用户信息，操作系统承载平台的运行，需强化安全防护。例如，电商平台通过数据库防火墙防范 SQL 注入攻击，保护用户的购物信息和支付数据；通过操作系统恶意代码防护，抵御 DDoS 攻击和恶意入侵，确保平台持续稳定运行，提升用户信任度。</p>
+<h3 id="s-345工业领域" class="c-h3">3.4.5 工业领域</h3>
+<p>工业控制系统的数据库存储生产数据，操作系统控制工业设备的运行，需保障两者的安全，防止生产中断。例如，工业企业通过操作系统隔离防护，将生产网络与互联网隔离，防止外部攻击；通过数据库备份和权限管理，保护生产数据的完整性和安全性，确保工业控制系统的稳定运行。</p>
+<h1 id="s-4信息系统工程与标准规范" class="c-h1">4 信息系统工程与标准规范</h1>
+<h2 id="s-41信息系统工程基本概念" class="c-h2">4.1 信息系统工程基本概念</h2>
+<h3 id="s-411核心定义" class="c-h3">4.1.1 核心定义</h3>
+<p>信息系统工程是指围绕信息系统的规划、设计、开发、部署、运维、升级、报废等全生命周期，进行的一系列工程化活动，旨在构建安全、稳定、高效、合规的信息系统，满足用户的业务需求和安全需求。其核心是“工程化”，即将工程管理的理念和方法应用于信息系统的建设和运维，规范流程、控制风险、提升质量。</p>
+<p>信息系统工程涵盖硬件工程（服务器、网络设备、存储设备的部署和调试）、软件工程（软件的开发、测试、部署）、网络工程（网络的规划、搭建、优化）、安全工程（安全防护体系的构建）等多个分支，是一门综合性的工程学科。</p>
+<h3 id="s-412核心生命周期阶段" class="c-h3">4.1.2 核心生命周期阶段</h3>
+
+<div class="pagebreak" data-page="11"><span class="pg-mark">P11</span></div>
+<p class="li li1"><span class="mkn">1.</span><b>规划阶段</b>：明确用户的业务需求和安全需求，进行可行性分析（技术可行性、经济可行性、安全可行性），制定信息系统建设规划、安全规划和项目计划，确定系统的整体架构和核心功能。</p>
+<p class="li li1"><span class="mkn">2.</span><b>设计阶段</b>：根据规划方案，进行系统架构设计、硬件设计、软件设计、网络设计和安全设计，明确系统的组成部分、接口规范、安全防护方案，形成详细的设计文档，为后续开发和部署提供依据。</p>
+<p class="li li1"><span class="mkn">3.</span><b>开发与实施阶段</b>：按照设计文档，开展硬件采购与部署、软件开发与测试、网络搭建与调试、安全防护体系部署等活动，确保各组件符合设计要求，实现系统的核心功能和安全需求。</p>
+<p class="li li1"><span class="mkn">4.</span><b>测试阶段</b>：对信息系统进行全面测试，包括功能测试、性能测试、安全测试、兼容性测试等，排查系统的功能缺陷和安全漏洞，确保系统满足业务需求和安全标准。</p>
+<p class="li li1"><span class="mkn">5.</span><b>部署与运维阶段</b>：将测试通过的信息系统部署到实际运行环境，开展系统初始化、用户培训、日常运维（故障排查、漏洞修复、数据备份）等活动，确保系统持续、稳定、安全运行。</p>
+<p class="li li1"><span class="mkn">6.</span><b>升级与报废阶段</b>：根据业务需求的变化和技术的升级，对信息系统进行优化和升级，提升系统性能和安全性；当系统达到使用寿命或无法满足业务需求时，按照规范进行报废处理，确保数据安全销毁和设备合规处置。</p>
+<h3 id="s-413核心管理要素" class="c-h3">4.1.3 核心管理要素</h3>
+<p class="li li1"><span class="mk">•</span><b>范围管理</b>：明确信息系统工程的建设范围，控制项目的需求变更，避免项目范围蔓延，确保项目按时、按质完成。</p>
+<p class="li li1"><span class="mk">•</span><b>进度管理</b>：制定详细的项目进度计划，监控项目进度，及时调整进度偏差，确保项目在规定时间内完成各阶段任务。</p>
+<p class="li li1"><span class="mk">•</span><b>成本管理</b>：控制项目的采购成本、开发成本、运维成本，避免成本超支，实现项目的经济效益最大化。</p>
+<p class="li li1"><span class="mk">•</span><b>质量管理</b>：建立质量管理体系，规范各阶段的工程活动，通过测试、审核等手段，确保系统的质量和安全性，满足用户需求。</p>
+<p class="li li1"><span class="mk">•</span><b>安全管理</b>：将安全理念融入信息系统生命周期的各个阶段，构建全面的安全防护体系，防范安全风险，保障系统和数据安全。</p>
+<p class="li li1"><span class="mk">•</span><b>风险管理</b>：识别项目各阶段的风险（技术风险、安全风险、成本风险、进度风险），制定风险应对预案，及时处置风险，降低风险造成的损失。</p>
+<h2 id="s-42信息系统安全标准规范" class="c-h2">4.2 信息系统安全标准规范</h2>
+<p>信息系统安全标准规范是保障信息系统安全、规范信息系统工程活动的重要依据，分为国际标准、国家标准、行业标准和企业标准四个层级，涵盖信息系统安全技术、安全管理、安全评估等多个领域。</p>
+<h3 id="s-421国际标准" class="c-h3">4.2.1 国际标准</h3>
+<p class="li li1"><span class="mk">•</span><b>ISO/IEC 27000 系列标准</b>：全球最具影响力的信息安全管理体系标准，涵盖信息安全管理体系（ISMS）的建立、实施、审核和改进，核心标准包括：</p>
+<p class="li li2"><span class="mk2">○</span>ISO/IEC 27001：信息安全管理体系要求，规定了信息安全管理体系的核心要素和实施要求，是企业建立和认证信息安全管理体系的依据。</p>
+
+<div class="pagebreak" data-page="12"><span class="pg-mark">P12</span></div>
+<p class="li li2"><span class="mk2">○</span>ISO/IEC 27002：信息安全控制实践指南，提供了具体的信息安全控制措施（如访问控制、数据加密、漏洞管理），用于支撑 ISO 27001 的实施。</p>
+<p class="li li2"><span class="mk2">○</span>ISO/IEC 27005：信息安全风险管理标准，规范信息安全风险的识别、评估和处置流程。</p>
+<p class="li li1"><span class="mk">•</span><b>ISO/IEC 20000 系列标准</b>：IT 服务管理体系标准，规范信息系统的运维服务，提升运维服务质量和安全性，包括服务管理体系的建立、实施和评估。</p>
+<p class="li li1"><span class="mk">•</span><b>NIST SP 800 系列文档</b>：由美国国家标准与技术研究院（NIST）发布，涵盖信息系统安全技术、安全管理、安全评估等内容，例如 NIST SP 800-53（信息系统安全控制措施）、NIST SP 800-171（受控非机密信息安全要求），在全球信息安全领域具有广泛影响力。</p>
+<h3 id="s-422国家标准" class="c-h3">4.2.2 国家标准</h3>
+<p class="li li1"><span class="mk">•</span><b>GB/T 22080-2016（ISO/IEC 27001: 2013）</b>：《信息技术 安全技术 信息安全管理体系 要求》，等同采用 ISO 27001 国际标准，是我国企业建立和认证信息安全管理体系的国家标准。</p>
+<p class="li li1"><span class="mk">•</span><b>GB/T 22081-2016（ISO/IEC 27002: 2013）</b>：《信息技术 安全技术 信息安全控制实践》，等同采用 ISO 27002 国际标准，为我国企业提供信息安全控制措施的实践指南。</p>
+<p class="li li1"><span class="mk">•</span><b>GB/T 30976 系列标准</b>：《信息安全技术 工业控制系统信息安全》，涵盖工业控制系统的安全要求、安全评估、安全防护等内容，适用于工业领域的信息系统安全建设。</p>
+<p class="li li1"><span class="mk">•</span><b>GB/T 35273-2020</b>：《信息安全技术 个人信息安全规范》，规定了个人信息的收集、存储、使用、传输、删除等环节的安全要求，保障个人隐私信息安全。</p>
+<p class="li li1"><span class="mk">•</span><b>GB 17859-1999</b>：《计算机信息系统 安全保护等级划分准则》，将计算机信息系统的安全保护等级分为五级（从第一级到第五级，安全等级逐级提升），明确各级的安全要求，是我国信息系统安全等级保护的核心依据。</p>
+<p class="li li1"><span class="mk">•</span><b>网络安全等级保护 2.0 标准</b>：包括 GB/T 22239-2019《信息安全技术 网络安全等级保护基本要求》等一系列标准，替代原等级保护 1.0 标准，扩大了适用范围（涵盖云计算、物联网、大数据等新技术场景），提升了安全要求，是我国网络安全和信息系统安全的重要规范。</p>
+<h3 id="s-423行业标准" class="c-h3">4.2.3 行业标准</h3>
+<p class="li li1"><span class="mk">•</span><b>金融行业标准</b>：由银保监会、证监会等监管机构发布，例如《银行业金融机构信息科技风险管理指引》《证券期货业信息安全保障管理办法》，针对金融行业的特殊性，提出信息系统安全建设和管理的具体要求。</p>
+<p class="li li1"><span class="mk">•</span><b>政务行业标准</b>：由国务院办公厅、国家网信办等部门发布，例如《电子政务信息安全等级保护实施指南》《政务信息系统安全管理规范》，规范政务信息系统的安全建设和运维，保障政务数据安全。</p>
+<p class="li li1"><span class="mk">•</span><b>电信行业标准</b>：由工信部发布，例如《电信网和互联网安全等级保护实施指南》《电信行业信息安全管理办法》，规范电信行业的信息系统和网络安全，保障电信服务的稳定和安全。</p>
+<h3 id="s-424企业标准" class="c-h3">4.2.4 企业标准</h3>
+<p>企业根据自身的业务需求、技术特点和合规要求，在遵循国际标准、国家标准和行业标准的基础上，制定的内部信息系统安全标准和规范，例如企业内部的信息安全管理办法、软件开发安全规范、数据安全管理规范等，用于规范企业内部的信息系统工程活动和安全管理工作。</p>
+
+<div class="pagebreak" data-page="13"><span class="pg-mark">P13</span></div>
+<h2 id="s-43标准规范的应用要点" class="c-h2">4.3 标准规范的应用要点</h2>
+<p class="li li1"><span class="mk">•</span><b>合规适配</b>：根据信息系统的应用场景、行业属性和数据类型，选择适配的标准规范，例如金融行业需遵循金融行业标准和网络安全等级保护 2.0 标准，政务系统需遵循政务行业标准和个人信息安全规范，确保系统建设和运维符合合规要求。</p>
+<p class="li li1"><span class="mk">•</span><b>全生命周期落地</b>：将标准规范融入信息系统生命周期的各个阶段，例如规划阶段参考标准确定安全需求，设计阶段按照标准制定安全方案，运维阶段依据标准开展安全管理，确保标准规范的全面落地。</p>
+<p class="li li1"><span class="mk">•</span><b>动态更新</b>：关注标准规范的更新迭代（如国际标准修订、国家标准发布），及时调整信息系统的安全建设和管理方案，确保系统始终符合最新的标准要求。</p>
+<p class="li li1"><span class="mk">•</span><b>结合实际优化</b>：在遵循标准规范的基础上，结合企业的业务实际和技术能力，优化安全方案和管理流程，避免生搬硬套，实现合规性与实用性的平衡。</p>
+<h2 id="s-44应用分析" class="c-h2">4.4 应用分析</h2>
+<h3 id="s-441企业信息系统建设" class="c-h3">4.4.1 企业信息系统建设</h3>
+<p>企业在信息系统建设过程中，需遵循 ISO 27000 系列标准、网络安全等级保护 2.0 标准等规范，构建信息安全管理体系，规范工程流程。例如，企业按照 ISO 27001 标准建立信息安全管理体系，明确安全职责和控制措施；按照网络安全等级保护 2.0 标准，对信息系统进行等级测评，整改安全隐患，确保系统达到相应的安全等级要求；结合企业标准，规范软件开发和运维流程，提升系统质量和安全性。</p>
+<h3 id="s-442政务信息系统建设" class="c-h3">4.4.2 政务信息系统建设</h3>
+<p>政务信息系统建设需严格遵循政务行业标准和国家相关规范，保障政务数据安全和系统合规。例如，政务系统按照《电子政务信息安全等级保护实施指南》，开展等级保护建设和测评，按照《政务信息系统安全管理规范》，建立安全管理体系，规范政务数据的收集、存储和使用；遵循《个人信息安全规范》，保护公众的隐私信息，确保政务系统合规运行。</p>
+<h3 id="s-443金融信息系统建设" class="c-h3">4.4.3 金融信息系统建设</h3>
+<p>金融信息系统建设需遵循金融行业标准和国家安全规范，满足监管要求。例如，银行按照《银行业金融机构信息科技风险管理指引》，建立信息科技风险管理体系；按照网络安全等级保护 2.0 标准和 ISO 27001 标准，构建全面的安全防护体系，遵循《证券期货业信息安全保障管理办法》，确保证券交易系统的安全稳定，保障金融数据的安全性和完整性。</p>
+<h3 id="s-444工业信息系统建设" class="c-h3">4.4.4 工业信息系统建设</h3>
+<p>工业信息系统建设需遵循 GB/T 30976 系列标准和网络安全等级保护 2.0 标准，防范工业控制系统安全风险。例如，工业企业按照《信息安全技术 工业控制系统信息安全》标准，构建工业控制系统的安全防护体系，隔离生产网络与互联网；按照等级保护 2.0 标准，对工业信息系统进行等级测评，修复安全漏洞，确保工业生产的安全稳定。</p>
+
+<div class="pagebreak" data-page="14"><span class="pg-mark">P14</span></div>
+<h3 id="s-445互联网平台建设" class="c-h3">4.4.5 互联网平台建设</h3>
+<p>互联网平台建设需遵循《个人信息安全规范》《网络安全法》《数据安全法》等相关标准和法规，保障用户隐私和数据安全。例如，互联网平台按照《个人信息安全规范》，规范用户信息的收集和使用，获取用户同意后再收集敏感信息；按照网络安全等级保护 2.0 标准，构建安全防护体系，抵御恶意攻击；遵循 ISO 27001 标准，建立信息安全管理体系，结合平台业务特点（如社交、电商、短视频），制定企业内部安全标准，针对海量用户数据存储、内容传播、交易交互等核心场景，补充专项安全控制措施，确保平台合规运营。此外，互联网平台需遵循《网络信息内容生态治理规定》，落实内容安全管理责任，结合信息内容安全防护技术，开展内容审核和风险防控，遏制有害信息传播，防范虚假信息误导，筑牢平台安全防线，兼顾合规性与用户体验。</p>
+<h2 id="s-45信息系统工程与标准规范的发展趋势" class="c-h2">4.5 信息系统工程与标准规范的发展趋势</h2>
+<p>随着云计算、物联网、大数据、人工智能等新技术的快速发展，信息系统工程的边界持续拓展，标准规范也在不断迭代完善，呈现出三大发展趋势。一是“全域合规”成为核心导向，数据安全、个人信息保护相关标准与法规深度融合，覆盖信息系统全生命周期、全业务场景，对跨境数据流动、数据销毁、隐私计算等新型场景的规范逐步细化，倒逼互联网平台、企业、政务部门等主体落实全流程安全管控责任。二是“新技术适配”加速推进，针对云计算、边缘计算、工业互联网等新型信息系统架构，现有标准规范不断修订，新增专项安全要求，同时涌现出一批适配新技术的细分领域标准，填补新型场景的安全规范空白，实现技术发展与标准规范同频同步。三是“协同化管控”成为主流，国际标准、国家标准、行业标准、企业标准的衔接更加紧密，跨行业标准融合趋势明显，同时推动安全标准与工程管理标准协同，实现技术防护、管理规范、合规审核的一体化，提升信息系统工程的整体安全水平和质量效益。</p>
+<h2 id="s-46核心总结" class="c-h2">4.6 核心总结</h2>
+<p>信息系统工程是构建安全、稳定、高效信息系统的核心载体，其全生命周期管理贯穿工程化理念，兼顾范围、进度、成本、质量、安全等多维度管理要素，确保系统满足业务需求与安全要求。信息系统安全标准规范是工程建设与运维的重要依据，不同层级、不同领域的标准相互补充，为信息系统合规建设提供支撑，企业、政务、金融、工业、互联网等不同场景需结合自身属性适配对应的标准规范，实现合规与实用的平衡。未来，信息系统工程将向智能化、协同化、安全化方向发展，标准规范将持续适配新技术、新场景，推动信息系统安全防护体系升级，为数字经济高质量发展提供保障。</p>
+
+
+</div>
+</main>
+
+<a id="home" href="index.html" title="返回总目录" aria-label="返回总目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 10.6 12 3.4l9 7.2"/>
+    <path d="M5.6 9.4V20.2h12.8V9.4"/>
+    <path d="M9.8 20.2v-5.6h4.4v5.6"/>
+  </svg>
+</a>
+<button id="totop" title="回到顶部">↑</button>
+<script>
+(function(){
+  var HIDE_FROM=3;                       // 折叠时隐藏 toc-l3 及更深层级
+  var toc=document.getElementById('toc'), links=[].slice.call(toc.querySelectorAll('a'));
+  var content=document.getElementById('content');
+  var bar=document.querySelector('#progress i');
+  var totop=document.getElementById('totop');
+  var counter=document.getElementById('counter');
+  var q=document.getElementById('q');
+
+  // progress + back to top
+  function onScroll(){
+    var h=content.scrollHeight||document.body.scrollHeight;
+    var top=window.scrollY||document.documentElement.scrollTop;
+    bar.style.width=Math.min(100,top/(h-window.innerHeight||1)*100)+'%';
+    totop.style.display=top>500?'block':'none';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // scrollspy
+  var heads=[];links.forEach(function(a){var h=document.getElementById(a.getAttribute('href').slice(1));if(h)heads.push(h);});
+  var current=null;
+  function spy(){
+    var best=null,bestTop=-1e9;
+    var probe=window.scrollY+90;
+    heads.forEach(function(h){
+      var t=h.getBoundingClientRect().top+window.scrollY;
+      if(t<=probe&&t>bestTop){bestTop=t;best=h;}
+    });
+    if(!best)return;
+    if(best.id===current)return;
+    current=best.id;
+    links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+current);});
+    var act=toc.querySelector('a.active');
+    if(act){
+      var tb=toc.getBoundingClientRect(),ab=act.getBoundingClientRect();
+      if(ab.top<tb.top+40||ab.bottom>tb.bottom-40)
+        toc.scrollTop+=ab.top-tb.top-toc.clientHeight/2;
+    }
+  }
+  window.addEventListener('scroll',spy,{passive:true});
+  window.addEventListener('resize',spy);spy();
+
+  // 目录筛选 + 章节折叠（筛选时忽略折叠状态）
+  function level(a){
+    var c=a.className;
+    if(c.indexOf('toc-l1')>=0)return 1;
+    if(c.indexOf('toc-l2')>=0)return 2;
+    if(c.indexOf('toc-l3')>=0)return 3;
+    return 4;
+  }
+  var collapsed=false;
+  function refresh(){
+    var v=(q.value||'').trim().toLowerCase();
+    var shown=0;
+    links.forEach(function(a){
+      var hit=!v||a.textContent.toLowerCase().indexOf(v)>=0;
+      var hide=!hit||(!v&&collapsed&&level(a)>=HIDE_FROM);
+      a.style.display=hide?'none':'';
+      if(!hide)shown++;
+    });
+    counter.textContent=(v||shown!==links.length)?shown+' / '+links.length:links.length+' 项';
+  }
+  q.addEventListener('input',refresh);
+
+  var exp=document.getElementById('expand');
+  exp.onclick=function(){
+    collapsed=!collapsed;
+    exp.textContent=collapsed?'展开全部':'仅看章节目';
+    refresh();
+  };
+
+  // mobile drawer
+  var sb=document.getElementById('sidebar'),mask=document.getElementById('mask');
+  document.getElementById('menubtn').onclick=function(){sb.classList.toggle('open');mask.style.display=sb.classList.contains('open')?'block':'none';};
+  mask.onclick=function(){sb.classList.remove('open');mask.style.display='none';};
+  toc.addEventListener('click',function(e){if(e.target.tagName==='A'&&window.innerWidth<=900){sb.classList.remove('open');mask.style.display='none';}});
+
+  totop.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+
+  exp.textContent=collapsed?'展开全部':'仅看章节目';
+  refresh();
+})();
+</script>
+</body>
+</html>
