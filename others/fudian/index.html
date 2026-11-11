@@ -16,68 +16,68 @@
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);
   font-family:var(--font-serif);font-size:16.5px;line-height:1.9;-webkit-font-smoothing:antialiased;}
-#wrap{max-width:980px;margin:0 auto;padding:40px 28px 90px}
+#wrap{max-width:1000px;margin:0 auto;padding:26px 24px 64px}
 
-/* hero */
-.hero{background:linear-gradient(135deg,#16335c 0%,#1f4e8c 55%,#b3261e 130%);
-  color:#fff;border-radius:14px;padding:40px 44px 34px;margin-bottom:14px}
-.hero h1{font-family:var(--font-sans);font-size:30px;font-weight:800;margin:0 0 8px;letter-spacing:1px}
-.hero .sub{font-family:var(--font-sans);font-size:14px;opacity:.85;margin-bottom:18px}
-.hero .chips{display:flex;flex-wrap:wrap;gap:8px}
-.hero .chips span{font-family:var(--font-sans);font-size:12px;background:rgba(255,255,255,.14);
-  border:1px solid rgba(255,255,255,.28);border-radius:20px;padding:3px 12px}
+/* 页首：素色轻量标题，不使用大色块 */
+.page-head{padding-bottom:11px;border-bottom:1px solid var(--line)}
+.page-head h1{font-family:var(--font-sans);font-size:23px;font-weight:800;margin:0 0 3px;letter-spacing:.5px}
+.page-head .sub{font-family:var(--font-sans);font-size:13px;color:var(--ink-2);margin:0}
+.page-head .meta{font-family:var(--font-sans);font-size:11.5px;color:var(--ink-3);margin:3px 0 0}
+.page-head .meta b{font-weight:600;color:var(--ink-2)}
 
 /* quick nav */
-.qnav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 8px;padding:14px 0 6px}
-.qnav a{font-family:var(--font-sans);font-size:13px;text-decoration:none;color:var(--accent-2);
-  background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px 14px;transition:.15s}
+.qnav{display:flex;flex-wrap:wrap;gap:7px;margin:0;padding:11px 0 2px}
+.qnav a{font-family:var(--font-sans);font-size:12.5px;text-decoration:none;color:var(--accent-2);
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 12px;transition:.15s}
 .qnav a:hover{background:#eaf1fb;border-color:#b9c6d6}
 
 /* module */
-.module{margin-top:44px}
-.m-head{display:flex;align-items:baseline;gap:12px;font-family:var(--font-sans);
-  border-bottom:2px solid var(--accent-2);padding-bottom:8px;margin-bottom:6px}
-.m-no{font-size:13px;font-weight:800;color:#fff;background:var(--accent-2);
-  border-radius:6px;padding:2px 10px;letter-spacing:1px}
-.m-title{font-size:21px;font-weight:800;color:var(--ink)}
-.m-desc{font-family:var(--font-sans);font-size:12.5px;color:var(--ink-3);margin:2px 0 14px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.module{margin-top:24px}
+.m-head{display:flex;align-items:baseline;gap:10px;font-family:var(--font-sans);
+  border-bottom:2px solid var(--accent-2);padding-bottom:5px;margin-bottom:5px}
+.m-no{font-size:12px;font-weight:800;color:#fff;background:var(--accent-2);
+  border-radius:5px;padding:1px 9px;letter-spacing:1px}
+.m-title{font-size:18px;font-weight:800;color:var(--ink)}
+.m-desc{font-family:var(--font-sans);font-size:12px;color:var(--ink-3);margin:0 0 9px;line-height:1.65}
 
-/* card */
-.card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:10px;
-  padding:16px 18px 14px;text-decoration:none;color:inherit;transition:.15s;position:relative}
-.card:hover{border-color:#b9c6d6;box-shadow:0 4px 14px rgba(26,86,168,.10);transform:translateY(-1px)}
-.card .file{font-family:var(--font-sans);font-size:11px;color:var(--accent-2);
-  background:#eaf1fb;border-radius:4px;padding:1px 8px;display:inline-block;margin-bottom:8px}
-.card h3{font-family:var(--font-sans);font-size:16.5px;font-weight:700;margin:0 0 6px;line-height:1.5}
-.card p{font-family:var(--font-sans);font-size:12.5px;color:var(--ink-2);margin:0 0 10px;line-height:1.7}
-.card .meta{display:flex;flex-wrap:wrap;gap:6px}
-.card .meta i{font-style:normal;font-family:var(--font-sans);font-size:11px;color:var(--ink-3);
-  border:1px solid var(--line-2);background:#fbfcfd;border-radius:12px;padding:1px 9px}
-.card .meta i.ok{color:#1e7d3e;border-color:#cfe8d6;background:#f2faf5}
-.card .meta i.todo{color:var(--red);border-color:#f0d4d4;background:var(--red-bg)}
+/* 目录行：编号 | 标题+说明 | 标签 */
+.list{display:flex;flex-direction:column;gap:6px}
+.row{display:grid;grid-template-columns:46px minmax(0,1fr) 286px;gap:12px;align-items:start;
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 13px;
+  text-decoration:none;color:inherit;transition:.15s}
+.row:hover{border-color:#b9c6d6;box-shadow:0 2px 10px rgba(26,86,168,.08);transform:translateY(-1px)}
+.row .file{font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--accent-2);
+  background:#eaf1fb;border-radius:4px;padding:1px 0;text-align:center;letter-spacing:.5px;margin-top:3px}
+.row .rt{min-width:0}
+.row .rt b{display:block;font-family:var(--font-sans);font-size:14.5px;font-weight:700;line-height:1.55}
+.row .rd{display:block;font-family:var(--font-sans);font-size:12.5px;color:var(--ink-3);line-height:1.65;margin-top:1px}
+.row .meta{display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end;align-content:flex-start;padding-top:2px}
+.row .meta i{font-style:normal;font-family:var(--font-sans);font-size:11px;color:var(--ink-3);
+  border:1px solid var(--line-2);background:#fbfcfd;border-radius:11px;padding:1px 9px;white-space:nowrap}
+.row .meta i.ok{color:#1e7d3e;border-color:#cfe8d6;background:#f2faf5}
+.row .meta i.todo{color:var(--red);border-color:#f0d4d4;background:var(--red-bg)}
 
 /* placeholder */
-.ph{border:1.5px dashed var(--line);border-radius:10px;background:#fbfcfd;
-  padding:22px 24px;font-family:var(--font-sans);color:var(--ink-3);font-size:13.5px;line-height:1.9}
+.ph{border:1.5px dashed var(--line);border-radius:8px;background:#fbfcfd;
+  padding:9px 13px;font-family:var(--font-sans);color:var(--ink-3);font-size:12.5px;line-height:1.75}
+.ph .rt b{color:var(--ink-2)}
 .ph b{color:var(--ink-2)}
 
 /* foot */
-.foot{margin-top:52px;padding-top:18px;border-top:1px dashed var(--line);
-  font-family:var(--font-sans);font-size:12px;color:var(--ink-3);line-height:2}
+.foot{margin-top:38px;padding-top:14px;border-top:1px dashed var(--line);
+  font-family:var(--font-sans);font-size:12px;color:var(--ink-3);line-height:1.95}
 .foot a{color:var(--accent-2)}
 .r{color:var(--red);font-weight:600}
 
-@media (max-width:720px){
-  #wrap{padding:24px 14px 70px}
-  .hero{padding:28px 24px 24px}
-  .hero h1{font-size:24px}
-  .grid{grid-template-columns:1fr}
+@media (max-width:860px){
+  #wrap{padding:20px 14px 60px}
+  .page-head h1{font-size:20px}
+  .row{grid-template-columns:42px minmax(0,1fr);gap:10px}
+  .row .meta{grid-column:2;justify-content:flex-start;max-width:none}
 }
 @media print{
   body{background:#fff}
-  .hero{background:#1f3f6d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .card,.ph{break-inside:avoid}
+  .row,.ph{break-inside:avoid}
   .qnav{display:none}
 }
 </style>
@@ -85,13 +85,11 @@ body{margin:0;background:var(--bg);color:var(--ink);
 <body>
 <div id="wrap">
 
-  <div class="hero">
+  <header class="page-head">
     <h1>富滇银行备考资料库</h1>
-    <div class="sub">银行招聘笔试 · HTML 考点手册目录 —— 点击任意卡片进入对应文档</div>
-    <div class="chips">
-      <span>4 大模块</span><span>9 份文档</span><span>浏览器直接打开</span><span>支持全文检索 · 可打印</span><span>目录更新于 2026-11-10</span>
-    </div>
-  </div>
+    <p class="sub">银行招聘笔试 · HTML 考点手册总目录 —— 点击任意条目进入对应文档</p>
+    <p class="meta"><b>4</b> 大模块 · <b>9</b> 份文档 · 浏览器直接打开 · 支持全文检索、可打印 · 目录更新于 2026-11-10</p>
+  </header>
 
   <nav class="qnav">
     <a href="#m0">0 · 关于富滇</a>
@@ -102,13 +100,15 @@ body{margin:0;background:var(--bg);color:var(--ink);
 
   <section class="module" id="m0">
     <div class="m-head"><span class="m-no">模块 0</span><span class="m-title">关于富滇</span></div>
-    <p class="m-desc">富滇银行本行情（行史、治理、战略、文化、数据）——笔试综合知识中的"行情题"专项，兼作本系列总索引。</p>
-    <div class="grid">
-      <a class="card" href="0-0-富滇银行行情考点与系列索引.html">
+    <p class="m-desc">富滇银行本行情（行史、治理、战略、文化、数据）——笔试综合知识中的“行情题”专项，兼作本系列总索引。</p>
+    <div class="list">
+      <a class="row" href="0-0-富滇银行行情考点与系列索引.html">
         <span class="file">0-0</span>
-        <h3>富滇银行行情考点与系列索引</h3>
-        <p>1912 创立 / 2007 重组 / "1234"战略 / 企业文化口号 / 经营数据 / 跨境特色 / 20 道行情模拟题，附全部信息源。</p>
-        <div class="meta"><i>8 节 + 附录</i><i>38 个目录项</i><i class="ok">手写整理</i><i class="todo">数据截至 2026-11，考前复核官网</i></div>
+        <span class="rt">
+          <b>富滇银行行情考点与系列索引</b>
+          <span class="rd">1912 创立 / 2007 重组 / “1234”战略 / 企业文化口号 / 经营数据 / 跨境特色 / 20 道行情模拟题，附全部信息源。</span>
+        </span>
+        <span class="meta"><i>8 节 + 附录</i><i>38 个目录项</i><i class="ok">手写整理</i><i class="todo">数据截至 2026-11，考前复核官网</i></span>
       </a>
     </div>
   </section>
@@ -116,36 +116,46 @@ body{margin:0;background:var(--bg);color:var(--ink);
   <section class="module" id="m1">
     <div class="m-head"><span class="m-no">模块 1</span><span class="m-title">EPI · 行测</span></div>
     <p class="m-desc">行政职业能力测验各题型的解题技巧讲义：言语、数学运算、数字推理、资料分析（逻辑推理 1-4 待补充）。</p>
-    <div class="grid">
-      <a class="card" href="1-1-言语理解与解题技巧.html">
+    <div class="list">
+      <a class="row" href="1-1-言语理解与解题技巧.html">
         <span class="file">1-1</span>
-        <h3>言语理解与解题技巧</h3>
-        <p>逻辑填空、片段阅读、语句表达等言语类题型的解题技巧讲义。</p>
-        <div class="meta"><i>约 150 KB</i></div>
+        <span class="rt">
+          <b>言语理解与解题技巧</b>
+          <span class="rd">逻辑填空、片段阅读、语句表达等言语类题型的解题技巧讲义。</span>
+        </span>
+        <span class="meta"><i>约 150 KB</i><i>118 个目录项</i></span>
       </a>
-      <a class="card" href="1-2-数学运算与思维策略.html">
+      <a class="row" href="1-2-数学运算与思维策略.html">
         <span class="file">1-2</span>
-        <h3>数学运算与思维策略</h3>
-        <p>数量关系类题型的方程、赋值、比例等思维策略与解题技巧。</p>
-        <div class="meta"><i>约 168 KB</i></div>
+        <span class="rt">
+          <b>数学运算与思维策略</b>
+          <span class="rd">数量关系类题型的方程、赋值、比例等思维策略与解题技巧。</span>
+        </span>
+        <span class="meta"><i>约 168 KB</i><i>118 个目录项</i></span>
       </a>
-      <a class="card" href="1-3-数字推理解题技巧.html">
+      <a class="row" href="1-3-数字推理解题技巧.html">
         <span class="file">1-3</span>
-        <h3>数字推理解题技巧</h3>
-        <p>数列推理的常见规律类型与解题技巧讲义。</p>
-        <div class="meta"><i>约 43 KB</i></div>
+        <span class="rt">
+          <b>数字推理解题技巧</b>
+          <span class="rd">数列推理的常见规律类型与解题技巧讲义。</span>
+        </span>
+        <span class="meta"><i>约 43 KB</i><i>36 个目录项</i></span>
       </a>
-      <a class="card" href="1-5-资料分析.html">
+      <a class="row" href="1-5-资料分析.html">
         <span class="file">1-5</span>
-        <h3>资料分析与图表分析</h3>
-        <p>增长率、比重、平均数等资料的速算技巧与图表分析题型解法。</p>
-        <div class="meta"><i>约 569 KB</i></div>
+        <span class="rt">
+          <b>资料分析与图表分析</b>
+          <span class="rd">增长率、比重、平均数等资料的速算技巧与图表分析题型解法。</span>
+        </span>
+        <span class="meta"><i>约 569 KB</i><i>48 个目录项</i></span>
       </a>
-      <div class="card" style="border-style:dashed;cursor:default">
+      <div class="ph row">
         <span class="file">1-4</span>
-        <h3>（待补充）逻辑推理 / 图形推理</h3>
-        <p>本模块编号 1-4 尚未入库，后续补充。</p>
-        <div class="meta"><i class="todo">占位</i></div>
+        <span class="rt">
+          <b>（待补充）逻辑推理 / 图形推理</b>
+          <span class="rd">本模块编号 1-4 尚未入库，后续补充。</span>
+        </span>
+        <span class="meta"><i class="todo">占位</i></span>
       </div>
     </div>
   </section>
@@ -153,30 +163,38 @@ body{margin:0;background:var(--bg);color:var(--ink);
   <section class="module" id="m2">
     <div class="m-head"><span class="m-no">模块 2</span><span class="m-title">经济金融</span></div>
     <p class="m-desc">综合知识部分的经济、金融、会计、商业银行专业考点（付费讲义 OCR 转写 + 逐段校对）。</p>
-    <div class="grid">
-      <a class="card" href="3-1-货币与金融知识高频考点-基础.html">
+    <div class="list">
+      <a class="row" href="3-1-货币与金融知识高频考点-基础.html">
         <span class="file">3-1</span>
-        <h3>货币与金融知识高频考点（基础）</h3>
-        <p>货币、信用、利率、金融机构与市场等基础知识。</p>
-        <div class="meta"><i>约 390 KB</i><i class="ok">已校对</i></div>
+        <span class="rt">
+          <b>货币与金融知识高频考点（基础）</b>
+          <span class="rd">货币、信用、利率、金融机构与市场等基础知识。</span>
+        </span>
+        <span class="meta"><i>约 390 KB</i><i>66 个目录项</i><i class="ok">已校对</i></span>
       </a>
-      <a class="card" href="3-2-金融知识考点-高阶.html">
+      <a class="row" href="3-2-金融知识考点-高阶.html">
         <span class="file">3-2</span>
-        <h3>金融知识考点（高阶）</h3>
-        <p>货币制度、货币政策、金融监管等进阶考点，573 个知识点编号检索。</p>
-        <div class="meta"><i>约 322 KB</i><i class="ok">已校对</i></div>
+        <span class="rt">
+          <b>金融知识考点（高阶）</b>
+          <span class="rd">货币制度、货币政策、金融监管等进阶考点，573 个知识点编号检索。</span>
+        </span>
+        <span class="meta"><i>约 322 KB</i><i>583 个目录项</i><i class="ok">已校对</i></span>
       </a>
-      <a class="card" href="3-3-商业银行高频考点.html">
+      <a class="row" href="3-3-商业银行高频考点.html">
         <span class="file">3-3</span>
-        <h3>商业银行高频考点</h3>
-        <p>商业银行经营与管理、业务运营、市场营销、绩效考评等 4 节 17 知识点。</p>
-        <div class="meta"><i>约 758 KB</i><i class="ok">已校对（修正 40 处）</i></div>
+        <span class="rt">
+          <b>商业银行高频考点</b>
+          <span class="rd">商业银行经营与管理、业务运营、市场营销、绩效考评等 4 节 17 知识点。</span>
+        </span>
+        <span class="meta"><i>约 758 KB</i><i>71 个目录项</i><i class="ok">已校对（修正 40 处）</i></span>
       </a>
-      <a class="card" href="3-8-经济-金融高频考点.html">
+      <a class="row" href="3-8-经济-金融高频考点.html">
         <span class="file">3-8</span>
-        <h3>经济 · 金融高频考点（公式曲线汇总）</h3>
-        <p>经济 + 金融 + 会计 + 财务管理常考公式与曲线总结。</p>
-        <div class="meta"><i>约 1.66 MB</i><i class="todo">待校对</i></div>
+        <span class="rt">
+          <b>经济 · 金融高频考点（公式曲线汇总）</b>
+          <span class="rd">经济 + 金融 + 会计 + 财务管理常考公式与曲线总结。</span>
+        </span>
+        <span class="meta"><i>约 1.66 MB</i><i>182 个目录项</i><i class="todo">待校对</i></span>
       </a>
     </div>
   </section>
