@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docs · 文档总入口</title>
+<style>
+:root{
+  --bg:#f4f5f7; --panel:#ffffff; --ink:#1d2129; --ink-2:#4a5158; --ink-3:#828a94;
+  --line:#e3e6ea; --line-2:#eef0f3;
+  --blue:#1a56a8; --blue-soft:#eaf1fb; --red:#b3261e; --red-soft:#fff4f3;
+  --amber:#b45309; --amber-soft:#fdf3e3;
+  --font-serif:"Songti SC","STSong","SimSun","Source Han Serif SC",serif;
+  --font-sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"SF Mono","Menlo","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-serif);font-size:16.5px;line-height:1.85;-webkit-font-smoothing:antialiased;}
+#wrap{max-width:1080px;margin:0 auto;padding:0 24px 64px}
+
+/* ---------- 页首 ---------- */
+.page-head{padding:44px 0 22px;border-bottom:2px solid var(--ink);margin-bottom:30px}
+.brand{font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:2px;
+  color:var(--ink-3);text-transform:uppercase;display:flex;align-items:center;gap:9px}
+.brand .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);display:inline-block}
+.page-head h1{font-family:var(--font-sans);font-size:32px;font-weight:800;margin:12px 0 6px;letter-spacing:.5px}
+.page-head .sub{font-family:var(--font-sans);font-size:14px;color:var(--ink-2);margin:0}
+.page-head .meta{font-family:var(--font-sans);font-size:12px;color:var(--ink-3);margin:9px 0 0}
+.page-head .meta b{font-weight:600;color:var(--ink-2)}
+
+/* ---------- 卡片 ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:24px 26px 22px;display:flex;flex-direction:column;position:relative;
+  transition:box-shadow .18s,border-color .18s,transform .18s}
+.card:hover{box-shadow:0 8px 26px rgba(20,30,50,.09);transform:translateY(-2px)}
+.card.fudian:hover{border-color:#e2c3c0}
+.card.pocock:hover{border-color:#e3d3bb}
+
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.badge{font-family:var(--font-mono);font-size:11.5px;padding:3px 10px;border-radius:12px;font-weight:600}
+.card.fudian .badge{color:var(--red);background:var(--red-soft);border:1px solid #f0d8d5}
+.card.pocock .badge{color:var(--amber);background:var(--amber-soft);border:1px solid #ecdcbe}
+.stat{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3)}
+
+.card h2{font-family:var(--font-sans);font-size:21px;font-weight:800;margin:0 0 8px;line-height:1.45}
+.card h2 a{color:inherit;text-decoration:none}
+.card h2 a:hover{color:var(--blue)}
+.card .desc{font-family:var(--font-sans);font-size:13.5px;color:var(--ink-2);line-height:1.8;margin:0 0 14px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.chips span{font-family:var(--font-sans);font-size:11.5px;color:var(--ink-2);
+  background:#f5f6f8;border:1px solid var(--line-2);border-radius:12px;padding:2px 10px}
+
+.quick{border-top:1px dashed var(--line);padding-top:13px;margin-top:auto}
+.quick h3{font-family:var(--font-sans);font-size:11.5px;font-weight:700;color:var(--ink-3);
+  letter-spacing:.06em;margin:0 0 9px;text-transform:uppercase}
+.quick ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px}
+.quick a{font-family:var(--font-sans);font-size:12.5px;text-decoration:none;color:var(--blue);
+  background:var(--blue-soft);border:1px solid #dde7f6;border-radius:6px;padding:3px 10px;transition:.15s}
+.quick a:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+.enter{margin-top:16px;font-family:var(--font-sans);font-size:13px;font-weight:700;
+  display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.card.fudian .enter{color:var(--red)}
+.card.pocock .enter{color:var(--amber)}
+.enter:hover{gap:10px}
+.enter .ar{transition:transform .18s}
+.enter:hover .ar{transform:translateX(3px)}
+
+/* ---------- 说明 ---------- */
+.note{margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:20px 24px;font-family:var(--font-sans);font-size:13px;color:var(--ink-2);line-height:1.85}
+.note b{color:var(--ink)}
+.note code{font-family:var(--font-mono);font-size:12px;background:#f5f6f8;border:1px solid var(--line-2);
+  border-radius:4px;padding:1px 6px}
+.note ul{margin:8px 0 0;padding-left:1.2em}
+.note li{margin:3px 0}
+
+.foot{margin-top:30px;padding-top:14px;border-top:1px dashed var(--line);
+  font-family:var(--font-sans);font-size:12px;color:var(--ink-3);line-height:1.9}
+.foot code{font-family:var(--font-mono);font-size:11.5px}
+
+@media (max-width:760px){
+  #wrap{padding:0 16px 48px}
+  .page-head h1{font-size:25px}
+  .cards{grid-template-columns:1fr}
+}
+@media print{
+  body{background:#fff}
+  .card,.note{break-inside:avoid}
+  .card:hover{box-shadow:none;transform:none}
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+
+  <header class="page-head">
+    <div class="brand"><span class="dot"></span>docs</div>
+    <h1>文档总入口</h1>
+    <p class="sub">本仓库全部 HTML 资料的路由页 —— 点卡片进入对应子站，子站目录内可继续下钻到单篇文档。</p>
+    <p class="meta"><b>2</b> 个子站 · <b>33</b> 份文档（35 个 HTML 文件）· 纯静态 · 浏览器直接打开，无需构建</p>
+  </header>
+
+  <div class="cards">
+
+    <!-- ============ 富滇银行备考资料库 ============ -->
+    <section class="card fudian">
+      <div class="card-top">
+        <span class="badge">others/fudian/</span>
+        <span class="stat">17 份文档 · 4 大模块</span>
+      </div>
+      <h2><a href="others/fudian/index.html">富滇银行备考资料库</a></h2>
+      <p class="desc">银行招聘笔试考点手册总目录：行情必背、EPI 行测各题型解题技巧、经济金融与商业银行、科技岗专业（数据结构 / 数据库 / 计算机网络 / 信息工程 / 网络安全 / 人工智能）。全部为可直接检索、打印的单文件 HTML 讲义。</p>
+      <div class="chips">
+        <span>模块 0 · 关于富滇</span><span>模块 1 · EPI 行测</span><span>模块 2 · 经济金融</span><span>模块 3 · 科技岗相关</span>
+      </div>
+      <div class="quick">
+        <h3>常用直达</h3>
+        <ul>
+          <li><a href="others/fudian/0-0-富滇银行行情考点与系列索引.html">行情考点索引</a></li>
+          <li><a href="others/fudian/1-2b-数量关系18种题型.html">数量关系 18 种题型</a></li>
+          <li><a href="others/fudian/3-3-商业银行高频考点.html">商业银行高频考点</a></li>
+          <li><a href="others/fudian/6-7-网络安全高频考点.html">网络安全高频考点</a></li>
+          <li><a href="others/fudian/6-8-人工智能高频考点.html">人工智能高频考点</a></li>
+        </ul>
+      </div>
+      <a class="enter" href="others/fudian/index.html">进入子站 <span class="ar">→</span></a>
+    </section>
+
+    <!-- ============ Matt Pocock Skills ============ -->
+    <section class="card pocock">
+      <div class="card-top">
+        <span class="badge">matt-pocock/</span>
+        <span class="stat">20 份 skill · 16 份已落盘</span>
+      </div>
+      <h2><a href="matt-pocock/index.html">Matt Pocock Skills · 文档索引</a></h2>
+      <p class="desc">ask-matt 一套 skill 的文档索引，按五类容器组织：Precondition（前置配置）、Grilling（访谈母机）、Main flow（idea → ship 主路径）、On-ramps（接入信号）、Codebase（存量维护），另含底层 vocabulary 词表层。</p>
+      <div class="chips">
+        <span>Precondition · 2</span><span>Grilling · 4</span><span>Main flow · 7</span><span>On-ramps · 4</span><span>Codebase · 2</span>
+      </div>
+      <div class="quick">
+        <h3>常用直达</h3>
+        <ul>
+          <li><a href="matt-pocock/install-matt-pocock-skills.html">install</a></li>
+          <li><a href="matt-pocock/setup-matt-pocock-skills.html">setup</a></li>
+          <li><a href="matt-pocock/grilling.html">grilling</a></li>
+          <li><a href="matt-pocock/to-spec.html">to-spec</a></li>
+          <li><a href="matt-pocock/to-tickets.html">to-tickets</a></li>
+          <li><a href="matt-pocock/tdd.html">tdd</a></li>
+          <li><a href="matt-pocock/domain-modeling.html">domain-modeling</a></li>
+        </ul>
+      </div>
+      <a class="enter" href="matt-pocock/index.html">进入子站 <span class="ar">→</span></a>
+    </section>
+
+  </div>
+
+  <div class="note">
+    <b>目录约定</b> —— 本仓库是纯静态 HTML，无构建步骤，双击任一 <code>index.html</code> 即可浏览：
+    <ul>
+      <li><code>index.html</code>（本文件）= 顶层路由，只放子站入口；</li>
+      <li><code>others/fudian/index.html</code> = 富滇备考资料库总目录（4 模块 / 17 份）；</li>
+      <li><code>matt-pocock/index.html</code> = Matt Pocock Skills 文档索引（5 类 / 20 份）。</li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    全站链接均为相对路径 —— <b>整目录移动／拷贝时请连同各级 index.html 一起操作</b>。<br>
+    <code>docs/</code> · 路由页更新于 2026-11-12
+  </div>
+
+</div>
+</body>
+</html>
